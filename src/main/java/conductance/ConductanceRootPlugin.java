@@ -15,6 +15,7 @@ import conductance.api.plugin.MaterialTaggedSetRegister;
 import conductance.api.plugin.MaterialTextureSetRegister;
 import conductance.api.plugin.MaterialTextureTypeRegister;
 import conductance.api.plugin.MaterialTraitRegister;
+import conductance.api.plugin.MaterialUnitOverrideMap;
 import conductance.api.plugin.PeriodicElementBuilder;
 import conductance.init.ConductanceMaterialFlags;
 import conductance.init.ConductanceMaterialOreTypes;
@@ -78,11 +79,15 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 		overrides.add(NCMaterialTaggedSets.INGOT, NCMaterials.COPPER, Items.COPPER_INGOT);
 		overrides.add(NCMaterialTaggedSets.NUGGET, NCMaterials.IRON, Items.IRON_NUGGET);
 		overrides.add(NCMaterialTaggedSets.NUGGET, NCMaterials.GOLD, Items.GOLD_NUGGET);
-		//		overrides.add(NCMaterialTaggedSets.RAW_ORE, NCMaterials.IRON, Items.RAW_IRON);
-		//		overrides.add(NCMaterialTaggedSets.RAW_ORE, NCMaterials.GOLD, Items.RAW_GOLD);
-		//		overrides.add(NCMaterialTaggedSets.RAW_ORE, NCMaterials.COPPER, Items.RAW_COPPER);
-		//		overrides.add(NCMaterialTaggedSets.RAW_ORE_BLOCK, NCMaterials.IRON, Blocks.RAW_IRON_BLOCK);
-		//		overrides.add(NCMaterialTaggedSets.RAW_ORE_BLOCK, NCMaterials.GOLD, Blocks.RAW_GOLD_BLOCK);
-		//		overrides.add(NCMaterialTaggedSets.RAW_ORE_BLOCK, NCMaterials.COPPER, Blocks.RAW_COPPER_BLOCK);
+		overrides.add(NCMaterialTaggedSets.RAW_ORE, NCMaterials.IRON, Items.RAW_IRON);
+		overrides.add(NCMaterialTaggedSets.RAW_ORE, NCMaterials.GOLD, Items.RAW_GOLD);
+		overrides.add(NCMaterialTaggedSets.RAW_ORE, NCMaterials.COPPER, Items.RAW_COPPER);
+		overrides.add(NCMaterialTaggedSets.RAW_ORE_BLOCK, NCMaterials.IRON, Blocks.RAW_IRON_BLOCK);
+		overrides.add(NCMaterialTaggedSets.RAW_ORE_BLOCK, NCMaterials.GOLD, Blocks.RAW_GOLD_BLOCK);
+		overrides.add(NCMaterialTaggedSets.RAW_ORE_BLOCK, NCMaterials.COPPER, Blocks.RAW_COPPER_BLOCK);
+	}
+
+	@Override
+	public void registerMaterialUnitOverrides(final MaterialUnitOverrideMap overrides) {
 	}
 }
