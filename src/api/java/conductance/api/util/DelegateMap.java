@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DelegateMap<K, V> implements Map<K, V> {
 
-	private final Map<K, V> delegate;
+	protected final Map<K, V> delegate;
 
 	public DelegateMap(final Map<K, V> delegate) {
 		this.delegate = delegate;

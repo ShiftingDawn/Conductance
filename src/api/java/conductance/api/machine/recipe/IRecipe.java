@@ -1,5 +1,7 @@
 package conductance.api.machine.recipe;
 
+import java.util.List;
+import java.util.Map;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -12,13 +14,13 @@ public interface IRecipe extends Recipe<RecipeInput> {
 	@Override
 	NCRecipeType getType();
 
-	RecipeElementMap getInputs();
+	Map<IRecipeElementType<?>, List<RecipeElement>> getInputs();
 
-	RecipeElementMap getInputsPerTick();
+	Map<IRecipeElementType<?>, List<RecipeElement>> getInputsPerTick();
 
-	RecipeElementMap getOutputs();
+	Map<IRecipeElementType<?>, List<RecipeElement>> getOutputs();
 
-	RecipeElementMap getOutputsPerTick();
+	Map<IRecipeElementType<?>, List<RecipeElement>> getOutputsPerTick();
 
 	@Override
 	default boolean matches(final RecipeInput recipeInput, final Level level) {

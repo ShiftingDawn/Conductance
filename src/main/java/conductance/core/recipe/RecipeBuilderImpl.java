@@ -1,6 +1,9 @@
 package conductance.core.recipe;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import conductance.api.machine.recipe.IRecipe;
@@ -8,14 +11,13 @@ import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeBuilder;
 import conductance.api.machine.recipe.RecipeElement;
-import conductance.api.machine.recipe.RecipeElementMap;
 
 public class RecipeBuilderImpl implements RecipeBuilder {
 
-	private final RecipeElementMapImpl inputs = new RecipeElementMapImpl();
-	private final RecipeElementMapImpl inputsPerTick = new RecipeElementMapImpl();
-	private final RecipeElementMapImpl outputs = new RecipeElementMapImpl();
-	private final RecipeElementMapImpl outputsPerTick = new RecipeElementMapImpl();
+	private final Map<IRecipeElementType<?>, List<RecipeElement>> inputs = new HashMap<>();
+	private final Map<IRecipeElementType<?>, List<RecipeElement>> inputsPerTick = new HashMap<>();
+	private final Map<IRecipeElementType<?>, List<RecipeElement>> outputs = new HashMap<>();
+	private final Map<IRecipeElementType<?>, List<RecipeElement>> outputsPerTick = new HashMap<>();
 	private final NCRecipeType recipeType;
 	private final ResourceLocation recipeId;
 	private boolean perTick = false;
@@ -42,14 +44,13 @@ public class RecipeBuilderImpl implements RecipeBuilder {
 
 	@Override
 	public <T> RecipeBuilder add(final boolean input, final IRecipeElementType<T> type, final T obj) {
-		final RecipeElementMap map;
+		final Map<IRecipeElementType<?>, List<RecipeElement>> map;
 		if (this.perTick) {
 			map = input ? this.inputsPerTick : this.outputsPerTick;
 		} else {
 			map = input ? this.inputs : this.outputs;
 		}
-		map.computeIfAbsent(type, k -> new ArrayList<>())
-				.add(new RecipeElement(obj, this.chance, this.maxChance));
+		map.computeIfAbsent(type, k -> new ArrayList<>()).add(new RecipeElement(obj, this.chance, this.maxChance));
 		return this;
 	}
 

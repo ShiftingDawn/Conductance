@@ -1,7 +1,9 @@
 package conductance.core.recipe;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,7 +13,6 @@ import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeSerializer;
 import conductance.api.machine.recipe.RecipeElement;
-import conductance.api.machine.recipe.RecipeElementMap;
 
 public class RecipeSerializerImpl implements NCRecipeSerializer {
 
@@ -49,7 +50,7 @@ public class RecipeSerializerImpl implements NCRecipeSerializer {
 		);
 	}
 
-	private static void writeRecipeMap(final RegistryFriendlyByteBuf buf, final RecipeElementMap map) {
+	private static void writeRecipeMap(final RegistryFriendlyByteBuf buf, final Map<IRecipeElementType<?>, List<RecipeElement>> map) {
 		buf.writeVarInt(map.size());
 		map.forEach((key, list) -> {
 			RecipeCodecs.ELEMENT_TYPE_STREAM.encode(buf, key);
@@ -58,9 +59,9 @@ public class RecipeSerializerImpl implements NCRecipeSerializer {
 		});
 	}
 
-	private static RecipeElementMap loadRecipeMap(final RegistryFriendlyByteBuf buf) {
+	private static Map<IRecipeElementType<?>, List<RecipeElement>> loadRecipeMap(final RegistryFriendlyByteBuf buf) {
 		final int mapSize = buf.readVarInt();
-		final RecipeElementMap result = new RecipeElementMapImpl();
+		final Map<IRecipeElementType<?>, List<RecipeElement>> result = new HashMap<>();
 		for (int i = 0; i < mapSize; ++i) {
 			final IRecipeElementType<?> key = RecipeCodecs.ELEMENT_TYPE_STREAM.decode(buf);
 			final int listSize = buf.readVarInt();
