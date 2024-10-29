@@ -6,4 +6,7 @@ import conductance.api.material.MaterialTextureSet;
 public final class NCTextureSets {
 
 	public static MaterialTextureSet DULL;
+	public static MaterialTextureSet METALLIC;
+	public static MaterialTextureSet SHINY;
+	public static MaterialTextureSet BRIGHT;
 }

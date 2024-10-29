@@ -117,7 +117,7 @@ public class ConductanceMaterialTaggedSets {
 				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
 						.density(mat.getTrait(NCMaterialTraits.LIQUID).getDensity())
 						.viscosity(mat.getTrait(NCMaterialTraits.LIQUID).getViscosity())
-						.viscosity(mat.getTrait(NCMaterialTraits.LIQUID).getTemperature())
+						.temperature(mat.getTrait(NCMaterialTraits.LIQUID).getTemperature())
 						.lightLevel(mat.getData().getBlockLightLevel())
 				))
 				.build();
@@ -129,7 +129,7 @@ public class ConductanceMaterialTaggedSets {
 				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
 						.density(mat.getTrait(NCMaterialTraits.GAS).getDensity())
 						.viscosity(mat.getTrait(NCMaterialTraits.GAS).getViscosity())
-						.viscosity(mat.getTrait(NCMaterialTraits.GAS).getTemperature())
+						.temperature(mat.getTrait(NCMaterialTraits.GAS).getTemperature())
 						.lightLevel(mat.getData().getBlockLightLevel())
 				))
 				.build();
@@ -141,7 +141,7 @@ public class ConductanceMaterialTaggedSets {
 				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
 						.density(mat.getTrait(NCMaterialTraits.PLASMA).getDensity())
 						.viscosity(mat.getTrait(NCMaterialTraits.PLASMA).getViscosity())
-						.viscosity(mat.getTrait(NCMaterialTraits.PLASMA).getTemperature())
+						.temperature(mat.getTrait(NCMaterialTraits.PLASMA).getTemperature())
 						.lightLevel(mat.getData().getBlockLightLevel())
 				))
 				.build();

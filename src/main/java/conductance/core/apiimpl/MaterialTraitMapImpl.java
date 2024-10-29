@@ -18,7 +18,7 @@ import conductance.api.util.Marker;
 public class MaterialTraitMapImpl implements MaterialTraitMap {
 
 	// TODO add base materials : fluid
-	private static final Set<MaterialTraitKey<?>> BASE_TRAITS = new HashSet<>(Arrays.asList(NCMaterialTraits.DUST, NCMaterialTraits.INGOT, NCMaterialTraits.GEM));
+	private static final Set<MaterialTraitKey<?>> BASE_TRAITS = new HashSet<>(Arrays.asList(NCMaterialTraits.DUST, NCMaterialTraits.INGOT, NCMaterialTraits.GEM, NCMaterialTraits.LIQUID, NCMaterialTraits.GAS, NCMaterialTraits.PLASMA));
 
 	private final IdentityHashMap<MaterialTraitKey<?>, IMaterialTrait<?>> traits = new IdentityHashMap<>();
 	Material material;

@@ -106,7 +106,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder liquid(final Consumer<MaterialTraitFluid.Liquid> builder) {
-		this.traits.set(NCMaterialTraits.LIQUID, Util.make(new MaterialTraitFluid.Liquid(), builder));
+		this.traits.set(NCMaterialTraits.LIQUID, Util.make(new MaterialTraitFluid.Liquid(), Objects.requireNonNull(builder)));
 		return this;
 	}
 
@@ -123,7 +123,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder gas(final Consumer<MaterialTraitFluid.Gas> builder) {
-		this.traits.set(NCMaterialTraits.GAS, Util.make(new MaterialTraitFluid.Gas(), builder));
+		this.traits.set(NCMaterialTraits.GAS, Util.make(new MaterialTraitFluid.Gas(), Objects.requireNonNull(builder)));
 		return this;
 	}
 
@@ -140,7 +140,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder plasma(final Consumer<MaterialTraitFluid.Plasma> builder) {
-		this.traits.set(NCMaterialTraits.PLASMA, Util.make(new MaterialTraitFluid.Plasma(), builder));
+		this.traits.set(NCMaterialTraits.PLASMA, Util.make(new MaterialTraitFluid.Plasma(), Objects.requireNonNull(builder)));
 		return this;
 	}
 
@@ -181,7 +181,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder textureSet(final MaterialTextureSet set) {
-		this.data.textureSet(set);
+		this.data.textureSet(Objects.requireNonNull(set));
 		return this;
 	}
 
