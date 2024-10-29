@@ -1,22 +1,22 @@
 package conductance.core.apiimpl;
 
-import com.google.common.collect.HashBiMap;
-import conductance.Conductance;
-import conductance.api.registry.ConductanceRegistry;
-import conductance.api.registry.IRegistryObject;
-import conductance.api.registry.RegistryObject;
-import lombok.Getter;
-import lombok.Setter;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import net.minecraft.resources.ResourceLocation;
+import com.google.common.collect.HashBiMap;
+import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import conductance.api.registry.ConductanceRegistry;
+import conductance.api.registry.IRegistryObject;
+import conductance.api.registry.RegistryObject;
+import conductance.Conductance;
 
-public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>> extends RegistryObject<ResourceLocation> implements ConductanceRegistry<KEY, VALUE> {
+public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>>
+		extends RegistryObject<ResourceLocation> implements ConductanceRegistry<KEY, VALUE> {
 
 	private final HashBiMap<KEY, VALUE> registry;
 	@Getter
@@ -55,7 +55,8 @@ public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject
 			throw new IllegalStateException("[register]Registry %s has been frozen".formatted(this.getRegistryKey()));
 		}
 		if (this.containsKey(key)) {
-			throw new IllegalStateException("[register]Registry %s contains key %s already".formatted(this.getRegistryKey(), key));
+			throw new IllegalStateException(
+					"[register]Registry %s contains key %s already".formatted(this.getRegistryKey(), key));
 		}
 		this.registry.put(key, value);
 		Conductance.LOGGER.debug("Registered {} in registry {}", key, this.getRegistryKey());
@@ -68,7 +69,8 @@ public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject
 	@Override
 	public VALUE registerOrOverride(final KEY key, final VALUE value) {
 		if (this.frozen) {
-			throw new IllegalStateException("[registerOrOverride]Registry %s has been frozen".formatted(this.getRegistryKey()));
+			throw new IllegalStateException(
+					"[registerOrOverride]Registry %s has been frozen".formatted(this.getRegistryKey()));
 		}
 		final VALUE result = this.registry.put(key, value);
 		if (this.unregisterCallback != null && result != null) {
@@ -135,14 +137,16 @@ public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject
 		return this.registry.values().iterator();
 	}
 
-	public static final class ResourceKeyed<VALUE extends IRegistryObject<ResourceLocation>> extends ConductanceRegistryImpl<ResourceLocation, VALUE> {
+	public static final class ResourceKeyed<VALUE extends IRegistryObject<ResourceLocation>>
+			extends ConductanceRegistryImpl<ResourceLocation, VALUE> {
 
 		public ResourceKeyed(final ResourceLocation registryName) {
 			super(registryName);
 		}
 	}
 
-	public static final class StringKeyed<VALUE extends IRegistryObject<String>> extends ConductanceRegistryImpl<String, VALUE> {
+	public static final class StringKeyed<VALUE extends IRegistryObject<String>>
+			extends ConductanceRegistryImpl<String, VALUE> {
 
 		public StringKeyed(final ResourceLocation registryName) {
 			super(registryName);

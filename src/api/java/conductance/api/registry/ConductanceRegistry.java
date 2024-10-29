@@ -1,8 +1,8 @@
 package conductance.api.registry;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 public interface ConductanceRegistry<KEY, VALUE extends IRegistryObject<KEY>> extends Iterable<VALUE> {
 
@@ -32,7 +32,6 @@ public interface ConductanceRegistry<KEY, VALUE extends IRegistryObject<KEY>> ex
 	Set<Map.Entry<KEY, VALUE>> entries();
 
 	Map<KEY, VALUE> registry();
-
 
 	boolean isFrozen();
 }

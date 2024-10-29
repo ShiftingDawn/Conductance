@@ -1,18 +1,17 @@
 package conductance.core.apiimpl;
 
-import conductance.Conductance;
-import conductance.api.CAPI;
-import conductance.api.ConductancePlugin;
-import conductance.api.IConductancePlugin;
-import net.neoforged.fml.ModList;
-import org.objectweb.asm.Type;
-
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import net.neoforged.fml.ModList;
+import org.objectweb.asm.Type;
+import conductance.api.CAPI;
+import conductance.api.ConductancePlugin;
+import conductance.api.IConductancePlugin;
+import conductance.Conductance;
 
 public class PluginManager {
 
@@ -28,7 +27,8 @@ public class PluginManager {
 			}
 		}
 		if (PluginManager.ROOT_PLUGIN == null) {
-			throw new IllegalStateException("Could not find " + CAPI.MOD_ID + " root plugin! Something is seriously wrong!");
+			throw new IllegalStateException(
+					"Could not find " + CAPI.MOD_ID + " root plugin! Something is seriously wrong!");
 		}
 		PluginManager.PLUGINS.remove(PluginManager.ROOT_PLUGIN);
 	}
@@ -36,9 +36,9 @@ public class PluginManager {
 	private static void findPlugins() {
 		final HashSet<String> pluginClasses = new HashSet<>();
 		ModList.get().getAllScanData().forEach(scanData -> scanData.getAnnotations().stream()
-				.filter(annotationData -> Objects.equals(annotationData.annotationType(), Type.getType(ConductancePlugin.class)))
-				.forEach(annotationData -> pluginClasses.add(annotationData.memberName()))
-		);
+				.filter(annotationData -> Objects.equals(annotationData.annotationType(),
+						Type.getType(ConductancePlugin.class)))
+				.forEach(annotationData -> pluginClasses.add(annotationData.memberName())));
 		for (final String className : pluginClasses) {
 			try {
 				final Class<?> clazz = Class.forName(className);
@@ -53,14 +53,18 @@ public class PluginManager {
 	}
 
 	public static void dispatchPeriodicElements() {
-//		PluginManager.execute((plugin, modid) -> {
-//			plugin.registerPeriodicElements((protons, neutrons, registryName, name, symbol, parent) -> {
-//				final PeriodicElement result = new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryName() : null);
-//				CAPI.REGS.periodicElements().register(result.getRegistryName(), result);
-//				return result;
-//			});
-//		});
-		//TODO KubeJS
+		// PluginManager.execute((plugin, modid) -> {
+		// plugin.registerPeriodicElements((protons, neutrons, registryName, name,
+		// symbol, parent) -> {
+		// final PeriodicElement result = new
+		// PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName),
+		// protons, neutrons, name, symbol, parent != null ? parent.getRegistryName() :
+		// null);
+		// CAPI.REGS.periodicElements().register(result.getRegistryName(), result);
+		// return result;
+		// });
+		// });
+		// TODO KubeJS
 	}
 
 	private static void execute(final BiConsumer<IConductancePlugin, String> executor) {

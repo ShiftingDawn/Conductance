@@ -1,9 +1,8 @@
 package conductance.api.registry;
 
+import java.util.Objects;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Objects;
 
 @Getter
 @RequiredArgsConstructor

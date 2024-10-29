@@ -1,9 +1,9 @@
 package conductance.core;
 
-import com.tterrag.registrate.Registrate;
-import conductance.Conductance;
 import net.minecraft.Util;
 import net.neoforged.bus.api.IEventBus;
+import com.tterrag.registrate.Registrate;
+import conductance.Conductance;
 
 public final class NCRegistrate extends Registrate {
 

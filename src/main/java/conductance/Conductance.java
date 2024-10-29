@@ -1,13 +1,13 @@
 package conductance;
 
-import com.mojang.logging.LogUtils;
-import conductance.api.CAPI;
-import conductance.core.CommonProxy;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
+import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
+import conductance.api.CAPI;
+import conductance.core.CommonProxy;
 
 public abstract class Conductance {
 
