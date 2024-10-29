@@ -1,17 +1,12 @@
 package conductance.api;
 
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.fml.loading.FMLEnvironment;
 import conductance.api.material.Material;
 import conductance.api.material.ResourceFinder;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.registry.NCRegistrate;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
-import conductance.api.util.TagHelper;
 
 public final class CAPI {
 
@@ -27,14 +22,5 @@ public final class CAPI {
 
 	public static boolean isClient() {
 		return FMLEnvironment.dist.isClient();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static class Tags {
-
-		public static final TagKey<Block> NEEDS_WOOD_TOOL = TagHelper.blockTagForLoader("needs_wood_tool");
-		public static final TagKey<Block> NEEDS_NETHERITE_TOOL = TagHelper.blockTagForLoader("needs_netherite_tool");
-
-		public static final TagKey<Block>[] MINING_TOOL_TAGS = new TagKey[] { Tags.NEEDS_WOOD_TOOL, BlockTags.NEEDS_STONE_TOOL, BlockTags.NEEDS_IRON_TOOL, BlockTags.NEEDS_DIAMOND_TOOL, Tags.NEEDS_NETHERITE_TOOL };
 	}
 }

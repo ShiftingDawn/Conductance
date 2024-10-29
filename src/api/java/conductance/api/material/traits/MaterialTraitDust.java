@@ -1,6 +1,10 @@
 package conductance.api.material.traits;
 
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import lombok.Getter;
+import lombok.Setter;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialTraitMap;
@@ -8,23 +12,17 @@ import conductance.api.material.MaterialTraitMap;
 @Getter
 public final class MaterialTraitDust implements IMaterialTrait<MaterialTraitDust> {
 
-	private int harvestLevel;
+	@Setter
+	private TagKey<Block> requiredToolTag;
 	private int burnTime;
 
-	public MaterialTraitDust(final int harvestLevel, final int burnTime) {
-		this.harvestLevel = harvestLevel;
+	public MaterialTraitDust(final TagKey<Block> requiredToolTag, final int burnTime) {
+		this.requiredToolTag = requiredToolTag;
 		this.burnTime = burnTime;
 	}
 
 	public MaterialTraitDust() {
-		this(2, 0);
-	}
-
-	public void setHarvestLevel(final int harvestLevel) {
-		if (harvestLevel <= 0) {
-			throw new IllegalArgumentException("harvestLevel must be >= 0!");
-		}
-		this.harvestLevel = harvestLevel;
+		this(BlockTags.NEEDS_STONE_TOOL, 0);
 	}
 
 	public void setBurnTime(final int burnTime) {
@@ -35,6 +33,6 @@ public final class MaterialTraitDust implements IMaterialTrait<MaterialTraitDust
 	}
 
 	@Override
-	public void verify(Material material, MaterialTraitMap traitMap) {
+	public void verify(final Material material, final MaterialTraitMap traitMap) {
 	}
 }

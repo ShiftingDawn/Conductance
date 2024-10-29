@@ -2,6 +2,8 @@ package conductance.api.material;
 
 import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCMaterialTraits;
 import conductance.api.registry.IRegistryObject;
@@ -14,21 +16,21 @@ public interface Material extends IRegistryObject<ResourceLocation> {
 
 	MaterialDataMap getData();
 
-	default boolean hasTrait(MaterialTraitKey<?> key) {
-		return getTraits().has(key);
+	default boolean hasTrait(final MaterialTraitKey<?> key) {
+		return this.getTraits().has(key);
 	}
 
 	@Nullable
-	default <T extends IMaterialTrait<T>> T getTrait(MaterialTraitKey<T> key) {
+	default <T extends IMaterialTrait<T>> T getTrait(final MaterialTraitKey<T> key) {
 		return this.getTraits().get(key);
 	}
 
 	default int getMaterialColorRGB() {
-		return getData().getMaterialColorRGB();
+		return this.getData().getMaterialColorRGB();
 	}
 
 	default int getMaterialColorARGB() {
-		return getData().getMaterialColorARGB();
+		return this.getData().getMaterialColorARGB();
 	}
 
 	default int getTintColor(final int tintIndex) {
@@ -39,7 +41,7 @@ public interface Material extends IRegistryObject<ResourceLocation> {
 	}
 
 	default MaterialTextureSet getTextureSet() {
-		return getData().getTextureSet();
+		return this.getData().getTextureSet();
 	}
 
 	default long getProtons() {
@@ -56,12 +58,11 @@ public interface Material extends IRegistryObject<ResourceLocation> {
 
 	String getUnlocalizedName();
 
-	default int getBlockMiningLevel() {
+	default TagKey<Block> getRequiredToolTag() {
 		if (!this.hasTrait(NCMaterialTraits.DUST)) {
 			throw new IllegalStateException("Material %s does not have a mining level! (missing dust property)".formatted(this.getRegistryKey()));
 		}
-		final int level = this.getTrait(NCMaterialTraits.DUST).getHarvestLevel();
-		return level > 0 ? level - 1 : level;
+		return this.getTrait(NCMaterialTraits.DUST).getRequiredToolTag();
 	}
 
 	default String getName() {

@@ -5,14 +5,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import com.google.common.collect.ImmutableList;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialTraits;
-import conductance.api.material.Material;
-import conductance.api.material.MaterialFlag;
-import conductance.api.material.MaterialStack;
-import conductance.api.material.MaterialTextureSet;
-import conductance.api.material.PeriodicElement;
+import conductance.api.material.*;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitGem;
 import conductance.api.material.traits.MaterialTraitIngot;
@@ -27,7 +25,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	private final List<MaterialStack> componentList = new ArrayList<>();
 	private boolean calculateColor = false;
 
-	public MaterialBuilderImpl(ResourceLocation registryName) {
+	public MaterialBuilderImpl(final ResourceLocation registryName) {
 		this.registryName = registryName;
 		this.data = new MaterialDataMapImpl.MaterialDataMapImplBuilder();
 		this.traits = new MaterialTraitMapImpl();
@@ -41,13 +39,13 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder dust(final int harvestLevel) {
-		return this.dust(harvestLevel, 0);
+	public MaterialBuilder dust(final TagKey<Block> requiredToolTag) {
+		return this.dust(requiredToolTag, 0);
 	}
 
 	@Override
-	public MaterialBuilder dust(final int harvestLevel, final int burnTime) {
-		this.traits.set(NCMaterialTraits.DUST, new MaterialTraitDust(harvestLevel, burnTime));
+	public MaterialBuilder dust(final TagKey<Block> requiredToolTag, final int burnTime) {
+		this.traits.set(NCMaterialTraits.DUST, new MaterialTraitDust(requiredToolTag, burnTime));
 		return this;
 	}
 
@@ -59,15 +57,15 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder ingot(int harvestLevel) {
-		this.dust(harvestLevel);
+	public MaterialBuilder ingot(final TagKey<Block> requiredToolTag) {
+		this.dust(requiredToolTag);
 		this.traits.set(NCMaterialTraits.INGOT, new MaterialTraitIngot());
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder ingot(int harvestLevel, int burnTime) {
-		this.dust(harvestLevel, burnTime);
+	public MaterialBuilder ingot(final TagKey<Block> requiredToolTag, final int burnTime) {
+		this.dust(requiredToolTag, burnTime);
 		this.traits.set(NCMaterialTraits.INGOT, new MaterialTraitIngot());
 		return this;
 	}
@@ -80,21 +78,21 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder gem(int harvestLevel) {
-		this.dust(harvestLevel);
+	public MaterialBuilder gem(final TagKey<Block> requiredToolTag) {
+		this.dust(requiredToolTag);
 		this.traits.set(NCMaterialTraits.GEM, new MaterialTraitGem());
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder gem(int harvestLevel, int burnTime) {
-		this.dust(harvestLevel, burnTime);
+	public MaterialBuilder gem(final TagKey<Block> requiredToolTag, final int burnTime) {
+		this.dust(requiredToolTag, burnTime);
 		this.traits.set(NCMaterialTraits.GEM, new MaterialTraitGem());
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder burnTime(int burnTime) {
+	public MaterialBuilder burnTime(final int burnTime) {
 		MaterialTraitDust dust = this.traits.get(NCMaterialTraits.DUST);
 		if (dust == null) {
 			this.dust();
@@ -106,13 +104,13 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder color(int color) {
+	public MaterialBuilder color(final int color) {
 		this.data.color(color);
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder color(int r, int g, int b) {
+	public MaterialBuilder color(final int r, final int g, final int b) {
 		return this.color(((r & 0x0ff) << 16) | ((g & 0x0ff) << 8) | (b & 0x0ff));
 	}
 
@@ -123,19 +121,19 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder textureSet(MaterialTextureSet set) {
+	public MaterialBuilder textureSet(final MaterialTextureSet set) {
 		this.data.textureSet(set);
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder formula(String formula) {
+	public MaterialBuilder formula(final String formula) {
 		// TODO
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder components(Object... components) {
+	public MaterialBuilder components(final Object... components) {
 		for (int i = 0; i < components.length; ++i) {
 			final Material material = components[i] instanceof final CharSequence str ? CAPI.REGS.materials().get(ResourceLocation.parse(str.toString())) : (Material) components[i];
 			long count = 1;
@@ -151,32 +149,32 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder components(MaterialStack... components) {
+	public MaterialBuilder components(final MaterialStack... components) {
 		this.componentList.addAll(Arrays.asList(components));
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder components(List<MaterialStack> components) {
+	public MaterialBuilder components(final List<MaterialStack> components) {
 		this.componentList.addAll(components);
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder flags(MaterialFlag... flags) {
+	public MaterialBuilder flags(final MaterialFlag... flags) {
 		this.flags.add(flags);
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder addFlagAndPreset(Collection<MaterialFlag> preset, MaterialFlag... flags) {
+	public MaterialBuilder addFlagAndPreset(final Collection<MaterialFlag> preset, final MaterialFlag... flags) {
 		this.flags.add(preset.toArray(MaterialFlag[]::new));
 		this.flags.add(flags);
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder periodicElement(PeriodicElement periodicElement) {
+	public MaterialBuilder periodicElement(final PeriodicElement periodicElement) {
 		this.data.periodicElement(periodicElement);
 		return this;
 	}
@@ -187,17 +185,17 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder ore(boolean emissive) {
+	public MaterialBuilder ore(final boolean emissive) {
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder ore(int oreMultiplier, int byproductMultiplier) {
+	public MaterialBuilder ore(final int oreMultiplier, final int byproductMultiplier) {
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder ore(int oreMultiplier, int byproductMultiplier, boolean emissive) {
+	public MaterialBuilder ore(final int oreMultiplier, final int byproductMultiplier, final boolean emissive) {
 		return this;
 	}
 

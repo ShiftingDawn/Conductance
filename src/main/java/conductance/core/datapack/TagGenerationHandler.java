@@ -13,7 +13,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import conductance.api.CAPI;
 import conductance.content.block.IConductanceBlock;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.PluginManager;
@@ -72,7 +71,7 @@ public class TagGenerationHandler {
 				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
 			});
 			// Mining tool tags
-			tagMap.computeIfAbsent(CAPI.Tags.MINING_TOOL_TAGS[material.getBlockMiningLevel()].location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			tagMap.computeIfAbsent(material.getRequiredToolTag().location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
 			if (!((TaggedSetImpl<?>) taggedSet).getMiningTags().isEmpty()) {
 				((TaggedSetImpl<?>) taggedSet).getMiningTags().forEach(tagKey -> {
 					tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
