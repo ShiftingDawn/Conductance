@@ -1,5 +1,6 @@
 package conductance;
 
+import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
 import conductance.api.plugin.MaterialTextureSetRegister;
@@ -9,7 +10,7 @@ import conductance.init.ConductanceMaterialTextureSets;
 import conductance.init.ConductanceMaterialTextureTypes;
 import conductance.init.ConductancePeriodicElements;
 
-@ConductancePlugin(modid = Conductance.MODID)
+@ConductancePlugin(modid = CAPI.MOD_ID)
 public final class ConductanceRootPlugin implements IConductancePlugin {
 
 	@Override
