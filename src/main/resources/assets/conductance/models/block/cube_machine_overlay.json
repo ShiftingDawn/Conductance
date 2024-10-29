@@ -1,0 +1,30 @@
+{
+	"loader": "neoforge:composite",
+	"parent": "block/cube",
+	"textures": {
+		"particle": "#front"
+	},
+	"children": {
+		"hull": {
+			"parent": "conductance:block/cube_machine",
+			"render_type": "solid"
+		},
+		"machine_overlay": {
+			"parent": "block/block",
+			"render_type": "cutout_mipped",
+			"elements": [
+				{
+					"from": [0, 0, 0],
+					"to": [16, 16, 16],
+					"faces": {
+						"north": {"texture": "#overlay", "cullface": "north"}
+					}
+				}
+			]
+		}
+	},
+	"item_render_order": [
+		"hull",
+		"machine_overlay"
+	]
+}

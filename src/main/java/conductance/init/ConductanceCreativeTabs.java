@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import com.tterrag.registrate.util.entry.RegistryEntry;
@@ -48,18 +47,13 @@ public final class ConductanceCreativeTabs {
 
 	public static void init() {
 		getRegistrate().addRegisterCallback(Registries.BLOCK, () -> getRegistrate().getAll(Registries.BLOCK).forEach(entry -> {
-			RegistryEntry<CreativeModeTab, CreativeModeTab> tab = ConductanceCreativeTabs.GENERAL;
 			if (entry.get() instanceof final IConductanceItem conductanceItem) {
-				tab = conductanceItem.getCreativeTab();
-			} else if (entry.get().asItem() instanceof final IConductanceItem conductanceItem) {
-				tab = conductanceItem.getCreativeTab();
+				getRegistrate().setCreativeTab(entry, conductanceItem.getCreativeTab());
 			}
-			getRegistrate().setCreativeTab(entry, tab);
 		}));
 
 		getRegistrate().addRegisterCallback(Registries.ITEM, () -> getRegistrate().getAll(Registries.ITEM).forEach(entry -> {
-			final Item item = entry.get();
-			if (item instanceof BlockItem) {
+			if (entry.get() instanceof final BlockItem blockItem && blockItem.getBlock() instanceof IConductanceItem) {
 				return;
 			}
 			RegistryEntry<CreativeModeTab, CreativeModeTab> tab = ConductanceCreativeTabs.GENERAL;

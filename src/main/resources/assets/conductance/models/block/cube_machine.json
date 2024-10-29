@@ -1,0 +1,25 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"top": "conductance:block/casing/tiered/top",
+		"bottom": "conductance:block/casing/tiered/bottom",
+		"front": "conductance:block/casing/tiered/front",
+		"back": "conductance:block/casing/tiered/back",
+		"side": "conductance:block/casing/tiered/side",
+		"particle": "#front"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"up": {"texture": "#top", "cullface": "#up", "uv": [0, 0, 16, 16]},
+				"down": {"texture": "#bottom", "cullface": "#down", "uv": [0, 0, 16, 16]},
+				"north": {"texture": "#front", "cullface": "#north", "uv": [0, 0, 16, 16]},
+				"south": {"texture": "#back", "cullface": "#south", "uv": [0, 0, 16, 16]},
+				"east": {"texture": "#side", "cullface": "#north", "uv": [16, 0, 0, 16]},
+				"west": {"texture": "#side", "cullface": "#south", "uv": [0, 0, 16, 16]}
+			}
+		}
+	]
+}
