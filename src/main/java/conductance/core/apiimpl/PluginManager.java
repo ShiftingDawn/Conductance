@@ -13,9 +13,14 @@ import org.objectweb.asm.Type;
 import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
+import conductance.api.material.IMaterialTrait;
+import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
+import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
+import conductance.api.plugin.MaterialRegister;
+import conductance.api.plugin.MaterialTraitRegister;
 import conductance.Conductance;
 
 public class PluginManager {
@@ -71,6 +76,33 @@ public class PluginManager {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTextureSets((registryName, parentSetName) -> Util.make(new MaterialTextureSet(registryName, parentSetName), result -> {
 			CAPI.REGS.materialTextureSets().register(result.getRegistryKey(), result);
 		})));
+		// TODO KubeJS
+	}
+
+	public static void dispatchMaterialTraits() {
+		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTraits(new MaterialTraitRegister() {
+
+			@Override
+			public <T extends IMaterialTrait<T>> MaterialTraitKey<T> register(String name, Class<T> typeClass) {
+				return Util.make(new MaterialTraitKey<T>(ResourceLocation.fromNamespaceAndPath(modid, name), typeClass), result -> {
+					CAPI.REGS.materialTraits().register(result.getRegistryKey(), result);
+				});
+			}
+		}));
+		// TODO KubeJS
+	}
+
+	public static void dispatchMaterialFlags() {
+		PluginManager.execute((plugin, modid) -> plugin.registerMaterialFlags((registryName, reqFlags, reqTraits) -> {
+			MaterialFlag result = new MaterialFlagImpl.Builder(ResourceLocation.fromNamespaceAndPath(modid, registryName)).requiredFlag(reqFlags).requiredTrait(reqTraits).build();
+			CAPI.REGS.materialFlags().register(result.getRegistryKey(), result);
+			return result;
+		}));
+		// TODO KubeJS
+	}
+
+	public static void dispatchMaterials() {
+		PluginManager.execute((plugin, modid) -> plugin.registerMaterials(registryName -> new MaterialBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName))));
 		// TODO KubeJS
 	}
 

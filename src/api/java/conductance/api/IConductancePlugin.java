@@ -1,7 +1,10 @@
 package conductance.api;
 
+import conductance.api.plugin.MaterialFlagRegister;
+import conductance.api.plugin.MaterialRegister;
 import conductance.api.plugin.MaterialTextureSetRegister;
 import conductance.api.plugin.MaterialTextureTypeRegister;
+import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.PeriodicElementBuilder;
 
 public interface IConductancePlugin {
@@ -13,5 +16,14 @@ public interface IConductancePlugin {
 	}
 
 	default void registerMaterialTextureSets(MaterialTextureSetRegister register) {
+	}
+
+	default void registerMaterialTraits(MaterialTraitRegister register) {
+	}
+
+	default void registerMaterialFlags(MaterialFlagRegister register) {
+	}
+
+	default void registerMaterials(MaterialRegister register) {
 	}
 }
