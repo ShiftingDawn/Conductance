@@ -1,5 +1,8 @@
 package conductance.api.material;
 
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+
 public interface MaterialDataMap {
 
 	int getMaterialColorRGB();
@@ -13,4 +16,10 @@ public interface MaterialDataMap {
 	long getNeutrons();
 
 	long getMass();
+
+	TagKey<Block> getBlockRequiredToolTag();
+
+	int getBlockLightLevel();
+
+	int getBurnTime();
 }

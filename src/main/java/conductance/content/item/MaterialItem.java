@@ -12,10 +12,8 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.NCMaterialTraits;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.material.traits.MaterialTraitDust;
 import conductance.client.resourcepack.MaterialItemModelHandler;
 import conductance.init.ConductanceCreativeTabs;
 
@@ -27,7 +25,7 @@ public class MaterialItem extends ConductanceItem {
 	private final TaggedMaterialSet set;
 	private final String unlocalizedName;
 
-	public MaterialItem(Properties properties, Material material, TaggedMaterialSet set) {
+	public MaterialItem(final Properties properties, final Material material, final TaggedMaterialSet set) {
 		super(properties);
 		this.material = material;
 		this.set = set;
@@ -63,9 +61,9 @@ public class MaterialItem extends ConductanceItem {
 	}
 
 	@Override
-	public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
-		final MaterialTraitDust dust = this.material == null ? null : this.material.getTrait(NCMaterialTraits.DUST);
-		return dust == null ? -1 : (int) (dust.getBurnTime() * this.set.getUnitValue(this.material) / CAPI.UNIT);
+	public int getBurnTime(final ItemStack itemStack, @Nullable final RecipeType<?> recipeType) {
+		final int time = this.material.getData().getBurnTime();
+		return time <= 0 ? -1 : (int) (time * this.set.getUnitValue(this.material) / CAPI.UNIT);
 	}
 
 	@OnlyIn(Dist.CLIENT)

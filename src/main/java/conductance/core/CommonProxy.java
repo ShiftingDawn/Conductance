@@ -5,6 +5,7 @@ import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.PluginManager;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
+import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
 
 public class CommonProxy {
@@ -29,5 +30,6 @@ public class CommonProxy {
 
 		ConductanceItems.init();
 		ConductanceBlocks.init();
+		ConductanceFluids.init();
 	}
 }

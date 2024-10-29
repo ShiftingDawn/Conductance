@@ -8,10 +8,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +22,6 @@ import conductance.api.material.TaggedMaterialSet;
 import conductance.api.registry.TaggedSetRegistry;
 import conductance.Conductance;
 
-//TODO fluids
 public class MaterialRegistry implements TaggedSetRegistry<Material, TaggedMaterialSet> {
 
 	public static final MaterialRegistry INSTANCE = new MaterialRegistry();
@@ -29,12 +30,10 @@ public class MaterialRegistry implements TaggedSetRegistry<Material, TaggedMater
 	@Getter
 	private final Table<TaggedMaterialSet, Material, BlockEntry<? extends Block>> generatedBlockRegistry = HashBasedTable.create();
 	@Getter
-	// private final Table<MaterialFluidGenerator, Material, Supplier<? extends
-	// Fluid>> generatedFluidRegistry = HashBasedTable.create();
+	private final Table<TaggedMaterialSet, Material, FluidEntry<? extends Fluid>> generatedFluidRegistry = HashBasedTable.create();
 	private final Table<TaggedMaterialSet, Material, List<Item>> itemRegistry = HashBasedTable.create();
 	private final Table<TaggedMaterialSet, Material, List<Block>> blockRegistry = HashBasedTable.create();
-	// private final Table<MaterialFluidGenerator, Material, List<Fluid>>
-	// fluidRegistry = HashBasedTable.create();
+	private final Table<TaggedMaterialSet, Material, List<Fluid>> fluidRegistry = HashBasedTable.create();
 	private boolean frozen = false;
 
 	@Override
@@ -116,22 +115,20 @@ public class MaterialRegistry implements TaggedSetRegistry<Material, TaggedMater
 	}
 
 	@Override
-	public void register(final TaggedMaterialSet tagType, final Material material, final BlockEntry<? extends Block> block) {
+	public void register(final TaggedMaterialSet taggedSet, final Material material, final BlockEntry<? extends Block> block) {
 		if (this.frozen) {
 			throw new IllegalStateException("Trying to register block in frozen MaterialRegistry!");
 		}
-		this.generatedBlockRegistry.put(tagType, material, block);
+		this.generatedBlockRegistry.put(taggedSet, material, block);
 	}
 
-	// @Override
-	// public void register(final MaterialFluidGenerator tagType, final Material
-	// material, final Supplier<? extends Fluid> fluid) {
-	// if (this.frozen) {
-	// throw new IllegalStateException("Trying to register fluid in frozen
-	// MaterialRegistry!");
-	// }
-	// this.generatedFluidRegistry.put(tagType, material, fluid);
-	// }
+	@Override
+	public void register(final TaggedMaterialSet taggedSet, final Material material, final FluidEntry<? extends Fluid> fluid) {
+		if (this.frozen) {
+			throw new IllegalStateException("Trying to register fluid in frozen MaterialRegistry!");
+		}
+		this.generatedFluidRegistry.put(taggedSet, material, fluid);
+	}
 
 	public void freeze() {
 		Conductance.LOGGER.info("MaterialRegistry has been frozen!");
@@ -146,50 +143,49 @@ public class MaterialRegistry implements TaggedSetRegistry<Material, TaggedMater
 		return ImmutableTable.copyOf(this.blockRegistry);
 	}
 
-	// public Table<MaterialFluidGenerator, Material, List<Fluid>> getFluidTable() {
-	// return ImmutableTable.copyOf(this.fluidRegistry);
-	// }
+	public Table<TaggedMaterialSet, Material, List<Fluid>> getFluidTable() {
+		return ImmutableTable.copyOf(this.fluidRegistry);
+	}
 
-	private void registerItemInternal(final TaggedMaterialSet tagType, final Material material, final ItemLike... items) {
-		List<Item> list = this.itemRegistry.get(tagType, material);
+	private void registerItemInternal(final TaggedMaterialSet taggedSet, final Material material, final ItemLike... items) {
+		List<Item> list = this.itemRegistry.get(taggedSet, material);
 		if (list == null) {
 			list = new ArrayList<>();
-			this.itemRegistry.put(tagType, material, list);
+			this.itemRegistry.put(taggedSet, material, list);
 		}
 		for (final ItemLike item : items) {
 			list.add(item.asItem());
 		}
 	}
 
-	private void registerBlockInternal(final TaggedMaterialSet tagType, final Material material, final Block... blocks) {
-		List<Block> list = this.blockRegistry.get(tagType, material);
+	private void registerBlockInternal(final TaggedMaterialSet taggedSet, final Material material, final Block... blocks) {
+		List<Block> list = this.blockRegistry.get(taggedSet, material);
 		if (list == null) {
 			list = new ArrayList<>();
-			this.blockRegistry.put(tagType, material, list);
+			this.blockRegistry.put(taggedSet, material, list);
 		}
 		list.addAll(Arrays.asList(blocks));
 	}
 
-	// private void registerFluidInternal(final MaterialFluidGenerator generator,
-	// final Material material, final Fluid... fluids) {
-	// List<Fluid> list = this.fluidRegistry.get(generator, material);
-	// if (list == null) {
-	// list = new ArrayList<>();
-	// this.fluidRegistry.put(generator, material, list);
-	// }
-	// list.addAll(Arrays.asList(fluids));
-	// }
+	private void registerFluidInternal(final TaggedMaterialSet taggedSet, final Material material, final Fluid... fluids) {
+		List<Fluid> list = this.fluidRegistry.get(taggedSet, material);
+		if (list == null) {
+			list = new ArrayList<>();
+			this.fluidRegistry.put(taggedSet, material, list);
+		}
+		list.addAll(Arrays.asList(fluids));
+	}
 
 	public void reload() {
 		this.itemRegistry.clear();
 		this.blockRegistry.clear();
-//		this.fluidRegistry.clear();
+		this.fluidRegistry.clear();
 
-		registerOverriddenComponents();
+		MaterialRegistry.registerOverriddenComponents();
 
 		this.generatedItemRegistry.cellSet().forEach(cell -> this.registerItemInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
 		this.generatedBlockRegistry.cellSet().forEach(cell -> this.registerBlockInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
-//		this.generatedFluidRegistry.cellSet().forEach(cell -> this.registerFluidInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
+		this.generatedFluidRegistry.cellSet().forEach(cell -> this.registerFluidInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
 
 		// TODO handle ores
 //		ApiBridge.REGS.REVERSED_ORE_TYPE_MAPPING.clear();
@@ -200,7 +196,7 @@ public class MaterialRegistry implements TaggedSetRegistry<Material, TaggedMater
 
 	private static void registerOverriddenComponents() {
 		MaterialOverrideRegister.getOverrides().rowMap().forEach((set, mapping) -> mapping.forEach((material, overrides) -> {
-			INSTANCE.registerItemInternal(set, material, overrides);
+			MaterialRegistry.INSTANCE.registerItemInternal(set, material, overrides);
 		}));
 	}
 }

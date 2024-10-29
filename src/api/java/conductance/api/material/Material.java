@@ -5,7 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.NCMaterialTraits;
 import conductance.api.registry.IRegistryObject;
 
 public interface Material extends IRegistryObject<ResourceLocation> {
@@ -59,10 +58,7 @@ public interface Material extends IRegistryObject<ResourceLocation> {
 	String getUnlocalizedName();
 
 	default TagKey<Block> getRequiredToolTag() {
-		if (!this.hasTrait(NCMaterialTraits.DUST)) {
-			throw new IllegalStateException("Material %s does not have a mining level! (missing dust property)".formatted(this.getRegistryKey()));
-		}
-		return this.getTrait(NCMaterialTraits.DUST).getRequiredToolTag();
+		return this.getData().getBlockRequiredToolTag();
 	}
 
 	default String getName() {

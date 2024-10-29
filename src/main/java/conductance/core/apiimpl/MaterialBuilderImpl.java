@@ -1,9 +1,8 @@
 package conductance.core.apiimpl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -12,6 +11,7 @@ import conductance.api.CAPI;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.*;
 import conductance.api.material.traits.MaterialTraitDust;
+import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
 import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.plugin.MaterialBuilder;
@@ -45,7 +45,9 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder dust(final TagKey<Block> requiredToolTag, final int burnTime) {
-		this.traits.set(NCMaterialTraits.DUST, new MaterialTraitDust(requiredToolTag, burnTime));
+		this.dust();
+		this.requiredTool(requiredToolTag);
+		this.burnTime(burnTime);
 		return this;
 	}
 
@@ -92,14 +94,71 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
+	public MaterialBuilder liquid() {
+		this.traits.set(NCMaterialTraits.LIQUID, new MaterialTraitFluid.Liquid());
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder liquid(final int temperature) {
+		return this.liquid(b -> b.setTemperature(temperature));
+	}
+
+	@Override
+	public MaterialBuilder liquid(final Consumer<MaterialTraitFluid.Liquid> builder) {
+		this.traits.set(NCMaterialTraits.LIQUID, Util.make(new MaterialTraitFluid.Liquid(), builder));
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder gas() {
+		this.traits.set(NCMaterialTraits.GAS, new MaterialTraitFluid.Gas());
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder gas(final int temperature) {
+		return this.gas(b -> b.setTemperature(temperature));
+	}
+
+	@Override
+	public MaterialBuilder gas(final Consumer<MaterialTraitFluid.Gas> builder) {
+		this.traits.set(NCMaterialTraits.GAS, Util.make(new MaterialTraitFluid.Gas(), builder));
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder plasma() {
+		this.traits.set(NCMaterialTraits.PLASMA, new MaterialTraitFluid.Plasma());
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder plasma(final int temperature) {
+		return this.plasma(b -> b.setTemperature(temperature));
+	}
+
+	@Override
+	public MaterialBuilder plasma(final Consumer<MaterialTraitFluid.Plasma> builder) {
+		this.traits.set(NCMaterialTraits.PLASMA, Util.make(new MaterialTraitFluid.Plasma(), builder));
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder requiredTool(final TagKey<Block> requiredToolTag) {
+		this.data.blockRequiredToolTag(Objects.requireNonNull(requiredToolTag));
+		return this;
+	}
+
+	@Override
 	public MaterialBuilder burnTime(final int burnTime) {
-		MaterialTraitDust dust = this.traits.get(NCMaterialTraits.DUST);
-		if (dust == null) {
-			this.dust();
-			dust = this.traits.get(NCMaterialTraits.DUST);
-		}
-		assert dust != null;
-		dust.setBurnTime(burnTime);
+		this.data.burnTime(burnTime);
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder lightLevel(final int lightLevel) {
+		this.data.blockLightLevel(lightLevel);
 		return this;
 	}
 

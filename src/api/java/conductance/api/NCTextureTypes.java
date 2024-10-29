@@ -10,4 +10,8 @@ public final class NCTextureTypes {
 	public static MaterialTextureType GEM;
 
 	public static MaterialTextureType STORAGE_BLOCK;
+
+	public static MaterialTextureType LIQUID;
+	public static MaterialTextureType GAS;
+	public static MaterialTextureType PLASMA;
 }

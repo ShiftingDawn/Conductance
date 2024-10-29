@@ -4,7 +4,9 @@ import java.util.Optional;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +43,6 @@ public interface TaggedSetRegistry<TYPE, SET extends TaggedSet<TYPE>> {
 
 	void register(SET SET, TYPE object, BlockEntry<? extends Block> block);
 
-	// TODO handle fluids
-//	void register(MaterialFluidGenerator generator, TYPE object, Supplier<? extends Fluid> fluid);
+	void register(SET SET, TYPE object, FluidEntry<? extends Fluid> fluid);
 
 }

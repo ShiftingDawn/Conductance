@@ -6,18 +6,12 @@ import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCTextureTypes;
 import conductance.api.plugin.MaterialTaggedSetRegister;
-import static conductance.api.NCMaterialTaggedSets.DUST;
-import static conductance.api.NCMaterialTaggedSets.GEM;
-import static conductance.api.NCMaterialTaggedSets.INGOT;
-import static conductance.api.NCMaterialTaggedSets.PREDICATE_HAS_DUST;
-import static conductance.api.NCMaterialTaggedSets.PREDICATE_HAS_GEM;
-import static conductance.api.NCMaterialTaggedSets.PREDICATE_HAS_INGOT;
-import static conductance.api.NCMaterialTaggedSets.STORAGE_BLOCK;
+import static conductance.api.NCMaterialTaggedSets.*;
 
 public class ConductanceMaterialTaggedSets {
 
 	//@formatter:off
-	public static void init(MaterialTaggedSetRegister register) {
+	public static void init(final MaterialTaggedSetRegister register) {
 		DUST = register.register("dust")
 				.addTagCommon("dusts/%s")
 				.addTagCommonUnformatted("dusts")
@@ -51,6 +45,43 @@ public class ConductanceMaterialTaggedSets {
 				.textureType(NCTextureTypes.STORAGE_BLOCK)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
 				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.INGOT) || mat.hasTrait(NCMaterialTraits.GEM) || mat.hasFlag(NCMaterialFlags.GENERATE_BLOCK))
+				.build();
+
+		LIQUID = register.register("liquid", "%s")
+				.addTagCommon("%s")
+				.generateFluids(true)
+				.textureType(NCTextureTypes.LIQUID)
+				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.LIQUID))
+				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
+						.density(mat.getTrait(NCMaterialTraits.LIQUID).getDensity())
+						.viscosity(mat.getTrait(NCMaterialTraits.LIQUID).getViscosity())
+						.viscosity(mat.getTrait(NCMaterialTraits.LIQUID).getTemperature())
+						.lightLevel(mat.getData().getBlockLightLevel())
+				))
+				.build();
+		GAS = register.register("gas")
+				.addTagCommon("gases/%s")
+				.generateFluids(true)
+				.textureType(NCTextureTypes.GAS)
+				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.GAS))
+				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
+						.density(mat.getTrait(NCMaterialTraits.GAS).getDensity())
+						.viscosity(mat.getTrait(NCMaterialTraits.GAS).getViscosity())
+						.viscosity(mat.getTrait(NCMaterialTraits.GAS).getTemperature())
+						.lightLevel(mat.getData().getBlockLightLevel())
+				))
+				.build();
+		PLASMA = register.register("plasma")
+				.addTagCommon("plasmas/%s")
+				.generateFluids(true)
+				.textureType(NCTextureTypes.PLASMA)
+				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.PLASMA))
+				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
+						.density(mat.getTrait(NCMaterialTraits.PLASMA).getDensity())
+						.viscosity(mat.getTrait(NCMaterialTraits.PLASMA).getViscosity())
+						.viscosity(mat.getTrait(NCMaterialTraits.PLASMA).getTemperature())
+						.lightLevel(mat.getData().getBlockLightLevel())
+				))
 				.build();
 	}
 	//@formatter:on

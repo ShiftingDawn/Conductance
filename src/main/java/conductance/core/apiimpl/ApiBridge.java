@@ -33,6 +33,8 @@ public class ApiBridge {
 	private static void onLoadComplete(final FMLLoadCompleteEvent ignored) {
 		ApiBridge.REGISTRIES.freeze();
 		ApiBridge.REGISTRIES.values().forEach(ConductanceRegistryImpl::freeze);
+
+		MaterialRegistry.INSTANCE.freeze();
 	}
 
 	public static void handleDataPackRegistryStage(final DataPackRegistryLoadStage stage) {

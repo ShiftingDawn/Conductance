@@ -11,8 +11,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.NCMaterialTraits;
-import conductance.api.material.traits.MaterialTraitDust;
 import conductance.content.item.IConductanceItem;
 
 public class MaterialBlockItem extends BlockItem implements IConductanceItem {
@@ -58,8 +56,8 @@ public class MaterialBlockItem extends BlockItem implements IConductanceItem {
 	}
 
 	@Override
-	public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
-		final MaterialTraitDust dust = this.getBlock().getMaterial() == null ? null : this.getBlock().getMaterial().getTrait(NCMaterialTraits.DUST);
-		return dust == null ? -1 : (int) (dust.getBurnTime() * this.getBlock().getSet().getUnitValue(this.getBlock().getMaterial()) / CAPI.UNIT);
+	public int getBurnTime(final ItemStack itemStack, @Nullable final RecipeType<?> recipeType) {
+		final int time = this.getBlock().getMaterial().getData().getBurnTime();
+		return time <= 0 ? -1 : (int) (time * this.getBlock().getSet().getUnitValue(this.getBlock().getMaterial()) / CAPI.UNIT);
 	}
 }

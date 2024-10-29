@@ -1,10 +1,7 @@
 package conductance.init;
 
 import conductance.api.plugin.MaterialTextureTypeRegister;
-import static conductance.api.NCTextureTypes.DUST;
-import static conductance.api.NCTextureTypes.GEM;
-import static conductance.api.NCTextureTypes.INGOT;
-import static conductance.api.NCTextureTypes.STORAGE_BLOCK;
+import static conductance.api.NCTextureTypes.*;
 
 public final class ConductanceMaterialTextureTypes {
 
@@ -14,5 +11,9 @@ public final class ConductanceMaterialTextureTypes {
 		GEM = register.register("gem");
 
 		STORAGE_BLOCK = register.register("block");
+
+		LIQUID = register.register("liquid");
+		GAS = register.register("gas");
+		PLASMA = register.register("plasma");
 	}
 }

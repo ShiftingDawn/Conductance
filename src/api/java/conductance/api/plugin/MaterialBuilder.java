@@ -2,9 +2,11 @@ package conductance.api.plugin;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import conductance.api.material.*;
+import conductance.api.material.traits.MaterialTraitFluid;
 
 public interface MaterialBuilder {
 
@@ -26,7 +28,29 @@ public interface MaterialBuilder {
 
 	MaterialBuilder gem(final TagKey<Block> requiredToolTag, int burnTime);
 
+	MaterialBuilder liquid();
+
+	MaterialBuilder liquid(int temperature);
+
+	MaterialBuilder liquid(Consumer<MaterialTraitFluid.Liquid> builder);
+
+	MaterialBuilder gas();
+
+	MaterialBuilder gas(int temperature);
+
+	MaterialBuilder gas(Consumer<MaterialTraitFluid.Gas> builder);
+
+	MaterialBuilder plasma();
+
+	MaterialBuilder plasma(int temperature);
+
+	MaterialBuilder plasma(Consumer<MaterialTraitFluid.Plasma> builder);
+
+	MaterialBuilder requiredTool(TagKey<Block> requiredToolTag);
+
 	MaterialBuilder burnTime(int burnTime);
+
+	MaterialBuilder lightLevel(int lightLevel);
 
 	MaterialBuilder color(int color);
 
