@@ -11,7 +11,7 @@ import conductance.api.registry.TaggedSet;
 import conductance.api.util.SafeOptional;
 import conductance.Conductance;
 
-public class MaterialTextureSetModelHandler {
+public final class MaterialTextureSetModelHandler {
 
 	static void reload() {
 		CAPI.REGS.materialTextureSets().forEach(set -> {

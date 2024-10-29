@@ -16,6 +16,9 @@ public final class NCTextureTypes {
 	public static MaterialTextureType GEM_EXQUISITE;
 
 	public static MaterialTextureType STORAGE_BLOCK;
+	public static MaterialTextureType ORE;
+	public static MaterialTextureType RAW_ORE;
+	public static MaterialTextureType RAW_ORE_BLOCK;
 
 	public static MaterialTextureType LIQUID;
 	public static MaterialTextureType GAS;

@@ -15,6 +15,7 @@ import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.MaterialFlag;
+import conductance.api.material.MaterialOreType;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
@@ -45,7 +46,8 @@ public class PluginManager {
 
 	private static void findPlugins() {
 		final HashSet<String> pluginClasses = new HashSet<>();
-		ModList.get().getAllScanData().forEach(scanData -> scanData.getAnnotations().stream().filter(annotationData -> Objects.equals(annotationData.annotationType(), Type.getType(ConductancePlugin.class))).forEach(annotationData -> pluginClasses.add(annotationData.memberName())));
+		ModList.get().getAllScanData().forEach(scanData -> scanData.getAnnotations().stream().filter(annotationData -> Objects.equals(annotationData.annotationType(), Type.getType(ConductancePlugin.class)))
+				.forEach(annotationData -> pluginClasses.add(annotationData.memberName())));
 		for (final String className : pluginClasses) {
 			try {
 				final Class<?> clazz = Class.forName(className);
@@ -60,9 +62,10 @@ public class PluginManager {
 	}
 
 	public static void dispatchPeriodicElements() {
-		PluginManager.execute((plugin, modid) -> plugin.registerPeriodicElements((protons, neutrons, registryName, name, symbol, parent) -> Util.make(new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null), result -> {
-			CAPI.REGS.periodicElements().register(result.getRegistryKey(), result);
-		})));
+		PluginManager.execute((plugin, modid) -> plugin.registerPeriodicElements((protons, neutrons, registryName, name, symbol, parent) -> Util.make(
+				new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null), result -> {
+					CAPI.REGS.periodicElements().register(result.getRegistryKey(), result);
+				})));
 		// TODO KubeJS
 	}
 
@@ -99,6 +102,17 @@ public class PluginManager {
 			CAPI.REGS.materialFlags().register(result.getRegistryKey(), result);
 			return result;
 		}));
+		// TODO KubeJS
+	}
+
+	public static void dispatchMaterialOreTypes() {
+		PluginManager.execute(
+				(plugin, modid) -> plugin.registerMaterialOreTypes((registryName, oreBlockType, bearingBlockModel, unlocalizedNameFactory, stoneTagName, hasDoubleOutput, hasGravity, mapColor, soundType) -> {
+					MaterialOreType result = new MaterialOreTypeImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName), oreBlockType, bearingBlockModel, unlocalizedNameFactory, stoneTagName, hasDoubleOutput,
+							hasGravity, mapColor, soundType);
+					CAPI.REGS.materialOreTypes().register(result.getRegistryKey(), result);
+					return result;
+				}));
 		// TODO KubeJS
 	}
 

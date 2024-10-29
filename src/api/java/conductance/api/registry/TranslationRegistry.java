@@ -5,6 +5,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import conductance.api.material.Material;
+import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
 
 public interface TranslationRegistry {
@@ -21,10 +22,7 @@ public interface TranslationRegistry {
 
 	MutableComponent makeLocalizedName(Item item, Supplier<MutableComponent> override);
 
-	MutableComponent makeLocalizedName(String key, TaggedMaterialSet tagType, Material material);
+	MutableComponent makeLocalizedName(String key, TaggedMaterialSet taggedSet, Material material);
 
-	// TODO fluids
-//	MutableComponent makeLocalizedName(String key, MaterialFluidGenerator tagType, Material material);
-//
-//	MutableComponent makeBucketName(String key, MaterialFluidGenerator tagType, Material material);
+	MutableComponent makeLocalizedName(String key, MaterialOreType oreType, Material material);
 }

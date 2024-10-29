@@ -1,0 +1,35 @@
+{
+	"loader": "neoforge:composite",
+	"parent": "block/cube",
+	"textures": {
+	},
+	"children": {
+		"bearer": {
+			"render_type": "solid"
+		},
+		"ore_overlay": {
+			"parent": "block/block",
+			"render_type": "cutout_mipped",
+			"textures": {
+			},
+			"elements": [
+				{
+					"from": [0, 0, 0],
+					"to": [16, 16, 16],
+					"faces": {
+						"down": {"texture": "#particle", "cullface": "down", "tintindex": -101},
+						"up": {"texture": "#particle", "cullface": "up", "tintindex": -101},
+						"north": {"texture": "#particle", "cullface": "north", "tintindex": -101},
+						"south": {"texture": "#particle", "cullface": "south", "tintindex": -101},
+						"west": {"texture": "#particle", "cullface": "west", "tintindex": -101},
+						"east": {"texture": "#particle", "cullface": "east", "tintindex": -101}
+					}
+				}
+			]
+		}
+	},
+	"item_render_order": [
+		"bearer",
+		"ore_overlay"
+	]
+}

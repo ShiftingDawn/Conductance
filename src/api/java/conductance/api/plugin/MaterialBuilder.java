@@ -78,9 +78,9 @@ public interface MaterialBuilder {
 
 	MaterialBuilder ore(boolean emissive);
 
-	MaterialBuilder ore(int oreMultiplier, int byproductMultiplier);
+	MaterialBuilder ore(int dropMultiplier, int byproductMultiplier);
 
-	MaterialBuilder ore(int oreMultiplier, int byproductMultiplier, boolean emissive);
+	MaterialBuilder ore(int dropMultiplier, int byproductMultiplier, boolean emissive);
 
 	MaterialBuilder wood();
 

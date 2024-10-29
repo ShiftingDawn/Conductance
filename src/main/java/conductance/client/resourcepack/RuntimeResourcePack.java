@@ -52,13 +52,14 @@ public final class RuntimeResourcePack extends AbstractRuntimePack {
 		RuntimeResourcePack.DATA.clear();
 		RuntimeResourcePack.RELOAD_LISTENERS.clear();
 
+		TranslationRegistryImpl.INSTANCE.reset();
+
 		// Register built-in listeners
 		RuntimeResourcePack.addReloadListener(MaterialTextureSetModelHandler::reload);
 		RuntimeResourcePack.addReloadListener(MaterialItemModelHandler::reload);
 		RuntimeResourcePack.addReloadListener(MaterialBlockModelHandler::reload);
+		RuntimeResourcePack.addReloadListener(MaterialOreModelHandler::reload);
 		RuntimeResourcePack.addReloadListener(MaterialFluidModelHandler::reload);
-
-		TranslationRegistryImpl.INSTANCE.reset();
 	}
 
 	public static void load() {

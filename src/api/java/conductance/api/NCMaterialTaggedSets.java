@@ -18,6 +18,8 @@ public class NCMaterialTaggedSets {
 	public static TaggedMaterialSet GEM_EXQUISITE;
 
 	public static TaggedMaterialSet STORAGE_BLOCK;
+	public static TaggedMaterialSet RAW_ORE;
+	public static TaggedMaterialSet RAW_ORE_BLOCK;
 
 	public static TaggedMaterialSet LIQUID;
 	public static TaggedMaterialSet GAS;

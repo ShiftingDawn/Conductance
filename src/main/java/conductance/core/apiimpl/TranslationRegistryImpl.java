@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
+import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.TextHelper;
@@ -80,44 +81,22 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 	}
 
 	@Override
-	public MutableComponent makeLocalizedName(final String key, final TaggedMaterialSet tagType, final Material material) {
+	public MutableComponent makeLocalizedName(final String key, final TaggedMaterialSet taggedSet, final Material material) {
 		return this.componentCache.computeIfAbsent(key, k -> {
 			final String materialName = this.translate(material.getUnlocalizedName(), () -> TextHelper.lowerUnderscoreToEnglish(material.getName()));
-			final String translation = this.translate(key, () -> TextHelper.lowerUnderscoreToEnglish(tagType.getUnlocalizedNameFactory().apply(material)), materialName);
+			final String translation = this.translate(key, () -> TextHelper.lowerUnderscoreToEnglish(taggedSet.getUnlocalizedNameFactory().apply(material)), materialName);
 			return Component.literal(translation);
 		});
 	}
 
-	// private String localizeFluid(final String fluidKey, final
-	// MaterialFluidGenerator generator, final Material material) {
-	// return this.translate(fluidKey, () -> {
-	// final String fluidName = ((MaterialFluidMapImpl)
-	// material.getFluidMap()).getRegistered().get(generator).getName();
-	// return TextHelper.lowerUnderscoreToEnglish(fluidName);
-	// });
-	// }
-
-	// @Override
-	// public MutableComponent makeLocalizedName(final String key, final
-	// MaterialFluidGenerator generator, final Material material) {
-	// return this.componentCache.computeIfAbsent(key, k ->
-	// Component.literal(this.localizeFluid(key, generator, material)));
-	// }
-	//
-	// @Override
-	// public MutableComponent makeBucketName(final String key, final
-	// MaterialFluidGenerator generator, final Material material) {
-	// return this.componentCache.computeIfAbsent(key, k -> {
-	// final String fluidName = ((MaterialFluidMapImpl)
-	// material.getFluidMap()).getRegistered().get(generator).getName();
-	// final String fluidLangKey =
-	// "fluid.%s.%s".formatted(material.getRegistryName().getNamespace(),
-	// fluidName);
-	// final String translation = this.translate(key, () -> "Bucket of %s",
-	// this.localizeFluid(fluidLangKey, generator, material));
-	// return Component.literal(translation);
-	// });
-	// }
+	@Override
+	public MutableComponent makeLocalizedName(String key, MaterialOreType oreType, Material material) {
+		return this.componentCache.computeIfAbsent(key, k -> {
+			final String materialName = this.translate(material.getUnlocalizedName(), () -> TextHelper.lowerUnderscoreToEnglish(material.getName()));
+			final String translation = this.translate(key, () -> TextHelper.lowerUnderscoreToEnglish(oreType.getUnlocalizedNameFactory()), materialName);
+			return Component.literal(translation);
+		});
+	}
 
 	public void reset() {
 		this.cache.clear();

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
+import conductance.api.material.MaterialOreType;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
@@ -26,6 +27,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final ConductanceRegistry<String, MaterialTextureSet> materialTextureSets = makeStringKeyed("material_texture_set");
 	private final ConductanceRegistry<ResourceLocation, MaterialTraitKey<?>> materialTraits = makeResourceKeyed("material_traits");
 	private final ConductanceRegistry<ResourceLocation, MaterialFlag> materialFlags = makeResourceKeyed("material_flags");
+	private final ConductanceRegistry<ResourceLocation, MaterialOreType> materialOreTypes = makeResourceKeyed("material_ore_type");
 	private final ConductanceRegistry<String, TaggedMaterialSet> materialTaggedSets = makeStringKeyed("material_tagged_set");
 	private final ConductanceRegistry<ResourceLocation, Material> materials = makeResourceKeyed("material");
 

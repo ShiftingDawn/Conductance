@@ -29,6 +29,8 @@ import static conductance.api.NCMaterialTaggedSets.PLATE_DOUBLE;
 import static conductance.api.NCMaterialTaggedSets.PREDICATE_HAS_DUST;
 import static conductance.api.NCMaterialTaggedSets.PREDICATE_HAS_GEM;
 import static conductance.api.NCMaterialTaggedSets.PREDICATE_HAS_INGOT;
+import static conductance.api.NCMaterialTaggedSets.RAW_ORE;
+import static conductance.api.NCMaterialTaggedSets.RAW_ORE_BLOCK;
 import static conductance.api.NCMaterialTaggedSets.RING;
 import static conductance.api.NCMaterialTaggedSets.ROD;
 import static conductance.api.NCMaterialTaggedSets.ROTOR;
@@ -107,6 +109,20 @@ public class ConductanceMaterialTaggedSets {
 				.textureType(NCTextureTypes.STORAGE_BLOCK)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
 				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.INGOT) || mat.hasTrait(NCMaterialTraits.GEM) || mat.hasFlag(NCMaterialFlags.GENERATE_BLOCK))
+				.build();
+		RAW_ORE = register.register("raw_ore", "raw_%s")
+				.addTag("raw_materials/%s")
+				.addTagUnformatted("raw_materials")
+				.generateItems(true)
+				.textureType(NCTextureTypes.RAW_ORE)
+				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.ORE))
+				.build();
+		RAW_ORE_BLOCK = register.register("raw_ore_block", "raw_%s_block")
+				.addTag("storage_blocks/raw_%s")
+				.addTagUnformatted("storage_blocks")
+				.generateBlocks(true)
+				.textureType(NCTextureTypes.RAW_ORE_BLOCK)
+				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.ORE))
 				.build();
 
 		LIQUID = register.register("liquid", mat -> mat.hasTrait(NCMaterialTraits.INGOT) ? "molten_%s" : "%s")

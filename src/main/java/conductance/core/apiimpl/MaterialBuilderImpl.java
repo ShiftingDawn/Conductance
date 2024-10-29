@@ -1,6 +1,10 @@
 package conductance.core.apiimpl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
@@ -9,11 +13,16 @@ import net.minecraft.world.level.block.Block;
 import com.google.common.collect.ImmutableList;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialTraits;
-import conductance.api.material.*;
+import conductance.api.material.Material;
+import conductance.api.material.MaterialFlag;
+import conductance.api.material.MaterialStack;
+import conductance.api.material.MaterialTextureSet;
+import conductance.api.material.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
 import conductance.api.material.traits.MaterialTraitIngot;
+import conductance.api.material.traits.MaterialTraitOre;
 import conductance.api.plugin.MaterialBuilder;
 
 public final class MaterialBuilderImpl implements MaterialBuilder {
@@ -240,23 +249,32 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder ore() {
-		this.dust();
-		//TODO ore
+		this.traits.set(NCMaterialTraits.ORE, new MaterialTraitOre());
 		return this;
 	}
 
 	@Override
 	public MaterialBuilder ore(final boolean emissive) {
+		this.traits.set(NCMaterialTraits.ORE, Util.make(new MaterialTraitOre(), ore -> ore.setEmissive(emissive)));
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder ore(final int oreMultiplier, final int byproductMultiplier) {
+	public MaterialBuilder ore(final int dropMultiplier, final int byproductMultiplier) {
+		this.traits.set(NCMaterialTraits.ORE, Util.make(new MaterialTraitOre(), ore -> {
+			ore.setDropMultiplier(dropMultiplier);
+			ore.setByproductMultiplier(byproductMultiplier);
+		}));
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder ore(final int oreMultiplier, final int byproductMultiplier, final boolean emissive) {
+	public MaterialBuilder ore(final int dropMultiplier, final int byproductMultiplier, final boolean emissive) {
+		this.traits.set(NCMaterialTraits.ORE, Util.make(new MaterialTraitOre(), ore -> {
+			ore.setDropMultiplier(dropMultiplier);
+			ore.setByproductMultiplier(byproductMultiplier);
+			ore.setEmissive(emissive);
+		}));
 		return this;
 	}
 
@@ -270,7 +288,6 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 		final MaterialDataMapImpl data = this.data.components(ImmutableList.copyOf(this.componentList)).build();
 		final MaterialImpl material = new MaterialImpl(this.registryName, data, this.traits, this.flags);
 		this.traits.material = material;
-		// this.fluidMap.material = material;
 		material.verify(this.calculateColor);
 		CAPI.REGS.materials().register(material.getRegistryKey(), material);
 		return material;
