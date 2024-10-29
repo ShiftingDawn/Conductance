@@ -1,5 +1,8 @@
 package conductance.client.resourcepack;
 
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Queue;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import com.google.gson.JsonObject;
@@ -27,6 +30,7 @@ public final class MaterialTextureSetModelHandler {
 	}
 
 	private static JsonObject createItemEntry(final MaterialTextureSet set, final MaterialTextureType type) {
+		final Queue<String> layerQueue = new ArrayDeque<>(Arrays.asList("layer1", "layer2", "layer3", "layer4"));
 		return Util.make(new JsonObject(), json -> {
 			json.addProperty("parent", "item/generated");
 			json.add("textures", Util.make(new JsonObject(), textures -> {
@@ -34,14 +38,19 @@ public final class MaterialTextureSetModelHandler {
 
 				final ResourceLocation magneticOverlayTexture = ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(), "item/material/" + set.getRegistryKey() + "/magnetic_overlay");
 				if (CAPI.resourceFinder().isTextureValid(magneticOverlayTexture)) {
-					textures.addProperty("layer" + textures.size(), magneticOverlayTexture.toString());
+					assert layerQueue.size() > 1;
+					textures.addProperty(layerQueue.poll(), magneticOverlayTexture.toString());
 				}
 
-				//TODO infinite layers
-				for (int i = 0; i <= (textures.size() == 1 ? 4 : 3); ++i) {
-					final SafeOptional<ResourceLocation> extraOverlay = type.getItemTexture(set, null, "overlay" + (i == 0 ? "" : i + 1));
+				int i = 1;
+				while (!layerQueue.isEmpty()) {
+					final int overlay = i++;
+					final SafeOptional<ResourceLocation> extraOverlay = type.getItemTexture(set, null, "_overlay%s".formatted(overlay == 1 ? "" : overlay));
 					if (CAPI.resourceFinder().isTextureValid(extraOverlay.getValue())) {
-						textures.addProperty("layer" + textures.size(), extraOverlay.getValue().toString());
+						assert layerQueue.size() > 1;
+						textures.addProperty(layerQueue.poll(), extraOverlay.getValue().toString());
+					} else {
+						break;
 					}
 				}
 			}));

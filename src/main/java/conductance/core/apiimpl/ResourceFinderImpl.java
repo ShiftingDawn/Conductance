@@ -25,8 +25,8 @@ final class ResourceFinderImpl implements ResourceFinder {
 
 	@Override
 	public SafeOptional<ResourceLocation> getItemTexture(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
-		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
+		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix;
+		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : pathSuffix;
 		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.itemTextureCache, textureSet, textureType);
 		if (rootTable.contains(prefix, suffix)) {
 			return rootTable.get(prefix, suffix);
@@ -38,8 +38,8 @@ final class ResourceFinderImpl implements ResourceFinder {
 
 	@Override
 	public SafeOptional<ResourceLocation> getItemModel(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
-		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
+		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix;
+		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : pathSuffix;
 		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.itemModelCache, textureSet, textureType);
 		if (rootTable.contains(prefix, suffix)) {
 			return rootTable.get(prefix, suffix);
@@ -51,8 +51,8 @@ final class ResourceFinderImpl implements ResourceFinder {
 
 	@Override
 	public SafeOptional<ResourceLocation> getBlockTexture(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
-		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
+		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix;
+		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : pathSuffix;
 		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.blockTextureCache, textureSet, textureType);
 		if (rootTable.contains(prefix, suffix)) {
 			return rootTable.get(prefix, suffix);
@@ -64,8 +64,8 @@ final class ResourceFinderImpl implements ResourceFinder {
 
 	@Override
 	public SafeOptional<ResourceLocation> getBlockModel(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
-		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
+		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix;
+		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : pathSuffix;
 		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.blockModelCache, textureSet, textureType);
 		if (rootTable.contains(prefix, suffix)) {
 			return rootTable.get(prefix, suffix);
@@ -80,8 +80,8 @@ final class ResourceFinderImpl implements ResourceFinder {
 	 * Textures are stored in the block directory, We cache it in a different table
 	 * to prevent clashes between the placeable fluid-block and the virtual fluid.
 	 */ public SafeOptional<ResourceLocation> getFluidTexture(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
-		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
+		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix;
+		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : pathSuffix;
 		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.fluidTextureCache, textureSet, textureType);
 		if (rootTable.contains(prefix, suffix)) {
 			return rootTable.get(prefix, suffix);
@@ -126,8 +126,8 @@ final class ResourceFinderImpl implements ResourceFinder {
 
 	private SafeOptional<ResourceLocation> getResourceCascaded(final String resourceType, final String pathPrepend, final MaterialTextureSet set, final MaterialTextureType type, @Nullable final String extension,
 			@Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
-		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
+		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix;
+		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : pathSuffix;
 		MaterialTextureSet currentSet = set;
 		while (!currentSet.isRootSet()) {
 			final ResourceLocation location = ResourceFinderImpl.getResourceUnchecked("%s/%s".formatted(resourceType, pathPrepend), currentSet, type, prefix, suffix + (extension != null ? "." + extension : ""));
