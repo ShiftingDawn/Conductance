@@ -6,13 +6,14 @@ import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTaggedSets;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.Material;
+import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.util.MiscUtils;
 import conductance.core.register.MaterialOverrideRegister;
 import static conductance.core.datapack.recipe.RecipeLoader.shapeless;
 
 final class MaterialRecipes {
 
-	public static void add(final RecipeOutput output) {
+	public static void add(final RecipeOutput output, final RecipeBuilderFactory builderFactory) {
 		CAPI.regs().materials().forEach(material -> {
 			material.executeIf(NCMaterialTraits.ORE, $ -> MaterialRecipes.addOreRecipes(output, material));
 			material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> MaterialRecipes.addPlateRecipes(output, material));

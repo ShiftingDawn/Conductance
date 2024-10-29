@@ -10,9 +10,10 @@ import net.minecraft.world.level.ItemLike;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import conductance.api.CAPI;
+import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.Conductance;
 
-final class RecipeLoader {
+public final class RecipeLoader {
 
 	public static final char WRENCH = 'W';
 	public static final char HAMMER = 'H';
@@ -20,8 +21,8 @@ final class RecipeLoader {
 	private static final Char2ObjectMap<TagKey<Item>> TOOL_LOOKUP = new Char2ObjectArrayMap<>(
 			Map.of(RecipeLoader.WRENCH, CAPI.Tags.TAG_WRENCH, RecipeLoader.HAMMER, CAPI.Tags.TAG_HAMMER, RecipeLoader.WIRE_CUTTERS, CAPI.Tags.TAG_WIRE_CUTTERS));
 
-	public static void init(final RecipeOutput output) {
-		MaterialRecipes.add(output);
+	public static void init(final RecipeOutput output, final RecipeBuilderFactory builderFactory) {
+		MaterialRecipes.add(output, builderFactory);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -6,13 +6,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import net.minecraft.Util;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import com.mojang.serialization.Codec;
 import net.neoforged.fml.ModList;
 import org.objectweb.asm.Type;
 import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
+import conductance.api.machine.recipe.IRecipeElementType;
+import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.machine.recipe.RecipeBuilder;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialOreType;
@@ -21,8 +29,12 @@ import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.plugin.MaterialTraitRegister;
+import conductance.api.plugin.RecipeBuilderFactory;
+import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.Conductance;
 import conductance.core.machine.MachineBuilderImpl;
+import conductance.core.recipe.RecipeElementTypeSerializer;
+import conductance.core.recipe.RecipeTypeBuilderImpl;
 import conductance.core.register.MaterialOverrideRegister;
 import conductance.core.register.MaterialUnitOverrideRegister;
 
@@ -120,6 +132,25 @@ public final class PluginManager {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterials(registryName -> new MaterialBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName))));
 	}
 
+	public static void dispatchRecipeElementTypes() {
+		PluginManager.execute((plugin, modid) -> plugin.registerRecipeElementTypes(new RecipeElementTypeRegister() {
+			@Override
+			public <T> IRecipeElementType<T> register(final String name, final Codec<T> dataCodec, final StreamCodec<RegistryFriendlyByteBuf, T> streamDataCodec) {
+				return Util.make(new RecipeElementTypeSerializer<>(ResourceLocation.fromNamespaceAndPath(modid, name), dataCodec, streamDataCodec), result -> {
+					CAPI.regs().recipeElementTypes().register(result.getRegistryKey(), result);
+				});
+			}
+		}));
+	}
+
+	public static void dispatchRecipeTypes() {
+		PluginManager.execute((plugin, modid) -> plugin.registerRecipeTypes(registryKey -> new RecipeTypeBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryKey))));
+	}
+
+	public static void dispatchRegisterMachines() {
+		PluginManager.execute((plugin, modid) -> plugin.registerMachines(MachineBuilderImpl::new));
+	}
+
 	public static void dispatchMaterialOverrides() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterialOverrides(new MaterialOverrideRegister()));
 	}
@@ -132,8 +163,8 @@ public final class PluginManager {
 		PluginManager.execute((plugin, modid) -> plugin.registerTags(TagRegisterImpl.INSTANCE));
 	}
 
-	public static void dispatchRegisterMachines() {
-		PluginManager.execute((plugin, modid) -> plugin.registerMachines(MachineBuilderImpl::new));
+	public static void dispatchRegisterRecipes(final RecipeOutput recipeOutput, final RecipeBuilderFactory builderFactory) {
+		PluginManager.execute((plugin, modid) -> plugin.registerRecipes(recipeOutput, builderFactory));
 	}
 
 	private static void execute(final BiConsumer<IConductancePlugin, String> executor) {

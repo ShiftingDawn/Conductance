@@ -1,5 +1,10 @@
 package conductance.api;
 
+import java.util.function.BiFunction;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
+import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.machine.recipe.RecipeBuilder;
 import conductance.api.plugin.MachineRegister;
 import conductance.api.plugin.MaterialFlagRegister;
 import conductance.api.plugin.MaterialOreTypeRegister;
@@ -11,6 +16,9 @@ import conductance.api.plugin.MaterialTextureTypeRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.MaterialUnitOverrideMap;
 import conductance.api.plugin.PeriodicElementBuilder;
+import conductance.api.plugin.RecipeBuilderFactory;
+import conductance.api.plugin.RecipeElementTypeRegister;
+import conductance.api.plugin.RecipeTypeRegister;
 import conductance.api.plugin.TagRegister;
 
 public interface IConductancePlugin {
@@ -39,6 +47,15 @@ public interface IConductancePlugin {
 	default void registerMaterials(final MaterialRegister register) {
 	}
 
+	default void registerRecipeElementTypes(final RecipeElementTypeRegister register) {
+	}
+
+	default void registerRecipeTypes(final RecipeTypeRegister register) {
+	}
+
+	default void registerMachines(final MachineRegister register) {
+	}
+
 	default void registerMaterialOverrides(final MaterialOverrideMap overrides) {
 	}
 
@@ -48,6 +65,6 @@ public interface IConductancePlugin {
 	default void registerTags(final TagRegister tags) {
 	}
 
-	default void registerMachines(final MachineRegister register) {
+	default void registerRecipes(final RecipeOutput recipeOutput, final RecipeBuilderFactory builderFactory) {
 	}
 }

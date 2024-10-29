@@ -24,12 +24,13 @@ public final class ApiBridge {
 	}
 
 	public static final ConductanceRegistryImpl<ResourceLocation, ConductanceRegistryImpl<?, ?>> REGISTRIES = new ConductanceRegistryImpl.ResourceKeyed<>(Conductance.id("root"));
-	public static final RegistryProviderImpl REGS = new RegistryProviderImpl();
+	private static RegistryProviderImpl regs;
 	private static ConductanceRegistrate registrate;
 
 	public static void init(final IEventBus modEventBus) {
+		ApiBridge.regs = new RegistryProviderImpl(modEventBus);
 		ApiBridge.registrate = ConductanceRegistrate.create(modEventBus);
-		ApiBridge.setApiValue(RegistryProvider.class, ApiBridge.REGS);
+		ApiBridge.setApiValue(RegistryProvider.class, ApiBridge.regs);
 		ApiBridge.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
 		ApiBridge.setApiValue(TaggedSetRegistry.class, MaterialRegistry.INSTANCE);
 		ApiBridge.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
@@ -76,6 +77,10 @@ public final class ApiBridge {
 
 	public static ConductanceRegistrate getRegistrate() {
 		return ApiBridge.registrate;
+	}
+
+	public static RegistryProviderImpl getRegs() {
+		return ApiBridge.regs;
 	}
 
 	private ApiBridge() {

@@ -29,6 +29,9 @@ public final class CommonProxy {
 		PluginManager.dispatchMaterialOverrides();
 		PluginManager.dispatchMaterialUnitOverrides();
 
+		PluginManager.dispatchRecipeElementTypes();
+		PluginManager.dispatchRecipeTypes();
+
 		ConductanceItems.init();
 		ConductanceBlocks.init();
 		ConductanceFluids.init();

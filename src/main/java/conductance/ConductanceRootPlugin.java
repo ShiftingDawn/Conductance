@@ -1,11 +1,16 @@
 package conductance;
 
+import java.util.function.BiFunction;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
 import conductance.api.NCMaterialTaggedSets;
+import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.machine.recipe.RecipeBuilder;
 import conductance.api.plugin.MachineRegister;
 import conductance.api.plugin.MaterialFlagRegister;
 import conductance.api.plugin.MaterialOreTypeRegister;
@@ -17,7 +22,11 @@ import conductance.api.plugin.MaterialTextureTypeRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.MaterialUnitOverrideMap;
 import conductance.api.plugin.PeriodicElementBuilder;
+import conductance.api.plugin.RecipeBuilderFactory;
+import conductance.api.plugin.RecipeElementTypeRegister;
+import conductance.api.plugin.RecipeTypeRegister;
 import conductance.api.plugin.TagRegister;
+import conductance.core.datapack.recipe.RecipeLoader;
 import conductance.init.ConductanceItems;
 import conductance.init.ConductanceMachines;
 import conductance.init.ConductanceMaterialFlags;
@@ -28,6 +37,8 @@ import conductance.init.ConductanceMaterialTextureTypes;
 import conductance.init.ConductanceMaterialTraits;
 import conductance.init.ConductanceMaterials;
 import conductance.init.ConductancePeriodicElements;
+import conductance.init.ConductanceRecipeElementTypes;
+import conductance.init.ConductanceRecipeTypes;
 import static conductance.api.CAPI.UNIT;
 import static conductance.api.NCMaterials.AMETHYST;
 import static conductance.api.NCMaterials.BLAZE;
@@ -95,6 +106,16 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 	@Override
 	public void registerMaterials(final MaterialRegister register) {
 		ConductanceMaterials.init(register);
+	}
+
+	@Override
+	public void registerRecipeElementTypes(final RecipeElementTypeRegister register) {
+		ConductanceRecipeElementTypes.init(register);
+	}
+
+	@Override
+	public void registerRecipeTypes(final RecipeTypeRegister register) {
+		ConductanceRecipeTypes.init(register);
 	}
 
 	@Override
@@ -171,5 +192,10 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 		tags.item(CAPI.Tags.TAG_WRENCH, ConductanceItems.CRAFTING_TOOL_WRENCH);
 		tags.item(CAPI.Tags.TAG_HAMMER, ConductanceItems.CRAFTING_TOOL_HAMMER);
 		tags.item(CAPI.Tags.TAG_WIRE_CUTTERS, ConductanceItems.CRAFTING_TOOL_WIRE_CUTTERS);
+	}
+
+	@Override
+	public void registerRecipes(final RecipeOutput recipeOutput, final RecipeBuilderFactory builderFactory) {
+		RecipeLoader.init(recipeOutput, builderFactory);
 	}
 }

@@ -32,6 +32,12 @@
     <suppress files="NCPeriodicElements\.java" checks="VisibilityModifier"/>
     <suppress files="NCPeriodicElements\.java" checks="StaticVariableName"/>
 
+    <suppress files="NCRecipeElementTypes\.java" checks="VisibilityModifier"/>
+    <suppress files="NCRecipeElementTypes\.java" checks="StaticVariableName"/>
+
+    <suppress files="NCRecipeTypes\.java" checks="VisibilityModifier"/>
+    <suppress files="NCRecipeTypes\.java" checks="StaticVariableName"/>
+
     <suppress files="NCTextureSets\.java" checks="VisibilityModifier"/>
     <suppress files="NCTextureSets\.java" checks="StaticVariableName"/>
 
