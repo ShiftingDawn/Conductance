@@ -4,6 +4,10 @@ tasks.named("wrapper", Wrapper).configure {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+sourceSets {
+    api
+}
+
 neoForge {
     version = project.neo_version
 
@@ -13,6 +17,8 @@ neoForge {
     }
 
     accessTransformers = project.files("src/main/resources/META-INF/accesstransformer.cfg")
+
+    addModdingDependenciesTo sourceSets.api
 
     runs {
         client {
@@ -44,7 +50,8 @@ neoForge {
 
     mods {
         "${mod_id}" {
-            sourceSet(sourceSets.main)
+            sourceSet sourceSets.api
+            sourceSet sourceSets.main
         }
     }
 }

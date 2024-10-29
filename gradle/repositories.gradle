@@ -1,3 +1,5 @@
 repositories {
     mavenLocal()
+
+    maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate Fork
 }

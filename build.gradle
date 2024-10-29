@@ -2,6 +2,7 @@ plugins {
     id "java-library"
     id "maven-publish"
     id "net.neoforged.moddev" version "1.0.21"
+    id "io.freefair.lombok" version "8.10.2"
 }
 
 version = mod_version
