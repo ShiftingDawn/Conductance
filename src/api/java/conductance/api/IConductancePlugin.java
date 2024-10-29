@@ -10,6 +10,7 @@ import conductance.api.plugin.MaterialTextureTypeRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.MaterialUnitOverrideMap;
 import conductance.api.plugin.PeriodicElementBuilder;
+import conductance.api.plugin.TagRegister;
 
 public interface IConductancePlugin {
 
@@ -38,5 +39,8 @@ public interface IConductancePlugin {
 	}
 
 	default void registerMaterialUnitOverrides(MaterialUnitOverrideMap overrides) {
+	}
+
+	default void registerTags(final TagRegister tags) {
 	}
 }

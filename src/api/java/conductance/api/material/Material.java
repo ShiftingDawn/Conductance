@@ -3,6 +3,7 @@ package conductance.api.material;
 import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.NCMaterialTraits;
 import conductance.api.registry.IRegistryObject;
 
 public interface Material extends IRegistryObject<ResourceLocation> {
@@ -54,6 +55,14 @@ public interface Material extends IRegistryObject<ResourceLocation> {
 	}
 
 	String getUnlocalizedName();
+
+	default int getBlockMiningLevel() {
+		if (!this.hasTrait(NCMaterialTraits.DUST)) {
+			throw new IllegalStateException("Material %s does not have a mining level! (missing dust property)".formatted(this.getRegistryKey()));
+		}
+		final int level = this.getTrait(NCMaterialTraits.DUST).getHarvestLevel();
+		return level > 0 ? level - 1 : level;
+	}
 
 	default String getName() {
 		return this.getRegistryKey().getPath();

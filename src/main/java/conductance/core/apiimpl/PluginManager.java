@@ -122,6 +122,11 @@ public class PluginManager {
 		// TODO KubeJS
 	}
 
+	public static void dispatchTagRegister() {
+		PluginManager.execute((plugin, modid) -> plugin.registerTags(TagRegisterImpl.INSTANCE));
+		// TODO KubeJS
+	}
+
 	private static void execute(final BiConsumer<IConductancePlugin, String> executor) {
 		executor.accept(PluginManager.ROOT_PLUGIN, Conductance.MODID);
 		PluginManager.PLUGINS.forEach(executor);
