@@ -14,7 +14,7 @@ import lombok.Getter;
 import conductance.api.registry.RegistryObject;
 import conductance.api.registry.TaggedSet;
 
-public class TaggedSetImpl<TYPE> extends RegistryObject<String> implements TaggedSet<TYPE> {
+public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> implements TaggedSet<TYPE> {
 
 	@Getter
 	private final Function<TYPE, String> objectSerializer;
@@ -33,7 +33,7 @@ public class TaggedSetImpl<TYPE> extends RegistryObject<String> implements Tagge
 	@Getter
 	private final long unitValue;
 
-	public TaggedSetImpl(TaggedSetBuilderImpl<TYPE> builder) {
+	public TaggedSetImpl(TaggedSetBuilderImpl<TYPE, ?, ?> builder) {
 		super(builder.registryKey());
 		this.objectSerializer = builder.objectSerializer();
 		this.unlocalizedNameFactory = builder.unlocalizedNameFactory();

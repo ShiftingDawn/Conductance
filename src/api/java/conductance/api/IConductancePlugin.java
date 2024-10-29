@@ -1,7 +1,9 @@
 package conductance.api;
 
+import conductance.api.material.TaggedMaterialSetBuilder;
 import conductance.api.plugin.MaterialFlagRegister;
 import conductance.api.plugin.MaterialRegister;
+import conductance.api.plugin.MaterialTaggedSetRegister;
 import conductance.api.plugin.MaterialTextureSetRegister;
 import conductance.api.plugin.MaterialTextureTypeRegister;
 import conductance.api.plugin.MaterialTraitRegister;
@@ -22,6 +24,9 @@ public interface IConductancePlugin {
 	}
 
 	default void registerMaterialFlags(MaterialFlagRegister register) {
+	}
+
+	default void registerMaterialTaggedSets(MaterialTaggedSetRegister register) {
 	}
 
 	default void registerMaterials(MaterialRegister register) {

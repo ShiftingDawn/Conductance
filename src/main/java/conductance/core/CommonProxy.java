@@ -17,6 +17,7 @@ public class CommonProxy {
 		PluginManager.dispatchMaterialTextureSets();
 		PluginManager.dispatchMaterialTraits();
 		PluginManager.dispatchMaterialFlags();
+		PluginManager.dispatchMaterialTaggedSets();
 		PluginManager.dispatchMaterials();
 	}
 }

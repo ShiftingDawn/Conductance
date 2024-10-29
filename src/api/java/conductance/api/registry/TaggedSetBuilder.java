@@ -1,36 +1,38 @@
 package conductance.api.registry;
 
-public interface TaggedSetBuilder<TYPE> {
+public interface TaggedSetBuilder<TYPE, SET extends TaggedSet<TYPE>, BUILDER extends TaggedSetBuilder<TYPE, SET, BUILDER>> {
 
 	// region Tags
-	TaggedSetBuilder<TYPE> addTagLoader(String tagPathFactory);
+	BUILDER addTagLoader(String tagPathFactory);
 
-	TaggedSetBuilder<TYPE> addTagCommon(String tagPathFactory);
+	BUILDER addTagCommon(String tagPathFactory);
 
-	TaggedSetBuilder<TYPE> addTagMod(String tagPathFactory);
+	BUILDER addTagMod(String tagPathFactory);
 
-	TaggedSetBuilder<TYPE> addTagVanilla(String tagPathFactory);
+	BUILDER addTagVanilla(String tagPathFactory);
 	// endregion
 
 	// region Unformatted Tags
-	TaggedSetBuilder<TYPE> addTagLoaderUnformatted(String tagPathFactory);
+	BUILDER addTagLoaderUnformatted(String tagPathFactory);
 
-	TaggedSetBuilder<TYPE> addTagCommonUnformatted(String tagPathFactory);
+	BUILDER addTagCommonUnformatted(String tagPathFactory);
 
-	TaggedSetBuilder<TYPE> addTagModUnformatted(String tagPathFactory);
+	BUILDER addTagModUnformatted(String tagPathFactory);
 
-	TaggedSetBuilder<TYPE> addTagVanillaUnformatted(String tagPathFactory);
+	BUILDER addTagVanillaUnformatted(String tagPathFactory);
 	// endregion
 
 	// region Generation
-	TaggedSetBuilder<TYPE> generateItems(boolean generateItems);
+	BUILDER generateItems(boolean generateItems);
 
-	TaggedSetBuilder<TYPE> generateBlocks(boolean generateBlocks);
+	BUILDER generateBlocks(boolean generateBlocks);
 
-	TaggedSetBuilder<TYPE> generateFluids(boolean generateFluids);
+	BUILDER generateFluids(boolean generateFluids);
 	// endregion
 
 	// region Properties
-	TaggedSetBuilder<TYPE> unitValue(long unitValue);
+	BUILDER unitValue(long unitValue);
 	// endregion
+
+	SET build();
 }

@@ -19,7 +19,6 @@ import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
-import conductance.api.plugin.MaterialRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.Conductance;
 
@@ -98,6 +97,11 @@ public class PluginManager {
 			CAPI.REGS.materialFlags().register(result.getRegistryKey(), result);
 			return result;
 		}));
+		// TODO KubeJS
+	}
+
+	public static void dispatchMaterialTaggedSets() {
+		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTaggedSets(MaterialTaggedSetBuilder::new));
 		// TODO KubeJS
 	}
 

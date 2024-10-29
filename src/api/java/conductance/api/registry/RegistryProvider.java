@@ -7,6 +7,7 @@ import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
+import conductance.api.material.TaggedMaterialSet;
 
 public interface RegistryProvider {
 
@@ -19,6 +20,8 @@ public interface RegistryProvider {
 	ConductanceRegistry<ResourceLocation, MaterialTraitKey<?>> materialTraits();
 
 	ConductanceRegistry<ResourceLocation, MaterialFlag> materialFlags();
+
+	ConductanceRegistry<String, TaggedMaterialSet> materialTaggedSets();
 
 	ConductanceRegistry<ResourceLocation, Material> materials();
 }

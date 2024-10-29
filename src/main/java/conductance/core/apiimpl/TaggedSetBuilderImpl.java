@@ -5,15 +5,16 @@ import java.util.List;
 import java.util.function.Function;
 import net.minecraft.resources.ResourceLocation;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.registry.TaggedSet;
 import conductance.api.registry.TaggedSetBuilder;
 import conductance.api.util.TextHelper;
 
-@Accessors(chain = true, fluent = true)
-public class TaggedSetBuilderImpl<TYPE> implements conductance.api.registry.TaggedSetBuilder<TYPE> {
+@SuppressWarnings("unchecked")
+@Accessors(fluent = true)
+public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER extends TaggedSetBuilder<TYPE, SET, BUILDER>> implements TaggedSetBuilder<TYPE, SET, BUILDER> {
 
 	final List<TagHandler<TYPE>> tags = new ArrayList<>();
 
@@ -25,16 +26,11 @@ public class TaggedSetBuilderImpl<TYPE> implements conductance.api.registry.Tagg
 	private final Function<TYPE, String> unlocalizedNameFactory;
 
 	@Getter
-	@Setter
 	private boolean generateItems;
 	@Getter
-	@Setter
 	private boolean generateBlocks;
 	@Getter
-	@Setter
 	private boolean generateFluids;
-
-	@Setter
 	@Getter
 	private long unitValue = -1;
 
@@ -54,53 +50,75 @@ public class TaggedSetBuilderImpl<TYPE> implements conductance.api.registry.Tagg
 
 	// region Formatted Tags
 	@Override
-	public TaggedSetBuilder<TYPE> addTagLoader(final String tagPathFactory) {
+	public BUILDER addTagLoader(final String tagPathFactory) {
 		this.tags.add(new TagHandler<>("neoforge", tagPathFactory, this.objectSerializer, false));
-		return this;
+		return (BUILDER) this;
 	}
 
 	@Override
-	public TaggedSetBuilder<TYPE> addTagCommon(final String tagPathFactory) {
+	public BUILDER addTagCommon(final String tagPathFactory) {
 		this.tags.add(new TagHandler<>("c", tagPathFactory, this.objectSerializer, false));
-		return this;
+		return (BUILDER) this;
 	}
 
 	@Override
-	public TaggedSetBuilder<TYPE> addTagMod(final String tagPathFactory) {
+	public BUILDER addTagMod(final String tagPathFactory) {
 		this.tags.add(new TagHandler<>(CAPI.MOD_ID, tagPathFactory, this.objectSerializer, false));
-		return this;
+		return (BUILDER) this;
 	}
 
 	@Override
-	public TaggedSetBuilder<TYPE> addTagVanilla(final String tagPathFactory) {
+	public BUILDER addTagVanilla(final String tagPathFactory) {
 		this.tags.add(new TagHandler<>(ResourceLocation.DEFAULT_NAMESPACE, tagPathFactory, this.objectSerializer, false));
-		return this;
+		return (BUILDER) this;
 	}
 	// endregion
 
 	// region Unformatted Tags
 	@Override
-	public TaggedSetBuilder<TYPE> addTagLoaderUnformatted(final String tagPathFactory) {
+	public BUILDER addTagLoaderUnformatted(final String tagPathFactory) {
 		this.tags.add(new TagHandler<>("neoforge", tagPathFactory, ignored -> tagPathFactory, true));
-		return this;
+		return (BUILDER) this;
 	}
 
 	@Override
-	public TaggedSetBuilder<TYPE> addTagCommonUnformatted(final String tagPathFactory) {
+	public BUILDER addTagCommonUnformatted(final String tagPathFactory) {
 		this.tags.add(new TagHandler<>("c", tagPathFactory, ignored -> tagPathFactory, true));
-		return this;
+		return (BUILDER) this;
 	}
 
 	@Override
-	public TaggedSetBuilder<TYPE> addTagModUnformatted(final String tagPathFactory) {
+	public BUILDER addTagModUnformatted(final String tagPathFactory) {
 		this.tags.add(new TagHandler<>(CAPI.MOD_ID, tagPathFactory, ignored -> tagPathFactory, true));
-		return this;
+		return (BUILDER) this;
 	}
 
 	@Override
-	public TaggedSetBuilder<TYPE> addTagVanillaUnformatted(final String tagPathFactory) {
+	public BUILDER addTagVanillaUnformatted(final String tagPathFactory) {
 		this.tags.add(new TagHandler<>(ResourceLocation.DEFAULT_NAMESPACE, tagPathFactory, ignored -> tagPathFactory, true));
-		return this;
+		return (BUILDER) this;
+	}
+	// endregion
+
+	// region Properties
+	public BUILDER generateItems(boolean generateItems) {
+		this.generateItems = generateItems;
+		return (BUILDER) this;
+	}
+
+	public BUILDER generateBlocks(boolean generateBlocks) {
+		this.generateBlocks = generateBlocks;
+		return (BUILDER) this;
+	}
+
+	public BUILDER generateFluids(boolean generateFluids) {
+		this.generateFluids = generateFluids;
+		return (BUILDER) this;
+	}
+
+	public BUILDER unitValue(long unitValue) {
+		this.unitValue = unitValue;
+		return (BUILDER) this;
 	}
 	// endregion
 

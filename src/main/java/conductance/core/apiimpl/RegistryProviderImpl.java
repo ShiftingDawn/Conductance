@@ -9,6 +9,7 @@ import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
+import conductance.api.material.TaggedMaterialSet;
 import conductance.api.registry.ConductanceRegistry;
 import conductance.api.registry.IRegistryObject;
 import conductance.api.registry.RegistryProvider;
@@ -24,6 +25,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final ConductanceRegistry<String, MaterialTextureSet> materialTextureSets = makeStringKeyed("material_texture_set");
 	private final ConductanceRegistry<ResourceLocation, MaterialTraitKey<?>> materialTraits = makeResourceKeyed("material_traits");
 	private final ConductanceRegistry<ResourceLocation, MaterialFlag> materialFlags = makeResourceKeyed("material_flags");
+	private final ConductanceRegistry<String, TaggedMaterialSet> materialTaggedSets = makeStringKeyed("material_tagged_set");
 	private final ConductanceRegistry<ResourceLocation, Material> materials = makeResourceKeyed("material");
 
 	RegistryProviderImpl() {

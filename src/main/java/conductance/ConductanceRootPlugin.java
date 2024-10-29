@@ -5,11 +5,13 @@ import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
 import conductance.api.plugin.MaterialFlagRegister;
 import conductance.api.plugin.MaterialRegister;
+import conductance.api.plugin.MaterialTaggedSetRegister;
 import conductance.api.plugin.MaterialTextureSetRegister;
 import conductance.api.plugin.MaterialTextureTypeRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.PeriodicElementBuilder;
 import conductance.init.ConductanceMaterialFlags;
+import conductance.init.ConductanceMaterialTaggedSets;
 import conductance.init.ConductanceMaterialTextureSets;
 import conductance.init.ConductanceMaterialTextureTypes;
 import conductance.init.ConductanceMaterialTraits;
@@ -42,6 +44,11 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 	@Override
 	public void registerMaterialFlags(MaterialFlagRegister register) {
 		ConductanceMaterialFlags.init(register);
+	}
+
+	@Override
+	public void registerMaterialTaggedSets(MaterialTaggedSetRegister register) {
+		ConductanceMaterialTaggedSets.init(register);
 	}
 
 	@Override
