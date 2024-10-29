@@ -41,7 +41,7 @@ public final class MaterialBlockModelHandler {
 					json.add("textures", Util.make(new JsonObject(), json2 -> json2.addProperty("all", custom.toString())));
 				}));
 			}
-			RuntimeResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, blockId));
+			RuntimeResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, blockId.withPrefix("block/")));
 			RuntimeResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()), new DelegatedModel(ModelLocationUtils.getModelLocation(model.block)));
 		});
 	}
