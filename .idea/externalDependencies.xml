@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalDependencies">
+    <plugin id="CheckStyle-IDEA" />
+    <plugin id="Git4Idea" />
+    <plugin id="com.demonwav.minecraft-dev" />
+    <plugin id="com.intellij.gradle" />
+    <plugin id="software.xdev.saveactions" />
+  </component>
+</project>
