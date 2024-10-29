@@ -11,6 +11,7 @@ import lombok.Setter;
 import conductance.api.machine.MetaBlockEntity;
 import conductance.api.machine.MetaBlockEntityBlock;
 import conductance.api.machine.MetaBlockEntityType;
+import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.registry.RegistryObject;
 import conductance.api.resource.RuntimeModelProvider;
 
@@ -23,6 +24,9 @@ public class MetaBlockEntityTypeImpl<T extends MetaBlockEntity<T>> extends Regis
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	private RuntimeModelProvider modelProvider;
+	@Getter
+	@Setter(AccessLevel.PACKAGE)
+	private NCRecipeType[] recipeTypes;
 
 
 	public MetaBlockEntityTypeImpl(final String registryKey) {
@@ -36,6 +40,7 @@ public class MetaBlockEntityTypeImpl<T extends MetaBlockEntity<T>> extends Regis
 		Objects.requireNonNull(this.block, "No block");
 		Objects.requireNonNull(this.blockEntityType, "No block entity type");
 		Objects.requireNonNull(this.modelProvider, "No model provider");
+		Objects.requireNonNull(this.recipeTypes, "No recipe types");
 	}
 
 	@Override

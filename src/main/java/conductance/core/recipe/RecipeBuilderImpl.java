@@ -26,7 +26,7 @@ public class RecipeBuilderImpl implements RecipeBuilder {
 
 	public RecipeBuilderImpl(final NCRecipeType recipeType, final ResourceLocation recipeId) {
 		this.recipeType = recipeType;
-		this.recipeId = recipeId;
+		this.recipeId = recipeId.withPrefix(recipeType.getRegistryKey().getPath() + "/");
 	}
 
 	@Override

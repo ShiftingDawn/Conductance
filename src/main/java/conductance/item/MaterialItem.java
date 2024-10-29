@@ -63,7 +63,7 @@ public class MaterialItem extends ConductanceItem {
 	@Override
 	public int getBurnTime(final ItemStack itemStack, @Nullable final RecipeType<?> recipeType) {
 		final int time = this.material.getData().getBurnTime();
-		return time <= 0 ? -1 : (int) (time * this.set.getUnitValue(this.material) / CAPI.UNIT);
+		return Math.max(0, (int) (time * this.set.getUnitValue(this.material) / CAPI.UNIT));
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -17,6 +17,7 @@ import conductance.api.machine.MetaBlockEntity;
 import conductance.api.machine.MetaBlockEntityBlock;
 import conductance.api.machine.MetaBlockEntityFactory;
 import conductance.api.machine.MetaBlockEntityType;
+import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.resource.RuntimeModelProvider;
 import static conductance.core.apiimpl.ApiBridge.getRegistrate;
 
@@ -30,6 +31,8 @@ public class MachineBuilderImpl<T extends MetaBlockEntity<T>> implements Machine
 	@Setter
 	@Getter
 	private RuntimeModelProvider modelProvider = new DirectionalMachineRuntimeModelProvider();
+	@Getter
+	private NCRecipeType[] recipeTypes = new NCRecipeType[0];
 
 	public MachineBuilderImpl(final String registryKey, final MetaBlockEntityFactory<T> metaBlockEntityFactory) {
 		this.registryKey = registryKey;
@@ -54,11 +57,20 @@ public class MachineBuilderImpl<T extends MetaBlockEntity<T>> implements Machine
 	}
 
 	@Override
+	public MachineBuilder<T> recipeType(final NCRecipeType recipeType, final NCRecipeType... moreTypes) {
+		this.recipeTypes = new NCRecipeType[moreTypes.length + 1];
+		this.recipeTypes[0] = recipeType;
+		System.arraycopy(moreTypes, 0, this.recipeTypes, 1, moreTypes.length);
+		return this;
+	}
+
+	@Override
 	public MetaBlockEntityType<T> build() {
 		final MetaBlockEntityTypeImpl<T> metaBlockEntityType = Util.make(new MetaBlockEntityTypeImpl<>(this.registryKey), result -> {
 			result.setBlock(this.createBlock(result));
 			result.setBlockEntityType(this.createBlockEntity(result));
 			result.setModelProvider(this.modelProvider);
+			result.setRecipeTypes(this.recipeTypes);
 		});
 		metaBlockEntityType.validate();
 		CAPI.regs().metaBlockEntities().register(metaBlockEntityType.getRegistryKey(), metaBlockEntityType);

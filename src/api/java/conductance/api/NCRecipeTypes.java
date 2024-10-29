@@ -5,7 +5,7 @@ import conductance.api.machine.recipe.NCRecipeType;
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCRecipeTypes {
 
-	public static NCRecipeType WIREMILL;
+	public static NCRecipeType BENDER;
 
 	private NCRecipeTypes() {
 	}
