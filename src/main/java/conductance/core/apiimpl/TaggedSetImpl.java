@@ -48,6 +48,8 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 	private final BiConsumer<TYPE, FluidBuilder<? extends Fluid, ?>> fluidGeneratorCallback;
 
 	@Getter
+	private final int maxStackSize;
+	@Getter
 	private final long unitValue;
 
 	public TaggedSetImpl(TaggedSetBuilderImpl<TYPE, ?, ?> builder) {
@@ -66,6 +68,7 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 		this.blockGeneratorCallback = builder.blockGeneratorCallback();
 		this.fluidGeneratorCallback = builder.fluidGeneratorCallback();
 
+		this.maxStackSize = builder.maxStackSize();
 		this.unitValue = builder.unitValue();
 	}
 

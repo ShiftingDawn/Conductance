@@ -49,6 +49,8 @@ public interface TaggedSetBuilder<TYPE, SET extends TaggedSet<TYPE>, BUILDER ext
 	// endregion
 
 	// region Properties
+	BUILDER maxStackSize(int maxStackSize);
+
 	BUILDER unitValue(long unitValue);
 	// endregion
 

@@ -48,5 +48,7 @@ public interface TaggedSet<TYPE> extends IRegistryObject<String> {
 
 	boolean canGenerateFluid(TYPE object);
 
+	int getMaxStackSize();
+
 	long getUnitValue();
 }

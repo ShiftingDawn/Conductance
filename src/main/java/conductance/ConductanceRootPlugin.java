@@ -1,9 +1,13 @@
 package conductance;
 
+import net.minecraft.world.item.Items;
 import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
+import conductance.api.NCMaterialTaggedSets;
+import conductance.api.NCMaterials;
 import conductance.api.plugin.MaterialFlagRegister;
+import conductance.api.plugin.MaterialOverrideMap;
 import conductance.api.plugin.MaterialRegister;
 import conductance.api.plugin.MaterialTaggedSetRegister;
 import conductance.api.plugin.MaterialTextureSetRegister;
@@ -54,5 +58,10 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 	@Override
 	public void registerMaterials(MaterialRegister register) {
 		ConductanceMaterials.init(register);
+	}
+
+	@Override
+	public void registerMaterialOverrides(MaterialOverrideMap overrides) {
+		overrides.add(NCMaterialTaggedSets.INGOT, NCMaterials.IRON, Items.IRON_INGOT);
 	}
 }

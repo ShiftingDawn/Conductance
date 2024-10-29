@@ -51,6 +51,9 @@ public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BU
 	@Getter
 	@Nullable
 	private BiConsumer<TYPE, FluidBuilder<? extends Fluid, ?>> fluidGeneratorCallback;
+
+	@Getter
+	private int maxStackSize = 64;
 	@Getter
 	private long unitValue = -1;
 
@@ -163,6 +166,12 @@ public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BU
 	// endregion
 
 	// region Properties
+	@Override
+	public BUILDER maxStackSize(int maxStackSize) {
+		this.maxStackSize = maxStackSize;
+		return (BUILDER) this;
+	}
+
 	public BUILDER unitValue(long unitValue) {
 		this.unitValue = unitValue;
 		return (BUILDER) this;
