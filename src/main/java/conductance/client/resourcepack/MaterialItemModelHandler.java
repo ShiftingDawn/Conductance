@@ -16,9 +16,9 @@ import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 
 @RequiredArgsConstructor
-public final class MaterialModelHandler {
+public final class MaterialItemModelHandler {
 
-	private static final Set<MaterialModelHandler> MODELS = new HashSet<>();
+	private static final Set<MaterialItemModelHandler> MODELS = new HashSet<>();
 
 	private final Item item;
 	private final Material material;
@@ -26,11 +26,11 @@ public final class MaterialModelHandler {
 	private final MaterialTextureType type;
 
 	public static void add(Item item, Material material, MaterialTextureSet set, MaterialTextureType type) {
-		MaterialModelHandler.MODELS.add(new MaterialModelHandler(item, material, set, type));
+		MaterialItemModelHandler.MODELS.add(new MaterialItemModelHandler(item, material, set, type));
 	}
 
 	static void reload() {
-		MaterialModelHandler.MODELS.forEach(model -> {
+		MaterialItemModelHandler.MODELS.forEach(model -> {
 			ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
 			ResourceLocation custom = getCustomTexture(model);
 			if (custom == null) {
@@ -45,7 +45,7 @@ public final class MaterialModelHandler {
 	}
 
 	@Nullable
-	private static ResourceLocation getCustomTexture(MaterialModelHandler handler) {
+	private static ResourceLocation getCustomTexture(MaterialItemModelHandler handler) {
 		final ResourceLocation checkTexture = handler.material.getRegistryKey().withPath("textures/item/material_custom/%s/%s.png".formatted(handler.material.getRegistryKey().getPath(), handler.type.getRegistryKey().getPath()));
 		if (CAPI.RESOURCE_FINDER.isResourceValid(checkTexture)) {
 			return handler.material.getRegistryKey().withPath("item/material_custom/%s/%s".formatted(handler.material.getRegistryKey().getPath(), handler.type.getRegistryKey().getPath()));

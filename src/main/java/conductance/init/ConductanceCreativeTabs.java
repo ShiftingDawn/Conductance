@@ -10,8 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import conductance.Conductance;
-import conductance.core.IConductanceItem;
+import conductance.content.item.IConductanceItem;
 import static conductance.core.apiimpl.ApiBridge.REGISTRATE;
 
 public final class ConductanceCreativeTabs {
@@ -20,14 +19,17 @@ public final class ConductanceCreativeTabs {
 	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> GENERAL = REGISTRATE.defaultCreativeTab("general", builder -> builder
 			.displayItems(new TabDisplayGen("general"))
 			.icon(() -> new ItemStack(Items.GOLD_INGOT))
-			.title(REGISTRATE.addLang("itemGroup", Conductance.id("general"), "Conductance"))
 			.build()
 	).register();
 
 	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> MATERIAL_ITEMS = REGISTRATE.defaultCreativeTab("material_items", builder -> builder
 			.displayItems(new TabDisplayGen("material_items"))
 			.icon(() -> new ItemStack(Items.DIAMOND))
-			.title(REGISTRATE.addLang("itemGroup", Conductance.id("material_items"), "Conductance Material items"))
+			.build()
+	).register();
+	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> MATERIAL_BLOCKS = REGISTRATE.defaultCreativeTab("material_blocks", builder -> builder
+			.displayItems(new TabDisplayGen("material_blocks"))
+			.icon(() -> new ItemStack(Items.DIAMOND))
 			.build()
 	).register();
 	//@formatter:on

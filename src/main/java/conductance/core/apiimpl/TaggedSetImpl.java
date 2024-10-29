@@ -28,6 +28,8 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 	private final Function<TYPE, String> unlocalizedNameFactory;
 
 	private final List<TaggedSetBuilderImpl.TagHandler<TYPE>> tags;
+	@Getter
+	private final List<TagKey<Block>> miningTags;
 
 	@Getter
 	private final boolean itemGenerator;
@@ -59,6 +61,7 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 
 		// TODO Let plugins/mods modify the taglist before finalizing
 		this.tags = ImmutableList.copyOf(builder.tags);
+		this.miningTags = ImmutableList.copyOf(builder.miningTools);
 
 		this.itemGenerator = builder.generateItems();
 		this.blockGenerator = builder.generateBlocks();

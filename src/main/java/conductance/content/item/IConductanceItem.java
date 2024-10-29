@@ -1,4 +1,4 @@
-package conductance.core;
+package conductance.content.item;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;

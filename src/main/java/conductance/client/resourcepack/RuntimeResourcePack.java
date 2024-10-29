@@ -53,7 +53,8 @@ public final class RuntimeResourcePack extends AbstractRuntimePack {
 
 		// Register built-in listeners
 		addReloadListener(MaterialTextureSetModelHandler::reload);
-		addReloadListener(MaterialModelHandler::reload);
+		addReloadListener(MaterialItemModelHandler::reload);
+		addReloadListener(MaterialBlockModelHandler::reload);
 
 		// TODO reset translationregistry
 	}
@@ -74,6 +75,16 @@ public final class RuntimeResourcePack extends AbstractRuntimePack {
 		RuntimeResourcePack.DATA.put(realLocation, itemModel.toString().getBytes(StandardCharsets.UTF_8));
 	}
 
+	public static void addBlockState(final ResourceLocation location, final JsonElement blockState) {
+		final ResourceLocation realLocation = RuntimeResourcePack.getBlockStateLocation(location);
+		RuntimeResourcePack.writeJson(realLocation, null, blockState);
+		RuntimeResourcePack.DATA.put(realLocation, blockState.toString().getBytes(StandardCharsets.UTF_8));
+	}
+
+	public static void addBlockState(final ResourceLocation location, final Supplier<JsonElement> blockStateGenerator) {
+		RuntimeResourcePack.addBlockState(location, blockStateGenerator.get());
+	}
+
 	public static void addBlockModel(ResourceLocation location, Supplier<JsonElement> blockModelGenerator) {
 		RuntimeResourcePack.addBlockModel(location, blockModelGenerator.get());
 	}
@@ -86,6 +97,10 @@ public final class RuntimeResourcePack extends AbstractRuntimePack {
 
 	private static ResourceLocation getItemModelLocation(final ResourceLocation itemId) {
 		return ResourceLocation.fromNamespaceAndPath(itemId.getNamespace(), String.join("", "models/item/", itemId.getPath(), ".json"));
+	}
+
+	public static ResourceLocation getBlockStateLocation(final ResourceLocation blockId) {
+		return ResourceLocation.fromNamespaceAndPath(blockId.getNamespace(), String.join("", "blockstates/", blockId.getPath(), ".json"));
 	}
 
 	private static ResourceLocation getBlockModelLocation(final ResourceLocation blockId) {

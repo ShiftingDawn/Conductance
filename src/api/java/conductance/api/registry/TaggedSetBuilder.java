@@ -2,6 +2,7 @@ package conductance.api.registry;
 
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -49,6 +50,8 @@ public interface TaggedSetBuilder<TYPE, SET extends TaggedSet<TYPE>, BUILDER ext
 	// endregion
 
 	// region Properties
+	BUILDER miningTool(TagKey<Block> miningTag);
+
 	BUILDER maxStackSize(int maxStackSize);
 
 	BUILDER unitValue(long unitValue);

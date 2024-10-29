@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -25,6 +26,7 @@ import conductance.api.util.TextHelper;
 public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER extends TaggedSetBuilder<TYPE, SET, BUILDER>> implements TaggedSetBuilder<TYPE, SET, BUILDER> {
 
 	final List<TagHandler<TYPE>> tags = new ArrayList<>();
+	final List<TagKey<Block>> miningTools = new ArrayList<>();
 
 	@Getter
 	private final String registryKey;
@@ -176,6 +178,13 @@ public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BU
 		this.unitValue = unitValue;
 		return (BUILDER) this;
 	}
+
+	@Override
+	public BUILDER miningTool(TagKey<Block> miningTag) {
+		this.miningTools.add(miningTag);
+		return (BUILDER) this;
+	}
+
 	// endregion
 
 	static class TagHandler<T> {

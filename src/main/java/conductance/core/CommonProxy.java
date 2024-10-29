@@ -3,6 +3,7 @@ package conductance.core;
 import net.neoforged.bus.api.IEventBus;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.PluginManager;
+import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
 import conductance.init.ConductanceItems;
 
@@ -25,6 +26,8 @@ public class CommonProxy {
 
 		PluginManager.dispatchMaterialOverrides();
 		PluginManager.dispatchMaterialUnitOverrides();
+
 		ConductanceItems.init();
+		ConductanceBlocks.init();
 	}
 }

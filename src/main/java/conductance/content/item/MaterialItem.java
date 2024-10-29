@@ -2,11 +2,12 @@ package conductance.content.item;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
@@ -15,11 +16,12 @@ import conductance.api.NCMaterialTraits;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.material.traits.MaterialTraitDust;
-import conductance.client.resourcepack.MaterialModelHandler;
+import conductance.client.resourcepack.MaterialItemModelHandler;
+import conductance.init.ConductanceCreativeTabs;
 
 @Getter
 @Accessors(fluent = true)
-public class MaterialItem extends Item {
+public class MaterialItem extends ConductanceItem {
 
 	private final Material material;
 	private final TaggedMaterialSet set;
@@ -31,7 +33,7 @@ public class MaterialItem extends Item {
 		this.set = set;
 		this.unlocalizedName = "item.%s.%s".formatted(material.getRegistryKey().getNamespace(), set.getUnlocalizedName(material));
 		if (CAPI.isClient()) {
-			MaterialModelHandler.add(this, material, material.getTextureSet(), set.getTextureType());
+			MaterialItemModelHandler.add(this, material, material.getTextureSet(), set.getTextureType());
 		}
 	}
 
@@ -55,10 +57,10 @@ public class MaterialItem extends Item {
 		return this.getDescription();
 	}
 
-//	@Override
-//	public RegistryEntry<CreativeModeTab, CreativeModeTab> getCreativeTab() {
-//		return ConductanceCreativeTabs.MATERIAL_ITEMS;
-//	}
+	@Override
+	public RegistryEntry<CreativeModeTab, CreativeModeTab> getCreativeTab() {
+		return ConductanceCreativeTabs.MATERIAL_ITEMS;
+	}
 
 	@Override
 	public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {

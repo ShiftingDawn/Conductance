@@ -11,6 +11,8 @@ public class NCMaterialTaggedSets {
 	public static TaggedMaterialSet INGOT;
 	public static TaggedMaterialSet GEM;
 
+	public static TaggedMaterialSet STORAGE_BLOCK;
+
 	// region Predicates
 	public static final Predicate<Material> PREDICATE_HAS_DUST = material -> material.hasTrait(NCMaterialTraits.DUST);
 	public static final Predicate<Material> PREDICATE_HAS_INGOT = material -> material.hasTrait(NCMaterialTraits.INGOT);
