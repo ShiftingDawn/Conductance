@@ -1,4 +1,4 @@
 @NCNonNull
-package conductance.core.util;
+package conductance.core.register;
 
 import conductance.api.util.NCNonNull;

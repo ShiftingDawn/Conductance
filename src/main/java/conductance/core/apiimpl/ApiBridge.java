@@ -8,6 +8,7 @@ import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import conductance.api.CAPI;
 import conductance.Conductance;
 import conductance.core.ConductanceRegistrate;
+import conductance.core.register.MaterialRegistry;
 
 @EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ApiBridge {
@@ -24,6 +25,7 @@ public class ApiBridge {
 		ApiBridge.registrate = ConductanceRegistrate.create(modEventBus);
 		CAPI.REGS = ApiBridge.REGS;
 		CAPI.RESOURCE_FINDER = new ResourceFinderImpl();
+		CAPI.MATERIALS = MaterialRegistry.INSTANCE;
 	}
 
 	@SubscribeEvent

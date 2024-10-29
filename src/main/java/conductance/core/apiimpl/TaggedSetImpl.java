@@ -116,19 +116,16 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 
 	@Override
 	public boolean canGenerateItem(TYPE object) {
-		// TODO handle overrides
 		return this.isItemGenerator() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
 	}
 
 	@Override
 	public boolean canGenerateBlock(TYPE object) {
-		// TODO handle overrides
 		return this.isBlockGenerator() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
 	}
 
 	@Override
 	public boolean canGenerateFluid(TYPE object) {
-		// TODO handle overrides
 		return this.isFluidGenerator() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
 	}
 }

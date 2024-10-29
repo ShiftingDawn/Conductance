@@ -21,6 +21,7 @@ public class CommonProxy {
 		PluginManager.dispatchMaterialTaggedSets();
 		PluginManager.dispatchMaterials();
 
+		PluginManager.dispatchMaterialOverrides();
 		ConductanceItems.init();
 	}
 }

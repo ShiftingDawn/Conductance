@@ -21,6 +21,7 @@ import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.Conductance;
+import conductance.core.register.MaterialOverrideRegister;
 
 public class PluginManager {
 
@@ -107,6 +108,11 @@ public class PluginManager {
 
 	public static void dispatchMaterials() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterials(registryName -> new MaterialBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName))));
+		// TODO KubeJS
+	}
+
+	public static void dispatchMaterialOverrides() {
+		PluginManager.execute((plugin, modid) -> plugin.registerMaterialOverrides(new MaterialOverrideRegister()));
 		// TODO KubeJS
 	}
 
