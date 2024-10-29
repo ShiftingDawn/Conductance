@@ -1,5 +1,6 @@
 repositories {
-    mavenLocal()
+	mavenLocal()
 
-    maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate Fork
+	maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate Fork
+	maven { url = "https://maven.terraformersmc.com/" } // EMI
 }

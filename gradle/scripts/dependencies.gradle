@@ -1,14 +1,18 @@
-def registrate = "MC1.21-1.3.0+55"
+def registrate = "MC1.21-1.3.0+55" // Registrate https://maven.ithundxr.dev/#/snapshots/com/tterrag/registrate/Registrate
+def emi = "1.1.16+1.21.1"
 
 def jetbrainsAnnotations = "26.0.1"
 
 dependencies {
-    // Registrate https://maven.ithundxr.dev/#/snapshots/com/tterrag/registrate/Registrate
-    api("com.tterrag.registrate:Registrate:${registrate}")
-    apiCompileOnly("com.tterrag.registrate:Registrate:${registrate}")
-    jarJar("com.tterrag.registrate:Registrate:${registrate}")
+	api("com.tterrag.registrate:Registrate:${registrate}")
+	apiCompileOnly("com.tterrag.registrate:Registrate:${registrate}")
+	jarJar("com.tterrag.registrate:Registrate:${registrate}")
 
-    compileOnly("org.jetbrains:annotations:${jetbrainsAnnotations}")
+	// EMI
+	compileOnly("dev.emi:emi-neoforge:${emi}:api")
+	runtimeOnly("dev.emi:emi-neoforge:${emi}")
 
-    implementation sourceSets.api.output
+	compileOnly("org.jetbrains:annotations:${jetbrainsAnnotations}")
+
+	implementation sourceSets.api.output
 }
