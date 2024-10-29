@@ -1,0 +1,84 @@
+tasks.named("wrapper", Wrapper).configure {
+	distributionType = Wrapper.DistributionType.BIN
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+sourceSets {
+	api
+}
+
+neoForge {
+	version = project.neo_version
+
+	parchment {
+		mappingsVersion = project.parchment_mappings_version
+		minecraftVersion = project.parchment_minecraft_version
+	}
+
+	accessTransformers = project.files("src/main/resources/META-INF/accesstransformer.cfg")
+
+	addModdingDependenciesTo sourceSets.api
+
+	runs {
+		client {
+			client()
+			systemProperty "neoforge.enabledGameTestNamespaces", project.mod_id
+		}
+
+		server {
+			server()
+			programArgument "--nogui"
+			systemProperty "neoforge.enabledGameTestNamespaces", project.mod_id
+		}
+
+		gameTestServer {
+			type = "gameTestServer"
+			systemProperty "neoforge.enabledGameTestNamespaces", project.mod_id
+		}
+
+		data {
+			data()
+			programArguments.addAll "--mod", project.mod_id, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath()
+		}
+
+		configureEach {
+			systemProperty "forge.logging.markers", "REGISTRIES"
+			logLevel = org.slf4j.event.Level.DEBUG
+		}
+	}
+
+	mods {
+		"${mod_id}" {
+			sourceSet sourceSets.api
+			sourceSet sourceSets.main
+		}
+	}
+}
+
+sourceSets.main.resources { srcDir "src/generated/resources" }
+
+configurations {
+	runtimeClasspath.extendsFrom localRuntime
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = "UTF-8"
+}
+
+idea {
+	module {
+		downloadSources = true
+		downloadJavadoc = true
+	}
+}
+
+spotless {
+	java {
+		importOrder("java|javax|net.minecraft|net.neoforged|com.mojang||conductance.api|conductance|\\#|\\#conductance.api|\\#conductance")
+		cleanthat()
+		eclipse().configFile("$rootDir/gradle/spotless/spotless.eclipseformat.xml")
+
+		target "src/*/java/**/*.java"
+	}
+}
