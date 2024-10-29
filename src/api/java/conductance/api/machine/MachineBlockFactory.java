@@ -1,9 +1,8 @@
 package conductance.api.machine;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-public interface MachineBlockFactory {
+public interface MachineBlockFactory<T extends MetaBlockEntity<T>> {
 
-	Block newInstance(BlockBehaviour.Properties properties, MetaBlockEntityType<?> metaBlockEntityType);
+	MetaBlockEntityBlock<T> newInstance(BlockBehaviour.Properties properties, MetaBlockEntityType<T> metaBlockEntityType);
 }
