@@ -5,6 +5,8 @@ import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.slf4j.Logger;
 import conductance.api.CAPI;
 import conductance.core.CommonProxy;
@@ -23,6 +25,9 @@ public abstract class Conductance {
 		Conductance.PROXY.init(modEventBus);
 
 		modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+		if (CAPI.isClient()) {
+			modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+		}
 	}
 
 	protected abstract CommonProxy createSidedProxy();

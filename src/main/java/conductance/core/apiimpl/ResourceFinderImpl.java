@@ -6,6 +6,7 @@ import net.neoforged.fml.loading.FMLLoader;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.ResourceFinder;
@@ -95,10 +96,16 @@ final class ResourceFinderImpl implements ResourceFinder {
 		if (ResourceFinderImpl.class.getResource(String.format("/assets/%s/%s", resource.getNamespace(), resource.getPath())) != null) {
 			return true;
 		}
-		if (FMLLoader.getDist().isClient() && Minecraft.getInstance() != null && Minecraft.getInstance().getResourceManager() != null) {
+		if (CAPI.isClient() && Minecraft.getInstance() != null && Minecraft.getInstance().getResourceManager() != null) {
 			return Minecraft.getInstance().getResourceManager().getResource(resource).isPresent();
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isTextureValid(ResourceLocation texture) {
+		ResourceLocation location = ResourceLocation.fromNamespaceAndPath(texture.getNamespace(), "textures/%s.png".formatted(texture.getPath()));
+		return this.isResourceValid(location);
 	}
 
 	private SafeOptional<ResourceLocation> getItemTextureCascaded(final MaterialTextureSet set, final MaterialTextureType type, @javax.annotation.Nullable final String prefix, @javax.annotation.Nullable final String suffix) {

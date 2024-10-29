@@ -38,4 +38,6 @@ public interface ResourceFinder {
 	}
 
 	boolean isResourceValid(final ResourceLocation resource);
+
+	boolean isTextureValid(final ResourceLocation texture);
 }

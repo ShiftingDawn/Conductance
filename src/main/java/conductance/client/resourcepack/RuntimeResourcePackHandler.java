@@ -26,7 +26,8 @@ public class RuntimeResourcePackHandler implements RepositorySource {
 
 	@Override
 	public void loadPacks(final Consumer<Pack> consumer) {
-		consumer.accept(Pack.readMetaAndCreate(new PackLocationInfo(RuntimeResourcePackHandler.NAME, Component.literal(RuntimeResourcePackHandler.NAME), PackSource.BUILT_IN, Optional.empty()), new Pack.ResourcesSupplier() {
+		PackLocationInfo info = new PackLocationInfo(RuntimeResourcePackHandler.NAME, Component.literal(RuntimeResourcePackHandler.NAME), PackSource.BUILT_IN, Optional.empty());
+		Pack.ResourcesSupplier resourcesSupplier = new Pack.ResourcesSupplier() {
 
 			@Override
 			public PackResources openPrimary(final PackLocationInfo packLocationInfo) {
@@ -37,7 +38,11 @@ public class RuntimeResourcePackHandler implements RepositorySource {
 			public PackResources openFull(final PackLocationInfo packLocationInfo, final Pack.Metadata metadata) {
 				return this.openPrimary(packLocationInfo);
 			}
-		}, PackType.CLIENT_RESOURCES, new PackSelectionConfig(true, Pack.Position.BOTTOM, true)));
+		};
+		PackType type = PackType.CLIENT_RESOURCES;
+		PackSelectionConfig config = new PackSelectionConfig(true, Pack.Position.BOTTOM, true);
+
+		consumer.accept(Pack.readMetaAndCreate(info, resourcesSupplier, type, config));
 	}
 
 	@SubscribeEvent

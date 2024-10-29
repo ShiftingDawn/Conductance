@@ -6,8 +6,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
+import conductance.client.resourcepack.MaterialModelHandler;
 
 @Getter
 @Accessors(fluent = true)
@@ -20,6 +22,9 @@ public class MaterialItem extends Item {
 		super(properties);
 		this.material = material;
 		this.set = set;
+		if (CAPI.isClient()) {
+			MaterialModelHandler.add(this, material, material.getTextureSet(), set.getTextureType());
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
