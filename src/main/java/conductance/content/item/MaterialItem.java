@@ -69,7 +69,7 @@ public class MaterialItem extends ConductanceItem {
 	@OnlyIn(Dist.CLIENT)
 	public static ItemColor handleColorTint() {
 		return (stack, tintIndex) -> {
-			if ((tintIndex == 0 || tintIndex == 1) && stack.getItem() instanceof final MaterialItem materialItem) {
+			if (tintIndex == 0 && stack.getItem() instanceof final MaterialItem materialItem) {
 				return materialItem.material.getTintColor(tintIndex);
 			}
 			return -1;

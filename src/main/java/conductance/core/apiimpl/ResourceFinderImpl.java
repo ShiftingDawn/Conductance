@@ -10,6 +10,8 @@ import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.ResourceFinder;
 import conductance.api.util.SafeOptional;
+import conductance.Conductance;
+import conductance.Config;
 
 @SuppressWarnings({ "DataFlowIssue", "ConstantValue" })
 final class ResourceFinderImpl implements ResourceFinder {
@@ -77,8 +79,7 @@ final class ResourceFinderImpl implements ResourceFinder {
 	/*
 	 * Textures are stored in the block directory, We cache it in a different table
 	 * to prevent clashes between the placeable fluid-block and the virtual fluid.
-	 */
-	public SafeOptional<ResourceLocation> getFluidTexture(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
+	 */ public SafeOptional<ResourceLocation> getFluidTexture(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
 		pathPrefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
 		pathSuffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
 		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.fluidTextureCache, textureSet, textureType);
@@ -107,23 +108,23 @@ final class ResourceFinderImpl implements ResourceFinder {
 		return this.isResourceValid(location);
 	}
 
-	private SafeOptional<ResourceLocation> getItemTextureCascaded(final MaterialTextureSet set, final MaterialTextureType type, @javax.annotation.Nullable final String prefix, @javax.annotation.Nullable final String suffix) {
+	private SafeOptional<ResourceLocation> getItemTextureCascaded(final MaterialTextureSet set, final MaterialTextureType type, @Nullable final String prefix, @Nullable final String suffix) {
 		return this.getResourceCascaded("textures", "item", set, type, "png", prefix, suffix);
 	}
 
-	private SafeOptional<ResourceLocation> getItemModelCascaded(final MaterialTextureSet set, final MaterialTextureType type, @javax.annotation.Nullable final String prefix, @javax.annotation.Nullable final String suffix) {
+	private SafeOptional<ResourceLocation> getItemModelCascaded(final MaterialTextureSet set, final MaterialTextureType type, @Nullable final String prefix, @Nullable final String suffix) {
 		return this.getResourceCascaded("models", "item", set, type, "json", prefix, suffix);
 	}
 
-	private SafeOptional<ResourceLocation> getBlockTextureCascaded(final MaterialTextureSet set, final MaterialTextureType type, @javax.annotation.Nullable final String prefix, @javax.annotation.Nullable final String suffix) {
+	private SafeOptional<ResourceLocation> getBlockTextureCascaded(final MaterialTextureSet set, final MaterialTextureType type, @Nullable final String prefix, @Nullable final String suffix) {
 		return this.getResourceCascaded("textures", "block", set, type, "png", prefix, suffix);
 	}
 
-	private SafeOptional<ResourceLocation> getBlockModelCascaded(final MaterialTextureSet set, final MaterialTextureType type, @javax.annotation.Nullable final String prefix, @javax.annotation.Nullable final String suffix) {
+	private SafeOptional<ResourceLocation> getBlockModelCascaded(final MaterialTextureSet set, final MaterialTextureType type, @Nullable final String prefix, @Nullable final String suffix) {
 		return this.getResourceCascaded("models", "block", set, type, "json", prefix, suffix);
 	}
 
-	private SafeOptional<ResourceLocation> getResourceCascaded(final String resourceType, final String pathPrepend, final MaterialTextureSet set, final MaterialTextureType type, @javax.annotation.Nullable final String extension, @javax.annotation.Nullable String prefix, @javax.annotation.Nullable String suffix) {
+	private SafeOptional<ResourceLocation> getResourceCascaded(final String resourceType, final String pathPrepend, final MaterialTextureSet set, final MaterialTextureType type, @Nullable final String extension, @Nullable String prefix, @Nullable String suffix) {
 		prefix = prefix == null || prefix.isBlank() ? "" : prefix.endsWith("_") ? prefix : prefix + "_";
 		suffix = suffix == null || suffix.isBlank() ? "" : suffix.startsWith("_") ? suffix : "_" + suffix;
 		MaterialTextureSet currentSet = set;
@@ -136,10 +137,9 @@ final class ResourceFinderImpl implements ResourceFinder {
 		}
 		final ResourceLocation location = ResourceFinderImpl.getResourceUnchecked(pathPrepend, currentSet, type, prefix, suffix);
 		if (!this.isResourceValid(location)) {
-			// CAPI.LOGGER.warn("Could not find cascaded resource {} while looking for: {}",
-			// location, MaterialUtils.getResourceUnchecked("%s/%s".formatted(resourceType,
-			// pathPrepend), set, type, prefix, suffix + (extension != null ? "." +
-			// extension : "")));
+			if (Config.debug_textureSetDebugLogging.get()) {
+				Conductance.LOGGER.warn("Could not find cascaded resource {} while looking for: {}", location, ResourceFinderImpl.getResourceUnchecked("%s/%s".formatted(resourceType, pathPrepend), set, type, prefix, suffix + (extension != null ? "." + extension : "")));
+			}
 			return SafeOptional.ofFallback(location);
 		}
 		return SafeOptional.of(location);

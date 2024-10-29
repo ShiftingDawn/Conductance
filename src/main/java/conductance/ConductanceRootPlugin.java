@@ -1,6 +1,7 @@
 package conductance;
 
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
@@ -62,6 +63,19 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 
 	@Override
 	public void registerMaterialOverrides(MaterialOverrideMap overrides) {
+		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, NCMaterials.IRON, Blocks.IRON_BLOCK);
+		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK,  NCMaterials.GOLD, Blocks.GOLD_BLOCK);
+		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK,  NCMaterials.COPPER, Blocks.COPPER_BLOCK);
 		overrides.add(NCMaterialTaggedSets.INGOT, NCMaterials.IRON, Items.IRON_INGOT);
+		overrides.add(NCMaterialTaggedSets.INGOT,  NCMaterials.GOLD, Items.GOLD_INGOT);
+		overrides.add(NCMaterialTaggedSets.INGOT,  NCMaterials.COPPER, Items.COPPER_INGOT);
+		overrides.add(NCMaterialTaggedSets.NUGGET, NCMaterials.IRON, Items.IRON_NUGGET);
+		overrides.add(NCMaterialTaggedSets.NUGGET, NCMaterials.GOLD, Items.GOLD_NUGGET);
+//		overrides.add(NCMaterialTaggedSets.RAW_ORE, NCMaterials.IRON, Items.RAW_IRON);
+//		overrides.add(NCMaterialTaggedSets.RAW_ORE, NCMaterials.GOLD, Items.RAW_GOLD);
+//		overrides.add(NCMaterialTaggedSets.RAW_ORE, NCMaterials.COPPER, Items.RAW_COPPER);
+//		overrides.add(NCMaterialTaggedSets.RAW_ORE_BLOCK, NCMaterials.IRON, Blocks.RAW_IRON_BLOCK);
+//		overrides.add(NCMaterialTaggedSets.RAW_ORE_BLOCK, NCMaterials.GOLD, Blocks.RAW_GOLD_BLOCK);
+//		overrides.add(NCMaterialTaggedSets.RAW_ORE_BLOCK, NCMaterials.COPPER, Blocks.RAW_COPPER_BLOCK);
 	}
 }

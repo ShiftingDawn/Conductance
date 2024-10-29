@@ -6,7 +6,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import conductance.api.CAPI;
+import conductance.api.NCMaterialTaggedSets;
+import conductance.api.NCMaterials;
 import conductance.content.item.IConductanceItem;
+import conductance.core.register.MaterialRegistry;
 import static conductance.core.apiimpl.ApiBridge.REGISTRATE;
 
 public final class ConductanceCreativeTabs {
@@ -21,19 +25,19 @@ public final class ConductanceCreativeTabs {
 
 	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> MATERIAL_ITEMS = REGISTRATE.defaultCreativeTab("material_items", builder -> builder
 			.displayItems(new TabDisplayGen("material_items"))
-			.icon(() -> new ItemStack(Items.DIAMOND))
+			.icon(() -> CAPI.MATERIALS.getItem(NCMaterialTaggedSets.INGOT, NCMaterials.ALUMINIUM, 1))
 			.title(Component.translatable("itemGroup.conductance.material_items"))
 			.build()
 	).register();
 	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> MATERIAL_BLOCKS = REGISTRATE.defaultCreativeTab("material_blocks", builder -> builder
 			.displayItems(new TabDisplayGen("material_blocks"))
-			.icon(() -> new ItemStack(Items.DIAMOND))
+			.icon(() -> CAPI.MATERIALS.getItem(NCMaterialTaggedSets.STORAGE_BLOCK, NCMaterials.ALUMINIUM, 1))
 			.title(Component.translatable("itemGroup.conductance.material_blocks"))
 			.build()
 	).register();
 	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> MATERIAL_FLUIDS = REGISTRATE.defaultCreativeTab("material_fluids", builder -> builder
 			.displayItems(new TabDisplayGen("material_fluids"))
-			.icon(() -> new ItemStack(Items.BUCKET))
+			.icon(() -> CAPI.MATERIALS.getBucketUnsafe(NCMaterialTaggedSets.LIQUID, NCMaterials.ALUMINIUM).getDefaultInstance())
 			.title(Component.translatable("itemGroup.conductance.material_fluids"))
 			.build()
 	).register();

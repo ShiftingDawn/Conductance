@@ -17,8 +17,11 @@ public class Config {
 			.comment("Disable validity checks for Conductance ore vein generation")
 			.define("disableOreVeinValidityChecks", false);
 	public static ModConfigSpec.IntValue debug_translationRegistryDebugLogging = BUILDER
-			.comment("Disable validity checks for Conductance ore vein generation", "0 = none, 1=custom only, 2=all")
+			.comment("Enable translation registry debug logging", "0 = none, 1=registrations only, 2=registrations and fallbacks")
 			.defineInRange("translationRegistryDebugLogging", 0, 0, 2);
+	public static ModConfigSpec.BooleanValue debug_textureSetDebugLogging = BUILDER
+			.comment("Enable texture set  debug logging")
+			.define("textureSetDebugLogging", false);
 	public static ModConfigSpec.BooleanValue debug_dumpRuntimeResourcePack = BUILDER
 			.comment("Dump the generated ResourcePack to disk", "Will be dumped to .minecraft/" + CAPI.MOD_ID)
 			.define("dumpRuntimeResourcePack", false);
