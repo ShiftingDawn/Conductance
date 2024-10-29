@@ -7,6 +7,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import conductance.api.material.Material;
 
 public interface TaggedSet<TYPE> extends IRegistryObject<String> {
 
@@ -51,4 +52,6 @@ public interface TaggedSet<TYPE> extends IRegistryObject<String> {
 	int getMaxStackSize();
 
 	long getUnitValue();
+
+	long getUnitValue(TYPE object);
 }

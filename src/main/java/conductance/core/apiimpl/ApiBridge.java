@@ -26,6 +26,7 @@ public class ApiBridge {
 		CAPI.REGS = ApiBridge.REGS;
 		CAPI.RESOURCE_FINDER = new ResourceFinderImpl();
 		CAPI.MATERIALS = MaterialRegistry.INSTANCE;
+		CAPI.TRANSLATIONS = TranslationRegistryImpl.INSTANCE;
 	}
 
 	@SubscribeEvent

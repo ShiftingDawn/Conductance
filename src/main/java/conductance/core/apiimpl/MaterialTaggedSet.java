@@ -5,6 +5,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.core.register.MaterialOverrideRegister;
+import conductance.core.register.MaterialUnitOverrideRegister;
 
 public final class MaterialTaggedSet extends TaggedSetImpl<Material> implements TaggedMaterialSet {
 
@@ -29,5 +30,11 @@ public final class MaterialTaggedSet extends TaggedSetImpl<Material> implements 
 	@Override
 	public boolean canGenerateFluid(Material object) {
 		return super.canGenerateFluid(object) && !MaterialOverrideRegister.has(this, object);
+	}
+
+	@Override
+	public long getUnitValue(Material object) {
+		long override = MaterialUnitOverrideRegister.get(this, object);
+		return override > 0 ? override : this.getUnitValue();
 	}
 }

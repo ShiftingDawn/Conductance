@@ -22,6 +22,7 @@ import conductance.api.material.PeriodicElement;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.Conductance;
 import conductance.core.register.MaterialOverrideRegister;
+import conductance.core.register.MaterialUnitOverrideRegister;
 
 public class PluginManager {
 
@@ -113,6 +114,11 @@ public class PluginManager {
 
 	public static void dispatchMaterialOverrides() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterialOverrides(new MaterialOverrideRegister()));
+		// TODO KubeJS
+	}
+
+	public static void dispatchMaterialUnitOverrides() {
+		PluginManager.execute((plugin, modid) -> plugin.registerMaterialUnitOverrides(new MaterialUnitOverrideRegister()));
 		// TODO KubeJS
 	}
 

@@ -53,6 +53,8 @@ public interface Material extends IRegistryObject<ResourceLocation> {
 		return this.getData().getMass();
 	}
 
+	String getUnlocalizedName();
+
 	default String getName() {
 		return this.getRegistryKey().getPath();
 	}
