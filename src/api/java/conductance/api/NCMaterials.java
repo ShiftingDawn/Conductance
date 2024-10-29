@@ -243,6 +243,59 @@ public final class NCMaterials {
 	public static Material BONE;
 	//endregion
 
+	//region Second Order Materials
+	public static Material TUNGSTENSTEEL;
+	public static Material RUBY;
+	public static Material FLINT;
+	public static Material CLAY;
+	public static Material GARNET_SAND;
+	public static Material LAPIS;
+	public static Material COBALT_BRASS;
+	public static Material BLAZE;
+	public static Material ENDER_EYE;
+	public static Material AMETHYST;
+	public static Material DEEPSLATE;
+	//endregion
+
+	//region Third Order Materials
+	public static Material REDSTONE;
+	public static Material BRICK;
+	public static Material DIATOMITE;
+	public static Material HSS_G;
+	//endregion
+
+	//region Higher Order Materials
+	public static Material RED_ALLOY;
+	//endregion
+
+	//region Vanilla Materials
+	public static Material WOOD;
+	public static Material STONE;
+	public static Material GLASS;
+	public static Material NETHER_STAR;
+	//endregion
+
+	//region Simple Chemistry
+	public static Material RUBBER;
+	public static Material HYDROCHLORIC_ACID;
+	public static Material GLUE;
+	public static Material HYDROGEN_SULFIDE;
+	//endregion
+
+	//region Misc Materials
+	public static Material CREOSOTE_OIL;
+	public static Material LUBRICANT;
+	public static Material OIL;
+	public static Material SULFURIC_NAPHTHA;
+	public static Material SULFURIC_LIGHT_FUEL;
+	public static Material SULFURIC_HEAVY_FUEL;
+	public static Material SULFURIC_GAS;
+	public static Material NAPHTHA;
+	public static Material LIGHT_FUEL;
+	public static Material HEAVY_FUEL;
+	public static Material REFINERY_GAS;
+	//endregion
+
 	private NCMaterials() {
 	}
 }

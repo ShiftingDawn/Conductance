@@ -5,6 +5,7 @@ import conductance.api.CAPI;
 import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCTextureTypes;
+import conductance.api.material.Material;
 import conductance.api.plugin.MaterialTaggedSetRegister;
 import static conductance.api.NCMaterialTaggedSets.BOLT;
 import static conductance.api.NCMaterialTaggedSets.DUST;
@@ -42,7 +43,7 @@ public final class ConductanceMaterialTaggedSets {
 
 	//@formatter:off
 	public static void init(final MaterialTaggedSetRegister register) {
-		DUST = register.register("dust")
+		DUST = register.register("dust", ConductanceMaterialTaggedSets::dustUnlocalizedNameGenerator)
 				.addTag("dusts/%s")
 				.addTagUnformatted("dusts")
 				.unitValue(CAPI.UNIT)
@@ -51,7 +52,7 @@ public final class ConductanceMaterialTaggedSets {
 				.generatorPredicate(PREDICATE_HAS_DUST)
 				.build();
 
-		INGOT = register.register("ingot")
+		INGOT = register.register("ingot", ConductanceMaterialTaggedSets::ingotUnlocalizedNameGenerator)
 				.addTag("ingots/%s")
 				.addTagUnformatted("ingots")
 				.unitValue(CAPI.UNIT)
@@ -162,7 +163,7 @@ public final class ConductanceMaterialTaggedSets {
 				))
 				.build();
 
-		PLATE = register.register("plate")
+		PLATE = register.register("plate", ConductanceMaterialTaggedSets::plateUnlocalizedNameGenerator)
 				.addTag("plates/%s")
 				.addTagUnformatted("plates")
 				.unitValue(CAPI.UNIT)
@@ -170,7 +171,7 @@ public final class ConductanceMaterialTaggedSets {
 				.textureType(NCTextureTypes.PLATE)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE))
 				.build();
-		PLATE_DOUBLE = register.register("double_plate", "double_%s_plate")
+		PLATE_DOUBLE = register.register("double_plate", ConductanceMaterialTaggedSets::plateDoubleUnlocalizedNameGenerator)
 				.addTag("double_plates/%s")
 				.addTagUnformatted("double_plates")
 				.unitValue(CAPI.UNIT * 2)
@@ -178,7 +179,7 @@ public final class ConductanceMaterialTaggedSets {
 				.textureType(NCTextureTypes.PLATE_DOUBLE)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE))
 				.build();
-		PLATE_DENSE = register.register("dense_plate", "dense_%s_plate")
+		PLATE_DENSE = register.register("dense_plate", ConductanceMaterialTaggedSets::plateDenseUnlocalizedNameGenerator)
 				.addTag("dense_plates/%s")
 				.addTagUnformatted("dense_plates")
 				.unitValue(CAPI.UNIT * 9)
@@ -186,7 +187,7 @@ public final class ConductanceMaterialTaggedSets {
 				.textureType(NCTextureTypes.PLATE_DENSE)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE))
 				.build();
-		FOIL = register.register("foil")
+		FOIL = register.register("foil", ConductanceMaterialTaggedSets::foilUnlocalizedNameGenerator)
 				.addTag("foils/%s")
 				.addTagUnformatted("foils")
 				.unitValue(CAPI.UNIT / 4)
@@ -281,6 +282,54 @@ public final class ConductanceMaterialTaggedSets {
 				.build();
 	}
 	//@formatter:on
+
+	private static String dustUnlocalizedNameGenerator(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC) || material.hasTrait(NCMaterialTraits.WOOD)) {
+			return "%s_pulp";
+		}
+		return "%s_dust";
+	}
+
+	private static String ingotUnlocalizedNameGenerator(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC)) {
+			return "%s_bar";
+		}
+		return "%s_ingot";
+	}
+
+	private static String plateUnlocalizedNameGenerator(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC)) {
+			return "%s_sheet";
+		}
+		if (material.hasTrait(NCMaterialTraits.WOOD)) {
+			return "%s_plank";
+		}
+		return "%s_plate";
+	}
+
+	private static String plateDoubleUnlocalizedNameGenerator(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC)) {
+			return "stitched_%s_sheet";
+		}
+		if (material.hasTrait(NCMaterialTraits.WOOD)) {
+			return "double_%s_plank";
+		}
+		return "double_%s_plate";
+	}
+
+	private static String plateDenseUnlocalizedNameGenerator(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC)) {
+			return "compressed_%s_sheet";
+		}
+		return "dense_%s_plate";
+	}
+
+	private static String foilUnlocalizedNameGenerator(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC)) {
+			return "thin_%s_sheet";
+		}
+		return "%s_foil";
+	}
 
 	private ConductanceMaterialTaggedSets() {
 	}

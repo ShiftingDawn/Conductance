@@ -5,6 +5,7 @@ import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
 import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.material.traits.MaterialTraitOre;
+import conductance.api.material.traits.MaterialTraitWood;
 import conductance.api.plugin.MaterialTraitRegister;
 import static conductance.api.NCMaterialTraits.DUST;
 import static conductance.api.NCMaterialTraits.GAS;
@@ -13,6 +14,7 @@ import static conductance.api.NCMaterialTraits.INGOT;
 import static conductance.api.NCMaterialTraits.LIQUID;
 import static conductance.api.NCMaterialTraits.ORE;
 import static conductance.api.NCMaterialTraits.PLASMA;
+import static conductance.api.NCMaterialTraits.WOOD;
 
 public final class ConductanceMaterialTraits {
 
@@ -21,6 +23,7 @@ public final class ConductanceMaterialTraits {
 		INGOT = register.register("ingot", MaterialTraitIngot.class);
 		GEM = register.register("gem", MaterialTraitGem.class);
 		ORE = register.register("ore", MaterialTraitOre.class);
+		WOOD = register.register("wood", MaterialTraitWood.class);
 
 		LIQUID = register.register("liquid", MaterialTraitFluid.Liquid.class);
 		GAS = register.register("gas", MaterialTraitFluid.Gas.class);
