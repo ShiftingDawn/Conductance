@@ -55,6 +55,11 @@ public class MaterialItem extends Item {
 		return this.getDescription();
 	}
 
+//	@Override
+//	public RegistryEntry<CreativeModeTab, CreativeModeTab> getCreativeTab() {
+//		return ConductanceCreativeTabs.MATERIAL_ITEMS;
+//	}
+
 	@Override
 	public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
 		final MaterialTraitDust dust = this.material == null ? null : this.material.getTrait(NCMaterialTraits.DUST);

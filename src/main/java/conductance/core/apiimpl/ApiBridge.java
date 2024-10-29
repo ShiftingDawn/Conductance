@@ -19,10 +19,10 @@ public class ApiBridge {
 
 	public static final ConductanceRegistryImpl<ResourceLocation, ConductanceRegistryImpl<?, ?>> REGISTRIES = new ConductanceRegistryImpl.ResourceKeyed<>(Conductance.id("root"));
 	public static final RegistryProviderImpl REGS = new RegistryProviderImpl();
-	public static ConductanceRegistrate registrate;
+	public static ConductanceRegistrate REGISTRATE;
 
 	public static void init(IEventBus modEventBus) {
-		ApiBridge.registrate = ConductanceRegistrate.create(modEventBus);
+		ApiBridge.REGISTRATE = ConductanceRegistrate.create(modEventBus);
 		CAPI.REGS = ApiBridge.REGS;
 		CAPI.RESOURCE_FINDER = new ResourceFinderImpl();
 		CAPI.MATERIALS = MaterialRegistry.INSTANCE;

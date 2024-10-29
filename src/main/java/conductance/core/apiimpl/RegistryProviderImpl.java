@@ -34,7 +34,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 
 	@Override
 	public NCRegistrate registrate() {
-		return ApiBridge.registrate;
+		return ApiBridge.REGISTRATE;
 	}
 
 	private static <VALUE extends IRegistryObject<String>> ConductanceRegistryImpl<String, VALUE> makeStringKeyed(final String registryName) {
