@@ -14,9 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public interface TaggedSetBuilder<TYPE, SET extends TaggedSet<TYPE>, BUILDER extends TaggedSetBuilder<TYPE, SET, BUILDER>> {
 
 	// region Tags
-	BUILDER addTagLoader(String tagPathFactory);
-
-	BUILDER addTagCommon(String tagPathFactory);
+	BUILDER addTag(String tagPathFactory);
 
 	BUILDER addTagMod(String tagPathFactory);
 
@@ -24,9 +22,7 @@ public interface TaggedSetBuilder<TYPE, SET extends TaggedSet<TYPE>, BUILDER ext
 	// endregion
 
 	// region Unformatted Tags
-	BUILDER addTagLoaderUnformatted(String tagPathFactory);
-
-	BUILDER addTagCommonUnformatted(String tagPathFactory);
+	BUILDER addTagUnformatted(String tagPathFactory);
 
 	BUILDER addTagModUnformatted(String tagPathFactory);
 

@@ -75,13 +75,7 @@ public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BU
 
 	// region Formatted Tags
 	@Override
-	public BUILDER addTagLoader(final String tagPathFactory) {
-		this.tags.add(new TagHandler<>("neoforge", tagPathFactory, this.objectSerializer, false));
-		return (BUILDER) this;
-	}
-
-	@Override
-	public BUILDER addTagCommon(final String tagPathFactory) {
+	public BUILDER addTag(final String tagPathFactory) {
 		this.tags.add(new TagHandler<>("c", tagPathFactory, this.objectSerializer, false));
 		return (BUILDER) this;
 	}
@@ -101,13 +95,7 @@ public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BU
 
 	// region Unformatted Tags
 	@Override
-	public BUILDER addTagLoaderUnformatted(final String tagPathFactory) {
-		this.tags.add(new TagHandler<>("neoforge", tagPathFactory, ignored -> tagPathFactory, true));
-		return (BUILDER) this;
-	}
-
-	@Override
-	public BUILDER addTagCommonUnformatted(final String tagPathFactory) {
+	public BUILDER addTagUnformatted(final String tagPathFactory) {
 		this.tags.add(new TagHandler<>("c", tagPathFactory, ignored -> tagPathFactory, true));
 		return (BUILDER) this;
 	}
