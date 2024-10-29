@@ -6,9 +6,9 @@ import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
-import conductance.client.resourcepack.MaterialFluidModelHandler;
-import conductance.content.fluid.MaterialBucketItem;
-import conductance.content.fluid.MaterialFluidType;
+import conductance.runtimepack.client.MaterialFluidModelHandler;
+import conductance.fluid.MaterialBucketItem;
+import conductance.fluid.MaterialFluidType;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.MaterialTaggedSet;
 

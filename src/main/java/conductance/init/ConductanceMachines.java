@@ -1,7 +1,7 @@
 package conductance.init;
 
 import conductance.api.plugin.MachineRegister;
-import conductance.content.machine.RecipeMachine;
+import conductance.machine.RecipeMachine;
 
 public final class ConductanceMachines {
 

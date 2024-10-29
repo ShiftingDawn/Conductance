@@ -12,7 +12,7 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialTaggedSets;
 import conductance.api.NCMaterials;
-import conductance.content.item.IConductanceItem;
+import conductance.item.IConductanceItem;
 import static conductance.core.apiimpl.ApiBridge.getRegistrate;
 
 public final class ConductanceCreativeTabs {

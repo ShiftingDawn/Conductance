@@ -9,7 +9,7 @@ import conductance.api.material.TaggedMaterialSet;
 import conductance.api.plugin.TagRegister;
 import conductance.api.util.Marker;
 import conductance.api.util.MiscUtils;
-import conductance.core.datapack.TagGenerationHandler;
+import conductance.runtimepack.server.TagGenerationHandler;
 
 final class TagRegisterImpl implements TagRegister {
 

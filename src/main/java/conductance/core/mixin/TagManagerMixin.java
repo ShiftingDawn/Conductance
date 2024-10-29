@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import conductance.core.datapack.IConductanceTagLoader;
+import conductance.runtimepack.server.IConductanceTagLoader;
 
 @SuppressWarnings("unchecked")
 @Mixin(TagManager.class)

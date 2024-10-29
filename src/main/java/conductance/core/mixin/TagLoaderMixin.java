@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import conductance.core.datapack.IConductanceTagLoader;
-import conductance.core.datapack.TagGenerationHandler;
+import conductance.runtimepack.server.IConductanceTagLoader;
+import conductance.runtimepack.server.TagGenerationHandler;
 
 @Mixin(TagLoader.class)
 public class TagLoaderMixin<T> implements IConductanceTagLoader<T> {

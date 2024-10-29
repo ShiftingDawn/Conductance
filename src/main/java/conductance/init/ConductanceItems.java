@@ -6,8 +6,8 @@ import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
-import conductance.content.item.CraftingToolItem;
-import conductance.content.item.MaterialItem;
+import conductance.item.CraftingToolItem;
+import conductance.item.MaterialItem;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.MaterialTaggedSet;
 

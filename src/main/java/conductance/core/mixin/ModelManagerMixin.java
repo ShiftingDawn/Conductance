@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import conductance.client.resourcepack.RuntimeResourcePack;
+import conductance.runtimepack.client.RuntimeResourcePack;
 
 @Mixin(ModelManager.class)
 public class ModelManagerMixin {
