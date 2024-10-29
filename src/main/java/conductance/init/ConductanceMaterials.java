@@ -9,7 +9,7 @@ import static conductance.api.NCMaterialFlags.METAL_ALL;
 public final class ConductanceMaterials {
 
 	public static void init(final MaterialRegister register) {
-		NCMaterials.IRON = register.register("iron").ingot().liquid(1811).plasma().ore().color(200, 200, 200)
+		NCMaterials.IRON = register.register("iron").ingot().liquid(1811).plasma().ore().color(255, 0, 0)// .color(200, 200, 200)
 //				.textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL, CAN_MORTAR).periodicElement(NCPeriodicElements.IRON)
 //				.cable(CTiers.TIER_MV, 2, 3)

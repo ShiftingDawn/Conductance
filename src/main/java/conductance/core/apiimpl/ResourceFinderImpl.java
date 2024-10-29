@@ -6,7 +6,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.material.Material;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.ResourceFinder;
@@ -36,15 +35,6 @@ final class ResourceFinderImpl implements ResourceFinder {
 	}
 
 	@Override
-	public SafeOptional<ResourceLocation> getItemTexture(final Material material, final MaterialTextureType type, @Nullable final String fallbackPathPrefix, @Nullable final String fallbackPathSuffix) {
-		final ResourceLocation customTexture = material.getRegistryKey().withPath("textures/item/material_custom/%s/%s.png".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath()));
-		if (this.isResourceValid(customTexture)) {
-			return SafeOptional.of(material.getRegistryKey().withPath("item/material_custom/%s/%s".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath())));
-		}
-		return this.getItemTexture(material.getTextureSet(), type, fallbackPathPrefix, fallbackPathSuffix);
-	}
-
-	@Override
 	public SafeOptional<ResourceLocation> getItemModel(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
 		pathPrefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
 		pathSuffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
@@ -68,15 +58,6 @@ final class ResourceFinderImpl implements ResourceFinder {
 		final SafeOptional<ResourceLocation> resource = this.getBlockTextureCascaded(textureSet, textureType, pathPrefix, pathSuffix);
 		rootTable.put(pathPrefix, pathSuffix, resource);
 		return resource;
-	}
-
-	@Override
-	public SafeOptional<ResourceLocation> getBlockTexture(final Material material, final MaterialTextureType type, @Nullable final String fallbackPathPrefix, @Nullable final String fallbackPathSuffix) {
-		final ResourceLocation customTexture = material.getRegistryKey().withPath("textures/block/material_custom/%s/%s.png".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath()));
-		if (this.isResourceValid(customTexture)) {
-			return SafeOptional.of(material.getRegistryKey().withPath("block/material_custom/%s/%s".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath())));
-		}
-		return this.getBlockTexture(material.getTextureSet(), type, fallbackPathPrefix, fallbackPathSuffix);
 	}
 
 	@Override
@@ -107,15 +88,6 @@ final class ResourceFinderImpl implements ResourceFinder {
 		final SafeOptional<ResourceLocation> resource = this.getBlockTextureCascaded(textureSet, textureType, pathPrefix, pathSuffix);
 		rootTable.put(pathPrefix, pathSuffix, resource);
 		return resource;
-	}
-
-	@Override
-	public SafeOptional<ResourceLocation> getFluidTexture(final Material material, final MaterialTextureType type, @Nullable final String fallbackPathPrefix, @Nullable final String fallbackPathSuffix) {
-		final ResourceLocation customTexture = material.getRegistryKey().withPath("textures/block/material_custom/%s/%s.png".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath()));
-		if (this.isResourceValid(customTexture)) {
-			return SafeOptional.of(material.getRegistryKey().withPath("block/material_custom/%s/%s".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath())));
-		}
-		return this.getFluidTexture(material.getTextureSet(), type, fallbackPathPrefix, fallbackPathSuffix);
 	}
 
 	@Override

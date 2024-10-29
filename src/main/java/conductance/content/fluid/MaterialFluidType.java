@@ -7,6 +7,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
+import conductance.client.resourcepack.ResourceHelper;
 
 @SuppressWarnings("removal")
 public class MaterialFluidType extends FluidType {
@@ -25,8 +26,17 @@ public class MaterialFluidType extends FluidType {
 		consumer.accept(new IClientFluidTypeExtensions() {
 
 			@Override
+			public int getTintColor() {
+				return MaterialFluidType.this.material.getMaterialColorARGB();
+			}
+
+			@Override
 			public ResourceLocation getStillTexture() {
-				return CAPI.RESOURCE_FINDER.getFluidTexture(MaterialFluidType.this.material, MaterialFluidType.this.set.getTextureType()).getValue();
+				final ResourceLocation texture = ResourceHelper.getCustomFluidTexture(MaterialFluidType.this.material, MaterialFluidType.this.set.getTextureType());
+				if (texture != null) {
+					return texture;
+				}
+				return CAPI.RESOURCE_FINDER.getFluidTexture(MaterialFluidType.this.material.getTextureSet(), MaterialFluidType.this.set.getTextureType(), null, null).getValue();
 			}
 
 			@Override

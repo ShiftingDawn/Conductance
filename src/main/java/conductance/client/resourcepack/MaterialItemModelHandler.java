@@ -9,8 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.Nullable;
-import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
@@ -25,16 +23,16 @@ public final class MaterialItemModelHandler {
 	private final MaterialTextureSet set;
 	private final MaterialTextureType type;
 
-	public static void add(Item item, Material material, MaterialTextureSet set, MaterialTextureType type) {
+	public static void add(final Item item, final Material material, final MaterialTextureSet set, final MaterialTextureType type) {
 		MaterialItemModelHandler.MODELS.add(new MaterialItemModelHandler(item, material, set, type));
 	}
 
 	static void reload() {
 		MaterialItemModelHandler.MODELS.forEach(model -> {
-			ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
-			ResourceLocation custom = getCustomTexture(model);
+			final ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
+			final ResourceLocation custom = ResourceHelper.getCustomItemTexture(model.material, model.type);
 			if (custom == null) {
-				RuntimeResourcePack.addItemModel(itemId, new DelegatedModel(model.type.getItemModel(model.set).getValue()));
+				RuntimeResourcePack.addItemModel(itemId, new DelegatedModel(model.type.getItemModel(model.set, null, null).getValue()));
 			} else {
 				RuntimeResourcePack.addItemModel(itemId, () -> Util.make(new JsonObject(), json -> {
 					json.addProperty("parent", "item/generated");
@@ -42,14 +40,5 @@ public final class MaterialItemModelHandler {
 				}));
 			}
 		});
-	}
-
-	@Nullable
-	private static ResourceLocation getCustomTexture(MaterialItemModelHandler handler) {
-		final ResourceLocation checkTexture = handler.material.getRegistryKey().withPath("textures/item/material_custom/%s/%s.png".formatted(handler.material.getRegistryKey().getPath(), handler.type.getRegistryKey().getPath()));
-		if (CAPI.RESOURCE_FINDER.isResourceValid(checkTexture)) {
-			return handler.material.getRegistryKey().withPath("item/material_custom/%s/%s".formatted(handler.material.getRegistryKey().getPath(), handler.type.getRegistryKey().getPath()));
-		}
-		return null;
 	}
 }
