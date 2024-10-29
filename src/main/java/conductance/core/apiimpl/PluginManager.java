@@ -22,9 +22,11 @@ import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.Conductance;
+import conductance.core.machine.MachineBuilderImpl;
 import conductance.core.register.MaterialOverrideRegister;
 import conductance.core.register.MaterialUnitOverrideRegister;
 
+//TODO add KubeJS event dispatches to plugin dispatches
 public final class PluginManager {
 
 	private static final HashMap<IConductancePlugin, String> PLUGINS = new HashMap<>();
@@ -66,21 +68,18 @@ public final class PluginManager {
 				new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null), result -> {
 					CAPI.regs().periodicElements().register(result.getRegistryKey(), result);
 				})));
-		// TODO KubeJS
 	}
 
 	public static void dispatchMaterialTextureTypes() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTextureTypes(registryName -> Util.make(new MaterialTextureType(ResourceLocation.fromNamespaceAndPath(modid, registryName)), result -> {
 			CAPI.regs().materialTextureTypes().register(result.getRegistryKey(), result);
 		})));
-		// TODO KubeJS
 	}
 
 	public static void dispatchMaterialTextureSets() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTextureSets((registryName, parentSetName) -> Util.make(new MaterialTextureSet(registryName, parentSetName), result -> {
 			CAPI.regs().materialTextureSets().register(result.getRegistryKey(), result);
 		})));
-		// TODO KubeJS
 	}
 
 	public static void dispatchMaterialTraits() {
@@ -88,12 +87,11 @@ public final class PluginManager {
 
 			@Override
 			public <T extends IMaterialTrait<T>> MaterialTraitKey<T> register(final String name, final Class<T> typeClass) {
-				return Util.make(new MaterialTraitKey<T>(ResourceLocation.fromNamespaceAndPath(modid, name), typeClass), result -> {
+				return Util.make(new MaterialTraitKey<>(ResourceLocation.fromNamespaceAndPath(modid, name), typeClass), result -> {
 					CAPI.regs().materialTraits().register(result.getRegistryKey(), result);
 				});
 			}
 		}));
-		// TODO KubeJS
 	}
 
 	public static void dispatchMaterialFlags() {
@@ -102,7 +100,6 @@ public final class PluginManager {
 			CAPI.regs().materialFlags().register(result.getRegistryKey(), result);
 			return result;
 		}));
-		// TODO KubeJS
 	}
 
 	public static void dispatchMaterialOreTypes() {
@@ -113,32 +110,30 @@ public final class PluginManager {
 					CAPI.regs().materialOreTypes().register(result.getRegistryKey(), result);
 					return result;
 				}));
-		// TODO KubeJS
 	}
 
 	public static void dispatchMaterialTaggedSets() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTaggedSets(MaterialTaggedSetBuilder::new));
-		// TODO KubeJS
 	}
 
 	public static void dispatchMaterials() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterials(registryName -> new MaterialBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName))));
-		// TODO KubeJS
 	}
 
 	public static void dispatchMaterialOverrides() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterialOverrides(new MaterialOverrideRegister()));
-		// TODO KubeJS
 	}
 
 	public static void dispatchMaterialUnitOverrides() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterialUnitOverrides(new MaterialUnitOverrideRegister()));
-		// TODO KubeJS
 	}
 
 	public static void dispatchTagRegister() {
 		PluginManager.execute((plugin, modid) -> plugin.registerTags(TagRegisterImpl.INSTANCE));
-		// TODO KubeJS
+	}
+
+	public static void dispatchRegisterMachines() {
+		PluginManager.execute((plugin, modid) -> plugin.registerMachines(MachineBuilderImpl::new));
 	}
 
 	private static void execute(final BiConsumer<IConductancePlugin, String> executor) {

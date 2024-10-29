@@ -60,6 +60,7 @@ public final class RuntimeResourcePack extends AbstractRuntimePack {
 		RuntimeResourcePack.addReloadListener(MaterialBlockModelHandler::reload);
 		RuntimeResourcePack.addReloadListener(MaterialOreModelHandler::reload);
 		RuntimeResourcePack.addReloadListener(MaterialFluidModelHandler::reload);
+		RuntimeResourcePack.addReloadListener(MachineModelHandler::reload);
 	}
 
 	public static void load() {

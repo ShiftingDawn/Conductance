@@ -22,9 +22,14 @@ public final class ConductanceBlocks {
 	public static void init() {
 		CAPI.regs().materials().forEach(material -> CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.canGenerateBlock(material)).forEach(set -> {
 			final String name = set.getUnlocalizedName(material);
-			final BlockBuilder<MaterialBlock, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> new MaterialBlock(props, material, set)).initialProperties(() -> Blocks.IRON_BLOCK)
-					.setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop()).color(() -> MaterialBlock::handleColorTint).item(MaterialBlockItem::new).model(NonNullBiConsumer.noop())
-					.color(() -> MaterialBlockItem::handleColorTint).build();
+			final BlockBuilder<MaterialBlock, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> new MaterialBlock(props, material, set))
+					.initialProperties(() -> Blocks.IRON_BLOCK)
+					.setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
+					.color(() -> MaterialBlock::handleColorTint)
+					.item(MaterialBlockItem::new)
+						.model(NonNullBiConsumer.noop())
+						.color(() -> MaterialBlockItem::handleColorTint)
+						.build();
 			if (((MaterialTaggedSet) set).getBlockGeneratorCallback() != null) {
 				((MaterialTaggedSet) set).getBlockGeneratorCallback().accept(material, blockBuilder);
 			}
@@ -35,8 +40,14 @@ public final class ConductanceBlocks {
 			final BlockBuilder<? extends Block, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> switch (((MaterialOreTypeImpl) oreType).getOreBlockType()) {
 						case DEFAULT -> new MaterialOreBlock(props, material, oreType);
 						case PILLAR -> new MaterialOreRotatedPillarBlock(props, material, oreType);
-					}).initialProperties(() -> Blocks.STONE).setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop()).color(() -> MaterialOreBlock::handleColorTint).item(MaterialOreBlockItem::new)
-					.model(NonNullBiConsumer.noop()).color(() -> MaterialOreBlockItem::handleColorTint).build();
+					})
+					.initialProperties(() -> Blocks.STONE)
+					.setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
+					.color(() -> MaterialOreBlock::handleColorTint)
+					.item(MaterialOreBlockItem::new)
+						.model(NonNullBiConsumer.noop())
+						.color(() -> MaterialOreBlockItem::handleColorTint)
+						.build();
 			blockBuilder.register();
 		}));
 	}

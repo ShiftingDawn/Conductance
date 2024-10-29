@@ -3,6 +3,7 @@ package conductance.core.apiimpl;
 import net.minecraft.resources.ResourceLocation;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import conductance.api.machine.MetaBlockEntityType;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialOreType;
@@ -30,6 +31,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final ConductanceRegistry<ResourceLocation, MaterialOreType> materialOreTypes = RegistryProviderImpl.makeResourceKeyed("material_ore_type");
 	private final ConductanceRegistry<String, TaggedMaterialSet> materialTaggedSets = RegistryProviderImpl.makeStringKeyed("material_tagged_set");
 	private final ConductanceRegistry<ResourceLocation, Material> materials = RegistryProviderImpl.makeResourceKeyed("material");
+	private final ConductanceRegistry<String, MetaBlockEntityType<?>> metaBlockEntities = RegistryProviderImpl.makeStringKeyed("meta_block_entity_type");
 
 	RegistryProviderImpl() {
 	}

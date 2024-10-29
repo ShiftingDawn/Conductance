@@ -32,6 +32,8 @@ public final class CommonProxy {
 		ConductanceItems.init();
 		ConductanceBlocks.init();
 		ConductanceFluids.init();
+
+		PluginManager.dispatchRegisterMachines();
 	}
 
 	private CommonProxy() {

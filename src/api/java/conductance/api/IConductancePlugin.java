@@ -1,5 +1,6 @@
 package conductance.api;
 
+import conductance.api.plugin.MachineRegister;
 import conductance.api.plugin.MaterialFlagRegister;
 import conductance.api.plugin.MaterialOreTypeRegister;
 import conductance.api.plugin.MaterialOverrideMap;
@@ -45,5 +46,8 @@ public interface IConductancePlugin {
 	}
 
 	default void registerTags(final TagRegister tags) {
+	}
+
+	default void registerMachines(final MachineRegister register) {
 	}
 }
