@@ -30,8 +30,13 @@ public class MaterialTextureSetModelHandler {
 			json.add("textures", Util.make(new JsonObject(), textures -> {
 				textures.addProperty("layer0", type.getItemTexture(set, null, null).getValue().toString());
 
-				for (int i = 1; i <= 5; ++i) {
-					final SafeOptional<ResourceLocation> extraOverlay = type.getItemTexture(set, null, "overlay" + (i == 1 ? "" : i));
+				final ResourceLocation magneticOverlayTexture = ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(), "item/material/" + set.getRegistryKey() + "/magnetic_overlay");
+				if (CAPI.RESOURCE_FINDER.isTextureValid(magneticOverlayTexture)) {
+					textures.addProperty("layer" + textures.size(), magneticOverlayTexture.toString());
+				}
+
+				for (int i = 0; i <= (textures.size() == 1 ? 4 : 3); ++i) {
+					final SafeOptional<ResourceLocation> extraOverlay = type.getItemTexture(set, null, "overlay" + (i == 0 ? "" : i + 1));
 					if (CAPI.RESOURCE_FINDER.isTextureValid(extraOverlay.getValue())) {
 						textures.addProperty("layer" + textures.size(), extraOverlay.getValue().toString());
 					}

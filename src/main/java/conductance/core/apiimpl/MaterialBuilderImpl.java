@@ -240,6 +240,8 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder ore() {
+		this.dust();
+		//TODO ore
 		return this;
 	}
 
