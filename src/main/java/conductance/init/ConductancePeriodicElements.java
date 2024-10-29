@@ -135,4 +135,7 @@ public final class ConductancePeriodicElements {
 		NCPeriodicElements.INFINITY = builder.create(1000000, 1000000, "Infinity", "If", null);
 		NCPeriodicElements.SPACETIME = builder.create(10000000, 10000000, "SpaceTime", "Sp", null);
 	}
+
+	private ConductancePeriodicElements() {
+	}
 }

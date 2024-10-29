@@ -36,7 +36,7 @@ public class MaterialBucketItem extends BucketItem implements IConductanceItem {
 
 	@Override
 	public Component getDescription() {
-		return CAPI.TRANSLATIONS.makeLocalizedName(this);
+		return CAPI.translations().makeLocalizedName(this);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class MaterialBucketItem extends BucketItem implements IConductanceItem {
 	public static ItemColor handleColorTint() {
 		return (stack, tintIndex) -> {
 			if (tintIndex == 1 && stack.getItem() instanceof final MaterialBucketItem bucket) {
-				return ((MaterialFluidType) bucket.content.getFluidType()).material.getTintColor(tintIndex);
+				return ((MaterialFluidType) bucket.content.getFluidType()).getMaterial().getTintColor(tintIndex);
 			}
 			return -1;
 		};

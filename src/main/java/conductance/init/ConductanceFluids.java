@@ -15,18 +15,23 @@ import conductance.core.apiimpl.MaterialTaggedSet;
 public final class ConductanceFluids {
 
 	public static void init() {
-		CAPI.REGS.materials().forEach(material -> CAPI.REGS.materialTaggedSets().values().stream().filter(set -> set.canGenerateFluid(material)).forEach(set -> {
+		CAPI.regs().materials().forEach(material -> CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.canGenerateFluid(material)).forEach(set -> {
 			final String name = set.getUnlocalizedName(material);
-			ApiBridge.REGISTRATE.object(name);
-			final FluidBuilder<BaseFlowingFluid.Flowing, Registrate> fluidBuilder = ApiBridge.REGISTRATE.fluid(name, ((properties, stillTexture, flowingTexture) -> new MaterialFluidType(material, set, properties))).noBlock().noBucket();
-			fluidBuilder.getOwner().item(fluidBuilder, name + "_bucket", p -> new MaterialBucketItem(fluidBuilder.getEntry(), p)).properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1)).color(() -> MaterialBucketItem::handleColorTint).model(NonNullBiConsumer.noop()).build();
+			ApiBridge.getRegistrate().object(name);
+			final FluidBuilder<BaseFlowingFluid.Flowing, Registrate> fluidBuilder = ApiBridge.getRegistrate().fluid(name, ((properties, stillTexture, flowingTexture) -> new MaterialFluidType(material, set, properties)))
+					.noBlock().noBucket();
+			fluidBuilder.getOwner().item(fluidBuilder, name + "_bucket", p -> new MaterialBucketItem(fluidBuilder.getEntry(), p)).properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
+					.color(() -> MaterialBucketItem::handleColorTint).model(NonNullBiConsumer.noop()).build();
 			if (((MaterialTaggedSet) set).getFluidGeneratorCallback() != null) {
 				((MaterialTaggedSet) set).getFluidGeneratorCallback().accept(material, fluidBuilder);
 			}
 			if (CAPI.isClient()) {
 				fluidBuilder.onRegister(fluid -> MaterialFluidModelHandler.add(fluid, material, set));
 			}
-			CAPI.MATERIALS.register(set, material, fluidBuilder.register());
+			CAPI.materials().register(set, material, fluidBuilder.register());
 		}));
+	}
+
+	private ConductanceFluids() {
 	}
 }

@@ -25,8 +25,8 @@ import static conductance.api.NCTextureSets.WOOD;
 
 public final class ConductanceMaterialTextureSets {
 
-	public static void init(MaterialTextureSetRegister register) {
-		DULL = Util.make(new MaterialTextureSet("dull", null), set -> CAPI.REGS.materialTextureSets().register(set.getRegistryKey(), set));
+	public static void init(final MaterialTextureSetRegister register) {
+		DULL = Util.make(new MaterialTextureSet("dull", null), set -> CAPI.regs().materialTextureSets().register(set.getRegistryKey(), set));
 		METALLIC = register.register("metallic");
 		MAGNETIC = register.register("magnetic", METALLIC);
 		SHINY = register.register("shiny", METALLIC);
@@ -46,5 +46,8 @@ public final class ConductanceMaterialTextureSets {
 		LAPIS = register.register("lapis", QUARTZ);
 		FLINT = register.register("flint", ROUGH);
 		LIGNITE = register.register("lignite", ROUGH);
+	}
+
+	private ConductanceMaterialTextureSets() {
 	}
 }

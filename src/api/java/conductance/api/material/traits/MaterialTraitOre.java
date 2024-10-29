@@ -58,7 +58,7 @@ public final class MaterialTraitOre implements IMaterialTrait<MaterialTraitOre> 
 	}
 
 	@Override
-	public void verify(Material material, MaterialTraitMap traitMap) {
+	public void verify(final Material material, final MaterialTraitMap traitMap) {
 		traitMap.set(NCMaterialTraits.DUST, new MaterialTraitDust());
 
 		if (this.smeltResult != null) {

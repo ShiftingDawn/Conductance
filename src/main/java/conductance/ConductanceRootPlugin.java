@@ -29,47 +29,47 @@ import conductance.init.ConductancePeriodicElements;
 public final class ConductanceRootPlugin implements IConductancePlugin {
 
 	@Override
-	public void registerPeriodicElements(PeriodicElementBuilder builder) {
+	public void registerPeriodicElements(final PeriodicElementBuilder builder) {
 		ConductancePeriodicElements.init(builder);
 	}
 
 	@Override
-	public void registerMaterialTextureTypes(MaterialTextureTypeRegister register) {
+	public void registerMaterialTextureTypes(final MaterialTextureTypeRegister register) {
 		ConductanceMaterialTextureTypes.init(register);
 	}
 
 	@Override
-	public void registerMaterialTextureSets(MaterialTextureSetRegister register) {
+	public void registerMaterialTextureSets(final MaterialTextureSetRegister register) {
 		ConductanceMaterialTextureSets.init(register);
 	}
 
 	@Override
-	public void registerMaterialTraits(MaterialTraitRegister register) {
+	public void registerMaterialTraits(final MaterialTraitRegister register) {
 		ConductanceMaterialTraits.init(register);
 	}
 
 	@Override
-	public void registerMaterialFlags(MaterialFlagRegister register) {
+	public void registerMaterialFlags(final MaterialFlagRegister register) {
 		ConductanceMaterialFlags.init(register);
 	}
 
 	@Override
-	public void registerMaterialOreTypes(MaterialOreTypeRegister register) {
+	public void registerMaterialOreTypes(final MaterialOreTypeRegister register) {
 		ConductanceMaterialOreTypes.init(register);
 	}
 
 	@Override
-	public void registerMaterialTaggedSets(MaterialTaggedSetRegister register) {
+	public void registerMaterialTaggedSets(final MaterialTaggedSetRegister register) {
 		ConductanceMaterialTaggedSets.init(register);
 	}
 
 	@Override
-	public void registerMaterials(MaterialRegister register) {
+	public void registerMaterials(final MaterialRegister register) {
 		ConductanceMaterials.init(register);
 	}
 
 	@Override
-	public void registerMaterialOverrides(MaterialOverrideMap overrides) {
+	public void registerMaterialOverrides(final MaterialOverrideMap overrides) {
 		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, NCMaterials.IRON, Blocks.IRON_BLOCK);
 		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, NCMaterials.GOLD, Blocks.GOLD_BLOCK);
 		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, NCMaterials.COPPER, Blocks.COPPER_BLOCK);

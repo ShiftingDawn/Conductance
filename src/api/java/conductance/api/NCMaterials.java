@@ -3,7 +3,7 @@ package conductance.api;
 import conductance.api.material.Material;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
-public class NCMaterials {
+public final class NCMaterials {
 
 	//region Periodic Table Materials
 	public static Material HYDROGEN;
@@ -242,4 +242,7 @@ public class NCMaterials {
 	public static Material BIOTITE;
 	public static Material BONE;
 	//endregion
+
+	private NCMaterials() {
+	}
 }

@@ -47,7 +47,7 @@ public class MaterialItem extends ConductanceItem {
 
 	@Override
 	public Component getDescription() {
-		return CAPI.TRANSLATIONS.makeLocalizedName(this.getDescriptionId(), this.set, this.material);
+		return CAPI.translations().makeLocalizedName(this.getDescriptionId(), this.set, this.material);
 	}
 
 	@Override

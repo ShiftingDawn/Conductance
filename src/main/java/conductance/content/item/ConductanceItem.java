@@ -7,13 +7,13 @@ import conductance.api.CAPI;
 
 public class ConductanceItem extends Item implements IConductanceItem {
 
-	public ConductanceItem(Properties properties) {
+	public ConductanceItem(final Properties properties) {
 		super(properties);
 	}
 
 	@Override
 	public Component getDescription() {
-		return CAPI.TRANSLATIONS.makeLocalizedName(this);
+		return CAPI.translations().makeLocalizedName(this);
 	}
 
 	@Override

@@ -28,7 +28,7 @@ import conductance.api.plugin.MaterialBuilder;
 public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	private final ResourceLocation registryName;
-	private final MaterialDataMapImpl.MaterialDataMapImplBuilder data;
+	private final MaterialDataMapImpl.Builder data;
 	private final MaterialTraitMapImpl traits;
 	private final MaterialFlagMap flags;
 	private final List<MaterialStack> componentList = new ArrayList<>();
@@ -36,7 +36,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	public MaterialBuilderImpl(final ResourceLocation registryName) {
 		this.registryName = registryName;
-		this.data = new MaterialDataMapImpl.MaterialDataMapImplBuilder();
+		this.data = new MaterialDataMapImpl.Builder();
 		this.traits = new MaterialTraitMapImpl();
 		this.flags = new MaterialFlagMap();
 	}
@@ -155,7 +155,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder requiredTool(final TagKey<Block> requiredToolTag) {
-		this.data.blockRequiredToolTag(Objects.requireNonNull(requiredToolTag));
+		this.data.requiredToolTag(Objects.requireNonNull(requiredToolTag));
 		return this;
 	}
 
@@ -167,7 +167,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder lightLevel(final int lightLevel) {
-		this.data.blockLightLevel(lightLevel);
+		this.data.lightLevel(lightLevel);
 		return this;
 	}
 
@@ -203,7 +203,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	@Override
 	public MaterialBuilder components(final Object... components) {
 		for (int i = 0; i < components.length; ++i) {
-			final Material material = components[i] instanceof final CharSequence str ? CAPI.REGS.materials().get(ResourceLocation.parse(str.toString())) : (Material) components[i];
+			final Material material = components[i] instanceof final CharSequence str ? CAPI.regs().materials().get(ResourceLocation.parse(str.toString())) : (Material) components[i];
 			long count = 1;
 			if (i < components.length - 1 && components[i + 1] instanceof final Number num) {
 				count = num.longValue();
@@ -229,15 +229,15 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder flags(final MaterialFlag... flags) {
-		this.flags.add(flags);
+	public MaterialBuilder flags(final MaterialFlag... flagsToAdd) {
+		this.flags.add(flagsToAdd);
 		return this;
 	}
 
 	@Override
-	public MaterialBuilder addFlagAndPreset(final Collection<MaterialFlag> preset, final MaterialFlag... flags) {
+	public MaterialBuilder addFlagAndPreset(final Collection<MaterialFlag> preset, final MaterialFlag... flagsToAdd) {
 		this.flags.add(preset.toArray(MaterialFlag[]::new));
-		this.flags.add(flags);
+		this.flags.add(flagsToAdd);
 		return this;
 	}
 
@@ -285,11 +285,11 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public Material build() {
-		final MaterialDataMapImpl data = this.data.components(ImmutableList.copyOf(this.componentList)).build();
-		final MaterialImpl material = new MaterialImpl(this.registryName, data, this.traits, this.flags);
-		this.traits.material = material;
+		final MaterialDataMapImpl dataFinalized = this.data.build(ImmutableList.copyOf(this.componentList));
+		final MaterialImpl material = new MaterialImpl(this.registryName, dataFinalized, this.traits, this.flags);
+		this.traits.setMaterial(material);
 		material.verify(this.calculateColor);
-		CAPI.REGS.materials().register(material.getRegistryKey(), material);
+		CAPI.regs().materials().register(material.getRegistryKey(), material);
 		return material;
 	}
 }

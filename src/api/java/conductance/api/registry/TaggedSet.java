@@ -7,7 +7,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import conductance.api.material.Material;
 
 public interface TaggedSet<TYPE> extends IRegistryObject<String> {
 
@@ -33,7 +32,7 @@ public interface TaggedSet<TYPE> extends IRegistryObject<String> {
 
 	Function<TYPE, String> getUnlocalizedNameFactory();
 
-	default String getUnlocalizedName(TYPE object) {
+	default String getUnlocalizedName(final TYPE object) {
 		return String.format(this.getUnlocalizedNameFactory().apply(object), this.getObjectSerializer().apply(object));
 	}
 

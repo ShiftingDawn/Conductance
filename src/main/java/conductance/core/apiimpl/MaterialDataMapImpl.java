@@ -2,41 +2,40 @@ package conductance.core.apiimpl;
 
 import java.util.function.ToLongFunction;
 import javax.annotation.Nullable;
+import net.minecraft.Util;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import com.google.common.collect.ImmutableList;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import conductance.api.NCTextureSets;
-import conductance.api.material.*;
+import conductance.api.material.Material;
+import conductance.api.material.MaterialDataMap;
+import conductance.api.material.MaterialStack;
+import conductance.api.material.MaterialTextureSet;
+import conductance.api.material.PeriodicElement;
 
-@Builder(access = AccessLevel.PACKAGE)
 @Getter
-public class MaterialDataMapImpl implements MaterialDataMap {
+public final class MaterialDataMapImpl implements MaterialDataMap {
 
-	@Builder.Default
-	private int burnTime = 0;
-	@Builder.Default
+	private int burnTime;
 	private TagKey<Block> blockRequiredToolTag = BlockTags.NEEDS_STONE_TOOL;
-	@Builder.Default
-	private int blockLightLevel = 0;
+	private int blockLightLevel;
 
-	@Builder.Default
-	private int color = -1;
-	@Builder.Default
-	MaterialTextureSet textureSet = NCTextureSets.DULL;
+	private int color;
+	private MaterialTextureSet textureSet;
 
-	ImmutableList<MaterialStack> components;
+	@Getter(AccessLevel.PACKAGE)
+	private ImmutableList<MaterialStack> components;
 	@Nullable
-	PeriodicElement periodicElement;
-	@Builder.Default
+	@Getter(AccessLevel.PACKAGE)
+	private PeriodicElement periodicElement;
 	private long protons = -1;
-	@Builder.Default
 	private long neutrons = -1;
-	@Builder.Default
 	private long mass = -1;
 
 	void verify(final boolean doCalculateColor) {
@@ -48,13 +47,13 @@ public class MaterialDataMapImpl implements MaterialDataMap {
 			if (!doCalculateColor || this.components.isEmpty()) {
 				this.color = 0xFFFFFF;
 			} else {
-				long color = 0;
+				long calculatedColor = 0;
 				int componentCount = 0;
 				for (final MaterialStack component : this.components) {
-					color += component.material().getMaterialColorRGB();
+					calculatedColor += component.material().getMaterialColorRGB();
 					componentCount += component.count();
 				}
-				this.color = (int) (color / componentCount);
+				this.color = (int) (calculatedColor / componentCount);
 			}
 		}
 	}
@@ -99,12 +98,37 @@ public class MaterialDataMapImpl implements MaterialDataMap {
 		} else if (this.components.isEmpty()) {
 			return fallback; // Technetium
 		} else {
-			long total = 0, amount = 0;
+			long total = 0;
+			long amount = 0;
 			for (final MaterialStack material : this.components) {
 				total += material.count() * provider.applyAsLong(material.material());
 				amount += material.count();
 			}
 			return total / amount;
+		}
+	}
+
+	@Setter
+	@Accessors(fluent = true)
+	static class Builder {
+
+		private int burnTime = 0;
+		private TagKey<Block> requiredToolTag = BlockTags.NEEDS_STONE_TOOL;
+		private int lightLevel = 0;
+		private int color = -1;
+		private MaterialTextureSet textureSet = NCTextureSets.DULL;
+		private PeriodicElement periodicElement;
+
+		public MaterialDataMapImpl build(final ImmutableList<MaterialStack> components) {
+			return Util.make(new MaterialDataMapImpl(), result -> {
+				result.burnTime = this.burnTime;
+				result.blockRequiredToolTag = this.requiredToolTag;
+				result.blockLightLevel = this.lightLevel;
+				result.color = this.color;
+				result.textureSet = this.textureSet;
+				result.periodicElement = this.periodicElement;
+				result.components = components;
+			});
 		}
 	}
 }

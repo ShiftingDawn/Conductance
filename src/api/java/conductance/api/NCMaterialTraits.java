@@ -8,7 +8,7 @@ import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.material.traits.MaterialTraitOre;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
-public class NCMaterialTraits {
+public final class NCMaterialTraits {
 
 	public static MaterialTraitKey<MaterialTraitDust> DUST;
 	public static MaterialTraitKey<MaterialTraitIngot> INGOT;
@@ -18,4 +18,7 @@ public class NCMaterialTraits {
 	public static MaterialTraitKey<MaterialTraitFluid.Liquid> LIQUID;
 	public static MaterialTraitKey<MaterialTraitFluid.Gas> GAS;
 	public static MaterialTraitKey<MaterialTraitFluid.Plasma> PLASMA;
+
+	private NCMaterialTraits() {
+	}
 }

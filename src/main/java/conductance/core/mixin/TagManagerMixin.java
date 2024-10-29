@@ -20,8 +20,10 @@ import conductance.core.datapack.IConductanceTagLoader;
 @Mixin(TagManager.class)
 public class TagManagerMixin {
 
-	@Inject(method = "createLoader", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagLoader;<init>(Ljava/util/function/Function;Ljava/lang/String;)V", shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILHARD)
-	private <T> void conductance$setRegistryForTagLoaderUsage(final ResourceManager resourceManager, final Executor backgroundExecutor, final RegistryAccess.RegistryEntry<T> registryEntry, final CallbackInfoReturnable<CompletableFuture<TagManager.LoadResult<T>>> cir, final ResourceKey<? extends Registry<T>> resourceKey, final Registry<T> registry, final TagLoader<Holder<T>> tagLoader) {
+	@Inject(method = "createLoader", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagLoader;<init>(Ljava/util/function/Function;Ljava/lang/String;)V", shift = At.Shift.BY, by = 2), locals =
+			LocalCapture.CAPTURE_FAILHARD)
+	private <T> void conductance$setRegistryForTagLoaderUsage(final ResourceManager resourceManager, final Executor backgroundExecutor, final RegistryAccess.RegistryEntry<T> registryEntry,
+			final CallbackInfoReturnable<CompletableFuture<TagManager.LoadResult<T>>> cir, final ResourceKey<? extends Registry<T>> resourceKey, final Registry<T> registry, final TagLoader<Holder<T>> tagLoader) {
 		((IConductanceTagLoader<T>) tagLoader).conductance$setRegistry(registry);
 	}
 }

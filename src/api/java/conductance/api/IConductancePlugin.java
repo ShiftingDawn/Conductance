@@ -1,6 +1,5 @@
 package conductance.api;
 
-import conductance.api.material.TaggedMaterialSetBuilder;
 import conductance.api.plugin.MaterialFlagRegister;
 import conductance.api.plugin.MaterialOreTypeRegister;
 import conductance.api.plugin.MaterialOverrideMap;
@@ -18,31 +17,31 @@ public interface IConductancePlugin {
 	default void registerPeriodicElements(final PeriodicElementBuilder builder) {
 	}
 
-	default void registerMaterialTextureTypes(MaterialTextureTypeRegister register) {
+	default void registerMaterialTextureTypes(final MaterialTextureTypeRegister register) {
 	}
 
-	default void registerMaterialTextureSets(MaterialTextureSetRegister register) {
+	default void registerMaterialTextureSets(final MaterialTextureSetRegister register) {
 	}
 
-	default void registerMaterialTraits(MaterialTraitRegister register) {
+	default void registerMaterialTraits(final MaterialTraitRegister register) {
 	}
 
-	default void registerMaterialFlags(MaterialFlagRegister register) {
+	default void registerMaterialFlags(final MaterialFlagRegister register) {
 	}
 
-	default void registerMaterialOreTypes(MaterialOreTypeRegister register) {
+	default void registerMaterialOreTypes(final MaterialOreTypeRegister register) {
 	}
 
-	default void registerMaterialTaggedSets(MaterialTaggedSetRegister register) {
+	default void registerMaterialTaggedSets(final MaterialTaggedSetRegister register) {
 	}
 
-	default void registerMaterials(MaterialRegister register) {
+	default void registerMaterials(final MaterialRegister register) {
 	}
 
-	default void registerMaterialOverrides(MaterialOverrideMap overrides) {
+	default void registerMaterialOverrides(final MaterialOverrideMap overrides) {
 	}
 
-	default void registerMaterialUnitOverrides(MaterialUnitOverrideMap overrides) {
+	default void registerMaterialUnitOverrides(final MaterialUnitOverrideMap overrides) {
 	}
 
 	default void registerTags(final TagRegister tags) {

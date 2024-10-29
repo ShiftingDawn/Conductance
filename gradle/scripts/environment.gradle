@@ -72,13 +72,3 @@ idea {
 		downloadJavadoc = true
 	}
 }
-
-spotless {
-	java {
-		importOrder("java|javax|net.minecraft|com.mojang|net.neoforged||conductance.api|conductance|\\#|\\#conductance.api|\\#conductance")
-		cleanthat()
-		eclipse().configFile("$rootDir/gradle/spotless/spotless.eclipseformat.xml")
-
-		target "src/*/java/**/*.java"
-	}
-}

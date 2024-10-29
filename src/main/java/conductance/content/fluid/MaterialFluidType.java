@@ -4,16 +4,18 @@ import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
+import lombok.Getter;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.client.resourcepack.ResourceHelper;
 
 @SuppressWarnings("removal")
-public class MaterialFluidType extends FluidType {
+public final class MaterialFluidType extends FluidType {
 
-	final Material material;
-	final TaggedMaterialSet set;
+	@Getter
+	private final Material material;
+	private final TaggedMaterialSet set;
 
 	public MaterialFluidType(final Material material, final TaggedMaterialSet set, final Properties properties) {
 		super(properties);
@@ -36,7 +38,7 @@ public class MaterialFluidType extends FluidType {
 				if (texture != null) {
 					return texture;
 				}
-				return CAPI.RESOURCE_FINDER.getFluidTexture(MaterialFluidType.this.material.getTextureSet(), MaterialFluidType.this.set.getTextureType(), null, null).getValue();
+				return CAPI.resourceFinder().getFluidTexture(MaterialFluidType.this.material.getTextureSet(), MaterialFluidType.this.set.getTextureType(), null, null).getValue();
 			}
 
 			@Override

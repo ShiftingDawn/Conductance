@@ -3,7 +3,7 @@ plugins {
 	id "maven-publish"
 	id "net.neoforged.moddev" version "1.0.21"
 	id "io.freefair.lombok" version "8.10.2"
-	id "com.diffplug.spotless" version "7.0.0.BETA3"
+	id "checkstyle"
 }
 
 version = mod_version
@@ -14,3 +14,8 @@ apply from: "$rootDir/gradle/scripts/repositories.gradle"
 apply from: "$rootDir/gradle/scripts/dependencies.gradle"
 apply from: "$rootDir/gradle/scripts/resources.gradle"
 apply from: "$rootDir/gradle/scripts/export.gradle"
+
+tasks.withType(Checkstyle) {
+	configDirectory.set(layout.projectDirectory.dir("gradle"))
+	configFile = file("$rootDir/gradle/checkstyle.xml")
+}

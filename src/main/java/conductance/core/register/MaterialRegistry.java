@@ -24,7 +24,7 @@ import conductance.api.material.TaggedMaterialSet;
 import conductance.api.registry.TaggedSetRegistry;
 import conductance.Conductance;
 
-public class MaterialRegistry implements TaggedSetRegistry<Material, TaggedMaterialSet> {
+public final class MaterialRegistry implements TaggedSetRegistry<Material, TaggedMaterialSet> {
 
 	public static final MaterialRegistry INSTANCE = new MaterialRegistry();
 	@Getter

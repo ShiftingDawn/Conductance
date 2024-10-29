@@ -30,7 +30,7 @@ public class MaterialOreRotatedPillarBlock extends RotatedPillarBlock implements
 	private final MaterialOreType oreType;
 	private final String unlocalizedName;
 
-	public MaterialOreRotatedPillarBlock(Properties properties, Material material, MaterialOreType oreType) {
+	public MaterialOreRotatedPillarBlock(final Properties properties, final Material material, final MaterialOreType oreType) {
 		super(properties);
 		this.material = material;
 		this.oreType = oreType;
@@ -52,7 +52,7 @@ public class MaterialOreRotatedPillarBlock extends RotatedPillarBlock implements
 
 	@Override
 	public MutableComponent getName() {
-		return CAPI.TRANSLATIONS.makeLocalizedName(this.getDescriptionId(), this.oreType, this.material);
+		return CAPI.translations().makeLocalizedName(this.getDescriptionId(), this.oreType, this.material);
 	}
 
 	@Override

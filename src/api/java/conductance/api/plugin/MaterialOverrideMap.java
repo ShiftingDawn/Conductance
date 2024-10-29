@@ -7,13 +7,12 @@ import conductance.api.material.TaggedMaterialSet;
 
 public interface MaterialOverrideMap {
 
-	void add(final TaggedMaterialSet set, final Material material, final ItemLike... overrides);
+	void add(TaggedMaterialSet set, Material material, ItemLike... overrides);
 
 	default void gemOnly(final Material material, final ItemLike... overrides) {
 		this.add(NCMaterialTaggedSets.GEM, material, overrides);
-		// TODO re-enable other gem types
-//		MaterialTagTypes.TT_GEM_FLAWED.setCustomGeneration(material);
-//		MaterialTagTypes.TT_GEM_FLAWLESS.setCustomGeneration(material);
-//		MaterialTagTypes.TT_GEM_EXQUISITE.setCustomGeneration(material);
+		this.add(NCMaterialTaggedSets.GEM_FLAWED, material);
+		this.add(NCMaterialTaggedSets.GEM_FLAWLESS, material);
+		this.add(NCMaterialTaggedSets.GEM_EXQUISITE, material);
 	}
 }

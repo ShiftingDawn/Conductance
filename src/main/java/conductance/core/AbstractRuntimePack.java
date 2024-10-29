@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -29,7 +28,7 @@ public abstract class AbstractRuntimePack implements PackResources {
 	private final PackLocationInfo locationInfo;
 	private final PackType packType;
 
-	public AbstractRuntimePack(PackLocationInfo locationInfo, PackType packType) {
+	public AbstractRuntimePack(final PackLocationInfo locationInfo, final PackType packType) {
 		this.locationInfo = locationInfo;
 		this.packType = packType;
 	}
@@ -40,25 +39,25 @@ public abstract class AbstractRuntimePack implements PackResources {
 
 	@Nullable
 	@Override
-	public IoSupplier<InputStream> getRootResource(String... strings) {
+	public IoSupplier<InputStream> getRootResource(final String... strings) {
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public IoSupplier<InputStream> getResource(PackType packType, ResourceLocation resourceLocation) {
-		if (packType == this.packType && this.getData().containsKey(resourceLocation)) {
+	public IoSupplier<InputStream> getResource(final PackType pType, final ResourceLocation resourceLocation) {
+		if (pType == this.packType && this.getData().containsKey(resourceLocation)) {
 			return () -> new ByteArrayInputStream(this.getData().get(resourceLocation));
 		}
 		return null;
 	}
 
 	@Override
-	public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
-		if (packType == this.packType) {
+	public void listResources(final PackType pType, final String namespace, final String path, final ResourceOutput resourceOutput) {
+		if (pType == this.packType) {
 			final String path2 = path.endsWith("/") ? path : path + "/";
 			this.getData().keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(path2)).forEach(location -> {
-				final IoSupplier<InputStream> resource = this.getResource(packType, location);
+				final IoSupplier<InputStream> resource = this.getResource(pType, location);
 				if (resource != null) {
 					resourceOutput.accept(location, resource);
 				}
@@ -67,14 +66,14 @@ public abstract class AbstractRuntimePack implements PackResources {
 	}
 
 	@Override
-	public Set<String> getNamespaces(PackType packType) {
-		return packType == this.packType ? this.getKnownNamespaces() : Set.of();
+	public Set<String> getNamespaces(final PackType pType) {
+		return pType == this.packType ? this.getKnownNamespaces() : Set.of();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
-	public <T> T getMetadataSection(MetadataSectionSerializer<T> metadataSectionSerializer) throws IOException {
+	public <T> T getMetadataSection(final MetadataSectionSerializer<T> metadataSectionSerializer) throws IOException {
 		if (metadataSectionSerializer == PackMetadataSection.TYPE) {
 			return (T) new PackMetadataSection(Component.literal("Conductance RuntimePack " + this.packType), SharedConstants.getCurrentVersion().getPackVersion(this.packType));
 		}
@@ -95,8 +94,8 @@ public abstract class AbstractRuntimePack implements PackResources {
 		return true;
 	}
 
-	public static void dump(String type, final ResourceLocation id, @Nullable final String subDirectory, final JsonElement json) {
-		Path dumpPath = FMLPaths.getOrCreateGameRelativePath(Path.of(Conductance.MODID, "dumped", type));
+	public static void dump(final String type, final ResourceLocation id, @Nullable final String subDirectory, final JsonElement json) {
+		final Path dumpPath = FMLPaths.getOrCreateGameRelativePath(Path.of(Conductance.MODID, "dumped", type));
 		try {
 			final Path file;
 			if (subDirectory != null) {
@@ -105,7 +104,7 @@ public abstract class AbstractRuntimePack implements PackResources {
 				file = dumpPath.resolve(id.getNamespace()).resolve(id.getPath());
 			}
 			Files.createDirectories(file.getParent());
-			try (final OutputStream output = Files.newOutputStream(file)) {
+			try (OutputStream output = Files.newOutputStream(file)) {
 				output.write(json.toString().getBytes());
 			}
 		} catch (final IOException e) {

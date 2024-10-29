@@ -16,7 +16,8 @@ import conductance.client.resourcepack.RuntimeResourcePack;
 public class ModelManagerMixin {
 
 	@Inject(method = "reload", at = @At("HEAD"))
-	private void conductance$injectRuntimeResourcePackModels(final PreparableReloadListener.PreparationBarrier preparationBarrier, final ResourceManager resourceManager, final ProfilerFiller preparationsProfiler, final ProfilerFiller reloadProfiler, final Executor backgroundExecutor, final Executor gameExecutor, final CallbackInfoReturnable<CompletableFuture<Void>> cir) {
+	private void conductance$injectRuntimeResourcePackModels(final PreparableReloadListener.PreparationBarrier preparationBarrier, final ResourceManager resourceManager, final ProfilerFiller preparationsProfiler,
+			final ProfilerFiller reloadProfiler, final Executor backgroundExecutor, final Executor gameExecutor, final CallbackInfoReturnable<CompletableFuture<Void>> cir) {
 		RuntimeResourcePack.load();
 	}
 }

@@ -10,13 +10,13 @@ public class ConductanceDataPackRegistry<TYPE extends IRegistryObject<ResourceLo
 		super(registryName);
 	}
 
-	public void unfreeze() {
+	public final void unfreeze() {
 		Conductance.LOGGER.info("Registry {} has been unfrozen!", this.getRegistryKey());
-		this.frozen = false;
+		this.setFrozen(false);
 	}
 
-	public void reset() {
-		if (this.frozen) {
+	public final void reset() {
+		if (this.isFrozen()) {
 			throw new IllegalStateException("[register]Registry %s has been frozen".formatted(this.getRegistryKey()));
 		}
 		this.registry().clear();

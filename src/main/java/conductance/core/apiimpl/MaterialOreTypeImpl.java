@@ -24,7 +24,7 @@ public final class MaterialOreTypeImpl extends RegistryObject<ResourceLocation> 
 	@Getter
 	private final SoundType soundType;
 
-	public MaterialOreTypeImpl(final ResourceLocation registryKey, OreBlockType oreBlockType, final ResourceLocation bearingBlockModel, String unlocalizedNameFactory, String bearingStoneTagName,
+	public MaterialOreTypeImpl(final ResourceLocation registryKey, final OreBlockType oreBlockType, final ResourceLocation bearingBlockModel, final String unlocalizedNameFactory, final String bearingStoneTagName,
 			final boolean hasDoubleOutput, final boolean hasGravity, final MapColor mapColor, final SoundType soundType) {
 		super(registryKey);
 		this.oreBlockType = oreBlockType;

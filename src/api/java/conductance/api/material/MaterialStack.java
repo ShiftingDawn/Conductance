@@ -17,13 +17,13 @@ public final class MaterialStack {
 		this.count = count;
 	}
 
-	private MaterialStack(Void dummy) {
+	private MaterialStack(final Void dummy) {
 		this.material = null;
 		this.count = 0;
 	}
 
-	public MaterialStack copy(final long count) {
-		return new MaterialStack(this.material, count);
+	public MaterialStack copy(final long newCount) {
+		return new MaterialStack(this.material, newCount);
 	}
 
 	public MaterialStack copy() {
@@ -41,7 +41,7 @@ public final class MaterialStack {
 
 	@Override
 	public boolean equals(final Object o) {
-		if (!(o instanceof MaterialStack stack)) {
+		if (!(o instanceof final MaterialStack stack)) {
 			return false;
 		}
 		if (this.isEmpty()) {

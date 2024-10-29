@@ -7,7 +7,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.registry.RegistryObject;
 
-public class MaterialImpl extends RegistryObject<ResourceLocation> implements Material {
+public final class MaterialImpl extends RegistryObject<ResourceLocation> implements Material {
 
 	@Getter
 	private final String unlocalizedName;
@@ -17,7 +17,7 @@ public class MaterialImpl extends RegistryObject<ResourceLocation> implements Ma
 	private final MaterialTraitMapImpl traits;
 	private final MaterialFlagMap flags;
 
-	public MaterialImpl(ResourceLocation registryKey, MaterialDataMapImpl data, MaterialTraitMapImpl traits, MaterialFlagMap flags) {
+	public MaterialImpl(final ResourceLocation registryKey, final MaterialDataMapImpl data, final MaterialTraitMapImpl traits, final MaterialFlagMap flags) {
 		super(registryKey);
 		this.unlocalizedName = Util.makeDescriptionId("material", registryKey);
 		this.data = data;
@@ -33,7 +33,7 @@ public class MaterialImpl extends RegistryObject<ResourceLocation> implements Ma
 	}
 
 	@Override
-	public boolean hasFlag(MaterialFlag flag) {
+	public boolean hasFlag(final MaterialFlag flag) {
 		return this.flags.has(flag);
 	}
 }

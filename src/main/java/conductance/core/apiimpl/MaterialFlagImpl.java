@@ -1,6 +1,5 @@
 package conductance.core.apiimpl;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +17,7 @@ public final class MaterialFlagImpl extends RegistryObject<ResourceLocation> imp
 	private final Set<MaterialFlagImpl> requiredFlags;
 	private final Set<MaterialTraitKey<?>> requiredTraits;
 
-	public MaterialFlagImpl(ResourceLocation registryKey, final Set<MaterialFlagImpl> requiredFlags, final Set<MaterialTraitKey<?>> requiredTraits) {
+	public MaterialFlagImpl(final ResourceLocation registryKey, final Set<MaterialFlagImpl> requiredFlags, final Set<MaterialTraitKey<?>> requiredTraits) {
 		super(registryKey);
 		this.requiredFlags = requiredFlags;
 		this.requiredTraits = requiredTraits;
@@ -35,7 +34,7 @@ public final class MaterialFlagImpl extends RegistryObject<ResourceLocation> imp
 		return resultSet;
 	}
 
-	public static class Builder {
+	public static final class Builder {
 
 		private final ResourceLocation registryName;
 

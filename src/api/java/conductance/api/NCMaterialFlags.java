@@ -5,7 +5,7 @@ import java.util.Set;
 import conductance.api.material.MaterialFlag;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
-public class NCMaterialFlags {
+public final class NCMaterialFlags {
 
 	// region Property traits
 	public static MaterialFlag IS_SYNTHETIC;
@@ -48,4 +48,7 @@ public class NCMaterialFlags {
 	public static final Set<MaterialFlag> METAL_EXTRA2 = new HashSet<>();
 	public static final Set<MaterialFlag> METAL_ALL = new HashSet<>();
 	// endregion
+
+	private NCMaterialFlags() {
+	}
 }

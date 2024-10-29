@@ -5,7 +5,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.TaggedMaterialSet;
 
-public class NCMaterialTaggedSets {
+public final class NCMaterialTaggedSets {
 
 	public static TaggedMaterialSet DUST;
 
@@ -54,4 +54,7 @@ public class NCMaterialTaggedSets {
 		return material -> material.hasFlag(flag);
 	}
 	// endregion
+
+	private NCMaterialTaggedSets() {
+	}
 }

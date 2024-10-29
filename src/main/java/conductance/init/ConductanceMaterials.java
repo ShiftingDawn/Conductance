@@ -10,4 +10,7 @@ public final class ConductanceMaterials {
 		MaterialLoaderPeriodicTable.init(register);
 		MaterialLoaderFirstOrder.init(register);
 	}
+
+	private ConductanceMaterials() {
+	}
 }

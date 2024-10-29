@@ -11,13 +11,17 @@ import conductance.core.apiimpl.MaterialTaggedSet;
 public final class ConductanceItems {
 
 	public static void init() {
-		CAPI.REGS.materials().forEach(material -> CAPI.REGS.materialTaggedSets().values().stream().filter(set -> set.canGenerateItem(material)).forEach(set -> {
+		CAPI.regs().materials().forEach(material -> CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.canGenerateItem(material)).forEach(set -> {
 			final String name = set.getUnlocalizedName(material);
-			final ItemBuilder<MaterialItem, Registrate> itemBuilder = ApiBridge.REGISTRATE.item(name, props -> new MaterialItem(props, material, set)).model(NonNullBiConsumer.noop()).properties(p -> p.stacksTo(set.getMaxStackSize())).color(() -> MaterialItem::handleColorTint);
+			final ItemBuilder<MaterialItem, Registrate> itemBuilder = ApiBridge.getRegistrate().item(name, props -> new MaterialItem(props, material, set)).model(NonNullBiConsumer.noop())
+					.properties(p -> p.stacksTo(set.getMaxStackSize())).color(() -> MaterialItem::handleColorTint);
 			if (((MaterialTaggedSet) set).getItemGeneratorCallback() != null) {
 				((MaterialTaggedSet) set).getItemGeneratorCallback().accept(material, itemBuilder);
 			}
-			CAPI.MATERIALS.register(set, material, itemBuilder.register());
+			CAPI.materials().register(set, material, itemBuilder.register());
 		}));
+	}
+
+	private ConductanceItems() {
 	}
 }

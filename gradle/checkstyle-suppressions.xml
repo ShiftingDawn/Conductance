@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionXpathFilter Experimental Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2_xpath_experimental.dtd">
+
+<suppressions>
+    <!-- disable checks against lombok annotations -->
+    <suppress-xpath checks="HideUtilityClassConstructor" query="//CLASS_DEF[.//ANNOTATION/IDENT[@text='UtilityClass']]"/>
+    <suppress-xpath checks="HideUtilityClassConstructor" query="//CLASS_DEF[.//ANNOTATION/IDENT[@text='Getter']]"/>
+    <suppress-xpath checks="HideUtilityClassConstructor" query="//CLASS_DEF[.//ANNOTATION/IDENT[@text='Setter']]"/>
+
+    <suppress files=".+Mixin\.java" checks=".*"/>
+
+    <suppress files="Config\.java" checks="[a-zA-Z0-9]*"/>
+
+    <suppress files="NCMaterialFlags\.java" checks="VisibilityModifier"/>
+    <suppress files="NCMaterialFlags\.java" checks="StaticVariableName"/>
+
+    <suppress files="NCMaterialOreTypes\.java" checks="VisibilityModifier"/>
+    <suppress files="NCMaterialOreTypes\.java" checks="StaticVariableName"/>
+
+    <suppress files="NCMaterials\.java" checks="VisibilityModifier"/>
+    <suppress files="NCMaterials\.java" checks="StaticVariableName"/>
+
+    <suppress files="NCMaterialTaggedSets\.java" checks="VisibilityModifier"/>
+    <suppress files="NCMaterialTaggedSets\.java" checks="StaticVariableName"/>
+
+    <suppress files="NCMaterialTraits\.java" checks="VisibilityModifier"/>
+    <suppress files="NCMaterialTraits\.java" checks="StaticVariableName"/>
+
+    <suppress files="NCPeriodicElements\.java" checks="VisibilityModifier"/>
+    <suppress files="NCPeriodicElements\.java" checks="StaticVariableName"/>
+
+    <suppress files="NCTextureSets\.java" checks="VisibilityModifier"/>
+    <suppress files="NCTextureSets\.java" checks="StaticVariableName"/>
+
+    <suppress files="NCTextureTypes\.java" checks="VisibilityModifier"/>
+    <suppress files="NCTextureTypes\.java" checks="StaticVariableName"/>
+</suppressions>

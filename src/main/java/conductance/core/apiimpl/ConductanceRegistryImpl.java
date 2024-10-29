@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import net.minecraft.resources.ResourceLocation;
 import com.google.common.collect.HashBiMap;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -19,10 +20,14 @@ public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject
 
 	private final HashBiMap<KEY, VALUE> registry;
 	@Getter
-	protected boolean frozen = false;
+	@Setter(AccessLevel.PROTECTED)
+	private boolean frozen = false;
 	@Nullable
 	@Setter
-	private BiConsumer<KEY, VALUE> registerCallback, unregisterCallback;
+	private BiConsumer<KEY, VALUE> registerCallback;
+	@Nullable
+	@Setter
+	private BiConsumer<KEY, VALUE> unregisterCallback;
 
 	public ConductanceRegistryImpl(final ResourceLocation registryKey) {
 		super(registryKey);
@@ -33,7 +38,7 @@ public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject
 		}
 	}
 
-	public void freeze() {
+	public final void freeze() {
 		Conductance.LOGGER.info("Registry {} has been frozen!", this.getRegistryKey());
 		this.frozen = true;
 	}

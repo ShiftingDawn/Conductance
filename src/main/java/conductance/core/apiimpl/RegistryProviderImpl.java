@@ -21,22 +21,22 @@ import conductance.Conductance;
 @Accessors(fluent = true)
 public final class RegistryProviderImpl implements RegistryProvider {
 
-	private final ConductanceRegistry<ResourceLocation, PeriodicElement> periodicElements = makeResourceKeyed("periodic_element");
+	private final ConductanceRegistry<ResourceLocation, PeriodicElement> periodicElements = RegistryProviderImpl.makeResourceKeyed("periodic_element");
 
-	private final ConductanceRegistry<ResourceLocation, MaterialTextureType> materialTextureTypes = makeResourceKeyed("material_texture_type");
-	private final ConductanceRegistry<String, MaterialTextureSet> materialTextureSets = makeStringKeyed("material_texture_set");
-	private final ConductanceRegistry<ResourceLocation, MaterialTraitKey<?>> materialTraits = makeResourceKeyed("material_traits");
-	private final ConductanceRegistry<ResourceLocation, MaterialFlag> materialFlags = makeResourceKeyed("material_flags");
-	private final ConductanceRegistry<ResourceLocation, MaterialOreType> materialOreTypes = makeResourceKeyed("material_ore_type");
-	private final ConductanceRegistry<String, TaggedMaterialSet> materialTaggedSets = makeStringKeyed("material_tagged_set");
-	private final ConductanceRegistry<ResourceLocation, Material> materials = makeResourceKeyed("material");
+	private final ConductanceRegistry<ResourceLocation, MaterialTextureType> materialTextureTypes = RegistryProviderImpl.makeResourceKeyed("material_texture_type");
+	private final ConductanceRegistry<String, MaterialTextureSet> materialTextureSets = RegistryProviderImpl.makeStringKeyed("material_texture_set");
+	private final ConductanceRegistry<ResourceLocation, MaterialTraitKey<?>> materialTraits = RegistryProviderImpl.makeResourceKeyed("material_traits");
+	private final ConductanceRegistry<ResourceLocation, MaterialFlag> materialFlags = RegistryProviderImpl.makeResourceKeyed("material_flags");
+	private final ConductanceRegistry<ResourceLocation, MaterialOreType> materialOreTypes = RegistryProviderImpl.makeResourceKeyed("material_ore_type");
+	private final ConductanceRegistry<String, TaggedMaterialSet> materialTaggedSets = RegistryProviderImpl.makeStringKeyed("material_tagged_set");
+	private final ConductanceRegistry<ResourceLocation, Material> materials = RegistryProviderImpl.makeResourceKeyed("material");
 
 	RegistryProviderImpl() {
 	}
 
 	@Override
 	public NCRegistrate registrate() {
-		return ApiBridge.REGISTRATE;
+		return ApiBridge.getRegistrate();
 	}
 
 	private static <VALUE extends IRegistryObject<String>> ConductanceRegistryImpl<String, VALUE> makeStringKeyed(final String registryName) {

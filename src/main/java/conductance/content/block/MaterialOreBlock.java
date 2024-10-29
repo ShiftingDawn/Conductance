@@ -32,7 +32,7 @@ public class MaterialOreBlock extends ConductanceBlock implements IMaterialOreBl
 	private final MaterialOreType oreType;
 	private final String unlocalizedName;
 
-	public MaterialOreBlock(Properties properties, Material material, MaterialOreType oreType) {
+	public MaterialOreBlock(final Properties properties, final Material material, final MaterialOreType oreType) {
 		super(properties);
 		this.material = material;
 		this.oreType = oreType;
@@ -49,7 +49,7 @@ public class MaterialOreBlock extends ConductanceBlock implements IMaterialOreBl
 
 	@Override
 	public MutableComponent getName() {
-		return CAPI.TRANSLATIONS.makeLocalizedName(this.getDescriptionId(), this.oreType, this.material);
+		return CAPI.translations().makeLocalizedName(this.getDescriptionId(), this.oreType, this.material);
 	}
 
 	@Override

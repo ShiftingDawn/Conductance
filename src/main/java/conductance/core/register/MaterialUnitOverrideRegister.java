@@ -11,12 +11,12 @@ public final class MaterialUnitOverrideRegister implements MaterialUnitOverrideM
 	private static final Table<TaggedMaterialSet, Material, Long> OVERRIDES = HashBasedTable.create();
 
 	@Override
-	public void add(TaggedMaterialSet set, Material material, long value) {
+	public void add(final TaggedMaterialSet set, final Material material, final long value) {
 		MaterialUnitOverrideRegister.OVERRIDES.put(set, material, value);
 	}
 
-	public static long get(TaggedMaterialSet set, Material material) {
-		Long result = MaterialUnitOverrideRegister.OVERRIDES.get(set, material);
+	public static long get(final TaggedMaterialSet set, final Material material) {
+		final Long result = MaterialUnitOverrideRegister.OVERRIDES.get(set, material);
 		return result != null ? result : -1;
 	}
 }

@@ -16,7 +16,7 @@ public interface ResourceFinder {
 
 	SafeOptional<ResourceLocation> getFluidTexture(MaterialTextureSet textureSet, MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix);
 
-	boolean isResourceValid(final ResourceLocation resource);
+	boolean isResourceValid(ResourceLocation resource);
 
-	boolean isTextureValid(final ResourceLocation texture);
+	boolean isTextureValid(ResourceLocation texture);
 }

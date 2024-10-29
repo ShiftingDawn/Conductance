@@ -30,14 +30,14 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 				Conductance.LOGGER.info("[TRANSLATIONS]Processing un-cached translation key: {}", key);
 			}
 			if (CAPI.isClient() && I18n.exists(key)) {
-				final String result = format(key, format);
+				final String result = TranslationRegistryImpl.format(key, format);
 				if (Config.debug_translationRegistryDebugLogging.get() > 0) {
 					Conductance.LOGGER.info("[TRANSLATIONS]\tFound custom translation for key: {}", key);
 					Conductance.LOGGER.info("[TRANSLATIONS]\t\tResult: {}", result);
 				}
 				return result;
 			} else {
-				final String result = format(fallback.get(), format);
+				final String result = TranslationRegistryImpl.format(fallback.get(), format);
 				if (Config.debug_translationRegistryDebugLogging.get() == 2) {
 					Conductance.LOGGER.info("[TRANSLATIONS]\tFalling back to generated translation for key: {}", key);
 					Conductance.LOGGER.info("[TRANSLATIONS]\t\tResult: {}", result);
@@ -47,7 +47,7 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 		});
 	}
 
-	private static String format(String key, Object... format) {
+	private static String format(final String key, final Object... format) {
 		if (!CAPI.isClient()) {
 			return String.format(key, format);
 		} else {
@@ -90,7 +90,7 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 	}
 
 	@Override
-	public MutableComponent makeLocalizedName(String key, MaterialOreType oreType, Material material) {
+	public MutableComponent makeLocalizedName(final String key, final MaterialOreType oreType, final Material material) {
 		return this.componentCache.computeIfAbsent(key, k -> {
 			final String materialName = this.translate(material.getUnlocalizedName(), () -> TextHelper.lowerUnderscoreToEnglish(material.getName()));
 			final String translation = this.translate(key, () -> TextHelper.lowerUnderscoreToEnglish(oreType.getUnlocalizedNameFactory()), materialName);

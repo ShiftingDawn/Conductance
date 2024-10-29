@@ -12,8 +12,8 @@ public final class MaterialFlagMap {
 
 	private final Set<MaterialFlag> flags = new HashSet<>();
 
-	public MaterialFlagMap add(final MaterialFlag... flags) {
-		this.flags.addAll(Arrays.asList(flags));
+	public MaterialFlagMap add(final MaterialFlag... flagsToAdd) {
+		this.flags.addAll(Arrays.asList(flagsToAdd));
 		return this;
 	}
 

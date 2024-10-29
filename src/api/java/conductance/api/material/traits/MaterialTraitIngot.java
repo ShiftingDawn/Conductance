@@ -18,7 +18,7 @@ public final class MaterialTraitIngot implements IMaterialTrait<MaterialTraitIng
 	private Material magneticForm;
 
 	@Override
-	public void verify(Material material, MaterialTraitMap traitMap) {
+	public void verify(final Material material, final MaterialTraitMap traitMap) {
 		traitMap.set(NCMaterialTraits.DUST, new MaterialTraitDust());
 		if (traitMap.has(NCMaterialTraits.GEM)) {
 			throw new IllegalStateException("Material %s has both an ingot and gem trait, this is not allowed!".formatted(material.getRegistryKey()));

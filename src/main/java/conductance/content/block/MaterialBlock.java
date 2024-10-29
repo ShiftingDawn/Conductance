@@ -21,7 +21,7 @@ public class MaterialBlock extends ConductanceBlock {
 	private final TaggedMaterialSet set;
 	private final String unlocalizedName;
 
-	public MaterialBlock(Properties properties, Material material, TaggedMaterialSet set) {
+	public MaterialBlock(final Properties properties, final Material material, final TaggedMaterialSet set) {
 		super(properties);
 		this.material = material;
 		this.set = set;
@@ -38,7 +38,7 @@ public class MaterialBlock extends ConductanceBlock {
 
 	@Override
 	public MutableComponent getName() {
-		return CAPI.TRANSLATIONS.makeLocalizedName(this.getDescriptionId(), this.set, this.material);
+		return CAPI.translations().makeLocalizedName(this.getDescriptionId(), this.set, this.material);
 	}
 
 	@Override

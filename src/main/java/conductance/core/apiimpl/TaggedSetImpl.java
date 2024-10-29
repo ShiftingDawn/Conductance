@@ -54,14 +54,14 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 	@Getter
 	private final long unitValue;
 
-	public TaggedSetImpl(TaggedSetBuilderImpl<TYPE, ?, ?> builder) {
+	public TaggedSetImpl(final TaggedSetBuilderImpl<TYPE, ?, ?> builder) {
 		super(builder.registryKey());
 		this.objectSerializer = builder.objectSerializer();
 		this.unlocalizedNameFactory = builder.unlocalizedNameFactory();
 
 		// TODO Let plugins/mods modify the taglist before finalizing
-		this.tags = ImmutableList.copyOf(builder.tags);
-		this.miningTags = ImmutableList.copyOf(builder.miningTools);
+		this.tags = ImmutableList.copyOf(builder.tags());
+		this.miningTags = ImmutableList.copyOf(builder.miningTools());
 
 		this.itemGenerator = builder.generateItems();
 		this.blockGenerator = builder.generateBlocks();
@@ -76,62 +76,62 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 	}
 
 	@Override
-	public <TAGTYPE> Stream<TagKey<TAGTYPE>> streamTags(Registry<TAGTYPE> registry, TYPE object, boolean includeGlobalTags) {
-		return this.tags.stream().filter(handler -> includeGlobalTags || !handler.isGlobalTag).map(handler -> handler.make(object)).map(tagPath -> TagKey.create(registry.key(), tagPath));
+	public <TAGTYPE> Stream<TagKey<TAGTYPE>> streamTags(final Registry<TAGTYPE> registry, final TYPE object, final boolean includeGlobalTags) {
+		return this.tags.stream().filter(handler -> includeGlobalTags || !handler.isGlobalTag()).map(handler -> handler.make(object)).map(tagPath -> TagKey.create(registry.key(), tagPath));
 	}
 
 	@Override
-	public <TAGTYPE> Stream<TagKey<TAGTYPE>> streamTags(Registry<TAGTYPE> registry, TYPE object) {
-		return streamTags(registry, object, false);
+	public <TAGTYPE> Stream<TagKey<TAGTYPE>> streamTags(final Registry<TAGTYPE> registry, final TYPE object) {
+		return this.streamTags(registry, object, false);
 	}
 
 	@Override
-	public Stream<TagKey<Item>> streamItemTags(TYPE object) {
-		return streamTags(BuiltInRegistries.ITEM, object);
+	public Stream<TagKey<Item>> streamItemTags(final TYPE object) {
+		return this.streamTags(BuiltInRegistries.ITEM, object);
 	}
 
 	@Override
-	public Stream<TagKey<Block>> streamBlockTags(TYPE object) {
-		return streamTags(BuiltInRegistries.BLOCK, object);
+	public Stream<TagKey<Block>> streamBlockTags(final TYPE object) {
+		return this.streamTags(BuiltInRegistries.BLOCK, object);
 	}
 
 	@Override
-	public Stream<TagKey<Fluid>> streamFluidTags(TYPE object) {
-		return streamTags(BuiltInRegistries.FLUID, object);
+	public Stream<TagKey<Fluid>> streamFluidTags(final TYPE object) {
+		return this.streamTags(BuiltInRegistries.FLUID, object);
 	}
 
 	@Override
-	public <TAGTYPE> Stream<TagKey<TAGTYPE>> streamAllTags(Registry<TAGTYPE> registry, TYPE object) {
-		return streamTags(registry, object, true);
+	public <TAGTYPE> Stream<TagKey<TAGTYPE>> streamAllTags(final Registry<TAGTYPE> registry, final TYPE object) {
+		return this.streamTags(registry, object, true);
 	}
 
 	@Override
-	public Stream<TagKey<Item>> streamAllItemTags(TYPE object) {
-		return streamAllTags(BuiltInRegistries.ITEM, object);
+	public Stream<TagKey<Item>> streamAllItemTags(final TYPE object) {
+		return this.streamAllTags(BuiltInRegistries.ITEM, object);
 	}
 
 	@Override
-	public Stream<TagKey<Block>> streamAllBlockTags(TYPE object) {
-		return streamAllTags(BuiltInRegistries.BLOCK, object);
+	public Stream<TagKey<Block>> streamAllBlockTags(final TYPE object) {
+		return this.streamAllTags(BuiltInRegistries.BLOCK, object);
 	}
 
 	@Override
-	public Stream<TagKey<Fluid>> streamAllFluidTags(TYPE object) {
-		return streamAllTags(BuiltInRegistries.FLUID, object);
+	public Stream<TagKey<Fluid>> streamAllFluidTags(final TYPE object) {
+		return this.streamAllTags(BuiltInRegistries.FLUID, object);
 	}
 
 	@Override
-	public boolean canGenerateItem(TYPE object) {
+	public boolean canGenerateItem(final TYPE object) {
 		return this.isItemGenerator() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
 	}
 
 	@Override
-	public boolean canGenerateBlock(TYPE object) {
+	public boolean canGenerateBlock(final TYPE object) {
 		return this.isBlockGenerator() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
 	}
 
 	@Override
-	public boolean canGenerateFluid(TYPE object) {
+	public boolean canGenerateFluid(final TYPE object) {
 		return this.isFluidGenerator() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
 	}
 }

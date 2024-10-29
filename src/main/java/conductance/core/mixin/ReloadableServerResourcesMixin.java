@@ -18,13 +18,17 @@ import conductance.core.apiimpl.ApiBridge;
 public class ReloadableServerResourcesMixin {
 
 	@Inject(method = "loadResources", at = @At("HEAD"))
-	private static void conductance$unfreezeRegistries(ResourceManager resourceManager, LayeredRegistryAccess<RegistryLayer> registries, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, int functionCompilationLevel, Executor backgroundExecutor, Executor gameExecutor, CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
+	private static void conductance$unfreezeRegistries(final ResourceManager resourceManager, final LayeredRegistryAccess<RegistryLayer> registries, final FeatureFlagSet enabledFeatures,
+			final Commands.CommandSelection commandSelection, final int functionCompilationLevel, final Executor backgroundExecutor, final Executor gameExecutor,
+			final CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
 		ApiBridge.handleDataPackRegistryStage(ApiBridge.DataPackRegistryLoadStage.UNFREEZE);
 		ApiBridge.handleDataPackRegistryStage(ApiBridge.DataPackRegistryLoadStage.RESET);
 	}
 
 	@Inject(method = "loadResources", at = @At("RETURN"), cancellable = true)
-	private static void conductance$freezeRegistries(ResourceManager resourceManager, LayeredRegistryAccess<RegistryLayer> registries, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, int functionCompilationLevel, Executor backgroundExecutor, Executor gameExecutor, CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
+	private static void conductance$freezeRegistries(final ResourceManager resourceManager, final LayeredRegistryAccess<RegistryLayer> registries, final FeatureFlagSet enabledFeatures,
+			final Commands.CommandSelection commandSelection, final int functionCompilationLevel, final Executor backgroundExecutor, final Executor gameExecutor,
+			final CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
 		cir.setReturnValue(cir.getReturnValue().thenApply(o -> {
 			ApiBridge.handleDataPackRegistryStage(ApiBridge.DataPackRegistryLoadStage.REFREEZE);
 			return o;

@@ -43,4 +43,7 @@ public final class NCTextureTypes {
 	public static MaterialTextureType ROTOR;
 
 	public static MaterialTextureType FRAME_BOX;
+
+	private NCTextureTypes() {
+	}
 }

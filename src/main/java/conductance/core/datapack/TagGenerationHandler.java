@@ -19,7 +19,7 @@ import conductance.core.apiimpl.PluginManager;
 import conductance.core.apiimpl.TaggedSetImpl;
 import conductance.core.register.MaterialRegistry;
 
-public class TagGenerationHandler {
+public final class TagGenerationHandler {
 
 	private static final String TAG_SOURCE = "Conductance Runtime Tags";
 
@@ -60,7 +60,7 @@ public class TagGenerationHandler {
 	}
 
 	private static void addBlockEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
-		ApiBridge.REGISTRATE.getAll(Registries.BLOCK).forEach(blockEntry -> {
+		ApiBridge.getRegistrate().getAll(Registries.BLOCK).forEach(blockEntry -> {
 			if (blockEntry.get() instanceof final IConductanceBlock conductanceBlock) {
 				tagMap.computeIfAbsent(conductanceBlock.getMiningToolTag().location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(blockEntry.getId()), TagGenerationHandler.TAG_SOURCE));
 			}
@@ -82,10 +82,13 @@ public class TagGenerationHandler {
 
 	private static void addFluidEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
 		// TODO Fluids
-//		MaterialRegistryImpl.INSTANCE.getFluidTable().values().forEach(fluids -> fluids.forEach(fluid -> {
-//			final ResourceLocation fluidName = BuiltInRegistries.FLUID.getKey(fluid);
-//			final ResourceLocation tagName = TagHelper.tagForPlatform(BuiltInRegistries.FLUID, fluidName.getPath(), fluidName.getPath()).location();
-//			tagMap.computeIfAbsent(tagName, k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(fluidName), TagGenerationHandler.TAG_SOURCE));
-//		}));
+		//		MaterialRegistryImpl.INSTANCE.getFluidTable().values().forEach(fluids -> fluids.forEach(fluid -> {
+		//			final ResourceLocation fluidName = BuiltInRegistries.FLUID.getKey(fluid);
+		//			final ResourceLocation tagName = TagHelper.tagForPlatform(BuiltInRegistries.FLUID, fluidName.getPath(), fluidName.getPath()).location();
+		//			tagMap.computeIfAbsent(tagName, k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(fluidName), TagGenerationHandler.TAG_SOURCE));
+		//		}));
+	}
+
+	private TagGenerationHandler() {
 	}
 }

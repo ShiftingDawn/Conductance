@@ -38,7 +38,7 @@ import static conductance.api.NCMaterialTaggedSets.SCREW;
 import static conductance.api.NCMaterialTaggedSets.STORAGE_BLOCK;
 import static conductance.api.NCMaterialTaggedSets.hasFlag;
 
-public class ConductanceMaterialTaggedSets {
+public final class ConductanceMaterialTaggedSets {
 
 	//@formatter:off
 	public static void init(final MaterialTaggedSetRegister register) {
@@ -281,4 +281,7 @@ public class ConductanceMaterialTaggedSets {
 				.build();
 	}
 	//@formatter:on
+
+	private ConductanceMaterialTaggedSets() {
+	}
 }

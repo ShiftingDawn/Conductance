@@ -184,7 +184,7 @@ import static conductance.api.NCTextureSets.ROUGH;
 import static conductance.api.NCTextureSets.SAND;
 import static conductance.api.NCTextureSets.SHINY;
 
-public class MaterialLoaderFirstOrder {
+public final class MaterialLoaderFirstOrder {
 
 	//@formatter:off
 	public static void init(final MaterialRegister register) {
@@ -950,4 +950,7 @@ public class MaterialLoaderFirstOrder {
 				.build();
 	}
 	//@formatter:on
+
+	private MaterialLoaderFirstOrder() {
+	}
 }

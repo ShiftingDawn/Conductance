@@ -8,9 +8,9 @@ import conductance.init.ConductanceCreativeTabs;
 import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
 
-public class CommonProxy {
+public final class CommonProxy {
 
-	public void init(final IEventBus modEventBus) {
+	public static void init(final IEventBus modEventBus) {
 		ApiBridge.init(modEventBus);
 		ConductanceCreativeTabs.init();
 
@@ -32,5 +32,8 @@ public class CommonProxy {
 		ConductanceItems.init();
 		ConductanceBlocks.init();
 		ConductanceFluids.init();
+	}
+
+	private CommonProxy() {
 	}
 }

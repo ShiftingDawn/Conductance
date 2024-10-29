@@ -24,7 +24,7 @@ final class TagRegisterImpl implements TagRegister {
 	}
 
 	@Override
-	public <MARKER extends Material & Marker> void item(TaggedMaterialSet tag, MARKER marker, ItemLike value, ItemLike... moreValues) {
+	public <MARKER extends Material & Marker> void item(final TaggedMaterialSet tag, final MARKER marker, final ItemLike value, final ItemLike... moreValues) {
 		final TagKey<Item> tagKey = MiscUtils.getItemTag(tag, marker);
 		if (tagKey != null) {
 			this.item(tagKey, value, moreValues);
@@ -32,10 +32,10 @@ final class TagRegisterImpl implements TagRegister {
 	}
 
 	@Override
-	public <MARKER extends Material & Marker> void item(TaggedMaterialSet tag, MARKER marker, Material value, Material... moreValues) {
-		CAPI.MATERIALS.getItem(tag, value).ifPresent(item -> this.item(tag, marker, item));
+	public <MARKER extends Material & Marker> void item(final TaggedMaterialSet tag, final MARKER marker, final Material value, final Material... moreValues) {
+		CAPI.materials().getItem(tag, value).ifPresent(item -> this.item(tag, marker, item));
 		for (final Material material : moreValues) {
-			CAPI.MATERIALS.getItem(tag, material).ifPresent(item -> this.item(tag, marker, item));
+			CAPI.materials().getItem(tag, material).ifPresent(item -> this.item(tag, marker, item));
 		}
 	}
 }

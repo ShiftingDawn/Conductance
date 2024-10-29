@@ -3,7 +3,7 @@ package conductance.api;
 import conductance.api.material.MaterialOreType;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
-public class NCMaterialOreTypes {
+public final class NCMaterialOreTypes {
 
 	public static MaterialOreType ORE_TYPE_STONE;
 	public static MaterialOreType ORE_TYPE_GRANITE;
@@ -19,4 +19,7 @@ public class NCMaterialOreTypes {
 
 	public static MaterialOreType ORE_TYPE_SAND;
 	public static MaterialOreType ORE_TYPE_RED_SAND;
+
+	private NCMaterialOreTypes() {
+	}
 }

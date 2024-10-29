@@ -26,4 +26,7 @@ public final class NCTextureSets {
 	public static MaterialTextureSet LAPIS;
 	public static MaterialTextureSet FLINT;
 	public static MaterialTextureSet LIGNITE;
+
+	private NCTextureSets() {
+	}
 }

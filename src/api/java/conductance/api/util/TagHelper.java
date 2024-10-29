@@ -8,7 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import conductance.api.CAPI;
 
-public class TagHelper {
+public final class TagHelper {
 
 	// region Item Tags
 	public static TagKey<Item> itemTagForLoader(final String path) {
@@ -63,4 +63,7 @@ public class TagHelper {
 		return TagKey.create(registry.key(), ResourceLocation.withDefaultNamespace(path));
 	}
 	// endregion
+
+	private TagHelper() {
+	}
 }

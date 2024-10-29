@@ -2,11 +2,9 @@ package conductance.api.util;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import javax.annotation.Nonnull;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import com.google.common.base.CaseFormat;
-import org.jetbrains.annotations.NotNull;
 
 public final class TextHelper {
 
@@ -67,7 +65,8 @@ public final class TextHelper {
 	}
 
 	public static String toRomanNumeral(final int number) {
-		return "I".repeat(number).replace("IIIII", "V").replace("IIII", "IV").replace("VV", "X").replace("VIV", "IX").replace("XXXXX", "L").replace("XXXX", "XL").replace("LL", "C").replace("LXL", "XC").replace("CCCCC", "D").replace("CCCC", "CD").replace("DD", "M").replace("DCD", "CM");
+		return "I".repeat(number).replace("IIIII", "V").replace("IIII", "IV").replace("VV", "X").replace("VIV", "IX").replace("XXXXX", "L").replace("XXXX", "XL").replace("LL", "C").replace("LXL", "XC")
+				.replace("CCCCC", "D").replace("CCCC", "CD").replace("DD", "M").replace("DCD", "CM");
 	}
 
 	public static String lowerUnderscoreToUpperCamel(final String string) {
@@ -109,5 +108,8 @@ public final class TextHelper {
 			}
 		}
 		return result.toString();
+	}
+
+	private TextHelper() {
 	}
 }

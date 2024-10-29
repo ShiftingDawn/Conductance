@@ -17,18 +17,19 @@ public final class MaterialTaggedSetBuilder extends TaggedSetBuilderImpl<Materia
 	@Getter
 	private MaterialTextureType textureType = NCTextureTypes.DUST;
 
-	public MaterialTaggedSetBuilder(String registryKey, Function<Material, String> unlocalizedNameFactory) {
+	public MaterialTaggedSetBuilder(final String registryKey, final Function<Material, String> unlocalizedNameFactory) {
 		super(registryKey, mat -> mat.getRegistryKey().getPath(), unlocalizedNameFactory);
 	}
 
+	@SuppressWarnings("CheckStyle")
 	@Override
-	public TaggedMaterialSetBuilder textureType(MaterialTextureType textureType) {
-		this.textureType = textureType;
+	public TaggedMaterialSetBuilder textureType(final MaterialTextureType newTextureType) {
+		this.textureType = newTextureType;
 		return this;
 	}
 
 	@Override
 	public TaggedMaterialSet build() {
-		return Util.make(new MaterialTaggedSet(this), set -> CAPI.REGS.materialTaggedSets().register(set.getRegistryKey(), set));
+		return Util.make(new MaterialTaggedSet(this), set -> CAPI.regs().materialTaggedSets().register(set.getRegistryKey(), set));
 	}
 }

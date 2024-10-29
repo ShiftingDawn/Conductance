@@ -32,7 +32,7 @@ import static conductance.api.NCTextureTypes.STORAGE_BLOCK;
 
 public final class ConductanceMaterialTextureTypes {
 
-	public static void init(MaterialTextureTypeRegister register) {
+	public static void init(final MaterialTextureTypeRegister register) {
 		DUST = register.register("dust");
 
 		INGOT = register.register("ingot");
@@ -71,5 +71,8 @@ public final class ConductanceMaterialTextureTypes {
 		ROTOR = register.register("rotor");
 
 		FRAME_BOX = register.register("frame_box");
+	}
+
+	private ConductanceMaterialTextureTypes() {
 	}
 }

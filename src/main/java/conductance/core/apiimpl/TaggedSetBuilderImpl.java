@@ -13,6 +13,7 @@ import net.minecraft.world.level.material.Fluid;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
@@ -25,8 +26,10 @@ import conductance.api.util.TextHelper;
 @Accessors(fluent = true)
 public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER extends TaggedSetBuilder<TYPE, SET, BUILDER>> implements TaggedSetBuilder<TYPE, SET, BUILDER> {
 
-	final List<TagHandler<TYPE>> tags = new ArrayList<>();
-	final List<TagKey<Block>> miningTools = new ArrayList<>();
+	@Getter(AccessLevel.PACKAGE)
+	private final List<TagHandler<TYPE>> tags = new ArrayList<>();
+	@Getter(AccessLevel.PACKAGE)
+	private final List<TagKey<Block>> miningTools = new ArrayList<>();
 
 	@Getter
 	private final String registryKey;
@@ -59,7 +62,7 @@ public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BU
 	@Getter
 	private long unitValue = -1;
 
-	public TaggedSetBuilderImpl(String registryKey, final Function<TYPE, String> objectSerializer, final Function<TYPE, String> unlocalizedNameFactory) {
+	public TaggedSetBuilderImpl(final String registryKey, final Function<TYPE, String> objectSerializer, final Function<TYPE, String> unlocalizedNameFactory) {
 		this.registryKey = registryKey;
 		this.objectSerializer = objectSerializer;
 		this.unlocalizedNameFactory = unlocalizedNameFactory;
@@ -114,41 +117,44 @@ public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BU
 	// endregion
 
 	// region Generation
-	public BUILDER generateItems(boolean generateItems) {
-		this.generateItems = generateItems;
-		return (BUILDER) this;
-	}
-
-	public BUILDER generateBlocks(boolean generateBlocks) {
-		this.generateBlocks = generateBlocks;
-		return (BUILDER) this;
-	}
-
-	public BUILDER generateFluids(boolean generateFluids) {
-		this.generateFluids = generateFluids;
+	@Override
+	public BUILDER generateItems(final boolean doGenerateItems) {
+		this.generateItems = doGenerateItems;
 		return (BUILDER) this;
 	}
 
 	@Override
-	public BUILDER generatorPredicate(@Nullable Predicate<TYPE> predicate) {
+	public BUILDER generateBlocks(final boolean doGenerateBlocks) {
+		this.generateBlocks = doGenerateBlocks;
+		return (BUILDER) this;
+	}
+
+	@Override
+	public BUILDER generateFluids(final boolean doGenerateFluids) {
+		this.generateFluids = doGenerateFluids;
+		return (BUILDER) this;
+	}
+
+	@Override
+	public BUILDER generatorPredicate(@Nullable final Predicate<TYPE> predicate) {
 		this.generatorPredicate = predicate;
 		return (BUILDER) this;
 	}
 
 	@Override
-	public BUILDER itemGeneratorCallback(@Nullable BiConsumer<TYPE, ItemBuilder<? extends Item, ?>> callback) {
+	public BUILDER itemGeneratorCallback(@Nullable final BiConsumer<TYPE, ItemBuilder<? extends Item, ?>> callback) {
 		this.itemGeneratorCallback = callback;
 		return (BUILDER) this;
 	}
 
 	@Override
-	public BUILDER blockGeneratorCallback(@Nullable BiConsumer<TYPE, BlockBuilder<? extends Block, ?>> callback) {
+	public BUILDER blockGeneratorCallback(@Nullable final BiConsumer<TYPE, BlockBuilder<? extends Block, ?>> callback) {
 		this.blockGeneratorCallback = callback;
 		return (BUILDER) this;
 	}
 
 	@Override
-	public BUILDER fluidGeneratorCallback(@Nullable BiConsumer<TYPE, FluidBuilder<? extends Fluid, ?>> callback) {
+	public BUILDER fluidGeneratorCallback(@Nullable final BiConsumer<TYPE, FluidBuilder<? extends Fluid, ?>> callback) {
 		this.fluidGeneratorCallback = callback;
 		return (BUILDER) this;
 	}
@@ -157,39 +163,41 @@ public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BU
 
 	// region Properties
 	@Override
-	public BUILDER maxStackSize(int maxStackSize) {
-		this.maxStackSize = maxStackSize;
-		return (BUILDER) this;
-	}
-
-	public BUILDER unitValue(long unitValue) {
-		this.unitValue = unitValue;
+	public BUILDER maxStackSize(final int newMaxStackSize) {
+		this.maxStackSize = newMaxStackSize;
 		return (BUILDER) this;
 	}
 
 	@Override
-	public BUILDER miningTool(TagKey<Block> miningTag) {
+	public BUILDER unitValue(final long newUnitValue) {
+		this.unitValue = newUnitValue;
+		return (BUILDER) this;
+	}
+
+	@Override
+	public BUILDER miningTool(final TagKey<Block> miningTag) {
 		this.miningTools.add(miningTag);
 		return (BUILDER) this;
 	}
 
 	// endregion
 
+	@Getter
 	static class TagHandler<T> {
 
-		public final String namespace;
-		public final String tagPathFactory;
-		public final Function<T, String> objectSerializer;
-		public final boolean isGlobalTag;
+		private final String namespace;
+		private final String tagPathFactory;
+		private final Function<T, String> objectSerializer;
+		private final boolean isGlobalTag;
 
-		public TagHandler(@Nullable String namespace, String tagPathFactory, Function<T, String> objectSerializer, boolean isGlobalTag) {
+		TagHandler(@Nullable final String namespace, final String tagPathFactory, final Function<T, String> objectSerializer, final boolean isGlobalTag) {
 			this.namespace = namespace != null ? namespace : tagPathFactory.contains(":") ? tagPathFactory.split(":", 2)[0] : CAPI.MOD_ID;
 			this.tagPathFactory = tagPathFactory.contains(":") ? tagPathFactory.split(":", 2)[1] : tagPathFactory;
 			this.objectSerializer = objectSerializer;
 			this.isGlobalTag = isGlobalTag;
 		}
 
-		public ResourceLocation make(T obj) {
+		public ResourceLocation make(final T obj) {
 			return ResourceLocation.fromNamespaceAndPath(this.namespace, this.tagPathFactory.formatted(this.objectSerializer.apply(obj)));
 		}
 

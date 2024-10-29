@@ -31,7 +31,7 @@ import static conductance.api.NCMaterialFlags.NO_SMELTING;
 
 public final class ConductanceMaterialFlags {
 
-	public static void init(MaterialFlagRegister register) {
+	public static void init(final MaterialFlagRegister register) {
 		IS_SYNTHETIC = register.register("is_synthetic");
 
 		GENERATE_PLATE = register.register("generate_plate", Set.of(), Set.of(NCMaterialTraits.DUST));
@@ -64,5 +64,8 @@ public final class ConductanceMaterialFlags {
 		METAL_EXTRA2.add(GENERATE_BOLT_AND_SCREW);
 		METAL_ALL.addAll(METAL_EXTRA2);
 		METAL_ALL.addAll(List.of(GENERATE_FRAME, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_FOIL, GENERATE_RING, GENERATE_ROTOR));
+	}
+
+	private ConductanceMaterialFlags() {
 	}
 }

@@ -14,9 +14,9 @@ public final class MaterialTextureSet extends RegistryObject<String> {
 			if (this.isRootSet()) {
 				return this;
 			}
-			MaterialTextureSet result = CAPI.REGS.materialTextureSets().get(parentSet);
+			final MaterialTextureSet result = CAPI.regs().materialTextureSets().get(parentSet);
 			if (result == null) {
-				throw new IllegalStateException("Tried to fetch unregistered parent MaterialTextureSet[%s] for MaterialTextureSet[%s]".formatted(parentSet, getRegistryKey()));
+				throw new IllegalStateException("Tried to fetch unregistered parent MaterialTextureSet[%s] for MaterialTextureSet[%s]".formatted(parentSet, this.getRegistryKey()));
 			}
 			return result;
 		});

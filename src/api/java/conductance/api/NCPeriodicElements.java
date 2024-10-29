@@ -3,7 +3,7 @@ package conductance.api;
 import conductance.api.material.PeriodicElement;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
-public class NCPeriodicElements {
+public final class NCPeriodicElements {
 
 	// region Real Elements
 	public static PeriodicElement HYDROGEN;
@@ -137,4 +137,7 @@ public class NCPeriodicElements {
 	public static PeriodicElement INFINITY;
 	public static PeriodicElement SPACETIME;
 	// endregion
+
+	private NCPeriodicElements() {
+	}
 }

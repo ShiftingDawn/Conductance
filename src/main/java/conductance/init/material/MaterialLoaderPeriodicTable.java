@@ -147,10 +147,10 @@ import static conductance.api.NCTextureSets.BRIGHT;
 import static conductance.api.NCTextureSets.METALLIC;
 import static conductance.api.NCTextureSets.SHINY;
 
-public class MaterialLoaderPeriodicTable {
+public final class MaterialLoaderPeriodicTable {
 
 	//@formatter:off
-	public static void init(MaterialRegister register) {
+	public static void init(final MaterialRegister register) {
 		HYDROGEN = register.register("hydrogen")
 				.gas()
 				.color(0, 0, 255)
@@ -1026,4 +1026,7 @@ public class MaterialLoaderPeriodicTable {
 				.build();
 	}
 	//@formatter:on
+
+	private MaterialLoaderPeriodicTable() {
+	}
 }

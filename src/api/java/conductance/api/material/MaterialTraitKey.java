@@ -9,7 +9,7 @@ public final class MaterialTraitKey<T extends IMaterialTrait<T>> extends Registr
 	@Getter
 	private final Class<T> typeClass;
 
-	public MaterialTraitKey(ResourceLocation registryKey, Class<T> typeClass) {
+	public MaterialTraitKey(final ResourceLocation registryKey, final Class<T> typeClass) {
 		super(registryKey);
 		this.typeClass = typeClass;
 	}

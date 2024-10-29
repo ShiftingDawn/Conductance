@@ -5,5 +5,5 @@ import conductance.api.material.TaggedMaterialSet;
 
 public interface MaterialUnitOverrideMap {
 
-	void add(final TaggedMaterialSet set, final Material material, final long value);
+	void add(TaggedMaterialSet set, Material material, long value);
 }

@@ -12,29 +12,29 @@ public final class MaterialTaggedSet extends TaggedSetImpl<Material> implements 
 	@Getter
 	private final MaterialTextureType textureType;
 
-	public MaterialTaggedSet(MaterialTaggedSetBuilder builder) {
+	public MaterialTaggedSet(final MaterialTaggedSetBuilder builder) {
 		super(builder);
 		this.textureType = builder.textureType();
 	}
 
 	@Override
-	public boolean canGenerateItem(Material object) {
+	public boolean canGenerateItem(final Material object) {
 		return super.canGenerateItem(object) && !MaterialOverrideRegister.has(this, object);
 	}
 
 	@Override
-	public boolean canGenerateBlock(Material object) {
+	public boolean canGenerateBlock(final Material object) {
 		return super.canGenerateBlock(object) && !MaterialOverrideRegister.has(this, object);
 	}
 
 	@Override
-	public boolean canGenerateFluid(Material object) {
+	public boolean canGenerateFluid(final Material object) {
 		return super.canGenerateFluid(object) && !MaterialOverrideRegister.has(this, object);
 	}
 
 	@Override
-	public long getUnitValue(Material object) {
-		long override = MaterialUnitOverrideRegister.get(this, object);
+	public long getUnitValue(final Material object) {
+		final long override = MaterialUnitOverrideRegister.get(this, object);
 		return override > 0 ? override : this.getUnitValue();
 	}
 }

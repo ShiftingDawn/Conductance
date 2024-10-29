@@ -2,8 +2,14 @@ package conductance.client;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import conductance.core.CommonProxy;
+import net.neoforged.bus.api.IEventBus;
 
 @OnlyIn(Dist.CLIENT)
-public class ClientProxy extends CommonProxy {
+public final class ClientProxy {
+
+	public static void init(final IEventBus modEventBus) {
+	}
+
+	private ClientProxy() {
+	}
 }

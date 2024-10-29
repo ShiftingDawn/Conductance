@@ -5,28 +5,32 @@ import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-import conductance.api.material.*;
+import conductance.api.material.Material;
+import conductance.api.material.MaterialFlag;
+import conductance.api.material.MaterialStack;
+import conductance.api.material.MaterialTextureSet;
+import conductance.api.material.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitFluid;
 
 public interface MaterialBuilder {
 
 	MaterialBuilder dust();
 
-	MaterialBuilder dust(final TagKey<Block> requiredToolTag);
+	MaterialBuilder dust(TagKey<Block> requiredToolTag);
 
-	MaterialBuilder dust(final TagKey<Block> requiredToolTag, int burnTime);
+	MaterialBuilder dust(TagKey<Block> requiredToolTag, int burnTime);
 
 	MaterialBuilder ingot();
 
-	MaterialBuilder ingot(final TagKey<Block> requiredToolTag);
+	MaterialBuilder ingot(TagKey<Block> requiredToolTag);
 
-	MaterialBuilder ingot(final TagKey<Block> requiredToolTag, int burnTime);
+	MaterialBuilder ingot(TagKey<Block> requiredToolTag, int burnTime);
 
 	MaterialBuilder gem();
 
-	MaterialBuilder gem(final TagKey<Block> requiredToolTag);
+	MaterialBuilder gem(TagKey<Block> requiredToolTag);
 
-	MaterialBuilder gem(final TagKey<Block> requiredToolTag, int burnTime);
+	MaterialBuilder gem(TagKey<Block> requiredToolTag, int burnTime);
 
 	MaterialBuilder liquid();
 
@@ -68,9 +72,9 @@ public interface MaterialBuilder {
 
 	MaterialBuilder components(List<MaterialStack> components);
 
-	MaterialBuilder flags(MaterialFlag... flags);
+	MaterialBuilder flags(MaterialFlag... flagsToAdd);
 
-	MaterialBuilder addFlagAndPreset(Collection<MaterialFlag> preset, MaterialFlag... flags);
+	MaterialBuilder addFlagAndPreset(Collection<MaterialFlag> preset, MaterialFlag... flagsToAdd);
 
 	MaterialBuilder periodicElement(PeriodicElement periodicElement);
 
