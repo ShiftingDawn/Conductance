@@ -8,7 +8,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import conductance.api.CAPI;
@@ -22,7 +21,7 @@ public final class ConductanceCreativeTabs {
 	//@formatter:off
 	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> GENERAL = getRegistrate().defaultCreativeTab("general", builder -> builder
 			.displayItems(new TabDisplayGen("general"))
-			.icon(() -> new ItemStack(Items.GOLD_INGOT))
+			.icon(() -> new ItemStack(ConductanceItems.CRAFTING_TOOL_WRENCH.asItem()))
 			.title(Component.translatable("itemGroup.conductance.general"))
 			.build()
 	).register();

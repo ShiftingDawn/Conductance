@@ -1,5 +1,7 @@
 package conductance.api;
 
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.neoforged.fml.loading.FMLEnvironment;
 import conductance.api.material.Material;
 import conductance.api.material.ResourceFinder;
@@ -7,6 +9,7 @@ import conductance.api.material.TaggedMaterialSet;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
+import conductance.api.util.TagHelper;
 
 public final class CAPI {
 
@@ -38,6 +41,13 @@ public final class CAPI {
 
 	public static boolean isClient() {
 		return FMLEnvironment.dist.isClient();
+	}
+
+	public static final class Tags {
+
+		public static final TagKey<Item> TAG_WRENCH = TagHelper.itemTagForMod("wrenches");
+		public static final TagKey<Item> TAG_HAMMER = TagHelper.itemTagForMod("hammers");
+		public static final TagKey<Item> TAG_WIRE_CUTTERS = TagHelper.itemTagForMod("wire_cutters");
 	}
 
 	private CAPI() {

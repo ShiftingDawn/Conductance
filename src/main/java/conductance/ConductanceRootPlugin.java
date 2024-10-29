@@ -16,6 +16,8 @@ import conductance.api.plugin.MaterialTextureTypeRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.MaterialUnitOverrideMap;
 import conductance.api.plugin.PeriodicElementBuilder;
+import conductance.api.plugin.TagRegister;
+import conductance.init.ConductanceItems;
 import conductance.init.ConductanceMaterialFlags;
 import conductance.init.ConductanceMaterialOreTypes;
 import conductance.init.ConductanceMaterialTaggedSets;
@@ -155,5 +157,12 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, AMETHYST, UNIT * 4);
 		overrides.add(NCMaterialTaggedSets.ROD, BLAZE, UNIT * 4);
 		overrides.add(NCMaterialTaggedSets.ROD, BONE, UNIT * 5);
+	}
+
+	@Override
+	public void registerTags(final TagRegister tags) {
+		tags.item(CAPI.Tags.TAG_WRENCH, ConductanceItems.CRAFTING_TOOL_WRENCH);
+		tags.item(CAPI.Tags.TAG_HAMMER, ConductanceItems.CRAFTING_TOOL_HAMMER);
+		tags.item(CAPI.Tags.TAG_WIRE_CUTTERS, ConductanceItems.CRAFTING_TOOL_WIRE_CUTTERS);
 	}
 }
