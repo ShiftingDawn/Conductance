@@ -2,5 +2,12 @@
 	"itemGroup.conductance.general": "General (Conductance)",
 	"itemGroup.conductance.material_items": "Material Items (Conductance)",
 	"itemGroup.conductance.material_blocks": "Material Blocks (Conductance)",
-	"itemGroup.conductance.material_fluids": "Material Fluids (Conductance)"
+	"itemGroup.conductance.material_fluids": "Material Fluids (Conductance)",
+	"material.conductance.uranium": "Uranium-238",
+	"material.conductance.uranium_235": "Uranium-235",
+	"material.conductance.plutonium": "Plutonium-239",
+	"material.conductance.plutonium_241": "Plutonium-241",
+	"material.conductance.tpv_alloy": "TPV-Alloy",
+	"material.conductance.hss_g": "HSS-G",
+	"material.conductance.spacetime": "SpaceTime"
 }
