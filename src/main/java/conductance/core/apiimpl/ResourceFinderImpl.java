@@ -2,11 +2,11 @@ package conductance.core.apiimpl;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.fml.loading.FMLLoader;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.material.Material;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.ResourceFinder;
@@ -23,53 +23,71 @@ final class ResourceFinderImpl implements ResourceFinder {
 	private final Table<MaterialTextureSet, MaterialTextureType, Table<String, String, SafeOptional<ResourceLocation>>> blockModelCache = HashBasedTable.create();
 
 	@Override
-	public SafeOptional<ResourceLocation> getItemTexture(MaterialTextureSet textureSet, MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
+	public SafeOptional<ResourceLocation> getItemTexture(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
 		pathPrefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
 		pathSuffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
-		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = innerTable(itemTextureCache, textureSet, textureType);
+		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.itemTextureCache, textureSet, textureType);
 		if (rootTable.contains(pathPrefix, pathSuffix)) {
 			return rootTable.get(pathPrefix, pathSuffix);
 		}
-		final SafeOptional<ResourceLocation> resource = getItemTextureCascaded(textureSet, textureType, pathPrefix, pathSuffix);
+		final SafeOptional<ResourceLocation> resource = this.getItemTextureCascaded(textureSet, textureType, pathPrefix, pathSuffix);
 		rootTable.put(pathPrefix, pathSuffix, resource);
 		return resource;
 	}
 
 	@Override
-	public SafeOptional<ResourceLocation> getItemModel(MaterialTextureSet textureSet, MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
+	public SafeOptional<ResourceLocation> getItemTexture(final Material material, final MaterialTextureType type, @Nullable final String fallbackPathPrefix, @Nullable final String fallbackPathSuffix) {
+		final ResourceLocation customTexture = material.getRegistryKey().withPath("textures/item/material_custom/%s/%s.png".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath()));
+		if (this.isResourceValid(customTexture)) {
+			return SafeOptional.of(material.getRegistryKey().withPath("item/material_custom/%s/%s".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath())));
+		}
+		return this.getItemTexture(material.getTextureSet(), type, fallbackPathPrefix, fallbackPathSuffix);
+	}
+
+	@Override
+	public SafeOptional<ResourceLocation> getItemModel(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
 		pathPrefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
 		pathSuffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
-		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = innerTable(itemModelCache, textureSet, textureType);
+		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.itemModelCache, textureSet, textureType);
 		if (rootTable.contains(pathPrefix, pathSuffix)) {
 			return rootTable.get(pathPrefix, pathSuffix);
 		}
-		final SafeOptional<ResourceLocation> resource = getItemModelCascaded(textureSet, textureType, pathPrefix, pathSuffix);
+		final SafeOptional<ResourceLocation> resource = this.getItemModelCascaded(textureSet, textureType, pathPrefix, pathSuffix);
 		rootTable.put(pathPrefix, pathSuffix, resource);
 		return resource;
 	}
 
 	@Override
-	public SafeOptional<ResourceLocation> getBlockTexture(MaterialTextureSet textureSet, MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
+	public SafeOptional<ResourceLocation> getBlockTexture(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
 		pathPrefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
 		pathSuffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
-		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = innerTable(blockTextureCache, textureSet, textureType);
+		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.blockTextureCache, textureSet, textureType);
 		if (rootTable.contains(pathPrefix, pathSuffix)) {
 			return rootTable.get(pathPrefix, pathSuffix);
 		}
-		final SafeOptional<ResourceLocation> resource = getBlockTextureCascaded(textureSet, textureType, pathPrefix, pathSuffix);
+		final SafeOptional<ResourceLocation> resource = this.getBlockTextureCascaded(textureSet, textureType, pathPrefix, pathSuffix);
 		rootTable.put(pathPrefix, pathSuffix, resource);
 		return resource;
 	}
 
 	@Override
-	public SafeOptional<ResourceLocation> getBlockModel(MaterialTextureSet textureSet, MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
+	public SafeOptional<ResourceLocation> getBlockTexture(final Material material, final MaterialTextureType type, @Nullable final String fallbackPathPrefix, @Nullable final String fallbackPathSuffix) {
+		final ResourceLocation customTexture = material.getRegistryKey().withPath("textures/block/material_custom/%s/%s.png".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath()));
+		if (this.isResourceValid(customTexture)) {
+			return SafeOptional.of(material.getRegistryKey().withPath("block/material_custom/%s/%s".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath())));
+		}
+		return this.getBlockTexture(material.getTextureSet(), type, fallbackPathPrefix, fallbackPathSuffix);
+	}
+
+	@Override
+	public SafeOptional<ResourceLocation> getBlockModel(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
 		pathPrefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
 		pathSuffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
-		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = innerTable(blockModelCache, textureSet, textureType);
+		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.blockModelCache, textureSet, textureType);
 		if (rootTable.contains(pathPrefix, pathSuffix)) {
 			return rootTable.get(pathPrefix, pathSuffix);
 		}
-		final SafeOptional<ResourceLocation> resource = getBlockModelCascaded(textureSet, textureType, pathPrefix, pathSuffix);
+		final SafeOptional<ResourceLocation> resource = this.getBlockModelCascaded(textureSet, textureType, pathPrefix, pathSuffix);
 		rootTable.put(pathPrefix, pathSuffix, resource);
 		return resource;
 	}
@@ -77,22 +95,31 @@ final class ResourceFinderImpl implements ResourceFinder {
 	@Override
 	/*
 	 * Textures are stored in the block directory, We cache it in a different table
-	 * to prevent clashes between the placeable fluid-block and the virtual fluid
+	 * to prevent clashes between the placeable fluid-block and the virtual fluid.
 	 */
-	public SafeOptional<ResourceLocation> getFluidTexture(MaterialTextureSet textureSet, MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
+	public SafeOptional<ResourceLocation> getFluidTexture(final MaterialTextureSet textureSet, final MaterialTextureType textureType, @Nullable String pathPrefix, @Nullable String pathSuffix) {
 		pathPrefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix + "_";
 		pathSuffix = pathSuffix == null || pathSuffix.isBlank() ? "" : "_" + pathSuffix;
-		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = innerTable(fluidTextureCache, textureSet, textureType);
+		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.fluidTextureCache, textureSet, textureType);
 		if (rootTable.contains(pathPrefix, pathSuffix)) {
 			return rootTable.get(pathPrefix, pathSuffix);
 		}
-		final SafeOptional<ResourceLocation> resource = getBlockTextureCascaded(textureSet, textureType, pathPrefix, pathSuffix);
+		final SafeOptional<ResourceLocation> resource = this.getBlockTextureCascaded(textureSet, textureType, pathPrefix, pathSuffix);
 		rootTable.put(pathPrefix, pathSuffix, resource);
 		return resource;
 	}
 
 	@Override
-	public boolean isResourceValid(ResourceLocation resource) {
+	public SafeOptional<ResourceLocation> getFluidTexture(final Material material, final MaterialTextureType type, @Nullable final String fallbackPathPrefix, @Nullable final String fallbackPathSuffix) {
+		final ResourceLocation customTexture = material.getRegistryKey().withPath("textures/block/material_custom/%s/%s.png".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath()));
+		if (this.isResourceValid(customTexture)) {
+			return SafeOptional.of(material.getRegistryKey().withPath("block/material_custom/%s/%s".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath())));
+		}
+		return this.getFluidTexture(material.getTextureSet(), type, fallbackPathPrefix, fallbackPathSuffix);
+	}
+
+	@Override
+	public boolean isResourceValid(final ResourceLocation resource) {
 		if (ResourceFinderImpl.class.getResource(String.format("/assets/%s/%s", resource.getNamespace(), resource.getPath())) != null) {
 			return true;
 		}
@@ -103,25 +130,25 @@ final class ResourceFinderImpl implements ResourceFinder {
 	}
 
 	@Override
-	public boolean isTextureValid(ResourceLocation texture) {
-		ResourceLocation location = ResourceLocation.fromNamespaceAndPath(texture.getNamespace(), "textures/%s.png".formatted(texture.getPath()));
+	public boolean isTextureValid(final ResourceLocation texture) {
+		final ResourceLocation location = ResourceLocation.fromNamespaceAndPath(texture.getNamespace(), "textures/%s.png".formatted(texture.getPath()));
 		return this.isResourceValid(location);
 	}
 
 	private SafeOptional<ResourceLocation> getItemTextureCascaded(final MaterialTextureSet set, final MaterialTextureType type, @javax.annotation.Nullable final String prefix, @javax.annotation.Nullable final String suffix) {
-		return getResourceCascaded("textures", "item", set, type, "png", prefix, suffix);
+		return this.getResourceCascaded("textures", "item", set, type, "png", prefix, suffix);
 	}
 
 	private SafeOptional<ResourceLocation> getItemModelCascaded(final MaterialTextureSet set, final MaterialTextureType type, @javax.annotation.Nullable final String prefix, @javax.annotation.Nullable final String suffix) {
-		return getResourceCascaded("models", "item", set, type, "json", prefix, suffix);
+		return this.getResourceCascaded("models", "item", set, type, "json", prefix, suffix);
 	}
 
 	private SafeOptional<ResourceLocation> getBlockTextureCascaded(final MaterialTextureSet set, final MaterialTextureType type, @javax.annotation.Nullable final String prefix, @javax.annotation.Nullable final String suffix) {
-		return getResourceCascaded("textures", "block", set, type, "png", prefix, suffix);
+		return this.getResourceCascaded("textures", "block", set, type, "png", prefix, suffix);
 	}
 
 	private SafeOptional<ResourceLocation> getBlockModelCascaded(final MaterialTextureSet set, final MaterialTextureType type, @javax.annotation.Nullable final String prefix, @javax.annotation.Nullable final String suffix) {
-		return getResourceCascaded("models", "block", set, type, "json", prefix, suffix);
+		return this.getResourceCascaded("models", "block", set, type, "json", prefix, suffix);
 	}
 
 	private SafeOptional<ResourceLocation> getResourceCascaded(final String resourceType, final String pathPrepend, final MaterialTextureSet set, final MaterialTextureType type, @javax.annotation.Nullable final String extension, @javax.annotation.Nullable String prefix, @javax.annotation.Nullable String suffix) {
@@ -129,14 +156,14 @@ final class ResourceFinderImpl implements ResourceFinder {
 		suffix = suffix == null || suffix.isBlank() ? "" : suffix.startsWith("_") ? suffix : "_" + suffix;
 		MaterialTextureSet currentSet = set;
 		while (!currentSet.isRootSet()) {
-			final ResourceLocation location = getResourceUnchecked("%s/%s".formatted(resourceType, pathPrepend), currentSet, type, prefix, suffix + (extension != null ? "." + extension : ""));
-			if (isResourceValid(location)) {
+			final ResourceLocation location = ResourceFinderImpl.getResourceUnchecked("%s/%s".formatted(resourceType, pathPrepend), currentSet, type, prefix, suffix + (extension != null ? "." + extension : ""));
+			if (this.isResourceValid(location)) {
 				break;
 			}
 			currentSet = currentSet.getParentSet();
 		}
-		final ResourceLocation location = getResourceUnchecked(pathPrepend, currentSet, type, prefix, suffix);
-		if (!isResourceValid(location)) {
+		final ResourceLocation location = ResourceFinderImpl.getResourceUnchecked(pathPrepend, currentSet, type, prefix, suffix);
+		if (!this.isResourceValid(location)) {
 			// CAPI.LOGGER.warn("Could not find cascaded resource {} while looking for: {}",
 			// location, MaterialUtils.getResourceUnchecked("%s/%s".formatted(resourceType,
 			// pathPrepend), set, type, prefix, suffix + (extension != null ? "." +

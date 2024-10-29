@@ -18,6 +18,7 @@ import conductance.api.CAPI;
 import conductance.Conductance;
 import conductance.Config;
 import conductance.core.AbstractRuntimePack;
+import conductance.core.apiimpl.TranslationRegistryImpl;
 
 public final class RuntimeResourcePack extends AbstractRuntimePack {
 
@@ -52,11 +53,12 @@ public final class RuntimeResourcePack extends AbstractRuntimePack {
 		RuntimeResourcePack.RELOAD_LISTENERS.clear();
 
 		// Register built-in listeners
-		addReloadListener(MaterialTextureSetModelHandler::reload);
-		addReloadListener(MaterialItemModelHandler::reload);
-		addReloadListener(MaterialBlockModelHandler::reload);
+		RuntimeResourcePack.addReloadListener(MaterialTextureSetModelHandler::reload);
+		RuntimeResourcePack.addReloadListener(MaterialItemModelHandler::reload);
+		RuntimeResourcePack.addReloadListener(MaterialBlockModelHandler::reload);
+		RuntimeResourcePack.addReloadListener(MaterialFluidModelHandler::reload);
 
-		// TODO reset translationregistry
+		TranslationRegistryImpl.INSTANCE.reset();
 	}
 
 	public static void load() {
@@ -65,7 +67,7 @@ public final class RuntimeResourcePack extends AbstractRuntimePack {
 		Conductance.LOGGER.info("Conductance reloaded RuntimeResourcePack in {}ms", System.currentTimeMillis() - sysTime);
 	}
 
-	public static void addItemModel(ResourceLocation location, Supplier<JsonElement> itemModelGenerator) {
+	public static void addItemModel(final ResourceLocation location, final Supplier<JsonElement> itemModelGenerator) {
 		RuntimeResourcePack.addItemModel(location, itemModelGenerator.get());
 	}
 
@@ -85,7 +87,7 @@ public final class RuntimeResourcePack extends AbstractRuntimePack {
 		RuntimeResourcePack.addBlockState(location, blockStateGenerator.get());
 	}
 
-	public static void addBlockModel(ResourceLocation location, Supplier<JsonElement> blockModelGenerator) {
+	public static void addBlockModel(final ResourceLocation location, final Supplier<JsonElement> blockModelGenerator) {
 		RuntimeResourcePack.addBlockModel(location, blockModelGenerator.get());
 	}
 

@@ -4,14 +4,15 @@ import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
+import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 
 @SuppressWarnings("removal")
 public class MaterialFluidType extends FluidType {
 
-	private final Material material;
-	private final TaggedMaterialSet set;
+	final Material material;
+	final TaggedMaterialSet set;
 
 	public MaterialFluidType(final Material material, final TaggedMaterialSet set, final Properties properties) {
 		super(properties);
@@ -25,7 +26,7 @@ public class MaterialFluidType extends FluidType {
 
 			@Override
 			public ResourceLocation getStillTexture() {
-				return MaterialFluidType.this.set.getTextureType().getFluidTexture(MaterialFluidType.this.material.getTextureSet()).getValue();
+				return CAPI.RESOURCE_FINDER.getFluidTexture(MaterialFluidType.this.material, MaterialFluidType.this.set.getTextureType()).getValue();
 			}
 
 			@Override

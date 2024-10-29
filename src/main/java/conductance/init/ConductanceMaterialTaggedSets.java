@@ -47,7 +47,7 @@ public class ConductanceMaterialTaggedSets {
 				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.INGOT) || mat.hasTrait(NCMaterialTraits.GEM) || mat.hasFlag(NCMaterialFlags.GENERATE_BLOCK))
 				.build();
 
-		LIQUID = register.register("liquid", "%s")
+		LIQUID = register.register("liquid", mat -> mat.hasTrait(NCMaterialTraits.INGOT) ? "molten_%s" : "%s")
 				.addTagCommon("%s")
 				.generateFluids(true)
 				.textureType(NCTextureTypes.LIQUID)
