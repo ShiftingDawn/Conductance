@@ -181,17 +181,18 @@ public final class MaterialRegistry implements TaggedSetRegistry<Material, Tagge
 		this.generatedItemRegistry.cellSet().forEach(cell -> this.registerItemInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
 		this.generatedBlockRegistry.cellSet().forEach(cell -> this.registerBlockInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
 		this.generatedFluidRegistry.cellSet().forEach(cell -> this.registerFluidInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
-
-		// TODO handle ores
-//		ApiBridge.REGS.REVERSED_ORE_TYPE_MAPPING.clear();
-//		CAPI.REGISTRIES.MATERIAL_TAG_TYPES().values().stream()
-//				.filter(tt -> tt.getOreType() != null)
-//				.forEach(tt -> ApiBridge.REGS.REVERSED_ORE_TYPE_MAPPING.put(tt.getOreType().containingBlockType().get(), tt));
 	}
 
 	private static void registerOverriddenComponents() {
 		MaterialOverrideRegister.getOverrides().rowMap().forEach((set, mapping) -> mapping.forEach((material, overrides) -> {
-			MaterialRegistry.INSTANCE.registerItemInternal(set, material, overrides);
+			Arrays.stream(overrides).forEach(override -> {
+				if (set.isBlockGenerator() && override instanceof final Block block) {
+					MaterialRegistry.INSTANCE.registerBlockInternal(set, material, block);
+				}
+				if (set.isItemGenerator()) {
+					MaterialRegistry.INSTANCE.registerItemInternal(set, material, override);
+				}
+			});
 		}));
 	}
 }
