@@ -2,8 +2,16 @@ package conductance.core.apiimpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
+import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.FluidBuilder;
+import com.tterrag.registrate.builders.ItemBuilder;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +39,18 @@ public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BU
 	private boolean generateBlocks;
 	@Getter
 	private boolean generateFluids;
+	@Getter
+	@Nullable
+	private Predicate<TYPE> generatorPredicate;
+	@Getter
+	@Nullable
+	private BiConsumer<TYPE, ItemBuilder<? extends Item, ?>> itemGeneratorCallback;
+	@Getter
+	@Nullable
+	private BiConsumer<TYPE, BlockBuilder<? extends Block, ?>> blockGeneratorCallback;
+	@Getter
+	@Nullable
+	private BiConsumer<TYPE, FluidBuilder<? extends Fluid, ?>> fluidGeneratorCallback;
 	@Getter
 	private long unitValue = -1;
 
@@ -100,7 +120,7 @@ public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BU
 	}
 	// endregion
 
-	// region Properties
+	// region Generation
 	public BUILDER generateItems(boolean generateItems) {
 		this.generateItems = generateItems;
 		return (BUILDER) this;
@@ -116,6 +136,33 @@ public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BU
 		return (BUILDER) this;
 	}
 
+	@Override
+	public BUILDER generatorPredicate(@Nullable Predicate<TYPE> predicate) {
+		this.generatorPredicate = predicate;
+		return (BUILDER) this;
+	}
+
+	@Override
+	public BUILDER itemGeneratorCallback(@Nullable BiConsumer<TYPE, ItemBuilder<? extends Item, ?>> callback) {
+		this.itemGeneratorCallback = callback;
+		return (BUILDER) this;
+	}
+
+	@Override
+	public BUILDER blockGeneratorCallback(@Nullable BiConsumer<TYPE, BlockBuilder<? extends Block, ?>> callback) {
+		this.blockGeneratorCallback = callback;
+		return (BUILDER) this;
+	}
+
+	@Override
+	public BUILDER fluidGeneratorCallback(@Nullable BiConsumer<TYPE, FluidBuilder<? extends Fluid, ?>> callback) {
+		this.fluidGeneratorCallback = callback;
+		return (BUILDER) this;
+	}
+
+	// endregion
+
+	// region Properties
 	public BUILDER unitValue(long unitValue) {
 		this.unitValue = unitValue;
 		return (BUILDER) this;

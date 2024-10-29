@@ -1,11 +1,13 @@
 package conductance.core.apiimpl;
 
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import conductance.api.CAPI;
 import conductance.Conductance;
+import conductance.core.ConductanceRegistrate;
 
 @EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ApiBridge {
@@ -16,8 +18,10 @@ public class ApiBridge {
 
 	public static final ConductanceRegistryImpl<ResourceLocation, ConductanceRegistryImpl<?, ?>> REGISTRIES = new ConductanceRegistryImpl.ResourceKeyed<>(Conductance.id("root"));
 	public static final RegistryProviderImpl REGS = new RegistryProviderImpl();
+	public static ConductanceRegistrate registrate;
 
-	public static void init() {
+	public static void init(IEventBus modEventBus) {
+		ApiBridge.registrate = ConductanceRegistrate.create(modEventBus);
 		CAPI.REGS = ApiBridge.REGS;
 		CAPI.RESOURCE_FINDER = new ResourceFinderImpl();
 	}

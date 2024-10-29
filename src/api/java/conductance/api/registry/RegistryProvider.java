@@ -11,6 +11,8 @@ import conductance.api.material.TaggedMaterialSet;
 
 public interface RegistryProvider {
 
+	NCRegistrate registrate();
+
 	ConductanceRegistry<ResourceLocation, PeriodicElement> periodicElements();
 
 	ConductanceRegistry<String, MaterialTextureSet> materialTextureSets();

@@ -12,6 +12,7 @@ import conductance.api.material.PeriodicElement;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.registry.ConductanceRegistry;
 import conductance.api.registry.IRegistryObject;
+import conductance.api.registry.NCRegistrate;
 import conductance.api.registry.RegistryProvider;
 import conductance.Conductance;
 
@@ -29,6 +30,11 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final ConductanceRegistry<ResourceLocation, Material> materials = makeResourceKeyed("material");
 
 	RegistryProviderImpl() {
+	}
+
+	@Override
+	public NCRegistrate registrate() {
+		return ApiBridge.registrate;
 	}
 
 	private static <VALUE extends IRegistryObject<String>> ConductanceRegistryImpl<String, VALUE> makeStringKeyed(final String registryName) {

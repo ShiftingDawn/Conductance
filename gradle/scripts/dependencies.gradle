@@ -5,6 +5,7 @@ def jetbrainsAnnotations = "26.0.1"
 dependencies {
     // Registrate https://maven.ithundxr.dev/#/snapshots/com/tterrag/registrate/Registrate
     api("com.tterrag.registrate:Registrate:${registrate}")
+    apiCompileOnly("com.tterrag.registrate:Registrate:${registrate}")
     jarJar("com.tterrag.registrate:Registrate:${registrate}")
 
     compileOnly("org.jetbrains:annotations:${jetbrainsAnnotations}")

@@ -1,6 +1,7 @@
 package conductance.api;
 
 import conductance.api.material.ResourceFinder;
+import conductance.api.registry.NCRegistrate;
 import conductance.api.registry.RegistryProvider;
 
 public class CAPI {

@@ -32,11 +32,21 @@ public interface TaggedSet<TYPE> extends IRegistryObject<String> {
 
 	Function<TYPE, String> getUnlocalizedNameFactory();
 
-	boolean isGenerateItems();
+	default String getUnlocalizedName(TYPE object) {
+		return String.format(this.getUnlocalizedNameFactory().apply(object), this.getObjectSerializer().apply(object));
+	}
 
-	boolean isGenerateBlocks();
+	boolean isItemGenerator();
 
-	boolean isGenerateFluids();
+	boolean canGenerateItem(TYPE object);
+
+	boolean isBlockGenerator();
+
+	boolean canGenerateBlock(TYPE object);
+
+	boolean isFluidGenerator();
+
+	boolean canGenerateFluid(TYPE object);
 
 	long getUnitValue();
 }
