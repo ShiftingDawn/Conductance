@@ -15,8 +15,7 @@ import conductance.api.registry.IRegistryObject;
 import conductance.api.registry.RegistryObject;
 import conductance.Conductance;
 
-public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>>
-		extends RegistryObject<ResourceLocation> implements ConductanceRegistry<KEY, VALUE> {
+public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>> extends RegistryObject<ResourceLocation> implements ConductanceRegistry<KEY, VALUE> {
 
 	private final HashBiMap<KEY, VALUE> registry;
 	@Getter
@@ -55,8 +54,7 @@ public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject
 			throw new IllegalStateException("[register]Registry %s has been frozen".formatted(this.getRegistryKey()));
 		}
 		if (this.containsKey(key)) {
-			throw new IllegalStateException(
-					"[register]Registry %s contains key %s already".formatted(this.getRegistryKey(), key));
+			throw new IllegalStateException("[register]Registry %s contains key %s already".formatted(this.getRegistryKey(), key));
 		}
 		this.registry.put(key, value);
 		Conductance.LOGGER.debug("Registered {} in registry {}", key, this.getRegistryKey());
@@ -69,8 +67,7 @@ public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject
 	@Override
 	public VALUE registerOrOverride(final KEY key, final VALUE value) {
 		if (this.frozen) {
-			throw new IllegalStateException(
-					"[registerOrOverride]Registry %s has been frozen".formatted(this.getRegistryKey()));
+			throw new IllegalStateException("[registerOrOverride]Registry %s has been frozen".formatted(this.getRegistryKey()));
 		}
 		final VALUE result = this.registry.put(key, value);
 		if (this.unregisterCallback != null && result != null) {

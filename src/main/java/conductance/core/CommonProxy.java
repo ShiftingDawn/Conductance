@@ -10,5 +10,7 @@ public class CommonProxy {
 		ApiBridge.init();
 
 		PluginManager.init();
+
+		PluginManager.dispatchPeriodicElements();
 	}
 }

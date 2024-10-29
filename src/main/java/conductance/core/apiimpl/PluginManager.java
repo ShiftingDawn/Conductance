@@ -6,11 +6,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.ModList;
 import org.objectweb.asm.Type;
 import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
+import conductance.api.material.PeriodicElement;
 import conductance.Conductance;
 
 public class PluginManager {
@@ -53,17 +55,13 @@ public class PluginManager {
 	}
 
 	public static void dispatchPeriodicElements() {
-		// PluginManager.execute((plugin, modid) -> {
-		// plugin.registerPeriodicElements((protons, neutrons, registryName, name,
-		// symbol, parent) -> {
-		// final PeriodicElement result = new
-		// PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName),
-		// protons, neutrons, name, symbol, parent != null ? parent.getRegistryName() :
-		// null);
-		// CAPI.REGS.periodicElements().register(result.getRegistryName(), result);
-		// return result;
-		// });
-		// });
+		PluginManager.execute((plugin, modid) -> {
+			plugin.registerPeriodicElements((protons, neutrons, registryName, name, symbol, parent) -> {
+				final PeriodicElement result = new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null);
+				CAPI.REGS.periodicElements().register(result.getRegistryKey(), result);
+				return result;
+			});
+		});
 		// TODO KubeJS
 	}
 

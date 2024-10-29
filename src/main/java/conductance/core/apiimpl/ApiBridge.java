@@ -10,8 +10,11 @@ import conductance.Conductance;
 @EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ApiBridge {
 
-	public static final ConductanceRegistryImpl<ResourceLocation, ConductanceRegistryImpl<?, ?>> REGISTRIES = new ConductanceRegistryImpl.ResourceKeyed<>(
-			Conductance.id("root"));
+	public enum DataPackRegistryLoadStage {
+		UNFREEZE, RESET, REFREEZE
+	}
+
+	public static final ConductanceRegistryImpl<ResourceLocation, ConductanceRegistryImpl<?, ?>> REGISTRIES = new ConductanceRegistryImpl.ResourceKeyed<>(Conductance.id("root"));
 	public static final RegistryProviderImpl REGS = new RegistryProviderImpl();
 
 	public static void init() {
@@ -22,5 +25,25 @@ public class ApiBridge {
 	private static void onLoadComplete(final FMLLoadCompleteEvent ignored) {
 		ApiBridge.REGISTRIES.freeze();
 		ApiBridge.REGISTRIES.values().forEach(ConductanceRegistryImpl::freeze);
+	}
+
+	public static void handleDataPackRegistryStage(final DataPackRegistryLoadStage stage) {
+		switch (stage) {
+			case UNFREEZE -> ApiBridge.REGISTRIES.values().forEach(reg -> {
+				if (reg instanceof final ConductanceDataPackRegistry<?> dataPackRegistry) {
+					dataPackRegistry.unfreeze();
+				}
+			});
+			case RESET -> ApiBridge.REGISTRIES.values().forEach(reg -> {
+				if (reg instanceof final ConductanceDataPackRegistry<?> dataPackRegistry) {
+					dataPackRegistry.reset();
+				}
+			});
+			case REFREEZE -> ApiBridge.REGISTRIES.values().forEach(reg -> {
+				if (reg instanceof final ConductanceDataPackRegistry<?> dataPackRegistry) {
+					dataPackRegistry.freeze();
+				}
+			});
+		}
 	}
 }
