@@ -35,6 +35,6 @@ public final class MaterialTraitDust implements IMaterialTrait<MaterialTraitDust
 	}
 
 	@Override
-	public void verify(Material material, MaterialTraitMap typeMap) {
+	public void verify(Material material, MaterialTraitMap traitMap) {
 	}
 }

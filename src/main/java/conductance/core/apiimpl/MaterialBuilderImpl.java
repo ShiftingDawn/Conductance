@@ -14,6 +14,8 @@ import conductance.api.material.MaterialStack;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitDust;
+import conductance.api.material.traits.MaterialTraitGem;
+import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.plugin.MaterialBuilder;
 
 public final class MaterialBuilderImpl implements MaterialBuilder {
@@ -51,31 +53,43 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder ingot() {
+		this.dust();
+		this.traits.set(NCMaterialTraits.INGOT, new MaterialTraitIngot());
 		return this;
 	}
 
 	@Override
 	public MaterialBuilder ingot(int harvestLevel) {
+		this.dust(harvestLevel);
+		this.traits.set(NCMaterialTraits.INGOT, new MaterialTraitIngot());
 		return this;
 	}
 
 	@Override
 	public MaterialBuilder ingot(int harvestLevel, int burnTime) {
+		this.dust(harvestLevel, burnTime);
+		this.traits.set(NCMaterialTraits.INGOT, new MaterialTraitIngot());
 		return this;
 	}
 
 	@Override
 	public MaterialBuilder gem() {
+		this.dust();
+		this.traits.set(NCMaterialTraits.GEM, new MaterialTraitGem());
 		return this;
 	}
 
 	@Override
 	public MaterialBuilder gem(int harvestLevel) {
+		this.dust(harvestLevel);
+		this.traits.set(NCMaterialTraits.GEM, new MaterialTraitGem());
 		return this;
 	}
 
 	@Override
 	public MaterialBuilder gem(int harvestLevel, int burnTime) {
+		this.dust(harvestLevel, burnTime);
+		this.traits.set(NCMaterialTraits.GEM, new MaterialTraitGem());
 		return this;
 	}
 

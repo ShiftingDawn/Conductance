@@ -17,8 +17,8 @@ import conductance.api.util.Marker;
 
 public class MaterialTraitMapImpl implements MaterialTraitMap {
 
-	// TODO add base materials : dust, ingot, fluid, gem
-	private static final Set<MaterialTraitKey<?>> BASE_TYPES = new HashSet<>(Arrays.asList(NCMaterialTraits.DUST));
+	// TODO add base materials : fluid
+	private static final Set<MaterialTraitKey<?>> BASE_TRAITS = new HashSet<>(Arrays.asList(NCMaterialTraits.DUST, NCMaterialTraits.INGOT, NCMaterialTraits.GEM));
 
 	private final IdentityHashMap<MaterialTraitKey<?>, IMaterialTrait<?>> traits = new IdentityHashMap<>();
 	Material material;
@@ -41,12 +41,14 @@ public class MaterialTraitMapImpl implements MaterialTraitMap {
 	}
 
 	@Override
-	public <T extends IMaterialTrait<T>> void set(MaterialTraitKey<T> key, T value, boolean verify) {
+	public <T extends IMaterialTrait<T>> void set(MaterialTraitKey<T> key, T value) {
 		Objects.requireNonNull(value);
-		if (this.has(key)) {
-			throw new IllegalStateException("Material type %s is already added to this material!".formatted(key));
+		if (!this.has(key)) {
+			this.traits.put(key, value);
+			if (this.material != null) { // Don't verify during the building phase
+				this.verify();
+			}
 		}
-		this.traits.put(key, value);
 	}
 
 	public void verify() {
@@ -59,8 +61,8 @@ public class MaterialTraitMapImpl implements MaterialTraitMap {
 			oldList.forEach(p -> p.verify(this.material, this));
 		} while (oldList.size() != this.traits.size());
 
-		if (this.traits.keySet().stream().noneMatch(BASE_TYPES::contains)) {
-			throw new IllegalArgumentException("Material must have at least one of: " + BASE_TYPES + " specified!");
+		if (this.traits.keySet().stream().noneMatch(BASE_TRAITS::contains)) {
+			throw new IllegalArgumentException("Material must have at least one of: " + BASE_TRAITS + " specified!");
 		}
 	}
 }
