@@ -8,6 +8,7 @@ import conductance.api.CAPI;
 
 @EventBusSubscriber(modid = CAPI.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class Config {
+
 	private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
 	static final ModConfigSpec SPEC = Config.BUILDER.build();

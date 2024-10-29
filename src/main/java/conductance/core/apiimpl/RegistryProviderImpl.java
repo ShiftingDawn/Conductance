@@ -3,6 +3,8 @@ package conductance.core.apiimpl;
 import net.minecraft.resources.ResourceLocation;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import conductance.api.material.MaterialTextureSet;
+import conductance.api.material.MaterialTextureType;
 import conductance.api.material.PeriodicElement;
 import conductance.api.registry.ConductanceRegistry;
 import conductance.api.registry.IRegistryObject;
@@ -14,6 +16,9 @@ import conductance.Conductance;
 public final class RegistryProviderImpl implements RegistryProvider {
 
 	private final ConductanceRegistry<ResourceLocation, PeriodicElement> periodicElements = makeResourceKeyed("periodic_element");
+
+	private final ConductanceRegistry<ResourceLocation, MaterialTextureType> materialTextureTypes = makeResourceKeyed("material_texture_type");
+	private final ConductanceRegistry<String, MaterialTextureSet> materialTextureSets = makeStringKeyed("material_texture_set");
 
 	RegistryProviderImpl() {
 	}

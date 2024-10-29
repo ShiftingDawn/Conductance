@@ -134,16 +134,14 @@ public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject
 		return this.registry.values().iterator();
 	}
 
-	public static final class ResourceKeyed<VALUE extends IRegistryObject<ResourceLocation>>
-			extends ConductanceRegistryImpl<ResourceLocation, VALUE> {
+	public static final class ResourceKeyed<VALUE extends IRegistryObject<ResourceLocation>> extends ConductanceRegistryImpl<ResourceLocation, VALUE> {
 
 		public ResourceKeyed(final ResourceLocation registryName) {
 			super(registryName);
 		}
 	}
 
-	public static final class StringKeyed<VALUE extends IRegistryObject<String>>
-			extends ConductanceRegistryImpl<String, VALUE> {
+	public static final class StringKeyed<VALUE extends IRegistryObject<String>> extends ConductanceRegistryImpl<String, VALUE> {
 
 		public StringKeyed(final ResourceLocation registryName) {
 			super(registryName);

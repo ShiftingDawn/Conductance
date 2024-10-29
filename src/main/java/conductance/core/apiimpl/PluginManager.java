@@ -6,12 +6,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.ModList;
 import org.objectweb.asm.Type;
 import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
+import conductance.api.material.MaterialTextureSet;
+import conductance.api.material.MaterialTextureType;
 import conductance.api.material.PeriodicElement;
 import conductance.Conductance;
 
@@ -29,18 +32,14 @@ public class PluginManager {
 			}
 		}
 		if (PluginManager.ROOT_PLUGIN == null) {
-			throw new IllegalStateException(
-					"Could not find " + CAPI.MOD_ID + " root plugin! Something is seriously wrong!");
+			throw new IllegalStateException("Could not find " + CAPI.MOD_ID + " root plugin! Something is seriously wrong!");
 		}
 		PluginManager.PLUGINS.remove(PluginManager.ROOT_PLUGIN);
 	}
 
 	private static void findPlugins() {
 		final HashSet<String> pluginClasses = new HashSet<>();
-		ModList.get().getAllScanData().forEach(scanData -> scanData.getAnnotations().stream()
-				.filter(annotationData -> Objects.equals(annotationData.annotationType(),
-						Type.getType(ConductancePlugin.class)))
-				.forEach(annotationData -> pluginClasses.add(annotationData.memberName())));
+		ModList.get().getAllScanData().forEach(scanData -> scanData.getAnnotations().stream().filter(annotationData -> Objects.equals(annotationData.annotationType(), Type.getType(ConductancePlugin.class))).forEach(annotationData -> pluginClasses.add(annotationData.memberName())));
 		for (final String className : pluginClasses) {
 			try {
 				final Class<?> clazz = Class.forName(className);
@@ -55,13 +54,23 @@ public class PluginManager {
 	}
 
 	public static void dispatchPeriodicElements() {
-		PluginManager.execute((plugin, modid) -> {
-			plugin.registerPeriodicElements((protons, neutrons, registryName, name, symbol, parent) -> {
-				final PeriodicElement result = new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null);
-				CAPI.REGS.periodicElements().register(result.getRegistryKey(), result);
-				return result;
-			});
-		});
+		PluginManager.execute((plugin, modid) -> plugin.registerPeriodicElements((protons, neutrons, registryName, name, symbol, parent) -> Util.make(new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null), result -> {
+			CAPI.REGS.periodicElements().register(result.getRegistryKey(), result);
+		})));
+		// TODO KubeJS
+	}
+
+	public static void dispatchMaterialTextureTypes() {
+		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTextureTypes(registryName -> Util.make(new MaterialTextureType(ResourceLocation.fromNamespaceAndPath(modid, registryName)), result -> {
+			CAPI.REGS.materialTextureTypes().register(result.getRegistryKey(), result);
+		})));
+		// TODO KubeJS
+	}
+
+	public static void dispatchMaterialTextureSets() {
+		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTextureSets((registryName, parentSetName) -> Util.make(new MaterialTextureSet(registryName, parentSetName), result -> {
+			CAPI.REGS.materialTextureSets().register(result.getRegistryKey(), result);
+		})));
 		// TODO KubeJS
 	}
 

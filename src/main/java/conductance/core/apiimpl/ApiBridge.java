@@ -19,6 +19,7 @@ public class ApiBridge {
 
 	public static void init() {
 		CAPI.REGS = ApiBridge.REGS;
+		CAPI.RESOURCE_FINDER = new ResourceFinderImpl();
 	}
 
 	@SubscribeEvent
@@ -29,21 +30,21 @@ public class ApiBridge {
 
 	public static void handleDataPackRegistryStage(final DataPackRegistryLoadStage stage) {
 		switch (stage) {
-			case UNFREEZE -> ApiBridge.REGISTRIES.values().forEach(reg -> {
-				if (reg instanceof final ConductanceDataPackRegistry<?> dataPackRegistry) {
-					dataPackRegistry.unfreeze();
-				}
-			});
-			case RESET -> ApiBridge.REGISTRIES.values().forEach(reg -> {
-				if (reg instanceof final ConductanceDataPackRegistry<?> dataPackRegistry) {
-					dataPackRegistry.reset();
-				}
-			});
-			case REFREEZE -> ApiBridge.REGISTRIES.values().forEach(reg -> {
-				if (reg instanceof final ConductanceDataPackRegistry<?> dataPackRegistry) {
-					dataPackRegistry.freeze();
-				}
-			});
+			case UNFREEZE	-> ApiBridge.REGISTRIES.values().forEach(reg -> {
+							if (reg instanceof final ConductanceDataPackRegistry<?> dataPackRegistry) {
+								dataPackRegistry.unfreeze();
+							}
+						});
+			case RESET		-> ApiBridge.REGISTRIES.values().forEach(reg -> {
+							if (reg instanceof final ConductanceDataPackRegistry<?> dataPackRegistry) {
+								dataPackRegistry.reset();
+							}
+						});
+			case REFREEZE	-> ApiBridge.REGISTRIES.values().forEach(reg -> {
+							if (reg instanceof final ConductanceDataPackRegistry<?> dataPackRegistry) {
+								dataPackRegistry.freeze();
+							}
+						});
 		}
 	}
 }

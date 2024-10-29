@@ -11,13 +11,7 @@ public final class PeriodicElement extends RegistryObject<ResourceLocation> {
 	private final String symbol;
 	private final ResourceLocation parent;
 
-	public PeriodicElement(
-			final ResourceLocation registryName,
-			final long protons,
-			final long neutrons,
-			final String name,
-			final String symbol,
-			final ResourceLocation parent) {
+	public PeriodicElement(final ResourceLocation registryName, final long protons, final long neutrons, final String name, final String symbol, final ResourceLocation parent) {
 		super(registryName);
 		this.protons = protons;
 		this.neutrons = neutrons;
