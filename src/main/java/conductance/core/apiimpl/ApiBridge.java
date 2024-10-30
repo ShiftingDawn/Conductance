@@ -14,7 +14,7 @@ import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
 import conductance.Conductance;
-import conductance.core.ConductanceRegistrate;
+import conductance.core.register.ConductanceRegistrate;
 import conductance.core.data.ManagedDataManager;
 import conductance.core.register.MaterialRegistry;
 

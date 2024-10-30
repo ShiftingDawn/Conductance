@@ -12,7 +12,7 @@ import net.minecraft.Util;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-public final class ManagedClassWrapper {
+final class ManagedClassWrapper {
 
 	@Getter
 	private final Class<?> clazz;

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.data.Persisted;
 import conductance.api.machine.data.Synchronized;
 
-public final class ManagedFieldWrapper {
+final class ManagedFieldWrapper {
 
 	@Getter
 	private final Field field;

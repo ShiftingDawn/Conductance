@@ -1,4 +1,4 @@
-package conductance.core;
+package conductance.core.register;
 
 import java.util.ArrayList;
 import java.util.Collections;

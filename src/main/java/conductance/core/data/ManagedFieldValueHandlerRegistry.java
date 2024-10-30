@@ -38,7 +38,7 @@ public final class ManagedFieldValueHandlerRegistry {
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public <T> ManagedFieldValueHandler<T> getHandler(final Class<T> clazz) {
+	<T> ManagedFieldValueHandler<T> getHandler(final Class<T> clazz) {
 		assert this.sortedRegistry != null;
 		return (ManagedFieldValueHandler<T>) this.mapperCache.computeIfAbsent(clazz, $ -> this.sortedRegistry.stream().filter(handler -> handler.canHandle(clazz)).findFirst().orElse(null));
 	}

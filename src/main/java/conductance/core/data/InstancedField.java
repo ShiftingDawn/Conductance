@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.data.ManagedFieldValueHandler;
 
-public final class InstancedField<T> {
+final class InstancedField<T> {
 
 	private final ManagedFieldWrapper field;
 	private final ManagedFieldValueHandler<T> valueHandler;

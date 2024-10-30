@@ -17,7 +17,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.Config;
-import conductance.core.AbstractRuntimePack;
+import conductance.runtimepack.AbstractRuntimePack;
 
 public final class RuntimeDataPack extends AbstractRuntimePack {
 

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.Conductance;
 import conductance.Config;
-import conductance.core.AbstractRuntimePack;
+import conductance.runtimepack.AbstractRuntimePack;
 import conductance.core.apiimpl.TranslationRegistryImpl;
 
 public final class RuntimeResourcePack extends AbstractRuntimePack {

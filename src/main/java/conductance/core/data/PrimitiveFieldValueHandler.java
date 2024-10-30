@@ -13,7 +13,7 @@ import com.google.common.primitives.Primitives;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.data.ManagedFieldValueHandler;
 
-public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler<T> {
+abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler<T> {
 
 	private final Class<T> typeClass;
 

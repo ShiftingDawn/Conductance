@@ -1,4 +1,4 @@
-package conductance.core;
+package conductance.runtimepack;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -104,7 +104,7 @@ public abstract class AbstractRuntimePack implements PackResources {
 				file = dumpPath.resolve(id.getNamespace()).resolve(id.getPath());
 			}
 			Files.createDirectories(file.getParent());
-			try (OutputStream output = Files.newOutputStream(file)) {
+			try (final OutputStream output = Files.newOutputStream(file)) {
 				output.write(json.toString().getBytes());
 			}
 		} catch (final IOException e) {
