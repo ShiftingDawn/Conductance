@@ -1,18 +1,19 @@
 {
-	"required": true,
-	"minVersion": "0.8",
-	"package": "conductance.core.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"injectors": {
-		"defaultRequire": 1,
-		"maxShiftBy": 5
-	},
-	"mixins": [
-		"ReloadableServerResourcesMixin",
-		"TagLoaderMixin",
-		"TagManagerMixin"
-	],
-	"client": [
-		"ModelManagerMixin"
+  "required": true,
+  "minVersion": "0.8",
+  "package": "conductance.core.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "injectors": {
+    "defaultRequire": 1,
+    "maxShiftBy": 5
+  },
+  "mixins": [
+    "BlockEntityMixin",
+    "ReloadableServerResourcesMixin",
+    "TagLoaderMixin",
+    "TagManagerMixin"
+  ],
+  "client": [
+    "ModelManagerMixin"
 	]
 }

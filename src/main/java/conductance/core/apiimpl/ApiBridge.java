@@ -9,11 +9,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import conductance.api.CAPI;
 import conductance.api.material.ResourceFinder;
+import conductance.api.plugin.ManagedDataMapRequester;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
 import conductance.Conductance;
 import conductance.core.ConductanceRegistrate;
+import conductance.core.data.ManagedDataManager;
 import conductance.core.register.MaterialRegistry;
 
 @EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
@@ -34,6 +36,7 @@ public final class ApiBridge {
 		ApiBridge.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
 		ApiBridge.setApiValue(TaggedSetRegistry.class, MaterialRegistry.INSTANCE);
 		ApiBridge.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
+		ApiBridge.setApiValue(ManagedDataMapRequester.class, ManagedDataManager::requestManagedDataMap);
 	}
 
 	private static <T> void setApiValue(final Class<T> variableType, final T value) {

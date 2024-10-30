@@ -13,11 +13,16 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.machine.data.IManaged;
+import conductance.api.machine.data.Managed;
+import conductance.api.machine.data.ManagedDataMap;
 
-public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends BlockEntity {
+@Managed
+public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends BlockEntity implements IManaged {
 
 	private final List<MetaTick> ticks = new ArrayList<>();
 	private final List<MetaTick> pending = new ArrayList<>();
+	private final ManagedDataMap managedDataMap = CAPI.requestDataMap(this);
 
 	public MetaBlockEntity(final MetaBlockEntityType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type.getBlockEntityType().get(), pos, blockState);
@@ -29,6 +34,11 @@ public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends Bloc
 	@SuppressWarnings("unchecked")
 	public final T self() {
 		return (T) this;
+	}
+
+	@Override
+	public final ManagedDataMap getDataMap() {
+		return this.managedDataMap;
 	}
 
 	//region Update
