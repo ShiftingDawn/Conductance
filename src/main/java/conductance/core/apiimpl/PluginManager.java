@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import net.minecraft.Util;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -19,8 +18,6 @@ import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
 import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.recipe.RecipeBuilder;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialOreType;
@@ -32,6 +29,7 @@ import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.Conductance;
+import conductance.core.data.ManagedFieldValueHandlerRegistry;
 import conductance.core.machine.MachineBuilderImpl;
 import conductance.core.recipe.RecipeElementTypeSerializer;
 import conductance.core.recipe.RecipeTypeBuilderImpl;
@@ -73,6 +71,10 @@ public final class PluginManager {
 				Conductance.LOGGER.error("Could not register Plugin {}", className, e);
 			}
 		}
+	}
+
+	public static void dispatchRegisterManagedFieldValueHandlers() {
+		PluginManager.execute((plugin, modid) -> plugin.registerManagedFieldValueHandlers(ManagedFieldValueHandlerRegistry.INSTANCE::register));
 	}
 
 	public static void dispatchPeriodicElements() {
