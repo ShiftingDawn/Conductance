@@ -1,55 +1,25 @@
 package conductance.core.data;
 
-import java.lang.reflect.Field;
-import java.util.Objects;
 import java.util.UUID;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.data.ManagedFieldValueHandler;
+import conductance.api.machine.ManagedObjectValueHandler;
 
-abstract class SimpleObjectFieldValueHandlers<T> implements ManagedFieldValueHandler<T> {
+final class SimpleObjectFieldValueHandlers {
 
-	private final Class<T> clazz;
-
-	SimpleObjectFieldValueHandlers(final Class<T> clazz) {
-		this.clazz = clazz;
+	private SimpleObjectFieldValueHandlers() {
 	}
 
-	@Override
-	public boolean canHandle(final Class<?> type) {
-		return type == this.clazz;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public @Nullable T getValue(final Field field, final Object instance) {
-		try {
-			return (T) field.get(instance);
-		} catch (final IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public void setValue(final Field field, final Object instance, @Nullable final T value) {
-		try {
-			field.set(instance, value);
-		} catch (final IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public boolean equals(final T value1, final T value2) {
-		return Objects.equals(value1, value2);
-	}
-
-	public static class HandlerString extends SimpleObjectFieldValueHandlers<String> {
+	public static class HandlerString extends ManagedObjectValueHandler<String> {
 
 		HandlerString() {
-			super(String.class);
+			super(String.class, true);
 		}
 
 		@Override
@@ -63,10 +33,10 @@ abstract class SimpleObjectFieldValueHandlers<T> implements ManagedFieldValueHan
 		}
 	}
 
-	public static class HandlerResourceLocation extends SimpleObjectFieldValueHandlers<ResourceLocation> {
+	public static class HandlerResourceLocation extends ManagedObjectValueHandler<ResourceLocation> {
 
 		HandlerResourceLocation() {
-			super(ResourceLocation.class);
+			super(ResourceLocation.class, true);
 		}
 
 		@Override
@@ -80,10 +50,10 @@ abstract class SimpleObjectFieldValueHandlers<T> implements ManagedFieldValueHan
 		}
 	}
 
-	public static class HandlerUUID extends SimpleObjectFieldValueHandlers<UUID> {
+	public static class HandlerUUID extends ManagedObjectValueHandler<UUID> {
 
 		HandlerUUID() {
-			super(UUID.class);
+			super(UUID.class, true);
 		}
 
 		@Override
@@ -94,6 +64,23 @@ abstract class SimpleObjectFieldValueHandlers<T> implements ManagedFieldValueHan
 		@Override
 		public @Nullable UUID deserialize(final Tag nbt) {
 			return UUID.fromString(nbt.getAsString());
+		}
+	}
+
+	public static class HandlerBlockState extends ManagedObjectValueHandler<BlockState> {
+
+		HandlerBlockState() {
+			super(BlockState.class, false);
+		}
+
+		@Override
+		public Tag serialize(final BlockState value) {
+			return NbtUtils.writeBlockState(value);
+		}
+
+		@Override
+		public @Nullable BlockState deserialize(final Tag nbt) {
+			return NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), (CompoundTag) nbt);
 		}
 	}
 }

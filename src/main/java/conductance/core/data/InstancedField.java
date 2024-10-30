@@ -42,9 +42,10 @@ final class InstancedField<T> {
 		return this.valueHandler.serialize(this.lastValue);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Nullable
 	public T deserialize(final Tag tag) {
-		return this.valueHandler.deserialize(tag);
+		return this.valueHandler.deserialize((Class<T>) this.field.getFieldType(), tag);
 	}
 
 	public void markDirty() {

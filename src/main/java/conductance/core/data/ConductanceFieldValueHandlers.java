@@ -13,11 +13,16 @@ public final class ConductanceFieldValueHandlers {
 		register.register(new PrimitiveFieldValueHandler.HandlerFloat());
 		register.register(new PrimitiveFieldValueHandler.HandlerDouble());
 		register.register(new PrimitiveFieldValueHandler.HandlerCharacter());
+		register.register(new ComplexObjectFieldValueHandlers.HandlerEnum());
+
+		register.register(new RegistryFieldValueHandlers.HandlerBlock());
+		register.register(new RegistryFieldValueHandlers.HandlerItem());
+		register.register(new RegistryFieldValueHandlers.HandlerFluid());
 
 		register.register(new SimpleObjectFieldValueHandlers.HandlerString());
 		register.register(new SimpleObjectFieldValueHandlers.HandlerResourceLocation());
 		register.register(new SimpleObjectFieldValueHandlers.HandlerUUID());
-
+		register.register(new SimpleObjectFieldValueHandlers.HandlerBlockState());
 	}
 
 	private ConductanceFieldValueHandlers() {

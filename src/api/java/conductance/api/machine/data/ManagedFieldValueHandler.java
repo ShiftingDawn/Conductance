@@ -19,4 +19,9 @@ public interface ManagedFieldValueHandler<T> {
 
 	@Nullable
 	T deserialize(Tag nbt);
+
+	@Nullable
+	default T deserialize(final Class<T> fieldType, final Tag nbt) {
+		return this.deserialize(nbt);
+	}
 }
