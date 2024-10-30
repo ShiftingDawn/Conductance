@@ -8,6 +8,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import lombok.Getter;
@@ -54,10 +55,10 @@ public final class ManagedDataMapImpl implements ManagedDataMap {
 	}
 
 	@Override
-	public void saveAllData(final CompoundTag nbt) {
+	public void saveAllData(final CompoundTag nbt, final HolderLookup.Provider registries) {
 		nbt.put("conductance_persist", Util.make(new CompoundTag(), tag -> this.persistenceFields.forEach((fieldName, fieldWrapper) -> {
 			final InstancedField<?> instancedField = this.fieldInstances.get(fieldWrapper);
-			final Tag serializedTag = instancedField.serialize();
+			final Tag serializedTag = instancedField.serialize(registries);
 			if (serializedTag != null) {
 				tag.put(fieldName, serializedTag);
 			}
@@ -67,7 +68,7 @@ public final class ManagedDataMapImpl implements ManagedDataMap {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void readAllData(final CompoundTag nbt) {
+	public void readAllData(final CompoundTag nbt, final HolderLookup.Provider registries) {
 		final CompoundTag tag = nbt.getCompound("conductance_persist");
 		tag.getAllKeys().forEach(tagKey -> {
 			final ManagedFieldWrapper fieldWrapper = this.persistenceFields.get(tagKey);
@@ -77,7 +78,7 @@ public final class ManagedDataMapImpl implements ManagedDataMap {
 			}
 			if (tag.contains(tagKey)) {
 				final InstancedField<Object> instancedField = (InstancedField<Object>) this.fieldInstances.get(fieldWrapper);
-				final Object data = instancedField.deserialize(tag.get(tagKey));
+				final Object data = instancedField.deserialize(tag.get(tagKey), registries);
 				instancedField.set(data);
 				instancedField.markNotDirty();
 			}

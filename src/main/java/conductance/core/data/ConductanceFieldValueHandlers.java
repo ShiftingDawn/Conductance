@@ -13,7 +13,7 @@ public final class ConductanceFieldValueHandlers {
 		register.register(new PrimitiveFieldValueHandler.HandlerFloat());
 		register.register(new PrimitiveFieldValueHandler.HandlerDouble());
 		register.register(new PrimitiveFieldValueHandler.HandlerCharacter());
-		register.register(new ComplexObjectFieldValueHandlers.HandlerEnum());
+		register.register(new EnumFieldValueHandler());
 
 		register.register(new RegistryFieldValueHandlers.HandlerBlock());
 		register.register(new RegistryFieldValueHandlers.HandlerItem());

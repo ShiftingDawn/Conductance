@@ -1,10 +1,9 @@
-package conductance.api.machine;
+package conductance.api.machine.data;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.data.ManagedFieldValueHandler;
 
 public abstract class ManagedObjectValueHandler<T> implements ManagedFieldValueHandler<T> {
 

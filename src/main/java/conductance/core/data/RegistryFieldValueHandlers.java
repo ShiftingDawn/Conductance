@@ -2,6 +2,7 @@ package conductance.core.data;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.StringTag;
@@ -46,12 +47,12 @@ abstract class RegistryFieldValueHandlers<T> implements ManagedFieldValueHandler
 	}
 
 	@Override
-	public Tag serialize(final T value) {
+	public Tag serialize(final T value, final HolderLookup.Provider registries) {
 		return StringTag.valueOf(this.registry.getKey(value).toString());
 	}
 
 	@Override
-	public @Nullable T deserialize(final Tag nbt) {
+	public @Nullable T deserialize(final Tag nbt, final HolderLookup.Provider registries) {
 		return this.registry.get(ResourceLocation.parse(nbt.getAsString()));
 	}
 

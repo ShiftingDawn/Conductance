@@ -1,5 +1,6 @@
 package conductance.core.data;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -35,17 +36,17 @@ final class InstancedField<T> {
 		this.lastValue = this.get();
 	}
 
-	public @Nullable Tag serialize() {
+	public @Nullable Tag serialize(final HolderLookup.Provider registries) {
 		if (this.lastValue == null) {
 			return null;
 		}
-		return this.valueHandler.serialize(this.lastValue);
+		return this.valueHandler.serialize(this.lastValue, registries);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public T deserialize(final Tag tag) {
-		return this.valueHandler.deserialize((Class<T>) this.field.getFieldType(), tag);
+	public T deserialize(final Tag tag, final HolderLookup.Provider registries) {
+		return this.valueHandler.deserialize((Class<T>) this.field.getFieldType(), tag, registries);
 	}
 
 	public void markDirty() {

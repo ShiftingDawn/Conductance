@@ -19,14 +19,14 @@ public abstract class BlockEntityMixin {
 	@Inject(method = "saveAdditional", at = @At("RETURN"))
 	private void conductance$saveAdditional(final CompoundTag tag, final HolderLookup.Provider registries, final CallbackInfo ci) {
 		if (this instanceof final IManaged managed) {
-			managed.getDataMap().saveAllData(tag);
+			managed.getDataMap().saveAllData(tag, registries);
 		}
 	}
 
 	@Inject(method = "loadAdditional", at = @At("RETURN"))
 	private void conductance$loadAdditional(final CompoundTag tag, final HolderLookup.Provider registries, final CallbackInfo ci) {
 		if (this instanceof final IManaged managed) {
-			managed.getDataMap().readAllData(tag);
+			managed.getDataMap().readAllData(tag, registries);
 		}
 	}
 

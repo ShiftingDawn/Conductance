@@ -1,6 +1,7 @@
 package conductance.core.data;
 
 import java.lang.reflect.Field;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.FloatTag;
@@ -33,7 +34,7 @@ abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler
 
 	public static final class HandlerBoolean extends PrimitiveFieldValueHandler<Boolean> {
 
-		public HandlerBoolean() {
+		HandlerBoolean() {
 			super(Boolean.TYPE);
 		}
 
@@ -56,19 +57,19 @@ abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler
 		}
 
 		@Override
-		public Tag serialize(final Boolean value) {
+		public Tag serialize(final Boolean value, final HolderLookup.Provider registries) {
 			return ByteTag.valueOf(value);
 		}
 
 		@Override
-		public Boolean deserialize(final Tag nbt) {
+		public Boolean deserialize(final Tag nbt, final HolderLookup.Provider registries) {
 			return ((ByteTag) nbt).getAsByte() == ByteTag.ONE.getAsByte();
 		}
 	}
 
 	public static final class HandlerByte extends PrimitiveFieldValueHandler<Byte> {
 
-		public HandlerByte() {
+		HandlerByte() {
 			super(Byte.TYPE);
 		}
 
@@ -91,19 +92,19 @@ abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler
 		}
 
 		@Override
-		public Tag serialize(@Nullable final Byte value) {
+		public Tag serialize(@Nullable final Byte value, final HolderLookup.Provider registries) {
 			return ByteTag.valueOf(value != null ? value : 0);
 		}
 
 		@Override
-		public Byte deserialize(final Tag nbt) {
+		public Byte deserialize(final Tag nbt, final HolderLookup.Provider registries) {
 			return ((ByteTag) nbt).getAsByte();
 		}
 	}
 
 	public static final class HandlerShort extends PrimitiveFieldValueHandler<Short> {
 
-		public HandlerShort() {
+		HandlerShort() {
 			super(Short.TYPE);
 		}
 
@@ -126,19 +127,19 @@ abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler
 		}
 
 		@Override
-		public Tag serialize(@Nullable final Short value) {
+		public Tag serialize(@Nullable final Short value, final HolderLookup.Provider registries) {
 			return ShortTag.valueOf(value != null ? value : 0);
 		}
 
 		@Override
-		public Short deserialize(final Tag nbt) {
+		public Short deserialize(final Tag nbt, final HolderLookup.Provider registries) {
 			return ((ShortTag) nbt).getAsShort();
 		}
 	}
 
 	public static final class HandlerInteger extends PrimitiveFieldValueHandler<Integer> {
 
-		public HandlerInteger() {
+		HandlerInteger() {
 			super(Integer.TYPE);
 		}
 
@@ -161,19 +162,19 @@ abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler
 		}
 
 		@Override
-		public Tag serialize(@Nullable final Integer value) {
+		public Tag serialize(@Nullable final Integer value, final HolderLookup.Provider registries) {
 			return IntTag.valueOf(value != null ? value : 0);
 		}
 
 		@Override
-		public Integer deserialize(final Tag nbt) {
+		public Integer deserialize(final Tag nbt, final HolderLookup.Provider registries) {
 			return ((IntTag) nbt).getAsInt();
 		}
 	}
 
 	public static final class HandlerLong extends PrimitiveFieldValueHandler<Long> {
 
-		public HandlerLong() {
+		HandlerLong() {
 			super(Long.TYPE);
 		}
 
@@ -196,19 +197,19 @@ abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler
 		}
 
 		@Override
-		public Tag serialize(@Nullable final Long value) {
+		public Tag serialize(@Nullable final Long value, final HolderLookup.Provider registries) {
 			return LongTag.valueOf(value != null ? value : 0);
 		}
 
 		@Override
-		public Long deserialize(final Tag nbt) {
+		public Long deserialize(final Tag nbt, final HolderLookup.Provider registries) {
 			return ((LongTag) nbt).getAsLong();
 		}
 	}
 
 	public static final class HandlerFloat extends PrimitiveFieldValueHandler<Float> {
 
-		public HandlerFloat() {
+		HandlerFloat() {
 			super(Float.TYPE);
 		}
 
@@ -231,19 +232,19 @@ abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler
 		}
 
 		@Override
-		public Tag serialize(@Nullable final Float value) {
+		public Tag serialize(@Nullable final Float value, final HolderLookup.Provider registries) {
 			return FloatTag.valueOf(value != null ? value : 0f);
 		}
 
 		@Override
-		public Float deserialize(final Tag nbt) {
+		public Float deserialize(final Tag nbt, final HolderLookup.Provider registries) {
 			return ((FloatTag) nbt).getAsFloat();
 		}
 	}
 
 	public static final class HandlerDouble extends PrimitiveFieldValueHandler<Double> {
 
-		public HandlerDouble() {
+		HandlerDouble() {
 			super(Double.TYPE);
 		}
 
@@ -266,19 +267,19 @@ abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler
 		}
 
 		@Override
-		public Tag serialize(@Nullable final Double value) {
+		public Tag serialize(@Nullable final Double value, final HolderLookup.Provider registries) {
 			return DoubleTag.valueOf(value != null ? value : 0.0);
 		}
 
 		@Override
-		public Double deserialize(final Tag nbt) {
+		public Double deserialize(final Tag nbt, final HolderLookup.Provider registries) {
 			return ((DoubleTag) nbt).getAsDouble();
 		}
 	}
 
 	public static final class HandlerCharacter extends PrimitiveFieldValueHandler<Character> {
 
-		public HandlerCharacter() {
+		HandlerCharacter() {
 			super(Character.TYPE);
 		}
 
@@ -301,12 +302,12 @@ abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler
 		}
 
 		@Override
-		public Tag serialize(@Nullable final Character value) {
+		public Tag serialize(@Nullable final Character value, final HolderLookup.Provider registries) {
 			return StringTag.valueOf(value != null ? String.valueOf(value) : "");
 		}
 
 		@Override
-		public Character deserialize(final Tag nbt) {
+		public Character deserialize(final Tag nbt, final HolderLookup.Provider registries) {
 			return nbt.getAsString().charAt(0);
 		}
 	}
