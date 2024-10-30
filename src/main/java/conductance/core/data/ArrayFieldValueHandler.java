@@ -5,57 +5,23 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 import net.minecraft.Util;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import com.google.gson.internal.Primitives;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.data.ManagedFieldValueHandler;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
 public final class ArrayFieldValueHandler implements ManagedFieldValueHandler<Object> {
 
 	static final BiFunction<ManagedFieldValueHandler<?>, Class<?>, ArrayFieldValueHandler> FACTORY = Util.memoize(ArrayFieldValueHandler::new);
 
-	private final ManagedFieldValueHandler contentsHandler;
-	private final Class<?> contentsType;
+	private final Class<?> contentType;
 
-	public ArrayFieldValueHandler(final ManagedFieldValueHandler<?> contentsHandler, final Class<?> contentsType) {
-		this.contentsHandler = contentsHandler;
-		this.contentsType = contentsType;
+	public ArrayFieldValueHandler(final ManagedFieldValueHandler<?> contentHandler, final Class<?> contentType) {
+		this.contentType = contentType.isPrimitive() ? Primitives.wrap(contentType) : contentType;
 	}
 
 	@Override
 	public boolean canHandle(final Class<?> type) {
 		return type.isArray();
-	}
-
-	@Override
-	public @Nullable Object getValue(final Field field, final Object instance) {
-		try {
-			return field.get(instance);
-		} catch (final IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public void setValue(final Field field, final Object instance, @Nullable final Object value) {
-		try {
-			Object current = this.getValue(field, instance);
-			if (current == null) {
-				current = Array.newInstance(this.contentsType, Array.getLength(value));
-				field.set(instance, current);
-			}
-			for (int i = 0; i < Array.getLength(current); ++i) {
-				if (i >= Array.getLength(value)) {
-					break;
-				}
-				Array.set(current, i, Array.get(value, i));
-			}
-		} catch (final IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	@Override
@@ -67,29 +33,42 @@ public final class ArrayFieldValueHandler implements ManagedFieldValueHandler<Ob
 	}
 
 	@Override
-	public Tag serialize(final Object value, final HolderLookup.Provider registries) {
-		final ListTag result = new ListTag();
-		for (int i = 0; i < Array.getLength(value); ++i) {
-			final CompoundTag tag = new CompoundTag();
-			tag.putInt("i", i);
-			tag.put("d", this.contentsHandler.serialize(Array.get(value, i), registries));
-			result.add(tag);
+	@Nullable
+	public Object readFromField(final Field field, final Object instance) {
+		try {
+			return field.get(instance);
+		} catch (final IllegalAccessException e) {
+			throw new RuntimeException(e);
 		}
-		return result;
 	}
 
 	@Override
-	public @Nullable Object deserialize(final Tag nbt, final HolderLookup.Provider registries) {
-		final ListTag list = (ListTag) nbt;
-		final Object[] array = (Object[]) Array.newInstance(this.contentsType, list.size());
-		for (int i = 0; i < array.length; ++i) {
-			final CompoundTag tag = list.getCompound(i);
-			final int index = tag.getInt("i");
-			final Object value = this.contentsHandler.deserialize(this.contentsType, tag.get("d"), registries);
-			if (index >= 0 && index < array.length) {
-				array[index] = value;
+	public void writeToField(final Field field, final Object instance, @Nullable final Object value) {
+		final Object current = this.readFromField(field, instance);
+		if (current == null) {
+			return;
+		}
+		for (int i = 0; i < Array.getLength(current); ++i) {
+			final boolean valid = value != null && i < Array.getLength(value);
+			if (this.contentType == Boolean.class) {
+				Array.setBoolean(current, i, valid && Array.getBoolean(value, i));
+			} else if (this.contentType == Byte.class) {
+				Array.setByte(current, i, valid ? Array.getByte(value, i) : 0);
+			} else if (this.contentType == Short.class) {
+				Array.setShort(current, i, valid ? Array.getShort(value, i) : 0);
+			} else if (this.contentType == Integer.class) {
+				Array.setInt(current, i, valid ? Array.getInt(value, i) : 0);
+			} else if (this.contentType == Long.class) {
+				Array.setLong(current, i, valid ? Array.getLong(value, i) : 0);
+			} else if (this.contentType == Float.class) {
+				Array.setFloat(current, i, valid ? Array.getFloat(value, i) : 0);
+			} else if (this.contentType == Double.class) {
+				Array.setDouble(current, i, valid ? Array.getDouble(value, i) : 0);
+			} else if (this.contentType == Character.class) {
+				Array.setChar(current, i, valid ? Array.getChar(value, i) : 0);
+			} else {
+				Array.set(current, i, valid ? Array.get(value, i) : null);
 			}
 		}
-		return array;
 	}
 }

@@ -73,7 +73,7 @@ final class InstancedField<T> {
 
 	@SuppressWarnings("unchecked")
 	static <T> InstancedField<T> of(final ManagedFieldWrapper wrapper, final Object instance) {
-		final ManagedFieldValueHandler<T> valueHandler = ManagedFieldValueHandlerRegistry.INSTANCE.getHandler((Class<T>) wrapper.getFieldType());
+		final ManagedFieldValueHandler<T> valueHandler = ManagedFieldValueHandlerRegistry.INSTANCE.getHandler(wrapper.getFieldType(), wrapper);
 		if (valueHandler == null) {
 			throw new IllegalStateException("No %s registered for type %s".formatted(ManagedFieldValueHandler.class.getName(), wrapper.getFieldType().getName()));
 		}
