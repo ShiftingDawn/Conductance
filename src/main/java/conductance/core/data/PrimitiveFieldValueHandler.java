@@ -9,26 +9,47 @@ import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.ShortTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import com.google.common.primitives.Primitives;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.data.ManagedFieldValueHandler;
 
 public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValueHandler<T> {
 
+	private final Class<T> typeClass;
+
+	protected PrimitiveFieldValueHandler(final Class<T> typeClass) {
+		this.typeClass = typeClass;
+	}
+
 	@Override
-	public boolean equals(final T value1, final T value2) {
+	public boolean canHandle(final Class<?> type) {
+		return type == this.typeClass || type == Primitives.wrap(this.typeClass);
+	}
+
+	@Override
+	public boolean equals(@Nullable final T value1, @Nullable final T value2) {
 		return value1 == value2;
 	}
 
 	public static final class HandlerBoolean extends PrimitiveFieldValueHandler<Boolean> {
 
-		@Override
-		public Class<Boolean> getFieldType() {
-			return Boolean.TYPE;
+		public HandlerBoolean() {
+			super(Boolean.TYPE);
 		}
 
 		@Override
 		public Boolean getValue(final Field field, final Object instance) {
 			try {
 				return field.getBoolean(instance);
+			} catch (final IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public void setValue(final Field field, final Object instance, @Nullable final Boolean value) {
+			try {
+				field.setBoolean(instance, value != null && value);
 			} catch (final IllegalAccessException e) {
 				throw new RuntimeException(e);
 			}
@@ -47,9 +68,8 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 
 	public static final class HandlerByte extends PrimitiveFieldValueHandler<Byte> {
 
-		@Override
-		public Class<Byte> getFieldType() {
-			return Byte.TYPE;
+		public HandlerByte() {
+			super(Byte.TYPE);
 		}
 
 		@Override
@@ -62,8 +82,17 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 		}
 
 		@Override
-		public Tag serialize(final Byte value) {
-			return ByteTag.valueOf(value);
+		public void setValue(final Field field, final Object instance, @Nullable final Byte value) {
+			try {
+				field.setByte(instance, value == null ? 0 : value);
+			} catch (final IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public Tag serialize(@Nullable final Byte value) {
+			return ByteTag.valueOf(value != null ? value : 0);
 		}
 
 		@Override
@@ -74,9 +103,8 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 
 	public static final class HandlerShort extends PrimitiveFieldValueHandler<Short> {
 
-		@Override
-		public Class<Short> getFieldType() {
-			return Short.TYPE;
+		public HandlerShort() {
+			super(Short.TYPE);
 		}
 
 		@Override
@@ -89,8 +117,17 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 		}
 
 		@Override
-		public Tag serialize(final Short value) {
-			return ShortTag.valueOf(value);
+		public void setValue(final Field field, final Object instance, @Nullable final Short value) {
+			try {
+				field.setShort(instance, value != null ? value : 0);
+			} catch (final IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public Tag serialize(@Nullable final Short value) {
+			return ShortTag.valueOf(value != null ? value : 0);
 		}
 
 		@Override
@@ -101,9 +138,8 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 
 	public static final class HandlerInteger extends PrimitiveFieldValueHandler<Integer> {
 
-		@Override
-		public Class<Integer> getFieldType() {
-			return Integer.TYPE;
+		public HandlerInteger() {
+			super(Integer.TYPE);
 		}
 
 		@Override
@@ -116,8 +152,17 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 		}
 
 		@Override
-		public Tag serialize(final Integer value) {
-			return IntTag.valueOf(value);
+		public void setValue(final Field field, final Object instance, @Nullable final Integer value) {
+			try {
+				field.setInt(instance, value != null ? value : 0);
+			} catch (final IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public Tag serialize(@Nullable final Integer value) {
+			return IntTag.valueOf(value != null ? value : 0);
 		}
 
 		@Override
@@ -128,9 +173,8 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 
 	public static final class HandlerLong extends PrimitiveFieldValueHandler<Long> {
 
-		@Override
-		public Class<Long> getFieldType() {
-			return Long.TYPE;
+		public HandlerLong() {
+			super(Long.TYPE);
 		}
 
 		@Override
@@ -143,8 +187,17 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 		}
 
 		@Override
-		public Tag serialize(final Long value) {
-			return LongTag.valueOf(value);
+		public void setValue(final Field field, final Object instance, @Nullable final Long value) {
+			try {
+				field.setLong(instance, value != null ? value : 0);
+			} catch (final IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public Tag serialize(@Nullable final Long value) {
+			return LongTag.valueOf(value != null ? value : 0);
 		}
 
 		@Override
@@ -155,9 +208,8 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 
 	public static final class HandlerFloat extends PrimitiveFieldValueHandler<Float> {
 
-		@Override
-		public Class<Float> getFieldType() {
-			return Float.TYPE;
+		public HandlerFloat() {
+			super(Float.TYPE);
 		}
 
 		@Override
@@ -170,8 +222,17 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 		}
 
 		@Override
-		public Tag serialize(final Float value) {
-			return FloatTag.valueOf(value);
+		public void setValue(final Field field, final Object instance, @Nullable final Float value) {
+			try {
+				field.setFloat(instance, value != null ? value : 0f);
+			} catch (final IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public Tag serialize(@Nullable final Float value) {
+			return FloatTag.valueOf(value != null ? value : 0f);
 		}
 
 		@Override
@@ -182,9 +243,8 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 
 	public static final class HandlerDouble extends PrimitiveFieldValueHandler<Double> {
 
-		@Override
-		public Class<Double> getFieldType() {
-			return Double.TYPE;
+		public HandlerDouble() {
+			super(Double.TYPE);
 		}
 
 		@Override
@@ -197,8 +257,17 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 		}
 
 		@Override
-		public Tag serialize(final Double value) {
-			return DoubleTag.valueOf(value);
+		public void setValue(final Field field, final Object instance, @Nullable final Double value) {
+			try {
+				field.setDouble(instance, value != null ? value : 0.0);
+			} catch (final IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public Tag serialize(@Nullable final Double value) {
+			return DoubleTag.valueOf(value != null ? value : 0.0);
 		}
 
 		@Override
@@ -209,9 +278,8 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 
 	public static final class HandlerCharacter extends PrimitiveFieldValueHandler<Character> {
 
-		@Override
-		public Class<Character> getFieldType() {
-			return Character.TYPE;
+		public HandlerCharacter() {
+			super(Character.TYPE);
 		}
 
 		@Override
@@ -224,16 +292,22 @@ public abstract class PrimitiveFieldValueHandler<T> implements ManagedFieldValue
 		}
 
 		@Override
-		public Tag serialize(final Character value) {
-			return StringTag.valueOf(String.valueOf(value));
+		public void setValue(final Field field, final Object instance, @Nullable final Character value) {
+			try {
+				field.setChar(instance, value != null ? value : 0);
+			} catch (final IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public Tag serialize(@Nullable final Character value) {
+			return StringTag.valueOf(value != null ? String.valueOf(value) : "");
 		}
 
 		@Override
 		public Character deserialize(final Tag nbt) {
 			return nbt.getAsString().charAt(0);
 		}
-	}
-
-	private PrimitiveFieldValueHandler() {
 	}
 }

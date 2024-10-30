@@ -20,6 +20,7 @@ public final class ManagedDataManager {
 
 	public static void init() {
 		PluginManager.dispatchRegisterManagedFieldValueHandlers();
+		ManagedFieldValueHandlerRegistry.INSTANCE.freeze();
 
 		final Class<?>[] classes = ManagedDataManager.findClasses();
 		for (final Class<?> clazz : classes) {

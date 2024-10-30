@@ -19,6 +19,7 @@ import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.GsonItemStackAdapter;
 import conductance.api.util.TagHelper;
 
+@SuppressWarnings({"unused", "NotNullFieldNotInitialized"})
 public final class CAPI {
 
 	public static final String MOD_ID = "conductance";

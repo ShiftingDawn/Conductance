@@ -18,6 +18,7 @@ import conductance.core.ConductanceRegistrate;
 import conductance.core.data.ManagedDataManager;
 import conductance.core.register.MaterialRegistry;
 
+@SuppressWarnings("NotNullFieldNotInitialized")
 @EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
 public final class ApiBridge {
 

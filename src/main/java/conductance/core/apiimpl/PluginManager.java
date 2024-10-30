@@ -40,6 +40,7 @@ import conductance.core.register.MaterialUnitOverrideRegister;
 public final class PluginManager {
 
 	private static final HashMap<IConductancePlugin, String> PLUGINS = new HashMap<>();
+	@SuppressWarnings("NotNullFieldNotInitialized")
 	private static IConductancePlugin rootPlugin;
 
 	public static void init() {

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import lombok.Getter;
 import conductance.api.machine.data.ManagedDataMap;
 import conductance.Conductance;
@@ -49,15 +50,22 @@ public final class ManagedDataMapImpl implements ManagedDataMap {
 	}
 
 	public void init() {
+		this.persistenceFields.values().stream().map(this.fieldInstances::get).forEach(InstancedField::init);
 	}
 
 	@Override
 	public void saveAllData(final CompoundTag nbt) {
 		nbt.put("conductance_persist", Util.make(new CompoundTag(), tag -> this.persistenceFields.forEach((fieldName, fieldWrapper) -> {
-			tag.put(fieldName, this.fieldInstances.get(fieldWrapper).serialize());
+			final InstancedField<?> instancedField = this.fieldInstances.get(fieldWrapper);
+			final Tag serializedTag = instancedField.serialize();
+			if (serializedTag != null) {
+				tag.put(fieldName, serializedTag);
+			}
+			instancedField.markNotDirty();
 		})));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void readAllData(final CompoundTag nbt) {
 		final CompoundTag tag = nbt.getCompound("conductance_persist");
@@ -67,7 +75,12 @@ public final class ManagedDataMapImpl implements ManagedDataMap {
 				Conductance.LOGGER.warn("No ManagedField found for persistence key {} when loading {}", tagKey, this.instance.getClass().getName());
 				return;
 			}
-			this.fieldInstances.get(fieldWrapper).deserialize(tag.getCompound(tagKey));
+			if (tag.contains(tagKey)) {
+				final InstancedField<Object> instancedField = (InstancedField<Object>) this.fieldInstances.get(fieldWrapper);
+				final Object data = instancedField.deserialize(tag.get(tagKey));
+				instancedField.set(data);
+				instancedField.markNotDirty();
+			}
 		});
 	}
 

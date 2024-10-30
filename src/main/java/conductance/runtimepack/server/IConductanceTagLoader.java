@@ -5,7 +5,7 @@ import net.minecraft.core.Registry;
 
 public interface IConductanceTagLoader<T> {
 
-	void conductance$setRegistry(Registry<T> registry);
+	void conductance$setRegistry(@Nullable Registry<T> registry);
 
 	@Nullable
 	Registry<T> conductance$getRegistry();

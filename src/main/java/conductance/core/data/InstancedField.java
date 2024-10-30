@@ -2,6 +2,7 @@ package conductance.core.data;
 
 import net.minecraft.nbt.Tag;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.data.ManagedFieldValueHandler;
 
 public final class InstancedField<T> {
@@ -9,6 +10,7 @@ public final class InstancedField<T> {
 	private final ManagedFieldWrapper field;
 	private final ManagedFieldValueHandler<T> valueHandler;
 	private final Object instance;
+	@Nullable
 	private T lastValue;
 	@Getter
 	private boolean dirty = false;
@@ -17,17 +19,30 @@ public final class InstancedField<T> {
 		this.field = field;
 		this.valueHandler = valueHandler;
 		this.instance = instance;
+	}
+
+	public void init() {
 		this.lastValue = this.get();
 	}
 
+	@Nullable
 	public T get() {
 		return this.valueHandler.getValue(this.field.getField(), this.instance);
 	}
 
-	public Tag serialize() {
+	public void set(@Nullable final T value) {
+		this.valueHandler.setValue(this.field.getField(), this.instance, value);
+		this.lastValue = this.get();
+	}
+
+	public @Nullable Tag serialize() {
+		if (this.lastValue == null) {
+			return null;
+		}
 		return this.valueHandler.serialize(this.lastValue);
 	}
 
+	@Nullable
 	public T deserialize(final Tag tag) {
 		return this.valueHandler.deserialize(tag);
 	}
@@ -42,7 +57,13 @@ public final class InstancedField<T> {
 
 	public void tick() {
 		final T currentValue = this.get();
-		if (!this.valueHandler.equals(currentValue, this.lastValue)) {
+		if (currentValue == null || this.lastValue == null) {
+			if (currentValue == this.lastValue) {
+				return;
+			}
+			this.lastValue = currentValue;
+			this.markDirty();
+		} else if (!this.valueHandler.equals(currentValue, this.lastValue)) {
 			this.lastValue = currentValue;
 			this.markDirty();
 		}
