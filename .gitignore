@@ -11,10 +11,11 @@ out
 *.ipr
 *.iws
 *.iml
-.idea/**/*
+.idea/*
 !.idea/saveactions_settings.xml
 !.idea/externalDependencies.xml
 !.idea/checkstyle-idea.xml
+!.idea/fileTemplates
 
 # gradle
 build

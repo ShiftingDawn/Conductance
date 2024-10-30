@@ -58,6 +58,6 @@ public class MaterialBlockItem extends BlockItem implements IConductanceItem {
 	@Override
 	public int getBurnTime(final ItemStack itemStack, @Nullable final RecipeType<?> recipeType) {
 		final int time = this.getBlock().getMaterial().getData().getBurnTime();
-		return time <= 0 ? -1 : (int) (time * this.getBlock().getSet().getUnitValue(this.getBlock().getMaterial()) / CAPI.UNIT);
+		return Math.max(0, (int) (time * this.getBlock().getSet().getUnitValue(this.getBlock().getMaterial()) / CAPI.UNIT));
 	}
 }
