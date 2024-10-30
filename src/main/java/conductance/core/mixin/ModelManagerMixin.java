@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import conductance.runtimepack.client.RuntimeResourcePack;
 
 @Mixin(ModelManager.class)
-public class ModelManagerMixin {
+public abstract class ModelManagerMixin {
 
 	@Inject(method = "reload", at = @At("HEAD"))
 	private void conductance$injectRuntimeResourcePackModels(final PreparableReloadListener.PreparationBarrier preparationBarrier, final ResourceManager resourceManager, final ProfilerFiller preparationsProfiler,

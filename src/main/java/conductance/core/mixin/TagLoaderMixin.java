@@ -16,7 +16,7 @@ import conductance.runtimepack.server.IConductanceTagLoader;
 import conductance.runtimepack.server.TagGenerationHandler;
 
 @Mixin(TagLoader.class)
-public class TagLoaderMixin<T> implements IConductanceTagLoader<T> {
+public abstract class TagLoaderMixin<T> implements IConductanceTagLoader<T> {
 
 	@Unique
 	@Nullable

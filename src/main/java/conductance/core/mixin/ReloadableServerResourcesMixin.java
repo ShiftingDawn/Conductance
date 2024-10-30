@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Mixin(ReloadableServerResources.class)
-public class ReloadableServerResourcesMixin {
+public abstract class ReloadableServerResourcesMixin {
 
 	@Inject(method = "loadResources", at = @At("HEAD"))
 	private static void conductance$unfreezeRegistries(final ResourceManager resourceManager, final LayeredRegistryAccess<RegistryLayer> registries, final FeatureFlagSet enabledFeatures,
