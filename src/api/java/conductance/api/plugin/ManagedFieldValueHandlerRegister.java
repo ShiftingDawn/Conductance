@@ -1,19 +1,14 @@
 package conductance.api.plugin;
 
-import conductance.api.machine.data.DataSerializer;
-import conductance.api.machine.data.ManagedFieldValueHandler;
+import java.util.function.Supplier;
+import conductance.api.machine.data.handler.ManagedFieldValueHandler;
+import conductance.api.machine.data.serializer.DataSerializer;
 
 public interface ManagedFieldValueHandlerRegister {
 
-	void register(DataSerializer<?> serializer, int priority);
+	<T extends DataSerializer<?>> void register(Class<T> clazz, Supplier<T> constructor, ManagedFieldValueHandler handler, int priority);
 
-	default void register(final DataSerializer<?> serializer) {
-		this.register(serializer, 100);
-	}
-
-	void register(ManagedFieldValueHandler<?> handler, int priority);
-
-	default void register(final ManagedFieldValueHandler<?> handler) {
-		this.register(handler, 100);
+	default <T extends DataSerializer<?>> void register(final Class<T> clazz, final Supplier<T> constructor, final ManagedFieldValueHandler handler) {
+		this.register(clazz, constructor, handler, 100);
 	}
 }

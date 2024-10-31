@@ -38,7 +38,7 @@ public final class ManagedDataManager {
 	}
 
 	@Nullable
-	public static ManagedClassWrapper findNearestWrapper(final Class<?> clazz) {
+	private static ManagedClassWrapper findNearestWrapper(final Class<?> clazz) {
 		Class<?> currentClass = clazz;
 		while (currentClass != null && currentClass != Object.class) {
 			if (ManagedDataManager.WRAPPERS.containsKey(currentClass)) {

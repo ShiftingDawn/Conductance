@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import lombok.Getter;
 import conductance.api.machine.data.ManagedDataMap;
+import conductance.api.machine.data.handler.InstancedField;
 import conductance.Conductance;
 
 public final class ManagedDataMapImpl implements ManagedDataMap {
@@ -25,7 +26,7 @@ public final class ManagedDataMapImpl implements ManagedDataMap {
 	private final Object instance;
 	@Getter
 	private final ManagedFieldWrapper[] fields;
-	private final Map<ManagedFieldWrapper, InstancedField<?>> fieldInstances;
+	private final Map<ManagedFieldWrapper, InstancedField> fieldInstances;
 	private final Map<String, ManagedFieldWrapper> persistenceFields;
 	@Getter
 	private boolean dirty = false;
@@ -35,38 +36,26 @@ public final class ManagedDataMapImpl implements ManagedDataMap {
 		this.wrapper = wrapper;
 		this.instance = instance;
 		this.fields = ManagedDataMapImpl.collectFields(wrapper);
-		this.fieldInstances = Collections.unmodifiableMap(Util.make(new IdentityHashMap<>(), map -> Arrays.stream(this.fields).forEach(field -> map.put(field, InstancedField.of(field, instance)))));
+		this.fieldInstances = Collections.unmodifiableMap(Util.make(new IdentityHashMap<>(), map -> Arrays.stream(this.fields).forEach(field -> map.put(field, InstancedFieldImpl.of(field, instance)))));
 		this.persistenceFields = Collections.unmodifiableMap(Util.make(new HashMap<>(), map ->
 				Arrays.stream(this.fields).filter(field -> field.getPersistenceKey() != null).forEach(field -> map.put(field.getPersistenceKey(), field))
 		));
 	}
 
-	public void tick() {
-		for (final InstancedField<?> instancedField : this.fieldInstances.values()) {
-			instancedField.tick();
-			if (instancedField.isDirty()) {
-				this.markDirty();
-			}
-		}
-	}
-
 	public void init() {
-		this.persistenceFields.values().stream().map(this.fieldInstances::get).forEach(InstancedField::init);
 	}
 
 	@Override
 	public void saveAllData(final CompoundTag nbt, final HolderLookup.Provider registries) {
 		nbt.put("conductance_persist", Util.make(new CompoundTag(), tag -> this.persistenceFields.forEach((fieldName, fieldWrapper) -> {
-			final InstancedField<?> instancedField = this.fieldInstances.get(fieldWrapper);
-			final Tag serializedTag = instancedField.serialize(registries);
+			final InstancedField instancedField = this.fieldInstances.get(fieldWrapper);
+			final Tag serializedTag = Helper.serializeField(instancedField, registries);
 			if (serializedTag != null) {
 				tag.put(fieldName, serializedTag);
 			}
-			instancedField.markNotDirty();
 		})));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void readAllData(final CompoundTag nbt, final HolderLookup.Provider registries) {
 		final CompoundTag tag = nbt.getCompound("conductance_persist");
@@ -77,21 +66,10 @@ public final class ManagedDataMapImpl implements ManagedDataMap {
 				return;
 			}
 			if (tag.contains(tagKey)) {
-				final InstancedField<Object> instancedField = (InstancedField<Object>) this.fieldInstances.get(fieldWrapper);
-				final Object data = instancedField.deserialize(tag.get(tagKey), registries);
-				instancedField.set(data);
-				instancedField.markNotDirty();
+				final InstancedField instancedField = this.fieldInstances.get(fieldWrapper);
+				Helper.deserializeField(instancedField, tag.get(tagKey), registries);
 			}
 		});
-	}
-
-	public void markDirty() {
-		this.dirty = true;
-	}
-
-	public void markNotDirty() {
-		this.dirty = false;
-		this.fieldInstances.values().forEach(InstancedField::markNotDirty);
 	}
 
 	private static ManagedFieldWrapper[] collectFields(final ManagedClassWrapper topWrapper) {
