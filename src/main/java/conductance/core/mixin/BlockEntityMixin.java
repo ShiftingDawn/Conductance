@@ -10,8 +10,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import conductance.api.CAPI;
 import conductance.api.machine.data.IManaged;
+import conductance.api.machine.data.ISynchronized;
 import conductance.api.machine.data.ManagedDataMap;
 import conductance.core.data.ManagedDataMapImpl;
+import conductance.core.data.datasync.SynchronizationContainer;
 
 @Mixin(BlockEntity.class)
 public abstract class BlockEntityMixin {
@@ -34,6 +36,16 @@ public abstract class BlockEntityMixin {
 	private void conductance$clearRemoved(final CallbackInfo ci) {
 		if (this instanceof final IManaged managed) {
 			BlockEntityMixin.conductance$cast(managed, managed.getDataMap()).init();
+			if (this instanceof ISynchronized) {
+				SynchronizationContainer.dispatch((BlockEntity) (Object) this);
+			}
+		}
+	}
+
+	@Inject(method = "setRemoved", at = @At("RETURN"))
+	private void conductance$setRemoved(final CallbackInfo ci) {
+		if (this instanceof ISynchronized) {
+			SynchronizationContainer.destroy((BlockEntity) (Object) this);
 		}
 	}
 

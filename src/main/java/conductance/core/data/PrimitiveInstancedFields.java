@@ -2,9 +2,22 @@ package conductance.core.data;
 
 import conductance.api.machine.data.handler.ManagedFieldValueHandler;
 
-final class PrimitiveInstancedFields {
+abstract class PrimitiveInstancedFields extends BaseInstancedField {
 
-	public static class InstancedBoolean extends BaseInstancedField {
+	PrimitiveInstancedFields(final ManagedFieldWrapper field, final ManagedFieldValueHandler handler, final Object instance) {
+		super(field, handler, instance);
+	}
+
+	@Override
+	void tick() {
+		final Object newValue = this.get();
+		if (newValue != this.getLastValue()) {
+			this.setLastValue(newValue);
+			this.markDirty();
+		}
+	}
+
+	public static class InstancedBoolean extends PrimitiveInstancedFields {
 
 		InstancedBoolean(final ManagedFieldWrapper field, final ManagedFieldValueHandler handler, final Object instance) {
 			super(field, handler, instance);
@@ -29,7 +42,7 @@ final class PrimitiveInstancedFields {
 		}
 	}
 
-	public static class InstancedByte extends BaseInstancedField {
+	public static class InstancedByte extends PrimitiveInstancedFields {
 
 		InstancedByte(final ManagedFieldWrapper field, final ManagedFieldValueHandler handler, final Object instance) {
 			super(field, handler, instance);
@@ -54,7 +67,7 @@ final class PrimitiveInstancedFields {
 		}
 	}
 
-	public static class InstancedShort extends BaseInstancedField {
+	public static class InstancedShort extends PrimitiveInstancedFields {
 
 		InstancedShort(final ManagedFieldWrapper field, final ManagedFieldValueHandler handler, final Object instance) {
 			super(field, handler, instance);
@@ -79,7 +92,7 @@ final class PrimitiveInstancedFields {
 		}
 	}
 
-	public static class InstancedInteger extends BaseInstancedField {
+	public static class InstancedInteger extends PrimitiveInstancedFields {
 
 		InstancedInteger(final ManagedFieldWrapper field, final ManagedFieldValueHandler handler, final Object instance) {
 			super(field, handler, instance);
@@ -104,7 +117,7 @@ final class PrimitiveInstancedFields {
 		}
 	}
 
-	public static class InstancedLong extends BaseInstancedField {
+	public static class InstancedLong extends PrimitiveInstancedFields {
 
 		InstancedLong(final ManagedFieldWrapper field, final ManagedFieldValueHandler handler, final Object instance) {
 			super(field, handler, instance);
@@ -129,7 +142,7 @@ final class PrimitiveInstancedFields {
 		}
 	}
 
-	public static class InstancedFloat extends BaseInstancedField {
+	public static class InstancedFloat extends PrimitiveInstancedFields {
 
 		InstancedFloat(final ManagedFieldWrapper field, final ManagedFieldValueHandler handler, final Object instance) {
 			super(field, handler, instance);
@@ -154,7 +167,7 @@ final class PrimitiveInstancedFields {
 		}
 	}
 
-	public static class InstancedDouble extends BaseInstancedField {
+	public static class InstancedDouble extends PrimitiveInstancedFields {
 
 		InstancedDouble(final ManagedFieldWrapper field, final ManagedFieldValueHandler handler, final Object instance) {
 			super(field, handler, instance);
@@ -179,7 +192,7 @@ final class PrimitiveInstancedFields {
 		}
 	}
 
-	public static class InstancedCharacter extends BaseInstancedField {
+	public static class InstancedCharacter extends PrimitiveInstancedFields {
 
 		InstancedCharacter(final ManagedFieldWrapper field, final ManagedFieldValueHandler handler, final Object instance) {
 			super(field, handler, instance);
@@ -202,8 +215,5 @@ final class PrimitiveInstancedFields {
 				throw new RuntimeException(e);
 			}
 		}
-	}
-
-	private PrimitiveInstancedFields() {
 	}
 }

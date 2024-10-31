@@ -14,6 +14,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.data.IManaged;
+import conductance.api.machine.data.ISynchronized;
 import conductance.api.machine.data.Managed;
 import conductance.api.machine.data.ManagedDataMap;
 
@@ -74,7 +75,7 @@ public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends Bloc
 	protected void handleServerTick() {
 		if (!this.pending.isEmpty()) {
 			this.ticks.addAll(this.pending);
-			this.ticks.clear();
+			this.pending.clear();
 		}
 		final Iterator<MetaTick> iterator = this.ticks.iterator();
 		while (iterator.hasNext()) {

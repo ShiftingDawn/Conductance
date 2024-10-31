@@ -1,11 +1,15 @@
 package conductance.core.data;
 
+import java.util.Objects;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.data.handler.InstancedField;
 import conductance.api.machine.data.handler.ManagedFieldValueHandler;
 import conductance.core.datahandlers.PrimitiveValueHandler;
 
-class BaseInstancedField implements InstancedField {
+public class BaseInstancedField implements InstancedField {
 
 	@Getter
 	private final ManagedFieldWrapper field;
@@ -13,11 +17,46 @@ class BaseInstancedField implements InstancedField {
 	private final ManagedFieldValueHandler handler;
 	@Getter
 	private final Object instance;
+	@Getter
+	@Setter
+	@Nullable
+	private Object lastValue;
+	@Getter
+	private boolean dirty = false;
+	@Setter
+	@Nullable
+	private BooleanConsumer syncDirtyListener;
 
 	BaseInstancedField(final ManagedFieldWrapper field, final ManagedFieldValueHandler handler, final Object instance) {
 		this.field = field;
 		this.handler = handler;
 		this.instance = instance;
+	}
+
+	public final void markDirty() {
+		this.dirty = true;
+		if (this.syncDirtyListener != null) {
+			this.syncDirtyListener.accept(true);
+		}
+	}
+
+	public final void markNotDirty() {
+		this.dirty = false;
+		if (this.syncDirtyListener != null) {
+			this.syncDirtyListener.accept(false);
+		}
+	}
+
+	void init() {
+		this.lastValue = this.get();
+	}
+
+	void tick() {
+		final Object newValue = this.get();
+		if (!Objects.equals(newValue, this.lastValue)) {
+			this.lastValue = newValue;
+			this.markDirty();
+		}
 	}
 
 	@Override

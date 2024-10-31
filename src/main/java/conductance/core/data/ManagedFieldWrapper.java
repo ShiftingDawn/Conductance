@@ -22,6 +22,9 @@ final class ManagedFieldWrapper {
 	@Nullable
 	@Getter
 	private final String persistenceKey;
+	@Nullable
+	@Getter
+	private final String syncKey;
 
 	private ManagedFieldWrapper(final Field field, final boolean persisted, final boolean synced) {
 		this.field = field;
@@ -30,6 +33,7 @@ final class ManagedFieldWrapper {
 		this.persisted = persisted;
 		this.synced = synced;
 		this.persistenceKey = this.makePersistenceKey(field);
+		this.syncKey = this.makeSyncKey(field);
 	}
 
 	@Nullable
@@ -41,8 +45,12 @@ final class ManagedFieldWrapper {
 		return null;
 	}
 
-	public String getSyncKey() {
-		return this.name;
+	@Nullable
+	private String makeSyncKey(final Field reflectField) {
+		if (this.synced) {
+			return reflectField.getName();
+		}
+		return null;
 	}
 
 	@Nullable
