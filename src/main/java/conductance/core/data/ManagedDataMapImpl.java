@@ -36,7 +36,7 @@ public final class ManagedDataMapImpl implements ManagedDataMap {
 		this.wrapper = wrapper;
 		this.instance = instance;
 		this.fields = ManagedDataMapImpl.collectFields(wrapper);
-		this.fieldInstances = Collections.unmodifiableMap(Util.make(new IdentityHashMap<>(), map -> Arrays.stream(this.fields).forEach(field -> map.put(field, InstancedFieldImpl.of(field, instance)))));
+		this.fieldInstances = Collections.unmodifiableMap(Util.make(new IdentityHashMap<>(), map -> Arrays.stream(this.fields).forEach(field -> map.put(field, BaseInstancedField.of(field, instance)))));
 		this.persistenceFields = Collections.unmodifiableMap(Util.make(new HashMap<>(), map ->
 				Arrays.stream(this.fields).filter(field -> field.getPersistenceKey() != null).forEach(field -> map.put(field.getPersistenceKey(), field))
 		));

@@ -23,7 +23,7 @@ import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.api.plugin.RecipeTypeRegister;
 import conductance.api.plugin.TagRegister;
-import conductance.core.data.ConductanceFieldValueHandlers;
+import conductance.init.ConductanceFieldValueHandlers;
 import conductance.init.ConductanceItems;
 import conductance.init.ConductanceMachines;
 import conductance.init.ConductanceMaterialFlags;

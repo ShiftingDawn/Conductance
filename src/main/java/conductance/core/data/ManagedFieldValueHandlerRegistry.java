@@ -3,6 +3,7 @@ package conductance.core.data;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,8 @@ public final class ManagedFieldValueHandlerRegistry implements ManagedFieldValue
 	private ManagedFieldValueHandlerRegistry() {
 	}
 
-	private <T extends DataSerializer<?>> int addSerializerIfMissing(final Class<T> clazz, final Supplier<T> constructor) {
+	@Override
+	public <T extends DataSerializer<?>> int registerSerializer(final Class<T> clazz, final Supplier<T> constructor) {
 		int id = this.serializerIds.getOrDefault(clazz, -1);
 		if (id == -1) {
 			id = this.nextSerializerID.getAndIncrement();
@@ -52,7 +54,7 @@ public final class ManagedFieldValueHandlerRegistry implements ManagedFieldValue
 		if (this.unsortedHandlers.containsKey(handler)) {
 			throw new IllegalStateException("ManagedFieldValueHandler %s has already been registered".formatted(handler.getClass().getName()));
 		}
-		final int id = this.addSerializerIfMissing(clazz, constructor);
+		final int id = this.registerSerializer(clazz, constructor);
 		this.unsortedHandlers.put(handler, priority);
 		this.handlerToSerializerMapping.put(handler, id);
 	}
@@ -65,27 +67,26 @@ public final class ManagedFieldValueHandlerRegistry implements ManagedFieldValue
 	}
 
 	@Nullable
-	ManagedFieldValueHandler getHandler(final Type clazz, final ManagedFieldWrapper managedFieldWrapper) {
-//		if (clazz instanceof final GenericArrayType array) {
-//			final Type contentsType = array.getGenericComponentType();
-//			final ManagedFieldValueHandler contentHandler = this.getHandler(contentsType, managedFieldWrapper);
-//			final Class<?> rawType = ManagedFieldValueHandlerRegistry.getRawType(contentsType);
-//			return (ManagedFieldValueHandler) ArrayFieldValueHandler.FACTORY.apply(contentHandler, rawType != null ? rawType : Object.class);
-//		}
+	ManagedFieldValueHandler getHandler(final Type clazz) {
+		if (clazz instanceof final GenericArrayType array) {
+			final Type contentsType = array.getGenericComponentType();
+			final ManagedFieldValueHandler contentHandler = this.getHandler(contentsType);
+			final Class<?> rawType = ManagedFieldValueHandlerRegistry.getRawType(contentsType);
+			return ArrayValueHandler.FACTORY.apply(contentHandler, rawType != null ? rawType : Object.class);
+		}
 		final Class<?> rawType = ManagedFieldValueHandlerRegistry.getRawType(clazz);
 		if (rawType == null) {
 			throw new RuntimeException("Unknown type " + clazz);
 		}
-//		if (rawType.isArray()) {
-//			final Class<?> contentType = rawType.getComponentType();
-//			final ManagedFieldValueHandler contentHandler = this.getHandler(contentType, managedFieldWrapper);
-//			return (ManagedFieldValueHandler) ArrayFieldValueHandler.FACTORY.apply(contentHandler, contentType);
-//		} else if (Collection.class.isAssignableFrom(rawType)) {
-//			final Type contentType = ((ParameterizedType) clazz).getActualTypeArguments()[0];
-//			final ManagedFieldValueHandler contentHandler = this.getHandler(contentType, managedFieldWrapper);
-//			final Class<?> rawContentType = ManagedFieldValueHandlerRegistry.getRawType(contentType);
-//			return (ManagedFieldValueHandler) CollectionFieldValueHandler.FACTORY.apply(contentHandler, rawContentType != null ? rawContentType : Object.class);
-//		}
+		if (rawType.isArray()) {
+			final Class<?> contentType = rawType.getComponentType();
+			final ManagedFieldValueHandler contentHandler = this.getHandler(contentType);
+			return ArrayValueHandler.FACTORY.apply(contentHandler, contentType);
+		} else if (Collection.class.isAssignableFrom(rawType)) {
+			final Type contentType = ((ParameterizedType) clazz).getActualTypeArguments()[0];
+			final ManagedFieldValueHandler contentHandler = this.getHandler(contentType);
+			return CollectionValueHandler.FACTORY.apply(contentHandler);
+		}
 		return this.getHandlerByClass(rawType);
 	}
 
@@ -97,6 +98,10 @@ public final class ManagedFieldValueHandlerRegistry implements ManagedFieldValue
 
 	int getSerializerForHandler(final ManagedFieldValueHandler handler) {
 		return this.handlerToSerializerMapping.getOrDefault(handler, -1);
+	}
+
+	int getSerializerId(final DataSerializer<?> serializer) {
+		return this.serializerIds.getInt(serializer.getClass());
 	}
 
 	DataSerializer<?> createSerializer(final int serializerId) {

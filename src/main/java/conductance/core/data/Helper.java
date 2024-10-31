@@ -16,14 +16,28 @@ final class Helper {
 
 	@Nullable
 	static Tag serializeField(final InstancedField field, final HolderLookup.Provider registries) {
-		final DataSerializer<?> serializer = field.getHandler().readFromField(field);
+		if (field.get() == null) {
+			return null;
+		}
+		final ManagedFieldValueHandler handler = ManagedFieldValueHandlerRegistry.INSTANCE.getHandler(field.get().getClass());
+		if (handler == null) {
+			return null;
+		}
+		final DataSerializer<?> serializer = handler.readFromField(field, registries);
 		return serializer.serialize(registries);
 	}
 
 	static void deserializeField(final InstancedField field, final Tag tag, final HolderLookup.Provider registries) {
-		final DataSerializer<?> serializer = Helper.getSerializer(field.getHandler());
+		if (field.get() == null) {
+			return;
+		}
+		final ManagedFieldValueHandler handler = ManagedFieldValueHandlerRegistry.INSTANCE.getHandler(field.get().getClass());
+		if (handler == null) {
+			return;
+		}
+		final DataSerializer<?> serializer = Helper.getSerializer(handler);
 		serializer.deserialize(tag, registries);
-		field.getHandler().writeToField(field, serializer);
+		handler.writeToField(field, serializer, registries);
 	}
 
 	private Helper() {

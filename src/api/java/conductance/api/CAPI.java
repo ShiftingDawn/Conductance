@@ -12,7 +12,7 @@ import conductance.api.machine.data.ManagedDataMap;
 import conductance.api.material.Material;
 import conductance.api.material.ResourceFinder;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.plugin.ManagedDataMapRequester;
+import conductance.api.registry.ManagedDataRegistry;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
@@ -33,7 +33,7 @@ public final class CAPI {
 	private static ResourceFinder resourceFinder;
 	private static TaggedSetRegistry<Material, TaggedMaterialSet> materialRegistry;
 	private static TranslationRegistry translationRegistry;
-	private static ManagedDataMapRequester managedDataMapRequester;
+	private static ManagedDataRegistry managedDataRegistry;
 
 	public static RegistryProvider regs() {
 		return CAPI.registryProvider;
@@ -51,12 +51,16 @@ public final class CAPI {
 		return CAPI.translationRegistry;
 	}
 
+	public static ManagedDataRegistry managedDataRegistry() {
+		return CAPI.managedDataRegistry;
+	}
+
 	public static boolean isClient() {
 		return FMLEnvironment.dist.isClient();
 	}
 
 	public static ManagedDataMap requestDataMap(final IManaged managed) {
-		return CAPI.managedDataMapRequester.requestDataMap(managed);
+		return CAPI.managedDataRegistry.requestDataMap(managed);
 	}
 
 	public static final class Tags {

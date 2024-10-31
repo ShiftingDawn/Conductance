@@ -1,5 +1,6 @@
 package conductance.api.machine.data.serializer;
 
+import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.DoubleTag;
@@ -18,6 +19,21 @@ public abstract class PrimitiveDataSerializer<T> implements DataSerializer<T> {
 	@Getter
 	@Setter
 	private T data;
+
+	@Nullable
+	public static DataSerializer<?> tryGetPrimitiveSerializer(final Object object) {
+		return switch (object) {
+			case final Boolean value -> BooleanSerializer.of(value);
+			case final Byte value -> ByteSerializer.of(value);
+			case final Short value -> ShortSerializer.of(value);
+			case final Integer value -> IntegerSerializer.of(value);
+			case final Long value -> LongSerializer.of(value);
+			case final Float value -> FloatSerializer.of(value);
+			case final Double value -> DoubleSerializer.of(value);
+			case final Character value -> CharacterSerializer.of(value);
+			default -> null;
+		};
+	}
 
 	public static class BooleanSerializer extends PrimitiveDataSerializer<Boolean> {
 
@@ -39,6 +55,10 @@ public abstract class PrimitiveDataSerializer<T> implements DataSerializer<T> {
 		@Override
 		public void fromNetwork(final RegistryFriendlyByteBuf buf) {
 			this.setData(buf.readBoolean());
+		}
+
+		public static BooleanSerializer of(final boolean value) {
+			return Util.make(new BooleanSerializer(), serializer -> serializer.setData(value));
 		}
 	}
 
@@ -63,6 +83,10 @@ public abstract class PrimitiveDataSerializer<T> implements DataSerializer<T> {
 		public void fromNetwork(final RegistryFriendlyByteBuf buf) {
 			this.setData(buf.readByte());
 		}
+
+		public static ByteSerializer of(final byte value) {
+			return Util.make(new ByteSerializer(), serializer -> serializer.setData(value));
+		}
 	}
 
 	public static class ShortSerializer extends PrimitiveDataSerializer<Short> {
@@ -85,6 +109,10 @@ public abstract class PrimitiveDataSerializer<T> implements DataSerializer<T> {
 		@Override
 		public void fromNetwork(final RegistryFriendlyByteBuf buf) {
 			this.setData(buf.readShort());
+		}
+
+		public static ShortSerializer of(final short value) {
+			return Util.make(new ShortSerializer(), serializer -> serializer.setData(value));
 		}
 	}
 
@@ -109,6 +137,10 @@ public abstract class PrimitiveDataSerializer<T> implements DataSerializer<T> {
 		public void fromNetwork(final RegistryFriendlyByteBuf buf) {
 			this.setData(buf.readVarInt());
 		}
+
+		public static IntegerSerializer of(final int value) {
+			return Util.make(new IntegerSerializer(), serializer -> serializer.setData(value));
+		}
 	}
 
 	public static class LongSerializer extends PrimitiveDataSerializer<Long> {
@@ -131,6 +163,10 @@ public abstract class PrimitiveDataSerializer<T> implements DataSerializer<T> {
 		@Override
 		public void fromNetwork(final RegistryFriendlyByteBuf buf) {
 			this.setData(buf.readVarLong());
+		}
+
+		public static LongSerializer of(final long value) {
+			return Util.make(new LongSerializer(), serializer -> serializer.setData(value));
 		}
 	}
 
@@ -155,6 +191,10 @@ public abstract class PrimitiveDataSerializer<T> implements DataSerializer<T> {
 		public void fromNetwork(final RegistryFriendlyByteBuf buf) {
 			this.setData(buf.readFloat());
 		}
+
+		public static FloatSerializer of(final float value) {
+			return Util.make(new FloatSerializer(), serializer -> serializer.setData(value));
+		}
 	}
 
 	public static class DoubleSerializer extends PrimitiveDataSerializer<Double> {
@@ -178,6 +218,10 @@ public abstract class PrimitiveDataSerializer<T> implements DataSerializer<T> {
 		public void fromNetwork(final RegistryFriendlyByteBuf buf) {
 			this.setData(buf.readDouble());
 		}
+
+		public static DoubleSerializer of(final double value) {
+			return Util.make(new DoubleSerializer(), serializer -> serializer.setData(value));
+		}
 	}
 
 	public static class CharacterSerializer extends PrimitiveDataSerializer<Character> {
@@ -200,6 +244,10 @@ public abstract class PrimitiveDataSerializer<T> implements DataSerializer<T> {
 		@Override
 		public void fromNetwork(final RegistryFriendlyByteBuf buf) {
 			this.setData(buf.readChar());
+		}
+
+		public static CharacterSerializer of(final char value) {
+			return Util.make(new CharacterSerializer(), serializer -> serializer.setData(value));
 		}
 	}
 }

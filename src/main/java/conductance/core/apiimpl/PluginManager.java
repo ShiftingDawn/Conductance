@@ -75,7 +75,7 @@ public final class PluginManager {
 	}
 
 	public static void dispatchRegisterManagedFieldValueHandlers() {
-		PluginManager.execute((plugin, modid) -> plugin.registerManagedFieldValueHandlers(ManagedFieldValueHandlerRegistry.INSTANCE::register));
+		PluginManager.execute((plugin, modid) -> plugin.registerManagedFieldValueHandlers(ManagedFieldValueHandlerRegistry.INSTANCE));
 	}
 
 	public static void dispatchPeriodicElements() {

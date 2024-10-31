@@ -4,6 +4,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
 
 public interface DataSerializer<T> {
 
@@ -17,4 +18,8 @@ public interface DataSerializer<T> {
 	void fromNetwork(RegistryFriendlyByteBuf buf);
 
 	T getData();
+
+	default int getId() {
+		return CAPI.managedDataRegistry().getSerializerId(this);
+	}
 }

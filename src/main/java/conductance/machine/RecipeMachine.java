@@ -11,7 +11,7 @@ import conductance.api.machine.data.Persisted;
 public class RecipeMachine extends MetaBlockEntity<RecipeMachine> {
 
 	@Persisted
-	private int testInteger = 10;
+	private int[] testIntegers = {10, 20, 30};
 
 	public RecipeMachine(final MetaBlockEntityType<RecipeMachine> type, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);

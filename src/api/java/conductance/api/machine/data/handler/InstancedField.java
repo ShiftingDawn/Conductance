@@ -1,14 +1,8 @@
 package conductance.api.machine.data.handler;
 
-import java.lang.reflect.Field;
-
 public interface InstancedField {
 
-	Field getField();
+	Object get();
 
-	String getName();
-
-	Object getInstance();
-
-	ManagedFieldValueHandler getHandler();
+	void set(Object value);
 }
