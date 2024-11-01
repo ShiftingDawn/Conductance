@@ -17,6 +17,7 @@ final class Helper {
 	@Nullable
 	static Tag serializeField(final InstancedField field, final HolderLookup.Provider registries) {
 		if (field.get() == null) {
+			//TODO handle null
 			return null;
 		}
 		final ManagedFieldValueHandler handler = ManagedFieldValueHandlerRegistry.INSTANCE.getHandler(field.get().getClass());
@@ -29,6 +30,7 @@ final class Helper {
 
 	static void deserializeField(final InstancedField field, final Tag tag, final HolderLookup.Provider registries) {
 		if (field.get() == null) {
+			//TODO handle null
 			return;
 		}
 		final ManagedFieldValueHandler handler = ManagedFieldValueHandlerRegistry.INSTANCE.getHandler(field.get().getClass());

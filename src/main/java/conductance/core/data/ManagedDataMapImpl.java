@@ -12,7 +12,9 @@ import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import lombok.Getter;
+import conductance.api.CAPI;
 import conductance.api.machine.data.ManagedDataMap;
 import conductance.api.machine.data.handler.InstancedField;
 import conductance.api.machine.data.serializer.DataSerializer;
@@ -68,12 +70,12 @@ public final class ManagedDataMapImpl implements ManagedDataMap {
 		return !this.dirtyFields.isEmpty();
 	}
 
-	public DataSerializer<?> serializeBySyncId(final int syncId, final HolderLookup.Provider registries) {
+	private DataSerializer<?> serializeBySyncId(final int syncId, final HolderLookup.Provider registries) {
 		final BaseInstancedField field = this.syncedFields[syncId];
 		return field.getHandler().readFromField(field, registries);
 	}
 
-	public void deserializeBySyncId(final int syncId, final HolderLookup.Provider registries, final DataSerializer<?> serializer) {
+	private void deserializeBySyncId(final int syncId, final HolderLookup.Provider registries, final DataSerializer<?> serializer) {
 		final BaseInstancedField field = this.syncedFields[syncId];
 		field.getHandler().writeToField(field, serializer, registries);
 		field.markNotDirty();
@@ -104,6 +106,44 @@ public final class ManagedDataMapImpl implements ManagedDataMap {
 				Helper.deserializeField(instancedField, tag.get(tagKey), registries);
 			}
 		});
+	}
+
+	@Override
+	public void writeToNetwork(final RegistryFriendlyByteBuf buf, final boolean forceSync) {
+		final List<DataSerializer<?>> data = new ArrayList<>();
+		final BitSet changedFieldSet = new BitSet();
+		for (int i = 0; i < this.syncedFields.length; ++i) {
+			final BaseInstancedField field = this.syncedFields[i];
+			if (field.isDirty() || forceSync) {
+				changedFieldSet.set(i);
+				data.add(this.serializeBySyncId(i, buf.registryAccess()));
+				field.markNotDirty();
+			}
+		}
+		buf.writeByteArray(changedFieldSet.toByteArray());
+		for (final DataSerializer<?> serializer : data) {
+			buf.writeVarInt(serializer.getId());
+			serializer.toNetwork(buf);
+		}
+	}
+
+	@Override
+	public void readFromNetwork(final RegistryFriendlyByteBuf buf) {
+		final BitSet changedFieldSet = BitSet.valueOf(buf.readByteArray());
+		final DataSerializer<?>[] data = new DataSerializer[changedFieldSet.cardinality()];
+		for (int i = 0; i < data.length; ++i) {
+			final int serializerId = buf.readVarInt();
+			final DataSerializer<?> serializer = CAPI.managedDataRegistry().makeSerializer(serializerId);
+			serializer.fromNetwork(buf);
+			data[i] = serializer;
+		}
+		int currentSerializer = 0;
+		for (int i = 0; i < changedFieldSet.length(); ++i) {
+			if (changedFieldSet.get(i)) {
+				final DataSerializer<?> serializer = data[currentSerializer++];
+				this.deserializeBySyncId(i, buf.registryAccess(), serializer);
+			}
+		}
 	}
 
 	private static ManagedFieldWrapper[] collectFields(final ManagedClassWrapper topWrapper) {
