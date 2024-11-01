@@ -80,7 +80,7 @@ public class BaseInstancedField implements InstancedField {
 	static BaseInstancedField of(final ManagedFieldWrapper wrapper, final Object instance) {
 		final ManagedFieldValueHandler valueHandler = ManagedFieldValueHandlerRegistry.INSTANCE.getHandler(wrapper.getFieldType());
 		return switch (valueHandler) {
-			case null -> throw new IllegalStateException("No %s registered for type %s".formatted(ManagedFieldValueHandler.class.getName(), wrapper.getFieldType().getName()));
+			case null -> throw new IllegalStateException("No %s registered for type %s".formatted(ManagedFieldValueHandler.class.getName(), wrapper.getFieldType().getTypeName()));
 			case final PrimitiveValueHandler.BooleanHandler ignored -> new PrimitiveInstancedFields.InstancedBoolean(wrapper, valueHandler, instance);
 			case final PrimitiveValueHandler.ByteHandler ignored -> new PrimitiveInstancedFields.InstancedByte(wrapper, valueHandler, instance);
 			case final PrimitiveValueHandler.ShortHandler ignored -> new PrimitiveInstancedFields.InstancedShort(wrapper, valueHandler, instance);

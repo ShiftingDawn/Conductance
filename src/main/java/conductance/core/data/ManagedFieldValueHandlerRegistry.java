@@ -72,7 +72,7 @@ public final class ManagedFieldValueHandlerRegistry implements ManagedFieldValue
 			final Type contentsType = array.getGenericComponentType();
 			final ManagedFieldValueHandler contentHandler = this.getHandler(contentsType);
 			final Class<?> rawType = ManagedFieldValueHandlerRegistry.getRawType(contentsType);
-			return ArrayValueHandler.FACTORY.apply(contentHandler, rawType != null ? rawType : Object.class);
+			return contentHandler != null ? ArrayValueHandler.FACTORY.apply(contentHandler, rawType != null ? rawType : Object.class) : null;
 		}
 		final Class<?> rawType = ManagedFieldValueHandlerRegistry.getRawType(clazz);
 		if (rawType == null) {
@@ -81,11 +81,11 @@ public final class ManagedFieldValueHandlerRegistry implements ManagedFieldValue
 		if (rawType.isArray()) {
 			final Class<?> contentType = rawType.getComponentType();
 			final ManagedFieldValueHandler contentHandler = this.getHandler(contentType);
-			return ArrayValueHandler.FACTORY.apply(contentHandler, contentType);
+			return contentHandler != null ? ArrayValueHandler.FACTORY.apply(contentHandler, contentType) : null;
 		} else if (Collection.class.isAssignableFrom(rawType)) {
 			final Type contentType = ((ParameterizedType) clazz).getActualTypeArguments()[0];
 			final ManagedFieldValueHandler contentHandler = this.getHandler(contentType);
-			return CollectionValueHandler.FACTORY.apply(contentHandler);
+			return contentHandler != null ? CollectionValueHandler.FACTORY.apply(contentHandler) : null;
 		}
 		return this.getHandlerByClass(rawType);
 	}

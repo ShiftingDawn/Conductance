@@ -1,6 +1,7 @@
 package conductance.core.data;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import com.google.common.base.Strings;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +13,7 @@ final class ManagedFieldWrapper {
 	@Getter
 	private final Field field;
 	@Getter
-	private final Class<?> fieldType;
+	private final Type fieldType;
 	@Getter
 	private final String name;
 	@Getter
@@ -28,7 +29,7 @@ final class ManagedFieldWrapper {
 
 	private ManagedFieldWrapper(final Field field, final boolean persisted, final boolean synced) {
 		this.field = field;
-		this.fieldType = field.getType();
+		this.fieldType = field.getGenericType();
 		this.name = field.getName();
 		this.persisted = persisted;
 		this.synced = synced;

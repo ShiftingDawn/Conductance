@@ -1,8 +1,10 @@
 package conductance.api.machine;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,9 +16,12 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.data.IManaged;
-import conductance.api.machine.data.ISynchronized;
 import conductance.api.machine.data.Managed;
 import conductance.api.machine.data.ManagedDataMap;
+import conductance.api.machine.data.Persisted;
+import conductance.api.machine.recipe.IRecipeElementType;
+import conductance.api.machine.trait.MetaCapability;
+import conductance.api.machine.trait.MetaRecipeCapability;
 
 @Managed
 public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends BlockEntity implements IManaged {
@@ -24,17 +29,12 @@ public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends Bloc
 	private final List<MetaTick> ticks = new ArrayList<>();
 	private final List<MetaTick> pending = new ArrayList<>();
 	private final ManagedDataMap managedDataMap = CAPI.requestDataMap(this);
+	@Persisted("capabilities")
+	private final List<MetaCapability> capabilities;
 
 	public MetaBlockEntity(final MetaBlockEntityType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type.getBlockEntityType().get(), pos, blockState);
-	}
-
-	/**
-	 * @return <code>this</code> cast to <code>T</code> with all casting warnings suppressed
-	 */
-	@SuppressWarnings("unchecked")
-	public final T self() {
-		return (T) this;
+		this.capabilities = Collections.unmodifiableList(Util.make(new ArrayList<>(), list -> this.registerCapabilities(list::add)));
 	}
 
 	@Override
@@ -42,16 +42,52 @@ public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends Bloc
 		return this.managedDataMap;
 	}
 
+	//region Capability
+	protected abstract void registerCapabilities(Consumer<MetaCapability> register);
+
+	@Nullable
+	public final <C extends MetaCapability> C getCapability(final Class<C> type, final boolean exact) {
+		for (final MetaCapability capability : this.capabilities) {
+			if (exact) {
+				if (type.equals(capability.getClass())) {
+					return type.cast(capability);
+				}
+			} else if (type.isAssignableFrom(capability.getClass())) {
+				return type.cast(capability);
+			}
+		}
+		return null;
+	}
+
+	@Nullable
+	public final <C extends MetaCapability> C getCapability(final Class<C> type) {
+		return this.getCapability(type, false);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Nullable
+	public final <C> MetaRecipeCapability<C> getRecipeCapability(final IRecipeElementType<C> type) {
+		for (final MetaCapability capability : this.capabilities) {
+			if (capability instanceof final MetaRecipeCapability<?> recipeCapability && recipeCapability.getElementType() == type) {
+				return (MetaRecipeCapability<C>) capability;
+			}
+		}
+		return null;
+	}
+	//endregion
+
 	//region Update
 
 	@Override
 	public void onLoad() {
 		super.onLoad();
+		this.capabilities.forEach(MetaCapability::onLoad);
 	}
 
 	public void onUnload() {
 		this.ticks.forEach(MetaTick::invalidate);
 		this.ticks.clear();
+		this.capabilities.forEach(MetaCapability::onUnload);
 	}
 
 	@Nullable
