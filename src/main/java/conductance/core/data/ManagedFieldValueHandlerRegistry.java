@@ -69,10 +69,13 @@ public final class ManagedFieldValueHandlerRegistry implements ManagedFieldValue
 	@Nullable
 	ManagedFieldValueHandler getHandler(final Type clazz) {
 		if (clazz instanceof final GenericArrayType array) {
-			final Type contentsType = array.getGenericComponentType();
-			final ManagedFieldValueHandler contentHandler = this.getHandler(contentsType);
-			final Class<?> rawType = ManagedFieldValueHandlerRegistry.getRawType(contentsType);
-			return contentHandler != null ? ArrayValueHandler.FACTORY.apply(contentHandler, rawType != null ? rawType : Object.class) : null;
+			final Type contentType = array.getGenericComponentType();
+			final ManagedFieldValueHandler contentHandler = this.getHandler(contentType);
+			if (contentHandler == null) {
+				throw new IllegalStateException("No %s registered for type %s".formatted(ManagedFieldValueHandler.class.getName(), contentType.getTypeName()));
+			}
+			final Class<?> rawType = ManagedFieldValueHandlerRegistry.getRawType(contentType);
+			return ArrayValueHandler.FACTORY.apply(contentHandler, rawType != null ? rawType : Object.class);
 		}
 		final Class<?> rawType = ManagedFieldValueHandlerRegistry.getRawType(clazz);
 		if (rawType == null) {
@@ -81,11 +84,17 @@ public final class ManagedFieldValueHandlerRegistry implements ManagedFieldValue
 		if (rawType.isArray()) {
 			final Class<?> contentType = rawType.getComponentType();
 			final ManagedFieldValueHandler contentHandler = this.getHandler(contentType);
-			return contentHandler != null ? ArrayValueHandler.FACTORY.apply(contentHandler, contentType) : null;
+			if (contentHandler == null) {
+				throw new IllegalStateException("No %s registered for type %s".formatted(ManagedFieldValueHandler.class.getName(), contentType.getTypeName()));
+			}
+			return ArrayValueHandler.FACTORY.apply(contentHandler, contentType);
 		} else if (Collection.class.isAssignableFrom(rawType)) {
 			final Type contentType = ((ParameterizedType) clazz).getActualTypeArguments()[0];
 			final ManagedFieldValueHandler contentHandler = this.getHandler(contentType);
-			return contentHandler != null ? CollectionValueHandler.FACTORY.apply(contentHandler) : null;
+			if (contentHandler == null) {
+				throw new IllegalStateException("No %s registered for type %s".formatted(ManagedFieldValueHandler.class.getName(), contentType.getTypeName()));
+			}
+			return CollectionValueHandler.FACTORY.apply(contentHandler);
 		}
 		return this.getHandlerByClass(rawType);
 	}
