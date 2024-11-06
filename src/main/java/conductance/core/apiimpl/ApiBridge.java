@@ -1,20 +1,24 @@
 package conductance.core.apiimpl;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.material.ResourceFinder;
-import conductance.api.registry.ManagedDataRegistry;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
 import conductance.Conductance;
-import conductance.core.data.ManagedDataManager;
 import conductance.core.register.ConductanceRegistrate;
 import conductance.core.register.MaterialRegistry;
 
@@ -33,15 +37,16 @@ public final class ApiBridge {
 	public static void init(final IEventBus modEventBus) {
 		ApiBridge.regs = new RegistryProviderImpl(modEventBus);
 		ApiBridge.registrate = ConductanceRegistrate.create(modEventBus);
+		NeoForge.EVENT_BUS.addListener(ApiBridge::onServerAboutToStart);
+		NeoForge.EVENT_BUS.addListener(ApiBridge::onServerStopped);
 		ApiBridge.setApiValue(RegistryProvider.class, ApiBridge.regs);
 		ApiBridge.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
 		ApiBridge.setApiValue(TaggedSetRegistry.class, MaterialRegistry.INSTANCE);
 		ApiBridge.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
-		ApiBridge.setApiValue(ManagedDataRegistry.class, ManagedDataManager.MANAGED_DATA_REGISTRY);
 	}
 
 	private static <T> void setApiValue(final Class<T> variableType, final T value) {
-		final Field field = Arrays.stream(CAPI.class.getDeclaredFields()).filter(f -> variableType.isAssignableFrom(f.getType())).findFirst().orElseThrow();
+		final Field field = Arrays.stream(CAPI.class.getDeclaredFields()).filter(f -> variableType.isAssignableFrom(f.getType()) && !Modifier.isFinal(f.getModifiers())).findFirst().orElseThrow();
 		try {
 			field.setAccessible(true);
 			field.set(null, value);
@@ -49,6 +54,18 @@ public final class ApiBridge {
 		} catch (final IllegalAccessException e) {
 			throw new RuntimeException("Cannot set API value", e);
 		}
+	}
+
+	public static void resetRegistryAccess(@Nullable final RegistryAccess registryAccess) {
+		ApiBridge.setApiValue(RegistryAccess.class, registryAccess);
+	}
+
+	private static void onServerAboutToStart(final ServerAboutToStartEvent event) {
+		ApiBridge.resetRegistryAccess(event.getServer().registryAccess());
+	}
+
+	private static void onServerStopped(final ServerStoppedEvent event) {
+		ApiBridge.resetRegistryAccess(null);
 	}
 
 	@SubscribeEvent

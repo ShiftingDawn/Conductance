@@ -1,9 +1,9 @@
 package conductance.core;
 
 import net.neoforged.bus.api.IEventBus;
+import nl.appelgebakje22.xdata.XData;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.PluginManager;
-import conductance.core.data.ManagedDataManager;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
 import conductance.init.ConductanceFluids;
@@ -15,7 +15,7 @@ public final class CommonProxy {
 		ApiBridge.init(modEventBus);
 
 		PluginManager.init();
-		ManagedDataManager.init();
+		XData.init(PluginManager::dispatchRegisterXDataExtensions);
 
 		ConductanceCreativeTabs.init();
 

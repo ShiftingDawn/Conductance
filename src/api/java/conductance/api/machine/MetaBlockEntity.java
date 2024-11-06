@@ -13,23 +13,21 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import nl.appelgebakje22.xdata.ManagedDataMap;
+import nl.appelgebakje22.xdata.api.IManaged;
+import nl.appelgebakje22.xdata.api.Persisted;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.machine.data.IManaged;
-import conductance.api.machine.data.Managed;
-import conductance.api.machine.data.ManagedDataMap;
-import conductance.api.machine.data.Persisted;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.trait.MetaCapability;
 import conductance.api.machine.trait.MetaRecipeCapability;
 
-@Managed
 public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends BlockEntity implements IManaged {
 
 	private final List<MetaTick> ticks = new ArrayList<>();
 	private final List<MetaTick> pending = new ArrayList<>();
-	private final ManagedDataMap managedDataMap = CAPI.requestDataMap(this);
-	@Persisted("capabilities")
+	private final ManagedDataMap managedDataMap = new ManagedDataMap(this);
+	@Persisted(key = "capabilities")
 	private final List<MetaCapability> capabilities;
 
 	public MetaBlockEntity(final MetaBlockEntityType<T> type, final BlockPos pos, final BlockState blockState) {

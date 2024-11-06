@@ -1,5 +1,8 @@
 package conductance.api;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -7,12 +10,10 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.loading.FMLEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import conductance.api.machine.data.IManaged;
-import conductance.api.machine.data.ManagedDataMap;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
 import conductance.api.material.ResourceFinder;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.registry.ManagedDataRegistry;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
@@ -33,7 +34,9 @@ public final class CAPI {
 	private static ResourceFinder resourceFinder;
 	private static TaggedSetRegistry<Material, TaggedMaterialSet> materialRegistry;
 	private static TranslationRegistry translationRegistry;
-	private static ManagedDataRegistry managedDataRegistry;
+	private static final RegistryAccess REGISTRY_FALLBACK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+	@Nullable
+	private static RegistryAccess registryAccess;
 
 	public static RegistryProvider regs() {
 		return CAPI.registryProvider;
@@ -51,16 +54,19 @@ public final class CAPI {
 		return CAPI.translationRegistry;
 	}
 
-	public static ManagedDataRegistry managedDataRegistry() {
-		return CAPI.managedDataRegistry;
+	public static RegistryAccess frozenRegistry() {
+		if (CAPI.registryAccess != null) {
+			return CAPI.registryAccess;
+		} else if (CAPI.isClient()) {
+			if (Minecraft.getInstance().getConnection() != null) {
+				return Minecraft.getInstance().getConnection().registryAccess();
+			}
+		}
+		return CAPI.REGISTRY_FALLBACK;
 	}
 
 	public static boolean isClient() {
 		return FMLEnvironment.dist.isClient();
-	}
-
-	public static ManagedDataMap requestDataMap(final IManaged managed) {
-		return CAPI.managedDataRegistry.requestDataMap(managed);
 	}
 
 	public static final class Tags {

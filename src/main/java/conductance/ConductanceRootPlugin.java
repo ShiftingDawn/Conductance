@@ -8,7 +8,6 @@ import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
 import conductance.api.NCMaterialTaggedSets;
 import conductance.api.plugin.MachineRegister;
-import conductance.api.plugin.ManagedFieldValueHandlerRegister;
 import conductance.api.plugin.MaterialFlagRegister;
 import conductance.api.plugin.MaterialOreTypeRegister;
 import conductance.api.plugin.MaterialOverrideMap;
@@ -23,7 +22,6 @@ import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.api.plugin.RecipeTypeRegister;
 import conductance.api.plugin.TagRegister;
-import conductance.init.ConductanceFieldValueHandlers;
 import conductance.init.ConductanceItems;
 import conductance.init.ConductanceMachines;
 import conductance.init.ConductanceMaterialFlags;
@@ -36,6 +34,7 @@ import conductance.init.ConductanceMaterials;
 import conductance.init.ConductancePeriodicElements;
 import conductance.init.ConductanceRecipeElementTypes;
 import conductance.init.ConductanceRecipeTypes;
+import conductance.init.ConductanceXDataExtensions;
 import conductance.runtimepack.server.recipe.RecipeLoader;
 import static conductance.api.CAPI.UNIT;
 import static conductance.api.NCMaterials.AMETHYST;
@@ -67,8 +66,8 @@ import static conductance.api.NCMaterials.WOOD;
 public final class ConductanceRootPlugin implements IConductancePlugin {
 
 	@Override
-	public void registerManagedFieldValueHandlers(final ManagedFieldValueHandlerRegister register) {
-		ConductanceFieldValueHandlers.init(register);
+	public void registerXDataExtensions() {
+		ConductanceXDataExtensions.init();
 	}
 
 	@Override

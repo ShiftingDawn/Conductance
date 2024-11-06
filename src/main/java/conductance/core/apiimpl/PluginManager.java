@@ -29,7 +29,6 @@ import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.Conductance;
-import conductance.core.data.ManagedFieldValueHandlerRegistry;
 import conductance.core.machine.MachineBuilderImpl;
 import conductance.core.recipe.RecipeElementTypeSerializer;
 import conductance.core.recipe.RecipeTypeBuilderImpl;
@@ -74,8 +73,8 @@ public final class PluginManager {
 		}
 	}
 
-	public static void dispatchRegisterManagedFieldValueHandlers() {
-		PluginManager.execute((plugin, modid) -> plugin.registerManagedFieldValueHandlers(ManagedFieldValueHandlerRegistry.INSTANCE));
+	public static void dispatchRegisterXDataExtensions() {
+		PluginManager.execute((plugin, modid) -> plugin.registerXDataExtensions());
 	}
 
 	public static void dispatchPeriodicElements() {

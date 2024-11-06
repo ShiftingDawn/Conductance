@@ -1,7 +1,7 @@
 package conductance.core.mixin;
 
-import conductance.core.apiimpl.ApiBridge;
-import conductance.runtimepack.server.RuntimeDataPackBridge;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.server.RegistryLayer;
@@ -12,9 +12,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import conductance.core.apiimpl.ApiBridge;
+import conductance.runtimepack.server.RuntimeDataPackBridge;
 
 @Mixin(ReloadableServerResources.class)
 public abstract class ReloadableServerResourcesMixin {
@@ -26,6 +25,7 @@ public abstract class ReloadableServerResourcesMixin {
 		ApiBridge.handleDataPackRegistryStage(ApiBridge.DataPackRegistryLoadStage.UNFREEZE);
 		ApiBridge.handleDataPackRegistryStage(ApiBridge.DataPackRegistryLoadStage.RESET);
 
+		ApiBridge.resetRegistryAccess(registries.compositeAccess());
 		RuntimeDataPackBridge.reload(registries.compositeAccess());
 	}
 
