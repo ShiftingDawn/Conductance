@@ -1,4 +1,4 @@
-package conductance.core.xdata.datasync;
+package conductance.core.xdata;
 
 import java.util.Map;
 import java.util.WeakHashMap;

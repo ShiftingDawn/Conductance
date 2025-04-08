@@ -1,4 +1,4 @@
-package conductance.core.xdata.datasync;
+package conductance.core.xdata;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;

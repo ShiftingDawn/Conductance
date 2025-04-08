@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import conductance.api.CAPI;
 import conductance.api.machine.xdata.NbtAdapterFactory;
-import conductance.core.xdata.datasync.SynchronizationContainer;
+import conductance.core.xdata.SynchronizationContainer;
 
 @Mixin(BlockEntity.class)
 public abstract class BlockEntityMixin {
