@@ -13,32 +13,55 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import nl.appelgebakje22.xdata.ManagedDataMap;
-import nl.appelgebakje22.xdata.api.IManaged;
-import nl.appelgebakje22.xdata.api.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.IManaged;
+import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
+import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.trait.MetaCapability;
 import conductance.api.machine.trait.MetaRecipeCapability;
 
-public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends BlockEntity implements IManaged {
+public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends BlockEntity implements IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IManaged {
 
+	private final ManagedFieldHolder managedFieldHolder;
 	private final List<MetaTick> ticks = new ArrayList<>();
 	private final List<MetaTick> pending = new ArrayList<>();
-	private final ManagedDataMap managedDataMap = new ManagedDataMap(this);
+	private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
 	@Persisted(key = "capabilities")
 	private final List<MetaCapability> capabilities;
 
 	public MetaBlockEntity(final MetaBlockEntityType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type.getBlockEntityType().get(), pos, blockState);
+		this.managedFieldHolder = new ManagedFieldHolder(this.getClass());
 		this.capabilities = Collections.unmodifiableList(Util.make(new ArrayList<>(), list -> this.registerCapabilities(list::add)));
 	}
 
+	//region SyncData
 	@Override
-	public final ManagedDataMap getDataMap() {
-		return this.managedDataMap;
+	public ManagedFieldHolder getFieldHolder() {
+		return this.managedFieldHolder;
 	}
+
+	@Override
+	public IManagedStorage getSyncStorage() {
+		return this.syncStorage;
+	}
+
+	@Override
+	public IManagedStorage getRootStorage() {
+		return this.getSyncStorage();
+	}
+
+	@Override
+	public void onChanged() {
+		super.setChanged();
+	}
+	//endregion
 
 	//region Capability
 	protected abstract void registerCapabilities(Consumer<MetaCapability> register);
@@ -75,7 +98,6 @@ public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends Bloc
 	//endregion
 
 	//region Update
-
 	@Override
 	public void onLoad() {
 		super.onLoad();
@@ -179,6 +201,5 @@ public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends Bloc
 		super.setRemoved();
 		this.onUnload();
 	}
-
 	//endregion
 }

@@ -1,11 +1,11 @@
 package conductance.api.machine.trait;
 
-import nl.appelgebakje22.xdata.ManagedDataMap;
-import nl.appelgebakje22.xdata.api.IManaged;
+import com.lowdragmc.lowdraglib.syncdata.IManaged;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 
 public abstract class MetaCapability implements IManaged {
 
-	private final ManagedDataMap managedDataMap = new ManagedDataMap(this);
+	private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
 
 	public void onLoad() {
 	}
@@ -14,7 +14,7 @@ public abstract class MetaCapability implements IManaged {
 	}
 
 	@Override
-	public final ManagedDataMap getDataMap() {
-		return this.managedDataMap;
+	public FieldManagedStorage getSyncStorage() {
+		return this.syncStorage;
 	}
 }

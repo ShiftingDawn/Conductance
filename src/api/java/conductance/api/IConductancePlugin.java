@@ -19,9 +19,6 @@ import conductance.api.plugin.TagRegister;
 
 public interface IConductancePlugin {
 
-	default void registerXDataExtensions() {
-	}
-
 	default void registerPeriodicElements(final PeriodicElementBuilder builder) {
 	}
 

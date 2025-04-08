@@ -3,4 +3,5 @@ repositories {
 
 	maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate Fork
 	maven { url = "https://maven.terraformersmc.com/" } // EMI
+	maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
 }

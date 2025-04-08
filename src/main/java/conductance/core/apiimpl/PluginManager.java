@@ -73,10 +73,6 @@ public final class PluginManager {
 		}
 	}
 
-	public static void dispatchRegisterXDataExtensions() {
-		PluginManager.execute((plugin, modid) -> plugin.registerXDataExtensions());
-	}
-
 	public static void dispatchPeriodicElements() {
 		PluginManager.execute((plugin, modid) -> plugin.registerPeriodicElements((protons, neutrons, registryName, name, symbol, parent) -> Util.make(
 				new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null), result -> {
@@ -136,6 +132,7 @@ public final class PluginManager {
 
 	public static void dispatchRecipeElementTypes() {
 		PluginManager.execute((plugin, modid) -> plugin.registerRecipeElementTypes(new RecipeElementTypeRegister() {
+
 			@Override
 			public <T> IRecipeElementType<T> register(final String name, final Codec<T> dataCodec, final StreamCodec<RegistryFriendlyByteBuf, T> streamDataCodec) {
 				return Util.make(new RecipeElementTypeSerializer<>(ResourceLocation.fromNamespaceAndPath(modid, name), dataCodec, streamDataCodec), result -> {

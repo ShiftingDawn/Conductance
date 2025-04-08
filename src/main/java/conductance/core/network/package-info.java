@@ -1,4 +1,4 @@
 @NCNonNull
-package conductance.api.machine.xdata;
+package conductance.core.network;
 
 import conductance.api.util.NCNonNull;

@@ -34,7 +34,6 @@ import conductance.init.ConductanceMaterials;
 import conductance.init.ConductancePeriodicElements;
 import conductance.init.ConductanceRecipeElementTypes;
 import conductance.init.ConductanceRecipeTypes;
-import conductance.init.ConductanceXDataExtensions;
 import conductance.runtimepack.server.recipe.RecipeLoader;
 import static conductance.api.CAPI.UNIT;
 import static conductance.api.NCMaterials.AMETHYST;
@@ -64,11 +63,6 @@ import static conductance.api.NCMaterials.WOOD;
 
 @ConductancePlugin(modid = CAPI.MOD_ID)
 public final class ConductanceRootPlugin implements IConductancePlugin {
-
-	@Override
-	public void registerXDataExtensions() {
-		ConductanceXDataExtensions.init();
-	}
 
 	@Override
 	public void registerPeriodicElements(final PeriodicElementBuilder builder) {

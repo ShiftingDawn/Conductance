@@ -1,12 +1,18 @@
 def registrate = "MC1.21-1.3.0+55" // Registrate https://maven.ithundxr.dev/#/snapshots/com/tterrag/registrate/Registrate
 def emi = "1.1.16+1.21.1"
+def ldlib = "1.0.35.a"
 
 def jetbrainsAnnotations = "26.0.1"
 
 dependencies {
+	// Registrate
 	api("com.tterrag.registrate:Registrate:${registrate}")
 	apiCompileOnly("com.tterrag.registrate:Registrate:${registrate}")
 	jarJar("com.tterrag.registrate:Registrate:${registrate}")
+
+	// LDLib
+	api("com.lowdragmc.ldlib:ldlib-neoforge-${minecraft_version}:${ldlib}")
+	apiCompileOnly("com.lowdragmc.ldlib:ldlib-neoforge-${minecraft_version}:${ldlib}")
 
 	// EMI
 	compileOnly("dev.emi:emi-neoforge:${emi}:api")
