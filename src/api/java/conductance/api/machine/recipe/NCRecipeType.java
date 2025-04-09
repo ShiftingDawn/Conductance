@@ -1,14 +1,29 @@
 package conductance.api.machine.recipe;
 
+import java.util.function.DoubleSupplier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import conductance.api.machine.gui.MachineGuiTemplate;
 import conductance.api.registry.IRegistryObject;
 
 public interface NCRecipeType extends IRegistryObject<ResourceLocation>, RecipeType<IRecipe> {
 
-	NCRecipeSerializer getSerializer();
-
 	int getMaxInputs(IRecipeElementType<?> elementType);
 
 	int getMaxOutputs(IRecipeElementType<?> elementType);
+
+	NCRecipeSerializer getSerializer();
+
+	ResourceTexture getProgressBar();
+
+	ProgressTexture.FillDirection getProgressBarDirection();
+
+	WidgetGroup createGuiTemplate(DoubleSupplier progressSupplier, IItemHandlerModifiable inputItems, IItemHandlerModifiable outputItems, IFluidHandler inputFluids, IFluidHandler outputFluids);
+
+	MachineGuiTemplate<WidgetGroup, RecipeHolder> createGuiTemplate();
 }

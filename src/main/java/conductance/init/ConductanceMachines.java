@@ -9,6 +9,7 @@ public final class ConductanceMachines {
 	public static void init(final MachineRegister register) {
 		register.register("bender", RecipeMachine::new)
 				.recipeType(NCRecipeTypes.BENDER)
+				.guiSupplier(RecipeMachine.GUI_SUPPLIER.apply(NCRecipeTypes.BENDER))
 				.build();
 	}
 

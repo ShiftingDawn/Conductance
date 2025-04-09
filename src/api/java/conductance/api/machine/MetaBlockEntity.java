@@ -40,7 +40,7 @@ public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends Bloc
 
 	public MetaBlockEntity(final MetaBlockEntityType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type.getBlockEntityType().get(), pos, blockState);
-		this.metaType = this.getMetaType();
+		this.metaType = type;
 		this.managedFieldHolder = new ManagedFieldHolder(this.getClass());
 		this.capabilities = Collections.unmodifiableList(Util.make(new ArrayList<>(), list -> this.registerCapabilities(list::add)));
 	}
@@ -132,7 +132,7 @@ public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends Bloc
 	protected void onClientTick() {
 	}
 
-	protected void handleServerTick() {
+	protected final void handleServerTick() {
 		if (!this.pending.isEmpty()) {
 			this.ticks.addAll(this.pending);
 			this.pending.clear();
@@ -149,6 +149,7 @@ public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends Bloc
 			}
 		}
 		if (this.isValid() && this.ticks.isEmpty() && this.pending.isEmpty()) {
+			assert this.level != null;
 			this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(MetaBlockEntityBlock.ACTIVE, false));
 		}
 	}

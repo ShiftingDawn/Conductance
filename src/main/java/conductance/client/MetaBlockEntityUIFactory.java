@@ -9,22 +9,19 @@ import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.MetaBlockEntity;
-import conductance.api.machine.gui.GeneratedGuiHolder;
+import conductance.api.machine.gui.MetaBlockEntityGuiHolder;
 import conductance.Conductance;
 
 public class MetaBlockEntityUIFactory extends UIFactory<MetaBlockEntity<?>> {
 
 	public static final MetaBlockEntityUIFactory INSTANCE = new MetaBlockEntityUIFactory();
-	public static final int GUI_WIDTH = 176;
-	public static final int GUI_HEIGHT = 186;
 
 	public MetaBlockEntityUIFactory() {
 		super(Conductance.id("meta_block_entity"));
 	}
 
-	public static ModularUI createGui(final MetaBlockEntity<?> mbe, final GeneratedGuiHolder holder, final Player player) {
-		return new ModularUI(MetaBlockEntityUIFactory.GUI_WIDTH, MetaBlockEntityUIFactory.GUI_HEIGHT, holder, player)
-				.widget(new RootWidget(mbe));
+	public static <T extends MetaBlockEntity<?> & MetaBlockEntityGuiHolder> ModularUI createGui(final T mbe, final Player player) {
+		return new ModularUI(GuiHelper.GUI_WIDTH, GuiHelper.GUI_HEIGHT, mbe, player).widget(new RootWidget(mbe));
 	}
 
 	@Override
