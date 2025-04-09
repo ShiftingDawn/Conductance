@@ -2,8 +2,12 @@ package conductance.api.machine;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -20,8 +24,12 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import com.lowdragmc.lowdraglib.gui.factory.BlockEntityUIFactory;
+import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.util.MiscUtils;
 
@@ -70,6 +78,16 @@ public class MetaBlockEntityBlock<T extends MetaBlockEntity<T>> extends Block im
 		return this.getMetaBlockEntityType().getBlockEntityType().get().create(blockPos, blockState);
 	}
 
+	@Override
+	protected InteractionResult useWithoutItem(final BlockState state, final Level level, final BlockPos pos, final Player player, final BlockHitResult hitResult) {
+		return this.<InteractionResult>getMeta(level, pos, mbt -> {
+			if (mbt instanceof final IUIHolder.Block holder && !level.isClientSide && player instanceof final ServerPlayer serverPlayer) {
+				BlockEntityUIFactory.INSTANCE.openUI(holder.self(), serverPlayer);
+			}
+			return InteractionResult.sidedSuccess(level.isClientSide);
+		}, () -> super.useWithoutItem(state, level, pos, player, hitResult));
+	}
+
 	@Nullable
 	@Override
 	public <BE extends BlockEntity> BlockEntityTicker<BE> getTicker(final Level level, final BlockState state, final BlockEntityType<BE> blockEntityType) {
@@ -104,9 +122,22 @@ public class MetaBlockEntityBlock<T extends MetaBlockEntity<T>> extends Block im
 	public final <R> R getMeta(final BlockGetter level, final BlockPos pos, final Function<MetaBlockEntity<?>, R> getter, @Nullable final R fallback) {
 		if (level.getBlockEntity(pos) instanceof final MetaBlockEntity<?> mbe) {
 			final R result = getter.apply(mbe);
-			return result != null ? result : fallback;
+			if (result != null) {
+				return result;
+			}
 		}
 		return fallback;
+	}
+
+	@NotNull
+	public final <R> R getMeta(final BlockGetter level, final BlockPos pos, final Function<MetaBlockEntity<?>, R> getter, @NotNull final Supplier<R> fallback) {
+		if (level.getBlockEntity(pos) instanceof final MetaBlockEntity<?> mbe) {
+			final R result = getter.apply(mbe);
+			if (result != null) {
+				return result;
+			}
+		}
+		return fallback.get();
 	}
 
 	@Override

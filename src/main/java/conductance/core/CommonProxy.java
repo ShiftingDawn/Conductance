@@ -1,6 +1,8 @@
 package conductance.core;
 
 import net.neoforged.bus.api.IEventBus;
+import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
+import conductance.client.MetaBlockEntityUIFactory;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.PluginManager;
 import conductance.init.ConductanceBlocks;
@@ -12,6 +14,8 @@ public final class CommonProxy {
 
 	public static void init(final IEventBus modEventBus) {
 		ApiBridge.init(modEventBus);
+
+		UIFactory.register(MetaBlockEntityUIFactory.INSTANCE);
 
 		PluginManager.init();
 

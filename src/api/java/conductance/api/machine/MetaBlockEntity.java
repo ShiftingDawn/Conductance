@@ -20,6 +20,7 @@ import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.recipe.IRecipeElementType;
@@ -28,15 +29,18 @@ import conductance.api.machine.trait.MetaRecipeCapability;
 
 public abstract class MetaBlockEntity<T extends MetaBlockEntity<T>> extends BlockEntity implements IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IManaged {
 
-	private final ManagedFieldHolder managedFieldHolder;
 	private final List<MetaTick> ticks = new ArrayList<>();
 	private final List<MetaTick> pending = new ArrayList<>();
 	private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+	@Getter
+	private final MetaBlockEntityType<T> metaType;
 	@Persisted(key = "capabilities")
 	private final List<MetaCapability> capabilities;
+	private final ManagedFieldHolder managedFieldHolder;
 
 	public MetaBlockEntity(final MetaBlockEntityType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type.getBlockEntityType().get(), pos, blockState);
+		this.metaType = this.getMetaType();
 		this.managedFieldHolder = new ManagedFieldHolder(this.getClass());
 		this.capabilities = Collections.unmodifiableList(Util.make(new ArrayList<>(), list -> this.registerCapabilities(list::add)));
 	}
