@@ -131,9 +131,6 @@ public final class NCMaterials {
 	public static Material OGANESSON;
 
 	public static Material NEUTRONIUM;
-	public static Material COSMIC_NEUTRONIUM;
-	public static Material INFINITY;
-	public static Material SPACETIME;
 	//endregion
 
 	//region First Order Materials

@@ -41,7 +41,6 @@ import static conductance.api.NCMaterials.CHROMIUM;
 import static conductance.api.NCMaterials.COBALT;
 import static conductance.api.NCMaterials.COPERNICIUM;
 import static conductance.api.NCMaterials.COPPER;
-import static conductance.api.NCMaterials.COSMIC_NEUTRONIUM;
 import static conductance.api.NCMaterials.CURIUM;
 import static conductance.api.NCMaterials.DARMSTADTIUM;
 import static conductance.api.NCMaterials.DEUTERIUM;
@@ -65,7 +64,6 @@ import static conductance.api.NCMaterials.HELIUM_3;
 import static conductance.api.NCMaterials.HOLMIUM;
 import static conductance.api.NCMaterials.HYDROGEN;
 import static conductance.api.NCMaterials.INDIUM;
-import static conductance.api.NCMaterials.INFINITY;
 import static conductance.api.NCMaterials.IODINE;
 import static conductance.api.NCMaterials.IRIDIUM;
 import static conductance.api.NCMaterials.IRON;
@@ -120,7 +118,6 @@ import static conductance.api.NCMaterials.SELENIUM;
 import static conductance.api.NCMaterials.SILICON;
 import static conductance.api.NCMaterials.SILVER;
 import static conductance.api.NCMaterials.SODIUM;
-import static conductance.api.NCMaterials.SPACETIME;
 import static conductance.api.NCMaterials.STRONTIUM;
 import static conductance.api.NCMaterials.SULFUR;
 import static conductance.api.NCMaterials.TANTALUM;
@@ -1000,29 +997,6 @@ public final class MaterialLoaderPeriodicTable {
 				.color(250, 250, 250).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL)
 				.periodicElement(NCPeriodicElements.NEUTRONIUM)
-				.build();
-
-		COSMIC_NEUTRONIUM = register.register("cosmic_neutronium")
-				.ingot()
-				.color(255, 255, 255)
-				.addFlagAndPreset(METAL_ALL)
-				.periodicElement(NCPeriodicElements.COSMIC_NEUTRONIUM)
-				.build();
-
-		INFINITY = register.register("infinity")
-				.ingot()
-				.liquid()
-				.color(255, 255, 255)
-				.addFlagAndPreset(METAL_ALL)
-				.periodicElement(NCPeriodicElements.INFINITY)
-				.build();
-
-		SPACETIME = register.register("spacetime")
-				.ingot()
-				.liquid(1000000000)
-				.color(255, 255, 255)
-				.addFlagAndPreset(METAL_ALL)
-				.periodicElement(NCPeriodicElements.SPACETIME)
 				.build();
 	}
 	//@formatter:on
