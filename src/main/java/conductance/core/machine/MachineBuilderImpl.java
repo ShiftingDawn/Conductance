@@ -11,24 +11,24 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import lombok.Getter;
 import lombok.Setter;
 import conductance.api.CAPI;
+import conductance.api.machine.MachineBlock;
+import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.MachineBlockEntityFactory;
 import conductance.api.machine.MachineBlockFactory;
 import conductance.api.machine.MachineBuilder;
-import conductance.api.machine.MetaBlockEntity;
-import conductance.api.machine.MetaBlockEntityBlock;
-import conductance.api.machine.MetaBlockEntityFactory;
-import conductance.api.machine.MetaBlockEntityType;
+import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiSupplier;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.resource.RuntimeModelProvider;
 import static conductance.core.apiimpl.ApiBridge.getRegistrate;
 
-public class MachineBuilderImpl<T extends MetaBlockEntity<T>> implements MachineBuilder<T> {
+public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements MachineBuilder<T> {
 
 	private final String registryKey;
 	@Setter
-	private MachineBlockFactory<T> blockFactory = MetaBlockEntityBlock::new;
+	private MachineBlockFactory<T> blockFactory = MachineBlock::new;
 	@Setter
-	private MetaBlockEntityFactory<T> blockEntityFactory;
+	private MachineBlockEntityFactory<T> blockEntityFactory;
 	@Setter
 	@Getter
 	private RuntimeModelProvider modelProvider = new DirectionalMachineRuntimeModelProvider();
@@ -37,13 +37,13 @@ public class MachineBuilderImpl<T extends MetaBlockEntity<T>> implements Machine
 	@Getter
 	private MachineGuiSupplier guiSupplier;
 
-	public MachineBuilderImpl(final String registryKey, final MetaBlockEntityFactory<T> metaBlockEntityFactory) {
+	public MachineBuilderImpl(final String registryKey, final MachineBlockEntityFactory<T> machineBlockEntityFactory) {
 		this.registryKey = registryKey;
-		this.blockEntityFactory = metaBlockEntityFactory;
+		this.blockEntityFactory = machineBlockEntityFactory;
 	}
 
-	private BlockEntry<? extends MetaBlockEntityBlock<T>> createBlock(final MetaBlockEntityTypeImpl<T> metaBlockEntityType) {
-		final var blockBuilder = getRegistrate().block(this.registryKey, props -> this.blockFactory.newInstance(props, metaBlockEntityType));
+	private BlockEntry<? extends MachineBlock<T>> createBlock(final MachineTypeImpl<T> machineType) {
+		final var blockBuilder = getRegistrate().block(this.registryKey, props -> this.blockFactory.newInstance(props, machineType));
 		blockBuilder
 				.initialProperties(() -> Blocks.IRON_BLOCK)
 				.blockstate(NonNullBiConsumer.noop())
@@ -53,9 +53,9 @@ public class MachineBuilderImpl<T extends MetaBlockEntity<T>> implements Machine
 		return blockBuilder.register();
 	}
 
-	private BlockEntityEntry<T> createBlockEntity(final MetaBlockEntityTypeImpl<T> metaBlockEntityType) {
-		final BlockEntityBuilder<T, Registrate> builder = getRegistrate().blockEntity(this.registryKey, (type, pos, state) -> this.blockEntityFactory.newInstance(metaBlockEntityType, pos, state));
-		builder.validBlock(metaBlockEntityType.getBlock());
+	private BlockEntityEntry<T> createBlockEntity(final MachineTypeImpl<T> machineType) {
+		final BlockEntityBuilder<T, Registrate> builder = getRegistrate().blockEntity(this.registryKey, (type, pos, state) -> this.blockEntityFactory.newInstance(machineType, pos, state));
+		builder.validBlock(machineType.getBlock());
 		return builder.register();
 	}
 
@@ -74,16 +74,16 @@ public class MachineBuilderImpl<T extends MetaBlockEntity<T>> implements Machine
 	}
 
 	@Override
-	public MetaBlockEntityType<T> build() {
-		final MetaBlockEntityTypeImpl<T> metaBlockEntityType = Util.make(new MetaBlockEntityTypeImpl<>(this.registryKey), result -> {
+	public MachineType<T> build() {
+		final MachineTypeImpl<T> machineType = Util.make(new MachineTypeImpl<>(this.registryKey), result -> {
 			result.setBlock(this.createBlock(result));
 			result.setBlockEntityType(this.createBlockEntity(result));
 			result.setModelProvider(this.modelProvider);
 			result.setRecipeTypes(this.recipeTypes);
 			result.setGuiSupplier(this.guiSupplier);
 		});
-		metaBlockEntityType.validate();
-		CAPI.regs().metaBlockEntities().register(metaBlockEntityType.getRegistryKey(), metaBlockEntityType);
-		return metaBlockEntityType;
+		machineType.validate();
+		CAPI.regs().machines().register(machineType.getRegistryKey(), machineType);
+		return machineType;
 	}
 }

@@ -1,4 +1,4 @@
-package conductance.api.machine.trait;
+package conductance.api.machine.capability;
 
 import java.util.List;
 import net.minecraft.world.item.crafting.RecipeHolder;

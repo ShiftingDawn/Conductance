@@ -7,11 +7,11 @@ import conductance.api.machine.gui.MachineGuiSupplier;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.registry.IRegistryObject;
 
-public interface MetaBlockEntityType<T extends MetaBlockEntity<T>> extends IRegistryObject<String> {
+public interface MachineType<T extends MachineBlockEntity<T>> extends IRegistryObject<String> {
 
 	NCRecipeType[] getRecipeTypes();
 
-	NonNullSupplier<? extends MetaBlockEntityBlock<T>> getBlock();
+	NonNullSupplier<? extends MachineBlock<T>> getBlock();
 
 	NonNullSupplier<BlockEntityType<T>> getBlockEntityType();
 

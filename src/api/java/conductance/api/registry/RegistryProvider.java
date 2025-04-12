@@ -1,7 +1,7 @@
 package conductance.api.registry;
 
 import net.minecraft.resources.ResourceLocation;
-import conductance.api.machine.MetaBlockEntityType;
+import conductance.api.machine.MachineType;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.material.Material;
@@ -37,5 +37,5 @@ public interface RegistryProvider {
 
 	ConductanceRegistry<ResourceLocation, NCRecipeType> recipeTypes();
 
-	ConductanceRegistry<String, MetaBlockEntityType<?>> metaBlockEntities();
+	ConductanceRegistry<String, MachineType<?>> machines();
 }

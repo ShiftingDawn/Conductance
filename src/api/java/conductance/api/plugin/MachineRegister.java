@@ -1,10 +1,10 @@
 package conductance.api.plugin;
 
+import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.MachineBlockEntityFactory;
 import conductance.api.machine.MachineBuilder;
-import conductance.api.machine.MetaBlockEntity;
-import conductance.api.machine.MetaBlockEntityFactory;
 
 public interface MachineRegister {
 
-	<T extends MetaBlockEntity<T>> MachineBuilder<T> register(String registryName, MetaBlockEntityFactory<T> constructor);
+	<T extends MachineBlockEntity<T>> MachineBuilder<T> register(String registryName, MachineBlockEntityFactory<T> constructor);
 }

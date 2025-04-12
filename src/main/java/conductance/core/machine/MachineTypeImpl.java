@@ -8,18 +8,18 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import conductance.api.machine.MetaBlockEntity;
-import conductance.api.machine.MetaBlockEntityBlock;
-import conductance.api.machine.MetaBlockEntityType;
+import conductance.api.machine.MachineBlock;
+import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiSupplier;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.registry.RegistryObject;
 import conductance.api.resource.RuntimeModelProvider;
 
-public class MetaBlockEntityTypeImpl<T extends MetaBlockEntity<T>> extends RegistryObject<String> implements MetaBlockEntityType<T> {
+public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryObject<String> implements MachineType<T> {
 
 	@Setter(AccessLevel.PACKAGE)
-	private BlockEntry<? extends MetaBlockEntityBlock<T>> block;
+	private BlockEntry<? extends MachineBlock<T>> block;
 	@Setter(AccessLevel.PACKAGE)
 	private BlockEntityEntry<T> blockEntityType;
 	@Getter
@@ -33,7 +33,7 @@ public class MetaBlockEntityTypeImpl<T extends MetaBlockEntity<T>> extends Regis
 	private MachineGuiSupplier guiSupplier;
 
 
-	public MetaBlockEntityTypeImpl(final String registryKey) {
+	public MachineTypeImpl(final String registryKey) {
 		super(registryKey);
 	}
 
@@ -48,7 +48,7 @@ public class MetaBlockEntityTypeImpl<T extends MetaBlockEntity<T>> extends Regis
 	}
 
 	@Override
-	public NonNullSupplier<? extends MetaBlockEntityBlock<T>> getBlock() {
+	public NonNullSupplier<? extends MachineBlock<T>> getBlock() {
 		return this.block;
 	}
 

@@ -2,14 +2,14 @@ package conductance.api.machine.gui;
 
 import java.util.function.Supplier;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import conductance.api.machine.MetaBlockEntity;
+import conductance.api.machine.MachineBlockEntity;
 
-public class MachineGuiSupplier implements MachineGuiTemplate<WidgetGroup, MetaBlockEntity<?>> {
+public class MachineGuiSupplier implements MachineGuiTemplate<WidgetGroup, MachineBlockEntity<?>> {
 
 	private final Supplier<WidgetGroup> widgetSupplier;
-	private final MachineGuiBinder<MetaBlockEntity<?>> binder;
+	private final MachineGuiBinder<MachineBlockEntity<?>> binder;
 
-	public MachineGuiSupplier(final Supplier<WidgetGroup> widgetSupplier, final MachineGuiBinder<MetaBlockEntity<?>> binder) {
+	public MachineGuiSupplier(final Supplier<WidgetGroup> widgetSupplier, final MachineGuiBinder<MachineBlockEntity<?>> binder) {
 		this.widgetSupplier = widgetSupplier;
 		this.binder = binder;
 	}
@@ -20,7 +20,7 @@ public class MachineGuiSupplier implements MachineGuiTemplate<WidgetGroup, MetaB
 	}
 
 	@Override
-	public void setupGui(final WidgetGroup template, final MetaBlockEntity<?> instance, final boolean fixBounds) {
+	public void setupGui(final WidgetGroup template, final MachineBlockEntity<?> instance, final boolean fixBounds) {
 		this.binder.bindTemplate(template, instance, fixBounds);
 	}
 }

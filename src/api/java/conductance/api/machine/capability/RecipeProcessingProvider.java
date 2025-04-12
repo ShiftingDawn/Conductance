@@ -1,4 +1,4 @@
-package conductance.api.machine.trait;
+package conductance.api.machine.capability;
 
 import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.NCRecipeType;

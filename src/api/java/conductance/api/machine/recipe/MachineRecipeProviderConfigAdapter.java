@@ -2,7 +2,7 @@ package conductance.api.machine.recipe;
 
 import java.util.Map;
 
-public interface MetaRecipeProviderConfigAdapter {
+public interface MachineRecipeProviderConfigAdapter {
 
 	NCRecipeType[] getRecipeTypes();
 

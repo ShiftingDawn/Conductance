@@ -1,7 +1,6 @@
 package conductance.machine;
 
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -10,35 +9,30 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import lombok.Getter;
 import lombok.Setter;
-import conductance.api.machine.MetaBlockEntity;
-import conductance.api.machine.MetaBlockEntityType;
+import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.MachineType;
+import conductance.api.machine.gui.MachineGuiHolder;
 import conductance.api.machine.gui.MachineGuiSupplier;
-import conductance.api.machine.gui.MetaBlockEntityGuiHolder;
 import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.MetaRecipeProviderConfigAdapter;
+import conductance.api.machine.recipe.MachineRecipeProviderConfigAdapter;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeProcessor;
-import conductance.api.machine.trait.MetaCapability;
-import conductance.client.MetaBlockEntityUIFactory;
+import conductance.client.MachineUIFactory;
 
-public class RecipeMachine extends MetaBlockEntity<RecipeMachine> implements MetaBlockEntityGuiHolder, MetaRecipeProviderConfigAdapter {
+public class RecipeMachine extends MachineBlockEntity<RecipeMachine> implements MachineGuiHolder, MachineRecipeProviderConfigAdapter {
 
 	@Getter
 	@Setter
 	@Persisted
 	private int activeRecipeType;
 
-	public RecipeMachine(final MetaBlockEntityType<RecipeMachine> type, final BlockPos pos, final BlockState blockState) {
+	public RecipeMachine(final MachineType<RecipeMachine> type, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
 	}
 
 	@Override
-	protected void registerCapabilities(final Consumer<MetaCapability> register) {
-	}
-
-	@Override
 	public NCRecipeType[] getRecipeTypes() {
-		return this.getMetaType().getRecipeTypes();
+		return this.getMachineType().getRecipeTypes();
 	}
 
 	@Override
@@ -60,13 +54,13 @@ public class RecipeMachine extends MetaBlockEntity<RecipeMachine> implements Met
 
 	@Override
 	public ModularUI createUI(final Player entityPlayer) {
-		return MetaBlockEntityUIFactory.createGui(this, entityPlayer);
+		return MachineUIFactory.createGui(this, entityPlayer);
 	}
 
 	public static final Function<NCRecipeType, MachineGuiSupplier> GUI_SUPPLIER = recipeType -> new MachineGuiSupplier(() ->
 			recipeType.createGuiTemplate().createDefault(),
-			(template, metaBlockEntity, autoCalc) -> {
-				if (metaBlockEntity instanceof RecipeMachine recipeMachine) {
+			(template, machine, autoCalc) -> {
+				if (machine instanceof RecipeMachine recipeMachine) {
 					//					recipeMachine.getRecipeType().createGuiTemplate().setupGui(template, new RecipeHolder(
 					//									recipeMachine.getRecipeProcessor()::getProgressPercentage,
 					//									recipeMachine.getInputInventory().inventory,

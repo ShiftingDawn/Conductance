@@ -50,4 +50,8 @@ public interface IRecipeElementType<T> extends IRegistryObject<ResourceLocation>
 	default String getSlotName(final IOMode ioMode, final int index) {
 		return "%s_%s".formatted(this.getSlotName(ioMode), index);
 	}
+
+	default String getGroupName(final IOMode ioMode) {
+		return "group_%s_%s".formatted(this.getRegistryKey().getPath(), ioMode.toString().toLowerCase(Locale.ROOT));
+	}
 }

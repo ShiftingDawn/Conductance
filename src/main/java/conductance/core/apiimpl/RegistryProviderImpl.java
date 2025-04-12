@@ -8,7 +8,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import conductance.api.machine.MetaBlockEntityType;
+import conductance.api.machine.MachineType;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.material.Material;
@@ -41,7 +41,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final ConductanceRegistryImpl<ResourceLocation, IRecipeElementType<?>> recipeElementTypes = RegistryProviderImpl.makeResourceKeyed("recipe_element_type");
 	private final ConductanceRegistryImpl<ResourceLocation, NCRecipeType> recipeTypes = RegistryProviderImpl.makeResourceKeyed("recipe_type");
 
-	private final ConductanceRegistryImpl<String, MetaBlockEntityType<?>> metaBlockEntities = RegistryProviderImpl.makeStringKeyed("meta_block_entity_type");
+	private final ConductanceRegistryImpl<String, MachineType<?>> machines = RegistryProviderImpl.makeStringKeyed("machine_type");
 
 	RegistryProviderImpl(final IEventBus modEventBus) {
 		modEventBus.addListener(this::onRegisterEvent);

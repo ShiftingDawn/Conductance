@@ -10,15 +10,15 @@ import conductance.api.resource.RuntimeModelProvider;
 import conductance.core.machine.BlockModelBuilderImpl;
 import conductance.core.machine.BlockStateBuilderImpl;
 import conductance.core.machine.ItemModelBuilderImpl;
-import conductance.core.machine.MetaBlockEntityTypeImpl;
+import conductance.core.machine.MachineTypeImpl;
 
 final class MachineModelHandler {
 
 	public static void reload() {
-		CAPI.regs().metaBlockEntities().forEach(metaBlockEntityType -> {
-			final Block block = metaBlockEntityType.getBlock().get();
+		CAPI.regs().machines().forEach(machineType -> {
+			final Block block = machineType.getBlock().get();
 			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
-			final RuntimeModelProvider modelProvider = ((MetaBlockEntityTypeImpl<?>) metaBlockEntityType).getModelProvider();
+			final RuntimeModelProvider modelProvider = ((MachineTypeImpl<?>) machineType).getModelProvider();
 
 			final BlockModelBuilderImpl blockModelBuilder = new BlockModelBuilderImpl();
 			modelProvider.createBlockModel(blockId, blockModelBuilder);

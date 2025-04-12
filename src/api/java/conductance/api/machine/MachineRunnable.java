@@ -2,13 +2,13 @@ package conductance.api.machine;
 
 import lombok.Getter;
 
-public final class MetaTick {
+public final class MachineRunnable {
 
 	private final Runnable action;
 	@Getter
 	private boolean valid = true;
 
-	public MetaTick(final Runnable action) {
+	public MachineRunnable(final Runnable action) {
 		this.action = action;
 	}
 

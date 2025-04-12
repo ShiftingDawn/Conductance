@@ -1,4 +1,4 @@
 @NCNonNull
-package conductance.api.machine.trait;
+package conductance.api.machine.capability;
 
 import conductance.api.util.NCNonNull;
