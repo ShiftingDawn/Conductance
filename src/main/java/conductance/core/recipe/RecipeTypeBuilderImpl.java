@@ -64,7 +64,7 @@ public class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 		ResourceLocation realProgressBar = this.progressBar.withPrefix("textures/gui/progress_bars/").withSuffix(".png");
 		if (!CAPI.resourceFinder().isResourceValid(realProgressBar)) {
 			Conductance.LOGGER.warn("Could not find progressbar texture {}, falling back to generic_arrow", realProgressBar);
-			realProgressBar = this.progressBar.withPrefix("textures/gui/progress_bars/generic_arrow.png");
+			realProgressBar = this.progressBar.withPath("textures/gui/progress_bars/generic_arrow.png");
 		}
 		final ResourceLocation realRecipeViewProgressBar = this.recipeViewProgressBar == null ? realProgressBar : this.recipeViewProgressBar.withPrefix("textures/gui/progress_bars/").withSuffix(".png");
 

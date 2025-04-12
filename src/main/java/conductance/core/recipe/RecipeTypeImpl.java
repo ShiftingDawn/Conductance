@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
@@ -32,6 +34,7 @@ import conductance.api.util.IOMode;
 import conductance.client.GuiHelper;
 import static conductance.client.GuiHelper.GUI_HEIGHT;
 import static conductance.client.GuiHelper.GUI_WIDTH;
+import static conductance.client.GuiHelper.NAME_GROUP_REGEX;
 import static conductance.client.GuiHelper.NAME_SLOT_REGEX;
 
 public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements NCRecipeType {
@@ -76,7 +79,7 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 
 	@Override
 	public WidgetGroup createGuiTemplate(final DoubleSupplier progressSupplier, final IItemHandlerModifiable inputItems, final IItemHandlerModifiable outputItems, final IFluidHandler inputFluids,
-			final IFluidHandler outputFluids) {
+	                                     final IFluidHandler outputFluids) {
 		final MachineGuiTemplate<WidgetGroup, RecipeHolder> template = this.createGuiTemplate();
 		final WidgetGroup group = template.createDefault();
 		template.setupGui(group, new RecipeHolder(progressSupplier, inputItems, outputItems, inputFluids, outputFluids), false);
@@ -143,10 +146,13 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 			//			}
 
 			final AtomicReference<WidgetGroup> inputGroup = new AtomicReference<>();
+			GuiHelper.getWidgetByIdForEach(template, NAME_GROUP_REGEX.formatted(NCRecipeElementTypes.ITEM.getGroupName(IOMode.INPUT)), WidgetGroup.class, itemGroup -> {
+				itemGroup.setBackground(GuiTextures.getItemSlots(recipeHolder.inputItems().getSlots(), false));
+			});
 			GuiHelper.getWidgetByIdForEach(template, NAME_SLOT_REGEX.formatted(NCRecipeElementTypes.ITEM.getSlotName(IOMode.INPUT)), SlotWidget.class, slot -> {
 				final int index = GuiHelper.getWidgetIndex(slot);
 				if (index >= 0 && index < recipeHolder.inputItems().getSlots()) {
-					slot.setBackgroundTexture(GuiTextures.SLOT_ITEM);
+					slot.setBackgroundTexture(null);
 					slot.setHandlerSlot(recipeHolder.inputItems(), index);
 					slot.setIngredientIO(IngredientIO.INPUT);
 					slot.setCanTakeItems(!isRecipeView);
@@ -156,11 +162,13 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 					inputGroup.set(slot.getParent());
 				}
 			});
+			GuiHelper.getWidgetByIdForEach(template, NAME_GROUP_REGEX.formatted(NCRecipeElementTypes.FLUID.getGroupName(IOMode.INPUT)), WidgetGroup.class, fluidGroup -> {
+				fluidGroup.setBackground(GuiTextures.getFluidSlots(recipeHolder.inputFluids().getTanks(), false));
+			});
 			GuiHelper.getWidgetByIdForEach(template, NAME_SLOT_REGEX.formatted(NCRecipeElementTypes.FLUID.getSlotName(IOMode.INPUT)), TankWidget.class, tank -> {
 				final int index = GuiHelper.getWidgetIndex(tank);
 				if (index >= 0 && index < recipeHolder.inputFluids().getTanks()) {
-					tank.setBackground(GuiTextures.SLOT_FLUID);
-					tank.setOverlay(GuiTextures.SLOT_FLUID_OVERLAY);
+					tank.setBackground((IGuiTexture) null);
 					tank.setFluidTank(recipeHolder.inputFluids(), index);
 					tank.setIngredientIO(IngredientIO.INPUT);
 					tank.setAllowClickFilled(!isRecipeView);
@@ -174,10 +182,13 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 				this.fixGroupBounding(inputGroup.get());
 			}
 			final AtomicReference<WidgetGroup> outputGroup = new AtomicReference<>();
+			GuiHelper.getWidgetByIdForEach(template, NAME_GROUP_REGEX.formatted(NCRecipeElementTypes.ITEM.getGroupName(IOMode.OUTPUT)), WidgetGroup.class, itemGroup -> {
+				itemGroup.setBackground(GuiTextures.getItemSlots(recipeHolder.outputItems().getSlots(), true));
+			});
 			GuiHelper.getWidgetByIdForEach(template, NAME_SLOT_REGEX.formatted(NCRecipeElementTypes.ITEM.getSlotName(IOMode.OUTPUT)), SlotWidget.class, slot -> {
 				final int index = GuiHelper.getWidgetIndex(slot);
 				if (index >= 0 && index < recipeHolder.outputItems().getSlots()) {
-					slot.setBackgroundTexture(GuiTextures.SLOT_ITEM);
+					slot.setBackgroundTexture(null);
 					slot.setHandlerSlot(recipeHolder.outputItems(), index);
 					slot.setIngredientIO(IngredientIO.OUTPUT);
 					slot.setCanTakeItems(!isRecipeView);
@@ -187,11 +198,13 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 					outputGroup.set(slot.getParent());
 				}
 			});
+			GuiHelper.getWidgetByIdForEach(template, NAME_GROUP_REGEX.formatted(NCRecipeElementTypes.FLUID.getGroupName(IOMode.OUTPUT)), WidgetGroup.class, fluidGroup -> {
+				fluidGroup.setBackground(GuiTextures.getFluidSlots(recipeHolder.outputFluids().getTanks(), true));
+			});
 			GuiHelper.getWidgetByIdForEach(template, NAME_SLOT_REGEX.formatted(NCRecipeElementTypes.FLUID.getSlotName(IOMode.OUTPUT)), TankWidget.class, tank -> {
 				final int index = GuiHelper.getWidgetIndex(tank);
 				if (index >= 0 && index < recipeHolder.outputFluids().getTanks()) {
-					tank.setBackground(GuiTextures.SLOT_FLUID);
-					tank.setOverlay(GuiTextures.SLOT_FLUID_OVERLAY);
+					tank.setBackground((IGuiTexture) null);
 					tank.setFluidTank(recipeHolder.outputFluids(), index);
 					tank.setIngredientIO(IngredientIO.OUTPUT);
 					tank.setAllowClickFilled(!isRecipeView);
@@ -231,21 +244,27 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 		final int fluidHeight = fluidCount / fluidWidth + Math.min(1, fluidCount % fluidWidth);
 
 		final WidgetGroup group = new WidgetGroup(0, 0, Math.min(Math.max(itemCount, fluidCount), Math.max(itemWidth, fluidWidth)) * 18 + 8, (itemHeight + fluidHeight) * 18 + 8);
-		for (int slotIndex = 0; slotIndex < itemCount; ++slotIndex) {
-			final SlotWidget slot = new SlotWidget();
-			slot.initTemplate();
-			slot.setSelfPosition(new Position((slotIndex % itemWidth) * 18 + 4, (slotIndex / itemWidth) * 18 + 4));
-			slot.setId(NCRecipeElementTypes.ITEM.getSlotName(isInput ? IOMode.INPUT : IOMode.OUTPUT, slotIndex));
-			group.addWidget(slot);
-		}
-		for (int tankIndex = 0; tankIndex < fluidCount; ++tankIndex) {
-			final TankWidget tank = new TankWidget();
-			tank.initTemplate();
-			tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
-			tank.setSelfPosition(new Position((tankIndex % fluidWidth) * 18 + 4, (itemHeight + (tankIndex / fluidWidth)) * 18 + 4));
-			tank.setId(NCRecipeElementTypes.FLUID.getSlotName(isInput ? IOMode.INPUT : IOMode.OUTPUT, tankIndex));
-			group.addWidget(tank);
-		}
+		group.addWidget(Util.make(new WidgetGroup(0, 0, itemWidth, itemHeight), itemGroup -> {
+			itemGroup.setId(NCRecipeElementTypes.ITEM.getGroupName(isInput ? IOMode.INPUT_OUTPUT : IOMode.OUTPUT));
+			for (int slotIndex = 0; slotIndex < itemCount; ++slotIndex) {
+				final SlotWidget slot = new SlotWidget();
+				slot.initTemplate();
+				slot.setSelfPosition(new Position((slotIndex % itemWidth) * 18 + 4, (slotIndex / itemWidth) * 18 + 4));
+				slot.setId(NCRecipeElementTypes.ITEM.getSlotName(isInput ? IOMode.INPUT : IOMode.OUTPUT, slotIndex));
+				itemGroup.addWidget(slot);
+			}
+		}));
+		group.addWidget(Util.make(new WidgetGroup(0, itemHeight, fluidWidth, fluidHeight), fluidGroup -> {
+			fluidGroup.setId(NCRecipeElementTypes.FLUID.getGroupName(isInput ? IOMode.INPUT_OUTPUT : IOMode.OUTPUT));
+			for (int tankIndex = 0; tankIndex < fluidCount; ++tankIndex) {
+				final TankWidget tank = new TankWidget();
+				tank.initTemplate();
+				tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
+				tank.setSelfPosition(new Position((tankIndex % fluidWidth) * 18 + 4, (itemHeight + (tankIndex / fluidWidth)) * 18 + 4));
+				tank.setId(NCRecipeElementTypes.FLUID.getSlotName(isInput ? IOMode.INPUT : IOMode.OUTPUT, tankIndex));
+				fluidGroup.addWidget(tank);
+			}
+		}));
 		return group;
 	}
 }

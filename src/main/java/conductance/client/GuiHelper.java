@@ -18,6 +18,7 @@ public final class GuiHelper {
 	public static final String NAME_PROGRESS = "progress";
 	public static final String NAME_PROGRESS_REGEX = "^progress$";
 	public static final String NAME_SLOT_REGEX = "^%s_[0-9]+$";
+	public static final String NAME_GROUP_REGEX = "^group_%s_[0-9]+$";
 
 	public static List<Widget> getWidgetsById(final WidgetGroup group, final String regex) {
 		return group.getWidgetsById(Pattern.compile(regex));
@@ -35,7 +36,7 @@ public final class GuiHelper {
 		try {
 			final String id = widget.getId();
 			final String[] parts = id.split("_");
-			return Integer.parseInt(parts[2]);
+			return Integer.parseInt(parts[parts.length - 1]);
 		} catch (final Exception ignored) {
 		}
 		return -1;
