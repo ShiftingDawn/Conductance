@@ -15,14 +15,16 @@ import conductance.api.machine.recipe.RecipeElement;
 public class RecipeBuilderImpl implements RecipeBuilder {
 
 	private final Map<IRecipeElementType<?>, List<RecipeElement>> inputs = new HashMap<>();
-	private final Map<IRecipeElementType<?>, List<RecipeElement>> inputsPerTick = new HashMap<>();
 	private final Map<IRecipeElementType<?>, List<RecipeElement>> outputs = new HashMap<>();
+	private final Map<IRecipeElementType<?>, List<RecipeElement>> inputsPerTick = new HashMap<>();
 	private final Map<IRecipeElementType<?>, List<RecipeElement>> outputsPerTick = new HashMap<>();
 	private final NCRecipeType recipeType;
 	private final ResourceLocation recipeId;
 	private boolean perTick = false;
 	private int chance = 100;
 	private int maxChance = 100;
+	private int tieredChanceBoost = 0;
+	private int processTime = 200;
 
 	public RecipeBuilderImpl(final NCRecipeType recipeType, final ResourceLocation recipeId) {
 		this.recipeType = recipeType;
@@ -36,9 +38,21 @@ public class RecipeBuilderImpl implements RecipeBuilder {
 	}
 
 	@Override
+	public RecipeBuilder tieredChanceBoost(final int chanceBoost) {
+		this.tieredChanceBoost = chanceBoost;
+		return this;
+	}
+
+	@Override
 	public RecipeBuilder chance(final int newChance, final int newMaxChance) {
 		this.chance = newChance;
 		this.maxChance = newMaxChance;
+		return this;
+	}
+
+	@Override
+	public RecipeBuilder processTime(final int time) {
+		this.processTime = time;
 		return this;
 	}
 
@@ -50,7 +64,7 @@ public class RecipeBuilderImpl implements RecipeBuilder {
 		} else {
 			map = input ? this.inputs : this.outputs;
 		}
-		map.computeIfAbsent(type, k -> new ArrayList<>()).add(new RecipeElement(obj, this.chance, this.maxChance));
+		map.computeIfAbsent(type, k -> new ArrayList<>()).add(new RecipeElement(obj, this.chance, this.maxChance, this.tieredChanceBoost));
 		return this;
 	}
 
@@ -58,10 +72,12 @@ public class RecipeBuilderImpl implements RecipeBuilder {
 	public IRecipe build() {
 		return new RecipeImpl(
 				this.recipeType,
+				this.recipeId,
 				this.inputs,
-				this.inputsPerTick,
 				this.outputs,
-				this.outputsPerTick
+				this.inputsPerTick,
+				this.outputsPerTick,
+				this.processTime
 		);
 	}
 

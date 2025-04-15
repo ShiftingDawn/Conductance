@@ -18,6 +18,7 @@ import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
 import conductance.api.machine.recipe.IRecipeElementType;
+import conductance.api.machine.recipe.RecipeElementCloner;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialOreType;
@@ -134,8 +135,8 @@ public final class PluginManager {
 		PluginManager.execute((plugin, modid) -> plugin.registerRecipeElementTypes(new RecipeElementTypeRegister() {
 
 			@Override
-			public <T> IRecipeElementType<T> register(final String name, final Codec<T> dataCodec, final StreamCodec<RegistryFriendlyByteBuf, T> streamDataCodec) {
-				return Util.make(new RecipeElementTypeSerializer<>(ResourceLocation.fromNamespaceAndPath(modid, name), dataCodec, streamDataCodec), result -> {
+			public <T> IRecipeElementType<T> register(final String name, final Codec<T> dataCodec, final StreamCodec<RegistryFriendlyByteBuf, T> dataStreamCodec, final RecipeElementCloner<T> cloner) {
+				return Util.make(new RecipeElementTypeSerializer<>(ResourceLocation.fromNamespaceAndPath(modid, name), dataCodec, dataStreamCodec, cloner), result -> {
 					CAPI.regs().recipeElementTypes().register(result.getRegistryKey(), result);
 				});
 			}

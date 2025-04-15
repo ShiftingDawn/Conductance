@@ -2,7 +2,6 @@ package conductance.init;
 
 import conductance.api.NCRecipeTypes;
 import conductance.api.plugin.MachineRegister;
-import conductance.machine.ChestMachine;
 import conductance.machine.RecipeMachine;
 
 public final class ConductanceMachines {
@@ -11,10 +10,6 @@ public final class ConductanceMachines {
 		register.register("bender", RecipeMachine::new)
 				.recipeType(NCRecipeTypes.BENDER)
 				.guiSupplier(RecipeMachine.GUI_SUPPLIER.apply(NCRecipeTypes.BENDER))
-				.build();
-
-		register.register("chest", ChestMachine::new)
-				.guiSupplier(ChestMachine.GUI_SUPPLIER)
 				.build();
 	}
 

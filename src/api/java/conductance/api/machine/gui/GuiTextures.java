@@ -1,5 +1,6 @@
 package conductance.api.machine.gui;
 
+import com.lowdragmc.lowdraglib.gui.texture.ColorRectTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import conductance.api.CAPI;
@@ -26,6 +27,7 @@ public final class GuiTextures {
 	public static final ResourceTexture SLOT_FLUID_5_MIRRORED = new ResourceTexture(GuiTextures.get("slot_fluid_5_mirrored"));
 	public static final ResourceTexture SLOT_FLUID_6 = new ResourceTexture(GuiTextures.get("slot_fluid_6"));
 	public static final ResourceTexture SLOT_FLUID_9 = new ResourceTexture(GuiTextures.get("slot_fluid_9"));
+	public static final ColorRectTexture SLOT_HOVER = new ColorRectTexture(0x669cd3ff);
 
 	private static String get(final String name) {
 		return "%s:textures/gui/%s.png".formatted(CAPI.MOD_ID, name);

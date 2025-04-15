@@ -7,6 +7,8 @@ import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import conductance.api.machine.recipe.IRecipe;
@@ -33,20 +35,24 @@ public class RecipeSerializerImpl implements NCRecipeSerializer {
 
 	public static void toNetwork(final RegistryFriendlyByteBuf buf, final IRecipe recipe) {
 		buf.writeResourceLocation(BuiltInRegistries.RECIPE_TYPE.getKey(recipe.getType()));
+		buf.writeResourceLocation(recipe.getId());
 		RecipeSerializerImpl.writeRecipeMap(buf, recipe.getInputs());
-		RecipeSerializerImpl.writeRecipeMap(buf, recipe.getInputsPerTick());
 		RecipeSerializerImpl.writeRecipeMap(buf, recipe.getOutputs());
+		RecipeSerializerImpl.writeRecipeMap(buf, recipe.getInputsPerTick());
 		RecipeSerializerImpl.writeRecipeMap(buf, recipe.getOutputsPerTick());
+		buf.writeVarInt(recipe.getProcessTime());
 	}
 
 
 	public static IRecipe fromNetwork(final RegistryFriendlyByteBuf buf) {
 		return new RecipeImpl(
 				BuiltInRegistries.RECIPE_TYPE.get(buf.readResourceLocation()),
+				buf.readResourceLocation(),
 				RecipeSerializerImpl.loadRecipeMap(buf),
 				RecipeSerializerImpl.loadRecipeMap(buf),
 				RecipeSerializerImpl.loadRecipeMap(buf),
-				RecipeSerializerImpl.loadRecipeMap(buf)
+				RecipeSerializerImpl.loadRecipeMap(buf),
+				buf.readVarInt()
 		);
 	}
 
@@ -76,10 +82,12 @@ public class RecipeSerializerImpl implements NCRecipeSerializer {
 	static {
 		CODEC = RecordCodecBuilder.mapCodec(ins -> ins.group(
 				BuiltInRegistries.RECIPE_TYPE.byNameCodec().fieldOf("type").forGetter(IRecipe::getType),
+				ResourceLocation.CODEC.fieldOf("id").forGetter(IRecipe::getId),
 				RecipeCodecs.ELEMENT_MAP.fieldOf("inputs").forGetter(IRecipe::getInputs),
-				RecipeCodecs.ELEMENT_MAP.fieldOf("inputspertick").forGetter(IRecipe::getInputsPerTick),
 				RecipeCodecs.ELEMENT_MAP.fieldOf("outputs").forGetter(IRecipe::getOutputs),
-				RecipeCodecs.ELEMENT_MAP.fieldOf("outputspertick").forGetter(IRecipe::getOutputsPerTick)
+				RecipeCodecs.ELEMENT_MAP.fieldOf("inputspertick").forGetter(IRecipe::getInputsPerTick),
+				RecipeCodecs.ELEMENT_MAP.fieldOf("outputspertick").forGetter(IRecipe::getOutputsPerTick),
+				Codec.INT.fieldOf("processtime").forGetter(IRecipe::getProcessTime)
 		).apply(ins, RecipeImpl::new));
 	}
 }

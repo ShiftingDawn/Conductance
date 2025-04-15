@@ -14,11 +14,13 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.machine.recipe.RecipeHelper;
 import conductance.api.material.ResourceFinder;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
 import conductance.Conductance;
+import conductance.core.recipe.RecipeHelperImpl;
 import conductance.core.register.ConductanceRegistrate;
 import conductance.core.register.MaterialRegistry;
 
@@ -43,6 +45,7 @@ public final class ApiBridge {
 		ApiBridge.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
 		ApiBridge.setApiValue(TaggedSetRegistry.class, MaterialRegistry.INSTANCE);
 		ApiBridge.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
+		ApiBridge.setApiValue(RecipeHelper.class, RecipeHelperImpl.INSTANCE);
 	}
 
 	private static <T> void setApiValue(final Class<T> variableType, final T value) {

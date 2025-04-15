@@ -18,7 +18,6 @@ public final class GuiHelper {
 	public static final String NAME_PROGRESS = "progress";
 	public static final String NAME_PROGRESS_REGEX = "^progress$";
 	public static final String NAME_SLOT_REGEX = "^%s_[0-9]+$";
-	public static final String NAME_GROUP_REGEX = "^group_%s_[0-9]+$";
 
 	public static List<Widget> getWidgetsById(final WidgetGroup group, final String regex) {
 		return group.getWidgetsById(Pattern.compile(regex));
@@ -49,7 +48,9 @@ public final class GuiHelper {
 					for (int col = 0; col < 9; ++col) {
 						container.addWidget(new SlotWidget(player, col + (row + 1) * 9, col * 18, row * 18)
 								.setBackgroundTexture(null)
-								.setLocationInfo(true, false));
+								.setLocationInfo(true, false)
+								.setDrawHoverOverlay(false)
+								.setHoverTexture(GuiTextures.SLOT_HOVER));
 					}
 				}
 				container.setBackground(GuiTextures.PLAYER_INVENTORY);
@@ -58,7 +59,9 @@ public final class GuiHelper {
 				for (int i = 0; i < 9; ++i) {
 					container.addWidget(new SlotWidget(player, i, i * 18, 0)
 							.setBackgroundTexture(null)
-							.setLocationInfo(true, true));
+							.setLocationInfo(true, true)
+							.setDrawHoverOverlay(false)
+							.setHoverTexture(GuiTextures.SLOT_HOVER));
 				}
 				container.setBackground(GuiTextures.PLAYER_HOTBAR);
 			}));

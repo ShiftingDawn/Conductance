@@ -28,6 +28,10 @@ public interface RecipeBuilder {
 		return this.chance(100, 100);
 	}
 
+	RecipeBuilder tieredChanceBoost(int tieredChanceBoost);
+
+	RecipeBuilder processTime(int processTime);
+
 	<T> RecipeBuilder add(boolean input, IRecipeElementType<T> type, T obj);
 
 	//region IN

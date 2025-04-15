@@ -1,5 +1,6 @@
 package conductance.core.machine;
 
+import java.util.function.BiFunction;
 import net.minecraft.Util;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Blocks;
@@ -8,6 +9,8 @@ import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import conductance.api.CAPI;
@@ -18,6 +21,8 @@ import conductance.api.machine.MachineBlockFactory;
 import conductance.api.machine.MachineBuilder;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiSupplier;
+import conductance.api.machine.recipe.IRecipe;
+import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.resource.RuntimeModelProvider;
 import static conductance.core.apiimpl.ApiBridge.getRegistrate;
@@ -34,6 +39,8 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	private RuntimeModelProvider modelProvider = new DirectionalMachineRuntimeModelProvider();
 	@Getter
 	private NCRecipeType[] recipeTypes = new NCRecipeType[0];
+	private Object2IntMap<IRecipeElementType<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
+	private BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> recipeModifier = (machine, recipe) -> recipe;
 	@Getter
 	private MachineGuiSupplier guiSupplier;
 
@@ -68,6 +75,18 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	}
 
 	@Override
+	public MachineBuilder<T> recipeOutputLimits(final Object2IntMap<IRecipeElementType<?>> outputLimits) {
+		this.recipeOutputLimits = outputLimits;
+		return this;
+	}
+
+	@Override
+	public MachineBuilder<T> recipeModifier(final BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> modifier) {
+		this.recipeModifier = modifier;
+		return this;
+	}
+
+	@Override
 	public MachineBuilder<T> guiSupplier(final MachineGuiSupplier supplier) {
 		this.guiSupplier = supplier;
 		return this;
@@ -80,6 +99,8 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 			result.setBlockEntityType(this.createBlockEntity(result));
 			result.setModelProvider(this.modelProvider);
 			result.setRecipeTypes(this.recipeTypes);
+			result.setRecipeOutputLimits(this.recipeOutputLimits);
+			result.setRecipeModifier(this.recipeModifier);
 			result.setGuiSupplier(this.guiSupplier);
 		});
 		machineType.validate();

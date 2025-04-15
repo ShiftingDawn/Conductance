@@ -5,12 +5,14 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.loading.FMLEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.recipe.RecipeHelper;
 import conductance.api.material.Material;
 import conductance.api.material.ResourceFinder;
 import conductance.api.material.TaggedMaterialSet;
@@ -30,10 +32,13 @@ public final class CAPI {
 
 	public static final Gson GSON;
 
+	public static final RandomSource RANDOM = RandomSource.createNewThreadLocalInstance();
+
 	private static RegistryProvider registryProvider;
 	private static ResourceFinder resourceFinder;
 	private static TaggedSetRegistry<Material, TaggedMaterialSet> materialRegistry;
 	private static TranslationRegistry translationRegistry;
+	private static RecipeHelper recipeHelper;
 	private static final RegistryAccess REGISTRY_FALLBACK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
 	@Nullable
 	private static RegistryAccess registryAccess;
@@ -52,6 +57,10 @@ public final class CAPI {
 
 	public static TranslationRegistry translations() {
 		return CAPI.translationRegistry;
+	}
+
+	public static RecipeHelper recipeHelper() {
+		return CAPI.recipeHelper;
 	}
 
 	public static RegistryAccess frozenRegistry() {

@@ -3,13 +3,17 @@ package conductance.api.machine.recipe;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public interface IRecipe extends Recipe<RecipeInput> {
+
+	ResourceLocation getId();
 
 	@Override
 	NCRecipeType getType();
@@ -21,6 +25,8 @@ public interface IRecipe extends Recipe<RecipeInput> {
 	Map<IRecipeElementType<?>, List<RecipeElement>> getOutputs();
 
 	Map<IRecipeElementType<?>, List<RecipeElement>> getOutputsPerTick();
+
+	int getProcessTime();
 
 	@Override
 	default boolean matches(final RecipeInput recipeInput, final Level level) {
@@ -46,4 +52,8 @@ public interface IRecipe extends Recipe<RecipeInput> {
 	default RecipeSerializer<?> getSerializer() {
 		return this.getType().getSerializer();
 	}
+
+	IRecipe copy(@Nullable RecipeModifier modifier, boolean modifyProcessTime);
+
+	IRecipe copyMutable();
 }

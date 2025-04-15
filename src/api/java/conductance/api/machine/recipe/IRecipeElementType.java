@@ -15,16 +15,20 @@ public interface IRecipeElementType<T> extends IRegistryObject<ResourceLocation>
 
 	StreamCodec<RegistryFriendlyByteBuf, T> getDataStreamCodec();
 
+	RecipeElementCloner<T> getCloner();
+
 	@SuppressWarnings("unchecked")
 	default void toNetwork(final RegistryFriendlyByteBuf buf, final RecipeElement element) {
 		this.getDataStreamCodec().encode(buf, (T) element.data());
 		buf.writeVarInt(element.chance());
 		buf.writeVarInt(element.maxChange());
+		buf.writeVarInt(element.tieredChanceBoost());
 	}
 
 	default RecipeElement fromNetwork(final RegistryFriendlyByteBuf buf) {
 		return new RecipeElement(
 				this.getDataStreamCodec().decode(buf),
+				buf.readVarInt(),
 				buf.readVarInt(),
 				buf.readVarInt()
 		);
@@ -35,7 +39,8 @@ public interface IRecipeElementType<T> extends IRegistryObject<ResourceLocation>
 		return RecordCodecBuilder.create(ins -> ins.group(
 				this.getDataCodec().fieldOf("data").forGetter(elem -> (T) elem.data()),
 				Codec.INT.fieldOf("chance").forGetter(RecipeElement::chance),
-				Codec.INT.fieldOf("maxchance").forGetter(RecipeElement::maxChange)
+				Codec.INT.fieldOf("maxchance").forGetter(RecipeElement::maxChange),
+				Codec.INT.fieldOf("tieredchanceboost").forGetter(RecipeElement::tieredChanceBoost)
 		).apply(ins, RecipeElement::new));
 	}
 

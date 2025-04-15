@@ -4,13 +4,13 @@ import conductance.api.util.IOMode;
 
 public interface ICapabilityHandler {
 
-	IOMode getCapabilityMode();
+	IOMode getHandlerIoMode();
 
 	default boolean canCapabilityInput() {
-		return this.getCapabilityMode().isInput();
+		return this.getHandlerIoMode().isInput();
 	}
 
 	default boolean canCapabilityOutput() {
-		return this.getCapabilityMode().isOutput();
+		return this.getHandlerIoMode().isOutput();
 	}
 }

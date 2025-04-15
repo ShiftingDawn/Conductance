@@ -104,7 +104,7 @@ public class MachineCapabilityInventory extends MachineCapability implements ICa
 	}
 
 	@Override
-	public IOMode getCapabilityMode() {
+	public IOMode getHandlerIoMode() {
 		return IOMode.INPUT_OUTPUT;
 	}
 }

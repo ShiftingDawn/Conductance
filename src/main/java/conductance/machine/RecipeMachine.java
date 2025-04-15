@@ -1,26 +1,25 @@
 package conductance.machine;
 
-import java.util.Map;
 import java.util.function.Function;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
-import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiHolder;
 import conductance.api.machine.gui.MachineGuiSupplier;
-import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.MachineRecipeProviderConfigAdapter;
 import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.recipe.RecipeProcessor;
+import conductance.api.machine.recipe.RecipeHolder;
 import conductance.client.MachineUIFactory;
 
-public class RecipeMachine extends MachineBlockEntity<RecipeMachine> implements MachineGuiHolder, MachineRecipeProviderConfigAdapter {
+public class RecipeMachine extends BaseWorkableMachine<RecipeMachine> implements MachineGuiHolder, MachineRecipeProviderConfigAdapter {
 
+	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeMachine.class, BaseWorkableMachine.MANAGED_FIELD_HOLDER);
 	@Getter
 	@Setter
 	@Persisted
@@ -31,25 +30,8 @@ public class RecipeMachine extends MachineBlockEntity<RecipeMachine> implements 
 	}
 
 	@Override
-	public NCRecipeType[] getRecipeTypes() {
-		return this.getMachineType().getRecipeTypes();
-	}
-
-	@Override
-	public NCRecipeType getRecipeType() {
-		return this.getRecipeTypes()[this.activeRecipeType];
-	}
-
-	@Override
-	public RecipeProcessor getRecipeProcessor() {
-		//TODO implement
-		return null;
-	}
-
-	@Override
-	public Map<IRecipeElementType<?>, Integer> getOutputLimits() {
-		//TODO implement
-		return Map.of();
+	public ManagedFieldHolder getFieldHolder() {
+		return RecipeMachine.MANAGED_FIELD_HOLDER;
 	}
 
 	@Override
@@ -61,15 +43,17 @@ public class RecipeMachine extends MachineBlockEntity<RecipeMachine> implements 
 			recipeType.createGuiTemplate().createDefault(),
 			(template, machine, autoCalc) -> {
 				if (machine instanceof RecipeMachine recipeMachine) {
-					//					recipeMachine.getRecipeType().createGuiTemplate().setupGui(template, new RecipeHolder(
-					//									recipeMachine.getRecipeProcessor()::getProgressPercentage,
-					//									recipeMachine.getInputInventory().inventory,
-					//									recipeMachine.getOutputInventory().inventory,
-					//									recipeMachine.getInputTank(),
-					//									recipeMachine.getOutputTank()
-					//							),
-					//							autoCalc
-					//					);
+					recipeMachine.getRecipeType().createGuiTemplate().setupGui(template, new RecipeHolder(
+									recipeMachine.getRecipeProcessor()::getProgressPercentage,
+									recipeMachine.getInputInventory().inventory,
+									recipeMachine.getOutputInventory().inventory,
+									null,
+									null
+//									recipeMachine.getInputTank(),
+//									recipeMachine.getOutputTank()
+							),
+							autoCalc
+					);
 				}
 			}
 	);

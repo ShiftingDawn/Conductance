@@ -27,16 +27,19 @@ import conductance.api.CAPI;
 import conductance.api.machine.capability.MachineCapability;
 import conductance.api.machine.capability.MachineRecipeCapability;
 import conductance.api.machine.recipe.IRecipeElementType;
+import conductance.api.machine.recipe.RecipeProcessor;
 import conductance.api.util.IOMode;
 
 public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity implements IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IEnhancedManaged {
 
 	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineBlockEntity.class);
+	private final int timerOffset = CAPI.RANDOM.nextInt(20);
 	private final List<MachineRunnable> ticks = new ArrayList<>();
 	private final List<MachineRunnable> pending = new ArrayList<>();
 	private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
 	@Getter
 	private final MachineType<T> machineType;
+	@Getter
 	private final List<MachineCapability> capabilities = new ArrayList<>();
 
 	public MachineBlockEntity(final MachineType<T> machineType, final BlockPos pos, final BlockState blockState) {
@@ -169,12 +172,20 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 			return Util.make(new MachineRunnable(action), result -> {
 				this.pending.add(result);
 				if (!this.getBlockState().getValue(MachineBlock.ACTIVE) && this.getLevel() instanceof final ServerLevel serverLevel) {
-					final var newState = this.getBlockState().setValue(MachineBlock.ACTIVE, true);
+					final BlockState newState = this.getBlockState().setValue(MachineBlock.ACTIVE, true);
 					serverLevel.setBlockAndUpdate(this.getBlockPos(), newState);
 				}
 			});
 		}
 		return null;
+	}
+
+	@Nullable
+	public final MachineRunnable addTick(@Nullable final MachineRunnable previous, final Runnable action) {
+		if (previous == null || !previous.isValid()) {
+			return this.addTick(action);
+		}
+		return previous;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -235,9 +246,20 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 	protected int getRedstoneAnalog() {
 		return 0;
 	}
+
+	public void onStateChanged(final RecipeProcessor.State oldState, final RecipeProcessor.State newState) {
+	}
 	//endregion
 
 	//region Misc
+
+	public final long getTimerOffset() {
+		return this.level != null ? this.level.getGameTime() + this.timerOffset : this.timerOffset;
+	}
+
+	public final int getTimerOffsetValue() {
+		return this.timerOffset;
+	}
 
 	/**
 	 * @return <code>true</code> if the currently executing code is running on a client or <code>false</code> if it's a server

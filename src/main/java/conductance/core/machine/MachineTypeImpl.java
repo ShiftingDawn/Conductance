@@ -1,10 +1,13 @@
 package conductance.core.machine;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +15,8 @@ import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiSupplier;
+import conductance.api.machine.recipe.IRecipe;
+import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.registry.RegistryObject;
 import conductance.api.resource.RuntimeModelProvider;
@@ -30,8 +35,13 @@ public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryOb
 	private NCRecipeType[] recipeTypes;
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
+	private Object2IntMap<IRecipeElementType<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
+	@Getter
+	@Setter(AccessLevel.PACKAGE)
+	private BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> recipeModifier;
+	@Getter
+	@Setter(AccessLevel.PACKAGE)
 	private MachineGuiSupplier guiSupplier;
-
 
 	public MachineTypeImpl(final String registryKey) {
 		super(registryKey);
