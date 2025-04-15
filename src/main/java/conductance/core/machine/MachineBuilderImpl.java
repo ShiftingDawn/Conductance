@@ -1,6 +1,7 @@
 package conductance.core.machine;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import net.minecraft.Util;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Blocks;
@@ -36,7 +37,7 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	private MachineBlockEntityFactory<T> blockEntityFactory;
 	@Setter
 	@Getter
-	private RuntimeModelProvider modelProvider = new DirectionalMachineRuntimeModelProvider();
+	private Function<MachineType<?>, RuntimeModelProvider> modelProvider = DirectionalMachineRuntimeModelProvider::new;
 	@Getter
 	private NCRecipeType[] recipeTypes = new NCRecipeType[0];
 	private Object2IntMap<IRecipeElementType<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();

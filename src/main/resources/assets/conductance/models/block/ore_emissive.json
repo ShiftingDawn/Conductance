@@ -5,12 +5,14 @@
 	},
 	"children": {
 		"bearer": {
+			"parent": "@@ORE_BEARER_PARENT@@",
 			"render_type": "solid"
 		},
 		"ore_overlay": {
 			"parent": "block/block",
 			"render_type": "cutout_mipped",
 			"textures": {
+				"particle": "@@ORE_OVERLAY_TEXTURE@@"
 			},
 			"elements": [
 				{

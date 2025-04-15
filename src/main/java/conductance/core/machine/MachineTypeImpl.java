@@ -2,6 +2,7 @@ package conductance.core.machine;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -29,7 +30,7 @@ public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryOb
 	private BlockEntityEntry<T> blockEntityType;
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
-	private RuntimeModelProvider modelProvider;
+	private Function<MachineType<?>, RuntimeModelProvider> modelProvider;
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	private NCRecipeType[] recipeTypes;

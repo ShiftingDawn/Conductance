@@ -14,12 +14,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
+import com.mojang.datafixers.util.Pair;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import lombok.RequiredArgsConstructor;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCTextureTypes;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
+import conductance.api.util.SerializationHelper;
 import conductance.Conductance;
 
 @RequiredArgsConstructor
@@ -40,9 +43,16 @@ public final class MaterialOreModelHandler {
 			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
 			RuntimeResourcePack.addBlockModel(blockId, () -> Util.make(MaterialOreModelHandler.createOre(model.material.getTrait(NCMaterialTraits.ORE).isEmissive()), json -> {
 				final String oreTexture = NCTextureTypes.ORE.getBlockTexture(model.material.getTextureSet(), null, null).getValue().toString();
-				GsonHelper.getAsJsonObject(json, "textures").addProperty("particle", oreTexture);
-				json.getAsJsonObject("children").getAsJsonObject("bearer").addProperty("parent", model.oreType.getBearingBlockModel().toString());
-				json.getAsJsonObject("children").getAsJsonObject("ore_overlay").getAsJsonObject("textures").addProperty("particle", oreTexture);
+				SerializationHelper.getOrOverrideObject(json, "textures").addProperty("particle", oreTexture);
+				final Pair<JsonObject, String> oreOverlayTexture =
+						SerializationHelper.findContainer(json, elem -> elem instanceof final JsonPrimitive primitive && primitive.getAsString().equals("@@ORE_OVERLAY_TEXTURE@@"));
+				if (oreOverlayTexture != null) {
+					oreOverlayTexture.getFirst().addProperty(oreOverlayTexture.getSecond(), oreTexture);
+				}
+				final Pair<JsonObject, String> oreBearerParent = SerializationHelper.findContainer(json, elem -> elem instanceof final JsonPrimitive primitive && primitive.getAsString().equals("@@ORE_BEARER_PARENT@@"));
+				if (oreBearerParent != null) {
+					oreBearerParent.getFirst().addProperty(oreBearerParent.getSecond(), model.oreType.getBearingBlockModel().toString());
+				}
 			}));
 			if (model.block.defaultBlockState().hasProperty(RotatedPillarBlock.AXIS)) {
 				RuntimeResourcePack.addBlockState(blockId, BlockModelGenerators.createAxisAlignedPillarBlock(model.block, blockId.withPrefix("block/")));
