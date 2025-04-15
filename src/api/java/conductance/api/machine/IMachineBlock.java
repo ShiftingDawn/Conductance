@@ -1,5 +1,6 @@
 package conductance.api.machine;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -12,6 +13,9 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.capability.CapabilityHelper;
+import conductance.api.capability.energy.EnergyHandlerList;
+import conductance.api.capability.energy.IEnergyHandler;
 
 public interface IMachineBlock<T extends MachineBlockEntity<T>> extends EntityBlock {
 
@@ -54,6 +58,27 @@ public interface IMachineBlock<T extends MachineBlockEntity<T>> extends EntityBl
 		event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
 			if (blockEntity instanceof final MachineBlockEntity<?> machine) {
 				return machine.getItemTransferCapability(direction, true);
+			}
+			return null;
+		}, this.self());
+		event.registerBlock(Capabilities.FluidHandler.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
+			if (blockEntity instanceof final MachineBlockEntity<?> machine) {
+				return machine.getFluidTransferCapability(direction, true);
+			}
+			return null;
+		}, this.self());
+		event.registerBlock(CapabilityHelper.ENERGY_HANDLER_BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
+			if (blockEntity instanceof final IEnergyHandler handler) {
+				return handler;
+			}
+			if (blockEntity instanceof final MachineBlockEntity<?> machine) {
+				final List<IEnergyHandler> handlers = machine.getCapabilities().stream()
+						.filter(cap -> cap instanceof IEnergyHandler && cap.hasCapability(direction))
+						.map(IEnergyHandler.class::cast)
+						.toList();
+				if (!handlers.isEmpty()) {
+					return handlers.size() == 1 ? handlers.getFirst() : new EnergyHandlerList(handlers);
+				}
 			}
 			return null;
 		}, this.self());

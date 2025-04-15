@@ -19,6 +19,7 @@ import conductance.api.material.ResourceFinder;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
+import conductance.api.util.tier.TierRegistry;
 import conductance.Conductance;
 import conductance.core.recipe.RecipeHelperImpl;
 import conductance.core.register.ConductanceRegistrate;
@@ -45,6 +46,7 @@ public final class ApiBridge {
 		ApiBridge.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
 		ApiBridge.setApiValue(TaggedSetRegistry.class, MaterialRegistry.INSTANCE);
 		ApiBridge.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
+		ApiBridge.setApiValue(TierRegistry.class, TierRegistryImpl.INSTANCE);
 		ApiBridge.setApiValue(RecipeHelper.class, RecipeHelperImpl.INSTANCE);
 	}
 
@@ -77,6 +79,7 @@ public final class ApiBridge {
 		ApiBridge.REGISTRIES.values().forEach(ConductanceRegistryImpl::freeze);
 
 		MaterialRegistry.INSTANCE.freeze();
+		TierRegistryImpl.freeze();
 	}
 
 	public static void handleDataPackRegistryStage(final DataPackRegistryLoadStage stage) {

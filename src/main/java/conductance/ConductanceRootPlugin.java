@@ -22,6 +22,7 @@ import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.api.plugin.RecipeTypeRegister;
 import conductance.api.plugin.TagRegister;
+import conductance.api.plugin.TierRegister;
 import conductance.init.ConductanceItems;
 import conductance.init.ConductanceMachines;
 import conductance.init.ConductanceMaterialFlags;
@@ -34,6 +35,7 @@ import conductance.init.ConductanceMaterials;
 import conductance.init.ConductancePeriodicElements;
 import conductance.init.ConductanceRecipeElementTypes;
 import conductance.init.ConductanceRecipeTypes;
+import conductance.init.ConductanceTiers;
 import conductance.runtimepack.server.recipe.RecipeLoader;
 import static conductance.api.CAPI.UNIT;
 import static conductance.api.NCMaterials.AMETHYST;
@@ -102,6 +104,11 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 	@Override
 	public void registerMaterials(final MaterialRegister register) {
 		ConductanceMaterials.init(register);
+	}
+
+	@Override
+	public void registerTiers(final TierRegister register) {
+		ConductanceTiers.init(register);
 	}
 
 	@Override

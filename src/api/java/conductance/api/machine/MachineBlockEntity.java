@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
@@ -104,8 +106,8 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 		return null;
 	}
 
-	//TODO covers
 	protected Predicate<ItemStack> getItemCapFilter(@Nullable final Direction side) {
+		//TODO covers
 //		if (side != null) {
 //			final Optional<?> cover = this.getCoverManager().getCover(side);
 //			if (cover.isPresent() && cover.get() instanceof final IItemFilterHolder filterHolder) {
@@ -115,16 +117,16 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 		return item -> true;
 	}
 
-	//TODO fluid
-//	protected Predicate<FluidStack> getFluidCapFilter(@Nullable final Direction side) {
+	protected Predicate<FluidStack> getFluidCapFilter(@Nullable final Direction side) {
+		//TODO covers
 //		if (side != null) {
 //			final Optional<?> cover = this.getCoverManager().getCover(side);
 //			if (cover.isPresent() && cover.get() instanceof final IFluidFilterHolder filterHolder) {
 //				return filterHolder.getFluidFilter();
 //			}
 //		}
-//		return fluid -> true;
-//	}
+		return fluid -> true;
+	}
 
 	@Nullable
 	public IItemHandler getItemTransferCapability(@Nullable final Direction side, final boolean useCovers) {
@@ -141,6 +143,32 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 //			ioMode = IOMode.OUTPUT;
 //		}
 		final IOItemTransferList transferList = new IOItemTransferList(handlers, ioMode, this.getItemCapFilter(side));
+		if (!useCovers || side == null) {
+			return transferList;
+		}
+		return null;
+		//TODO covers
+//		return this.getCoverManager().getCover(side)
+//				.filter(cover -> cover instanceof IDelegateItemHandler)
+//				.map(cover -> ((IDelegateItemHandler) cover).getItemHandlerCapability())
+//				.orElse(transferList);
+	}
+
+	@Nullable
+	public IFluidHandler getFluidTransferCapability(@Nullable final Direction side, final boolean useCovers) {
+		final List<IFluidHandler> handlers = this.capabilities.stream()
+				.filter(capability -> capability instanceof IFluidHandler && capability.hasCapability(side))
+				.map(IFluidHandler.class::cast)
+				.toList();
+		if (handlers.isEmpty()) {
+			return null;
+		}
+		final IOMode ioMode = IOMode.INPUT_OUTPUT;
+		//TODO auto output
+//		if (side != null && this instanceof final IAutoOutputItem autoOutputItem && autoOutputItem.getItemOutputSide() == side && !autoOutputItem.allowItemInputFromOutputSide()) {
+//			ioMode = IOMode.OUTPUT;
+//		}
+		final IOFluidTransferList transferList = new IOFluidTransferList(handlers, ioMode, this.getFluidCapFilter(side));
 		if (!useCovers || side == null) {
 			return transferList;
 		}

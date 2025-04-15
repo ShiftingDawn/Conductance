@@ -29,6 +29,9 @@ public final class GuiTextures {
 	public static final ResourceTexture SLOT_FLUID_9 = new ResourceTexture(GuiTextures.get("slot_fluid_9"));
 	public static final ColorRectTexture SLOT_HOVER = new ColorRectTexture(0x669cd3ff);
 
+	public static final ResourceTexture ENERGY_BAR = new ResourceTexture(GuiTextures.get("energy_bar"));
+	public static final ResourceTexture ENERGY_BAR_OVERLAY = new ResourceTexture(GuiTextures.get("energy_bar_overlay"));
+
 	private static String get(final String name) {
 		return "%s:textures/gui/%s.png".formatted(CAPI.MOD_ID, name);
 	}

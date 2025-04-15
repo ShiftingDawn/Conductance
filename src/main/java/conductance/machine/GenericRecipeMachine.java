@@ -12,26 +12,26 @@ import lombok.Setter;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiHolder;
 import conductance.api.machine.gui.MachineGuiSupplier;
-import conductance.api.machine.recipe.MachineRecipeProviderConfigAdapter;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeHolder;
+import conductance.api.util.tier.Tier;
 import conductance.client.MachineUIFactory;
 
-public class RecipeMachine extends BaseWorkableMachine<RecipeMachine> implements MachineGuiHolder, MachineRecipeProviderConfigAdapter {
+public class GenericRecipeMachine extends TieredWorkableMachine<GenericRecipeMachine> implements MachineGuiHolder {
 
-	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeMachine.class, BaseWorkableMachine.MANAGED_FIELD_HOLDER);
+	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GenericRecipeMachine.class, TieredWorkableMachine.MANAGED_FIELD_HOLDER);
 	@Getter
 	@Setter
 	@Persisted
 	private int activeRecipeType;
 
-	public RecipeMachine(final MachineType<RecipeMachine> type, final BlockPos pos, final BlockState blockState) {
-		super(type, pos, blockState);
+	public GenericRecipeMachine(final MachineType<GenericRecipeMachine> type, final BlockPos pos, final BlockState blockState, final Tier tier) {
+		super(type, pos, blockState, tier);
 	}
 
 	@Override
 	public ManagedFieldHolder getFieldHolder() {
-		return RecipeMachine.MANAGED_FIELD_HOLDER;
+		return GenericRecipeMachine.MANAGED_FIELD_HOLDER;
 	}
 
 	@Override
@@ -42,18 +42,15 @@ public class RecipeMachine extends BaseWorkableMachine<RecipeMachine> implements
 	public static final Function<NCRecipeType, MachineGuiSupplier> GUI_SUPPLIER = recipeType -> new MachineGuiSupplier(() ->
 			recipeType.createGuiTemplate().createDefault(),
 			(template, machine, autoCalc) -> {
-				if (machine instanceof RecipeMachine recipeMachine) {
-					recipeMachine.getRecipeType().createGuiTemplate().setupGui(template, new RecipeHolder(
-									recipeMachine.getRecipeProcessor()::getProgressPercentage,
-									recipeMachine.getInputInventory().inventory,
-									recipeMachine.getOutputInventory().inventory,
-									null,
-									null
-//									recipeMachine.getInputTank(),
-//									recipeMachine.getOutputTank()
-							),
-							autoCalc
+				if (machine instanceof GenericRecipeMachine recipeMachine) {
+					RecipeHolder recipeHolder = new RecipeHolder(
+							recipeMachine.getRecipeProcessor()::getProgressPercentage,
+							recipeMachine.getInputInventory().inventory,
+							recipeMachine.getOutputInventory().inventory,
+							recipeMachine.getInputTank(),
+							recipeMachine.getOutputTank()
 					);
+					recipeMachine.getRecipeType().createGuiTemplate().setupGui(template, recipeHolder, autoCalc);
 				}
 			}
 	);

@@ -31,6 +31,8 @@ public final class CommonProxy {
 		PluginManager.dispatchMaterialTaggedSets();
 		PluginManager.dispatchMaterials();
 
+		PluginManager.dispatchTiers();
+
 		PluginManager.dispatchMaterialOverrides();
 		PluginManager.dispatchMaterialUnitOverrides();
 

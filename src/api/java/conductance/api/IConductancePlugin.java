@@ -16,6 +16,7 @@ import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.api.plugin.RecipeTypeRegister;
 import conductance.api.plugin.TagRegister;
+import conductance.api.plugin.TierRegister;
 
 public interface IConductancePlugin {
 
@@ -41,6 +42,9 @@ public interface IConductancePlugin {
 	}
 
 	default void registerMaterials(final MaterialRegister register) {
+	}
+
+	default void registerTiers(final TierRegister register) {
 	}
 
 	default void registerRecipeElementTypes(final RecipeElementTypeRegister register) {

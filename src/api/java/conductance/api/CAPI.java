@@ -21,6 +21,7 @@ import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.GsonItemStackAdapter;
 import conductance.api.util.TagHelper;
+import conductance.api.util.tier.TierRegistry;
 
 @SuppressWarnings({"unused", "NotNullFieldNotInitialized"})
 public final class CAPI {
@@ -38,6 +39,7 @@ public final class CAPI {
 	private static ResourceFinder resourceFinder;
 	private static TaggedSetRegistry<Material, TaggedMaterialSet> materialRegistry;
 	private static TranslationRegistry translationRegistry;
+	private static TierRegistry tierRegistry;
 	private static RecipeHelper recipeHelper;
 	private static final RegistryAccess REGISTRY_FALLBACK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
 	@Nullable
@@ -57,6 +59,10 @@ public final class CAPI {
 
 	public static TranslationRegistry translations() {
 		return CAPI.translationRegistry;
+	}
+
+	public static TierRegistry tiers() {
+		return CAPI.tierRegistry;
 	}
 
 	public static RecipeHelper recipeHelper() {

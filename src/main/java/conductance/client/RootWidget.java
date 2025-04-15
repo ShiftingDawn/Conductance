@@ -1,8 +1,13 @@
 package conductance.client;
 
 import net.minecraft.Util;
+import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.utils.Position;
+import conductance.api.capability.energy.IEnergyHandler;
 import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.capability.MachineRecipeCapabilityEnergy;
+import conductance.api.machine.gui.EnergyBarWidget;
 import conductance.api.machine.gui.GuiTextures;
 import conductance.api.machine.gui.MachineGuiHolder;
 import conductance.api.machine.gui.MachineGuiSupplier;
@@ -33,7 +38,13 @@ public class RootWidget extends WidgetGroup {
 			final WidgetGroup contents = guiSupplier.createDefault();
 			guiSupplier.setupGui(contents, this.machine, true);
 			this.addWidget(contents);
-			//TODO Add default parts here (energy bar, etc)
+
+			if (this.machine.getCapability(MachineRecipeCapabilityEnergy.class) instanceof final IEnergyHandler energyHandler) {
+				final ProgressWidget energyBar = new EnergyBarWidget(energyHandler);
+				energyBar.setSelfPosition(new Position(this.holder.getPlayerInvX(), this.holder.getPlayerInvY() - 8));
+				contents.addWidget(energyBar);
+			}
+			//TODO add auto output buttons
 		} else {
 			final WidgetGroup group = new WidgetGroup(0, 0, GUI_WIDTH, GUI_HEIGHT / 2);
 			this.addWidget(group);

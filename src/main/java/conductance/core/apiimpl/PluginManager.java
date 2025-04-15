@@ -131,6 +131,10 @@ public final class PluginManager {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterials(registryName -> new MaterialBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName))));
 	}
 
+	public static void dispatchTiers() {
+		PluginManager.execute((plugin, modid) -> plugin.registerTiers(TierImpl.Builder::new));
+	}
+
 	public static void dispatchRecipeElementTypes() {
 		PluginManager.execute((plugin, modid) -> plugin.registerRecipeElementTypes(new RecipeElementTypeRegister() {
 

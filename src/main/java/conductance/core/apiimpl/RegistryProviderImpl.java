@@ -20,8 +20,8 @@ import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.registry.IRegistryObject;
-import conductance.api.registry.NCRegistrate;
 import conductance.api.registry.RegistryProvider;
+import conductance.api.util.tier.Tier;
 import conductance.Conductance;
 
 @Getter
@@ -41,10 +41,13 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final ConductanceRegistryImpl<ResourceLocation, IRecipeElementType<?>> recipeElementTypes = RegistryProviderImpl.makeResourceKeyed("recipe_element_type");
 	private final ConductanceRegistryImpl<ResourceLocation, NCRecipeType> recipeTypes = RegistryProviderImpl.makeResourceKeyed("recipe_type");
 
+	private final ConductanceRegistryImpl<String, Tier> tiers = RegistryProviderImpl.makeStringKeyed("tiers");
 	private final ConductanceRegistryImpl<String, MachineType<?>> machines = RegistryProviderImpl.makeStringKeyed("machine_type");
 
 	RegistryProviderImpl(final IEventBus modEventBus) {
 		modEventBus.addListener(this::onRegisterEvent);
+		this.tiers.setRegisterCallback((id, tier) -> TierRegistryImpl.insertTier((TierImpl) tier));
+		this.tiers.setUnregisterCallback((id, tier) -> TierRegistryImpl.removeTier((TierImpl) tier));
 	}
 
 	private void onRegisterEvent(final RegisterEvent event) {
@@ -54,11 +57,6 @@ public final class RegistryProviderImpl implements RegistryProvider {
 				Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.getRegistryKey(), recipeType.getSerializer());
 			});
 		}
-	}
-
-	@Override
-	public NCRegistrate registrate() {
-		return ApiBridge.getRegistrate();
 	}
 
 	private static <VALUE extends IRegistryObject<String>> ConductanceRegistryImpl<String, VALUE> makeStringKeyed(final String registryName) {

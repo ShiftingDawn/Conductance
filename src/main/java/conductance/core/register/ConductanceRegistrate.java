@@ -13,10 +13,9 @@ import net.neoforged.bus.api.IEventBus;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.util.CreativeModeTabModifier;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import conductance.api.registry.NCRegistrate;
 import conductance.Conductance;
 
-public final class ConductanceRegistrate extends Registrate implements NCRegistrate {
+public final class ConductanceRegistrate extends Registrate {
 
 	private ConductanceRegistrate() {
 		super(Conductance.MODID);

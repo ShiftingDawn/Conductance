@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -19,6 +20,8 @@ import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.capability.MachineRecipeCapability;
+import conductance.api.machine.capability.MachineRecipeCapabilityEnergy;
+import conductance.api.machine.capability.MachineRecipeCapabilityFluids;
 import conductance.api.machine.capability.MachineRecipeCapabilityItems;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
@@ -26,11 +29,14 @@ import conductance.api.machine.recipe.RecipeCapabilityHolder;
 import conductance.api.machine.recipe.RecipeProcessor;
 import conductance.api.machine.recipe.WorkableMachineRecipeProviderConfigAdapter;
 import conductance.api.util.IOMode;
+import conductance.api.util.tier.Tier;
+import conductance.api.util.tier.TierHolder;
 
-public class BaseWorkableMachine<T extends BaseWorkableMachine<T>> extends MachineBlockEntity<T> implements WorkableMachineRecipeProviderConfigAdapter, RecipeCapabilityHolder {
+public class TieredWorkableMachine<T extends TieredWorkableMachine<T>> extends MachineBlockEntity<T> implements WorkableMachineRecipeProviderConfigAdapter, RecipeCapabilityHolder, TierHolder {
 
-	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BaseWorkableMachine.class, MachineBlockEntity.MANAGED_FIELD_HOLDER);
-
+	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TieredWorkableMachine.class, MachineBlockEntity.MANAGED_FIELD_HOLDER);
+	@Getter
+	private final Tier tier;
 	@Persisted
 	@DescSynced
 	@Getter
@@ -39,6 +45,18 @@ public class BaseWorkableMachine<T extends BaseWorkableMachine<T>> extends Machi
 	@DescSynced
 	@Getter
 	private final MachineRecipeCapabilityItems outputInventory;
+	@Persisted
+	@DescSynced
+	@Getter
+	private final MachineRecipeCapabilityFluids inputTank;
+	@Persisted
+	@DescSynced
+	@Getter
+	private final MachineRecipeCapabilityFluids outputTank;
+	@Persisted
+	@DescSynced
+	@Getter
+	private final MachineRecipeCapabilityEnergy energy;
 	@Persisted
 	@DescSynced
 	@Getter
@@ -51,11 +69,15 @@ public class BaseWorkableMachine<T extends BaseWorkableMachine<T>> extends Machi
 	@Persisted
 	private int activeRecipeType;
 
-	public BaseWorkableMachine(final MachineType<T> machineType, final BlockPos pos, final BlockState blockState) {
+	public TieredWorkableMachine(final MachineType<T> machineType, final BlockPos pos, final BlockState blockState, final Tier tier) {
 		super(machineType, pos, blockState);
+		this.tier = tier;
 		this.recipeCapabilities = Tables.newCustomTable(new EnumMap<>(IOMode.class), HashMap::new);
 		this.inputInventory = this.createItemInputAction();
 		this.outputInventory = this.createItemOutputAction();
+		this.inputTank = this.createFluidInputAction();
+		this.outputTank = this.createFluidOutputAction();
+		this.energy = this.createEnergyAction();
 		this.recipeProcessor = new RecipeProcessor(this, this, this);
 	}
 
@@ -68,9 +90,26 @@ public class BaseWorkableMachine<T extends BaseWorkableMachine<T>> extends Machi
 		return new MachineRecipeCapabilityItems(this, slots, IOMode.OUTPUT);
 	}
 
+	protected MachineRecipeCapabilityFluids createFluidInputAction() {
+		return new MachineRecipeCapabilityFluids(this, this.getRecipeType().getMaxInputs(NCRecipeElementTypes.FLUID), 16 * FluidHelper.getBucket(), IOMode.INPUT);
+	}
+
+	protected MachineRecipeCapabilityFluids createFluidOutputAction() {
+		final int slots = this.getMachineType().getRecipeOutputLimits().getOrDefault(NCRecipeElementTypes.FLUID, this.getRecipeType().getMaxOutputs(NCRecipeElementTypes.FLUID));
+		return new MachineRecipeCapabilityFluids(this, slots, 16 * FluidHelper.getBucket(), IOMode.OUTPUT);
+	}
+
+	protected MachineRecipeCapabilityEnergy createEnergyAction() {
+		if (this.isEnergyGenerator()) {
+			return MachineRecipeCapabilityEnergy.createOutput(this, this.tier.getVoltage() * 64, this.tier.getVoltage(), this.getMaxEnergyAmperage());
+		} else {
+			return MachineRecipeCapabilityEnergy.createInput(this, this.tier.getVoltage() * 64, this.tier.getVoltage(), this.getMaxEnergyAmperage());
+		}
+	}
+
 	@Override
 	public ManagedFieldHolder getFieldHolder() {
-		return BaseWorkableMachine.MANAGED_FIELD_HOLDER;
+		return TieredWorkableMachine.MANAGED_FIELD_HOLDER;
 	}
 
 	@Override
@@ -114,5 +153,13 @@ public class BaseWorkableMachine<T extends BaseWorkableMachine<T>> extends Machi
 	@Override
 	public Map<IRecipeElementType<?>, Integer> getOutputLimits() {
 		return this.getMachineType().getRecipeOutputLimits();
+	}
+
+	protected boolean isEnergyGenerator() {
+		return false;
+	}
+
+	protected long getMaxEnergyAmperage() {
+		return 2L;
 	}
 }

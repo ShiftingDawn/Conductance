@@ -44,6 +44,12 @@
     <suppress files="NCTextureTypes\.java" checks="VisibilityModifier"/>
     <suppress files="NCTextureTypes\.java" checks="StaticVariableName"/>
 
+    <suppress files="NCTiers\.java" checks="VisibilityModifier"/>
+    <suppress files="NCTiers\.java" checks="StaticVariableName"/>
+
+    <suppress files="DataAttachmentHelper\.java" checks="VisibilityModifier"/>
+    <suppress files="DataAttachmentHelper\.java" checks="StaticVariableName"/>
+
     <suppress files="ConductanceItems\.java" checks="VisibilityModifier"/>
     <suppress files="ConductanceItems\.java" checks="StaticVariableName"/>
 

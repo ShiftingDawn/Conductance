@@ -12,10 +12,9 @@ import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.TaggedMaterialSet;
+import conductance.api.util.tier.Tier;
 
 public interface RegistryProvider {
-
-	NCRegistrate registrate();
 
 	ConductanceRegistry<ResourceLocation, PeriodicElement> periodicElements();
 
@@ -36,6 +35,8 @@ public interface RegistryProvider {
 	ConductanceRegistry<ResourceLocation, IRecipeElementType<?>> recipeElementTypes();
 
 	ConductanceRegistry<ResourceLocation, NCRecipeType> recipeTypes();
+
+	ConductanceRegistry<String, Tier> tiers();
 
 	ConductanceRegistry<String, MachineType<?>> machines();
 }

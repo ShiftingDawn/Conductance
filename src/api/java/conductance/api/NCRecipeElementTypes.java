@@ -9,6 +9,7 @@ public final class NCRecipeElementTypes {
 
 	public static IRecipeElementType<SizedIngredient> ITEM;
 	public static IRecipeElementType<SizedFluidIngredient> FLUID;
+	public static IRecipeElementType<Long> ENERGY;
 
 	private NCRecipeElementTypes() {
 	}
