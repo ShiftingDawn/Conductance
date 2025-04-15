@@ -1,7 +1,10 @@
 package conductance.api.machine.recipe;
 
+import java.util.List;
+import java.util.Map;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -158,6 +161,10 @@ public interface RecipeBuilder {
 	default RecipeBuilder out(final Fluid fluid) {
 		return this.out(fluid, FluidType.BUCKET_VOLUME);
 	}
+
+	default RecipeBuilder outEnergy(final long energy) {
+		return this.out(NCRecipeElementTypes.ENERGY, energy);
+	}
 	//endregion
 
 	@SuppressWarnings("unchecked")
@@ -191,4 +198,26 @@ public interface RecipeBuilder {
 	IRecipe build();
 
 	void save(RecipeOutput output);
+
+	RecipeBuilder copy(NCRecipeType recipeType, ResourceLocation newId);
+
+	RecipeBuilder copy(NCRecipeType recipeType, String newId);
+
+	RecipeBuilder copy(ResourceLocation newId);
+
+	RecipeBuilder copy(String newId);
+
+	Map<IRecipeElementType<?>, List<RecipeElement>> getInputs();
+
+	Map<IRecipeElementType<?>, List<RecipeElement>> getOutputs();
+
+	Map<IRecipeElementType<?>, List<RecipeElement>> getInputsPerTick();
+
+	Map<IRecipeElementType<?>, List<RecipeElement>> getOutputsPerTick();
+
+	ResourceLocation getRecipeId();
+
+	int getProcessTime();
+
+	long getEnergyPerTick();
 }

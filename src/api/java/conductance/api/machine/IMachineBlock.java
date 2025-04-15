@@ -5,9 +5,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Contract;
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.capability.CapabilityHelper;
 import conductance.api.capability.energy.EnergyHandlerList;
 import conductance.api.capability.energy.IEnergyHandler;
+import conductance.api.util.RotationState;
 
 public interface IMachineBlock<T extends MachineBlockEntity<T>> extends EntityBlock {
 
@@ -24,6 +27,12 @@ public interface IMachineBlock<T extends MachineBlockEntity<T>> extends EntityBl
 	}
 
 	MachineType<T> getMachineType();
+
+	RotationState getRotationState();
+
+	default Direction getFrontFacing(final BlockState state) {
+		return this.getRotationState() == RotationState.NONE ? Direction.NORTH : state.getValue(this.getRotationState().property);
+	}
 
 	default void setMachine(final BlockGetter level, final BlockPos pos, final Consumer<MachineBlockEntity<?>> setter) {
 		if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {

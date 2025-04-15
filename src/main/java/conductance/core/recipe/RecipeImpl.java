@@ -11,11 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeElement;
 import conductance.api.machine.recipe.RecipeModifier;
+import conductance.api.util.overclock.OverclockResult;
 
 public class RecipeImpl implements IRecipe {
 
@@ -81,6 +83,25 @@ public class RecipeImpl implements IRecipe {
 	}
 
 	@Override
+	public IRecipe copy(final OverclockResult overclockResult, final boolean modifyOutput) {
+		return new RecipeImpl(
+				this.type,
+				this.id,
+				this.copyContentMap(this.inputs, null, null),
+				this.copyContentMap(this.outputs, null, null),
+				this.copyContentMap(this.inputsPerTick, null, modifyOutput ? null
+						: (elementType, content) -> elementType == NCRecipeElementTypes.ENERGY ? this.createOverclock(overclockResult, content) : content),
+				this.copyContentMap(this.outputsPerTick, null, !modifyOutput ? null
+						: (elementType, content) -> elementType == NCRecipeElementTypes.ENERGY ? this.createOverclock(overclockResult, content) : content),
+				(int) overclockResult.newTime()
+		);
+	}
+
+	private RecipeElement createOverclock(final OverclockResult overclockResult, final RecipeElement old) {
+		return new RecipeElement(overclockResult.newEnergy(), old.chance(), old.maxChange(), old.tieredChanceBoost());
+	}
+
+	@Override
 	public IRecipe copyMutable() {
 		return new RecipeImpl(
 				this.type, this.id,
@@ -89,6 +110,22 @@ public class RecipeImpl implements IRecipe {
 				this.processTime,
 				true
 		);
+	}
+
+	@Override
+	public long getEnergyPerTick() {
+		if (this.inputsPerTick.containsKey(NCRecipeElementTypes.ENERGY)) {
+			final List<RecipeElement> contents = this.inputsPerTick.get(NCRecipeElementTypes.ENERGY);
+			if (!contents.isEmpty()) {
+				return (long) contents.getFirst().data();
+			}
+		} else if (this.outputsPerTick.containsKey(NCRecipeElementTypes.ENERGY)) {
+			final List<RecipeElement> contents = this.outputsPerTick.get(NCRecipeElementTypes.ENERGY);
+			if (!contents.isEmpty()) {
+				return (long) contents.getFirst().data();
+			}
+		}
+		return 0;
 	}
 
 	private Map<IRecipeElementType<?>, List<RecipeElement>> copyContentMap(

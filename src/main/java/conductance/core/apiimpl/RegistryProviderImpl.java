@@ -1,7 +1,5 @@
 package conductance.core.apiimpl;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -23,6 +21,7 @@ import conductance.api.registry.IRegistryObject;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.util.tier.Tier;
 import conductance.Conductance;
+import conductance.core.recipe.RecipeSerializerImpl;
 
 @Getter
 @Accessors(fluent = true)
@@ -53,8 +52,12 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private void onRegisterEvent(final RegisterEvent event) {
 		if (event.getRegistryKey() == Registries.RECIPE_TYPE) {
 			this.recipeTypes.values().forEach(recipeType -> {
-				Registry.register(BuiltInRegistries.RECIPE_TYPE, recipeType.getRegistryKey(), recipeType);
-				Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.getRegistryKey(), recipeType.getSerializer());
+				event.register(Registries.RECIPE_TYPE, recipeType.getRegistryKey(), () -> recipeType);
+			});
+		}
+		if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
+			this.recipeTypes.values().forEach(recipeType -> {
+				event.register(Registries.RECIPE_SERIALIZER, recipeType.getRegistryKey(), RecipeSerializerImpl::new);
 			});
 		}
 	}

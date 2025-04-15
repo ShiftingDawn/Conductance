@@ -3,6 +3,7 @@ package conductance.api.machine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -19,29 +20,33 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import com.lowdragmc.lowdraglib.gui.factory.BlockEntityUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.util.MiscUtils;
+import conductance.api.util.RotationState;
 
 @SuppressWarnings("deprecation")
 public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements IMachineBlock<T> {
 
-	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
-	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 	private final MachineType<T> machineType;
+	@Getter
+	private final RotationState rotationState;
 
 	public MachineBlock(final Properties props, final MachineType<T> machineType) {
 		super(props);
 		this.machineType = machineType;
-		this.registerDefaultState(this.getStateDefinition().any()
-				.setValue(MachineBlock.FACING, Direction.NORTH)
-				.setValue(MachineBlock.LIT, false)
-				.setValue(MachineBlock.ACTIVE, false)
-		);
+		this.rotationState = RotationState.get();
+		if (this.rotationState != RotationState.NONE) {
+			this.registerDefaultState(this.getStateDefinition().any()
+					.setValue(this.rotationState.property, this.rotationState.defaultDirection)
+					.setValue(MachineBlock.LIT, false)
+			);
+		}
 	}
 
 	@Override
@@ -51,22 +56,53 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 
 	@Override
 	protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(MachineBlock.FACING, MachineBlock.LIT, MachineBlock.ACTIVE);
+		builder.add(MachineBlock.LIT);
+		final RotationState rotState = RotationState.get();
+		if (rotState != RotationState.NONE) {
+			builder.add(rotState.property);
+		}
 	}
 
 	@Override
 	public BlockState getStateForPlacement(final BlockPlaceContext context) {
-		return this.defaultBlockState().setValue(MachineBlock.FACING, context.getHorizontalDirection().getOpposite());
+		final RotationState rotState = this.getRotationState();
+		final Player player = context.getPlayer();
+		final BlockPos blockPos = context.getClickedPos();
+		final BlockState state = this.defaultBlockState();
+		if (player != null && rotState != RotationState.NONE) {
+			final Vec3 pos = player.position();
+			if (Math.abs(pos.x - (double) ((float) blockPos.getX() + 0.5F)) < 2.0D && Math.abs(pos.z - (double) ((float) blockPos.getZ() + 0.5F)) < 2.0D) {
+				final double d0 = pos.y + (double) player.getEyeHeight();
+				if (d0 - (double) blockPos.getY() > 2.0D && rotState.test(Direction.UP)) {
+					return state.setValue(rotState.property, Direction.UP);
+				}
+				if ((double) blockPos.getY() - d0 > 0.0D && rotState.test(Direction.DOWN)) {
+					return state.setValue(rotState.property, Direction.DOWN);
+				}
+			}
+			if (rotState == RotationState.VERTICAL) {
+				return state.setValue(rotState.property, Direction.UP);
+			} else {
+				return state.setValue(rotState.property, player.getDirection().getOpposite());
+			}
+		}
+		return state;
 	}
 
 	@Override
 	protected BlockState rotate(final BlockState state, final Rotation rotation) {
-		return state.setValue(MachineBlock.FACING, rotation.rotate(state.getValue(MachineBlock.FACING)));
+		if (this.rotationState == RotationState.NONE) {
+			return state;
+		}
+		return state.setValue(this.rotationState.property, rotation.rotate(state.getValue(this.rotationState.property)));
 	}
 
 	@Override
 	protected BlockState mirror(final BlockState state, final Mirror mirror) {
-		return state.rotate(mirror.getRotation(state.getValue(MachineBlock.FACING)));
+		if (this.rotationState == RotationState.NONE) {
+			return state;
+		}
+		return state.rotate(mirror.getRotation(state.getValue(this.rotationState.property)));
 	}
 
 	@Override
@@ -95,7 +131,7 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 					}
 				};
 			} else {
-				if (state.getValue(MachineBlock.ACTIVE)) {
+				if (state.getValue(MachineBlock.LIT)) {
 					return (level1, blockPos, blockState, be) -> {
 						if (be instanceof final MachineBlockEntity<?> baseBlockEntity) {
 							baseBlockEntity.handleServerTick();
@@ -131,5 +167,11 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	@Override
 	protected int getAnalogOutputSignal(final BlockState state, final Level level, final BlockPos pos) {
 		return this.getMachine(level, pos, MachineBlockEntity::getRedstoneAnalog, super.getAnalogOutputSignal(state, level, pos));
+	}
+
+	@Override
+	public void animateTick(final BlockState state, final Level level, final BlockPos pos, final RandomSource random) {
+		super.animateTick(state, level, pos, random);
+		this.setMachine(level, pos, machine -> machine.onAnimateTick(random));
 	}
 }

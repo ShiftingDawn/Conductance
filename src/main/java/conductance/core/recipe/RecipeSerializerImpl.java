@@ -18,8 +18,6 @@ import conductance.api.machine.recipe.RecipeElement;
 
 public class RecipeSerializerImpl implements NCRecipeSerializer {
 
-	public static final RecipeSerializerImpl INSTANCE = new RecipeSerializerImpl();
-
 	public static final MapCodec<IRecipe> CODEC;
 	public static final StreamCodec<RegistryFriendlyByteBuf, IRecipe> STREAM_CODEC = StreamCodec.of(RecipeSerializerImpl::toNetwork, RecipeSerializerImpl::fromNetwork);
 

@@ -10,6 +10,7 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.util.overclock.OverclockResult;
 
 public interface IRecipe extends Recipe<RecipeInput> {
 
@@ -27,6 +28,8 @@ public interface IRecipe extends Recipe<RecipeInput> {
 	Map<IRecipeElementType<?>, List<RecipeElement>> getOutputsPerTick();
 
 	int getProcessTime();
+
+	long getEnergyPerTick();
 
 	@Override
 	default boolean matches(final RecipeInput recipeInput, final Level level) {
@@ -54,6 +57,8 @@ public interface IRecipe extends Recipe<RecipeInput> {
 	}
 
 	IRecipe copy(@Nullable RecipeModifier modifier, boolean modifyProcessTime);
+
+	IRecipe copy(OverclockResult overclockResult, boolean modifyProcessTime);
 
 	IRecipe copyMutable();
 }

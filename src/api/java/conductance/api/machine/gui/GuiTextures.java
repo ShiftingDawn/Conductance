@@ -32,6 +32,11 @@ public final class GuiTextures {
 	public static final ResourceTexture ENERGY_BAR = new ResourceTexture(GuiTextures.get("energy_bar"));
 	public static final ResourceTexture ENERGY_BAR_OVERLAY = new ResourceTexture(GuiTextures.get("energy_bar_overlay"));
 
+	public static final ResourceBorderTexture BRONZE_SLOT = new ResourceBorderTexture(GuiTextures.get("bronze_slot"), 18, 18, 2, 2);
+	public static final ResourceBorderTexture BRONZE_TANK = new ResourceBorderTexture(GuiTextures.get("bronze_tank"), 18, 18, 2, 2);
+	public static final ResourceTexture BOILER_TEMPERATURE_FULL = new ResourceTexture(GuiTextures.get("boiler/full_temperature"));
+	public static final ResourceTexture BOILER_FUEL = new ResourceTexture(GuiTextures.get("boiler/fuel_progress"));
+
 	private static String get(final String name) {
 		return "%s:textures/gui/%s.png".formatted(CAPI.MOD_ID, name);
 	}

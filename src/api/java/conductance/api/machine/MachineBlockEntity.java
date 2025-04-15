@@ -8,6 +8,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,6 +32,7 @@ import conductance.api.machine.capability.MachineRecipeCapability;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.RecipeProcessor;
 import conductance.api.util.IOMode;
+import conductance.api.util.RotationState;
 
 public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity implements IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IEnhancedManaged {
 
@@ -199,8 +201,8 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 		if (!this.isRemote()) {
 			return Util.make(new MachineRunnable(action), result -> {
 				this.pending.add(result);
-				if (!this.getBlockState().getValue(MachineBlock.ACTIVE) && this.getLevel() instanceof final ServerLevel serverLevel) {
-					final BlockState newState = this.getBlockState().setValue(MachineBlock.ACTIVE, true);
+				if (!this.getBlockState().getValue(MachineBlock.LIT) && this.getLevel() instanceof final ServerLevel serverLevel) {
+					final BlockState newState = this.getBlockState().setValue(MachineBlock.LIT, true);
 					serverLevel.setBlockAndUpdate(this.getBlockPos(), newState);
 				}
 			});
@@ -218,6 +220,9 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 
 	@OnlyIn(Dist.CLIENT)
 	protected void onClientTick() {
+	}
+
+	public void onAnimateTick(final RandomSource random) {
 	}
 
 	protected final void handleServerTick() {
@@ -238,7 +243,7 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 		}
 		if (this.isValid() && this.ticks.isEmpty() && this.pending.isEmpty()) {
 			assert this.level != null;
-			this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(MachineBlock.ACTIVE, false));
+			this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(MachineBlock.LIT, false));
 		}
 	}
 
@@ -280,6 +285,36 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 	//endregion
 
 	//region Misc
+	public Direction getFrontFacing() {
+		final var blockState = this.getBlockState();
+		if (blockState.getBlock() instanceof final IMachineBlock<?> machineBlock) {
+			return machineBlock.getFrontFacing(blockState);
+		}
+		return Direction.NORTH;
+	}
+
+	public final boolean hasFrontFacing() {
+		final var blockState = this.getBlockState();
+		if (blockState.getBlock() instanceof final IMachineBlock<?> machineBlock) {
+			return machineBlock.getRotationState() != RotationState.NONE;
+		}
+		return false;
+	}
+
+	public boolean isFacingValid(final Direction facing) {
+		if (this.hasFrontFacing() && facing == this.getFrontFacing()) {
+			return false;
+		}
+		final var blockState = this.getBlockState();
+		if (blockState.getBlock() instanceof final IMachineBlock<?> metaBlock) {
+			return metaBlock.getRotationState().test(facing);
+		}
+		return false;
+	}
+
+	public final boolean hasTicksPassed(final int offset) {
+		return this.getTimerOffset() % offset == 0;
+	}
 
 	public final long getTimerOffset() {
 		return this.level != null ? this.level.getGameTime() + this.timerOffset : this.timerOffset;

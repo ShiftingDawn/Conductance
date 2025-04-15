@@ -13,8 +13,8 @@ import com.mojang.serialization.JsonOps;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.Nullable;
 import conductance.core.apiimpl.PluginManager;
-import conductance.runtimepack.server.RuntimeDataPack;
 import conductance.core.recipe.RecipeBuilderImpl;
+import conductance.runtimepack.server.RuntimeDataPack;
 
 public final class DynamicRecipeHandler {
 

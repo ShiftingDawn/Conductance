@@ -18,6 +18,7 @@ import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeCapabilityHolder;
 import conductance.api.machine.recipe.RecipeElement;
 import conductance.api.machine.recipe.RecipeHelper;
+import conductance.api.machine.recipe.RecipeModifier;
 import conductance.api.util.IOMode;
 
 public final class RecipeHelperImpl implements RecipeHelper {
@@ -167,7 +168,7 @@ public final class RecipeHelperImpl implements RecipeHelper {
 		copy.getOutputsPerTick().clear();
 		copy.getOutputs().putAll(RecipeHelperImpl.trimElementList(recipe.getOutputs(), recipeOutputLimits));
 		copy.getOutputsPerTick().putAll(RecipeHelperImpl.trimElementList(recipe.getOutputsPerTick(), recipeOutputLimits));
-		return copy.copy(null, false);
+		return copy.copy((RecipeModifier) null, false);
 	}
 
 	private static Map<IRecipeElementType<?>, List<RecipeElement>> trimElementList(final Map<IRecipeElementType<?>, List<RecipeElement>> current, final Map<IRecipeElementType<?>, Integer> recipeOutputLimits) {

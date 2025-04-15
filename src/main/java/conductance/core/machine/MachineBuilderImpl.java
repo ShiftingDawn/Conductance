@@ -6,6 +6,7 @@ import net.minecraft.Util;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Blocks;
 import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -26,6 +27,7 @@ import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.resource.RuntimeModelProvider;
+import conductance.api.util.RotationState;
 import static conductance.core.apiimpl.ApiBridge.getRegistrate;
 
 public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements MachineBuilder<T> {
@@ -42,6 +44,7 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	private NCRecipeType[] recipeTypes = new NCRecipeType[0];
 	private Object2IntMap<IRecipeElementType<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
 	private BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> recipeModifier = (machine, recipe) -> recipe;
+	private RotationState rotationState = RotationState.HORIZONTAL;
 	@Getter
 	private MachineGuiSupplier guiSupplier;
 
@@ -51,7 +54,12 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	}
 
 	private BlockEntry<? extends MachineBlock<T>> createBlock(final MachineTypeImpl<T> machineType) {
-		final var blockBuilder = getRegistrate().block(this.registryKey, props -> this.blockFactory.newInstance(props, machineType));
+		final BlockBuilder<MachineBlock<T>, Registrate> blockBuilder = getRegistrate().block(this.registryKey, props -> {
+			RotationState.set(this.rotationState);
+			final MachineBlock<T> block = this.blockFactory.newInstance(props, machineType);
+			RotationState.clear();
+			return block;
+		});
 		blockBuilder
 				.initialProperties(() -> Blocks.IRON_BLOCK)
 				.blockstate(NonNullBiConsumer.noop())
@@ -84,6 +92,12 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	@Override
 	public MachineBuilder<T> recipeModifier(final BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> modifier) {
 		this.recipeModifier = modifier;
+		return this;
+	}
+
+	@Override
+	public MachineBuilder<T> rotationState(final RotationState rotState) {
+		this.rotationState = rotState;
 		return this;
 	}
 

@@ -23,6 +23,7 @@ public final class RecipeLoader {
 
 	public static void init(final RecipeOutput output, final RecipeBuilderFactory builderFactory) {
 		MaterialRecipes.add(output, builderFactory);
+		FuelAndEnergyRecipes.add(output, builderFactory);
 	}
 
 	@SuppressWarnings("unchecked")

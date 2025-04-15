@@ -6,6 +6,7 @@ import conductance.api.machine.gui.MachineGuiSupplier;
 import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.util.RotationState;
 
 public interface MachineBuilder<T extends MachineBlockEntity<T>> {
 
@@ -14,6 +15,8 @@ public interface MachineBuilder<T extends MachineBlockEntity<T>> {
 	MachineBuilder<T> recipeOutputLimits(Object2IntMap<IRecipeElementType<?>> recipeOutputLimits);
 
 	MachineBuilder<T> recipeModifier(BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> modifier);
+
+	MachineBuilder<T> rotationState(RotationState rotationState);
 
 	MachineBuilder<T> guiSupplier(MachineGuiSupplier guiSupplier);
 

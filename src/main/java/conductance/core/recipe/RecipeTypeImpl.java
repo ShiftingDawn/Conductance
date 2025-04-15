@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import net.minecraft.Util;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -63,7 +64,7 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 
 	@Override
 	public NCRecipeSerializer getSerializer() {
-		return RecipeSerializerImpl.INSTANCE;
+		return (NCRecipeSerializer) BuiltInRegistries.RECIPE_SERIALIZER.get(this.getRegistryKey());
 	}
 
 	@Override

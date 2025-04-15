@@ -17,6 +17,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import conductance.api.NCRecipeElementTypes;
+import conductance.api.machine.IOverclockable;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.capability.MachineRecipeCapability;
@@ -32,11 +33,14 @@ import conductance.api.util.IOMode;
 import conductance.api.util.tier.Tier;
 import conductance.api.util.tier.TierHolder;
 
-public class TieredWorkableMachine<T extends TieredWorkableMachine<T>> extends MachineBlockEntity<T> implements WorkableMachineRecipeProviderConfigAdapter, RecipeCapabilityHolder, TierHolder {
+public class TieredWorkableMachine<T extends TieredWorkableMachine<T>> extends MachineBlockEntity<T> implements WorkableMachineRecipeProviderConfigAdapter, RecipeCapabilityHolder, TierHolder, IOverclockable {
 
 	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TieredWorkableMachine.class, MachineBlockEntity.MANAGED_FIELD_HOLDER);
 	@Getter
 	private final Tier tier;
+	@Persisted
+	@DescSynced
+	private Tier overclockTier;
 	@Persisted
 	@DescSynced
 	@Getter
@@ -148,6 +152,24 @@ public class TieredWorkableMachine<T extends TieredWorkableMachine<T>> extends M
 	@Override
 	public NCRecipeType getRecipeType() {
 		return this.getRecipeTypes()[this.activeRecipeType];
+	}
+
+	@Override
+	public Tier getOverclockTier() {
+		return this.overclockTier;
+	}
+
+	@Override
+	public void setOverclockTier(final Tier newTier) {
+		if (!this.isRemote() && newTier.getIndex() >= this.getMinOverclockTier().getIndex() && newTier.getIndex() <= this.getMaxOverclockTier().getIndex()) {
+			this.overclockTier = newTier;
+			this.recipeProcessor.markDirty();
+		}
+	}
+
+	@Override
+	public Tier getMaxOverclockTier() {
+		return this.tier;
 	}
 
 	@Override

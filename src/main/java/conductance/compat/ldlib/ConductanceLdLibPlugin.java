@@ -11,6 +11,7 @@ public class ConductanceLdLibPlugin implements ILDLibPlugin {
 
 	@Override
 	public void onLoad() {
+		TypedPayloadRegistries.register(StringPayload.class, StringPayload::new, new TierAccessor(), 1000);
 		TypedPayloadRegistries.register(StringPayload.class, StringPayload::new, new RecipeTypeAccessor(), 1000);
 		TypedPayloadRegistries.register(FriendlyBufPayload.class, FriendlyBufPayload::new, new RecipeAccessor(), 1000);
 	}

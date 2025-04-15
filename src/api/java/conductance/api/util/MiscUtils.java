@@ -1,12 +1,18 @@
 package conductance.api.util;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import conductance.api.CAPI;
 import conductance.api.machine.MachineBlockEntity;
@@ -46,6 +52,19 @@ public final class MiscUtils {
 	public static void explode(final Level level, final BlockPos pos, final float explosionPower) {
 		level.removeBlock(pos, false);
 		level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, explosionPower, Level.ExplosionInteraction.BLOCK);
+	}
+
+	@SuppressWarnings("deprecation")
+	public static Map<Item, Integer> getFurnaceFuels() {
+		return Util.make(new HashMap<>(), map -> {
+			map.putAll(FurnaceBlockEntity.getFuel());
+			BuiltInRegistries.ITEM.forEach(item -> {
+				final int fuelTime = item.getDefaultInstance().getBurnTime(RecipeType.SMELTING);
+				if (fuelTime > 0) {
+					map.put(item, fuelTime);
+				}
+			});
+		});
 	}
 
 	private MiscUtils() {

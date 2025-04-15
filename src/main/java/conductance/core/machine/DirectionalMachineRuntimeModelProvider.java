@@ -14,9 +14,9 @@ import conductance.api.machine.MachineType;
 import conductance.api.resource.BlockModelBuilder;
 import conductance.api.resource.BlockStateBuilder;
 import conductance.api.resource.RuntimeModelProvider;
+import conductance.api.util.RotationState;
 import conductance.api.util.SerializationHelper;
 import conductance.Conductance;
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 public class DirectionalMachineRuntimeModelProvider implements RuntimeModelProvider {
 
@@ -28,12 +28,23 @@ public class DirectionalMachineRuntimeModelProvider implements RuntimeModelProvi
 
 	@Override
 	public void createBlockState(final ResourceLocation blockId, final BlockStateBuilder builder, final ResourceLocation defaultModelLocation, final Consumer<JsonObject> prebuilt) {
-		builder.variants(b -> {
-			b.variant(HORIZONTAL_FACING, Direction.NORTH).model(defaultModelLocation);
-			b.variant(HORIZONTAL_FACING, Direction.SOUTH).model(defaultModelLocation).y(180);
-			b.variant(HORIZONTAL_FACING, Direction.EAST).model(defaultModelLocation).y(90);
-			b.variant(HORIZONTAL_FACING, Direction.WEST).model(defaultModelLocation).y(270);
-		});
+		final RotationState rotationState = this.machineType.getBlock().get().getRotationState();
+		if (rotationState == RotationState.NONE) {
+			builder.simple(b -> b.model(defaultModelLocation));
+		} else {
+			builder.variants(b -> {
+				if (rotationState == RotationState.ALL || rotationState == RotationState.HORIZONTAL) {
+					b.variant(rotationState.property, Direction.NORTH).model(defaultModelLocation);
+					b.variant(rotationState.property, Direction.SOUTH).model(defaultModelLocation).y(180);
+					b.variant(rotationState.property, Direction.EAST).model(defaultModelLocation).y(90);
+					b.variant(rotationState.property, Direction.WEST).model(defaultModelLocation).y(270);
+				}
+				if (rotationState == RotationState.ALL || rotationState == RotationState.VERTICAL) {
+					b.variant(rotationState.property, Direction.UP).model(defaultModelLocation).x(90);
+					b.variant(rotationState.property, Direction.DOWN).model(defaultModelLocation).x(270);
+				}
+			});
+		}
 	}
 
 	@Override
