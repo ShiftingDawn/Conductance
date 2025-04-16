@@ -1,8 +1,10 @@
 package conductance.fluid;
 
 import java.util.function.Consumer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import lombok.Getter;
 import conductance.api.CAPI;
@@ -21,6 +23,16 @@ public final class MaterialFluidType extends FluidType {
 		super(properties);
 		this.material = material;
 		this.set = set;
+	}
+
+	@Override
+	public Component getDescription(final FluidStack stack) {
+		return CAPI.translations().makeLocalizedName(this);
+	}
+
+	@Override
+	public Component getDescription() {
+		return CAPI.translations().makeLocalizedName(this);
 	}
 
 	@Override

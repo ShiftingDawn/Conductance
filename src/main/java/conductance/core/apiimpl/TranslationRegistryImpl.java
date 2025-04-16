@@ -8,6 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
@@ -78,6 +80,16 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 	@Override
 	public MutableComponent makeLocalizedName(final Item item, final Supplier<MutableComponent> override) {
 		return this.componentCache.computeIfAbsent(item.getDescriptionId(), k -> override.get());
+	}
+
+	@Override
+	public MutableComponent makeLocalizedName(final FluidType fluid) {
+		return this.makeLocalizedName(fluid.getDescriptionId(), () -> TextHelper.lowerUnderscoreToEnglish(NeoForgeRegistries.FLUID_TYPES.getKey(fluid).getPath()));
+	}
+
+	@Override
+	public MutableComponent makeLocalizedName(final FluidType fluid, final Supplier<MutableComponent> override) {
+		return this.componentCache.computeIfAbsent(fluid.getDescriptionId(), k -> override.get());
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.fluids.FluidType;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
@@ -21,6 +22,10 @@ public interface TranslationRegistry {
 	MutableComponent makeLocalizedName(Item item);
 
 	MutableComponent makeLocalizedName(Item item, Supplier<MutableComponent> override);
+
+	MutableComponent makeLocalizedName(FluidType fluid);
+
+	MutableComponent makeLocalizedName(FluidType fluid, Supplier<MutableComponent> override);
 
 	MutableComponent makeLocalizedName(String key, TaggedMaterialSet taggedSet, Material material);
 
