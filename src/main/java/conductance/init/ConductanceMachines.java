@@ -1,5 +1,6 @@
 package conductance.init;
 
+import conductance.api.NCMachines;
 import conductance.api.NCRecipeTypes;
 import conductance.api.NCTiers;
 import conductance.api.plugin.MachineRegister;
@@ -11,7 +12,7 @@ import conductance.machine.SteamSolidBoilerMachine;
 public final class ConductanceMachines {
 
 	public static void init(final MachineRegister register) {
-		register.register("steam_solid_fuel_boiler", SteamSolidBoilerMachine::new)
+		NCMachines.STEAM_BOILER_SOLID_FUEL = register.register("steam_solid_fuel_boiler", SteamSolidBoilerMachine::new)
 				.recipeType(NCRecipeTypes.STEAM_BOILER)
 //				.tooltip(
 //						Component.translatable("tooltip.conductance.generic.produces_fluid", 64),

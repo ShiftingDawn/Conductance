@@ -1,33 +1,20 @@
 {
-	"loader": "neoforge:composite",
-	"parent": "block/cube",
-	"textures": {
-		"particle": "conductance:block/casing/tiered/front"
-	},
-	"children": {
-		"hull": {
-			"parent": "conductance:block/machine_casing_tiered",
-			"render_type": "solid"
-		},
-		"machine_overlay": {
-			"parent": "block/block",
-			"render_type": "cutout_mipped",
-			"textures": {
-				"overlay": "@@MACHINE_OVERLAY_FRONT@@"
-			},
-			"elements": [
-				{
-					"from": [0, 0, 0],
-					"to": [16, 16, 16],
-					"faces": {
-						"north": {"texture": "#overlay", "cullface": "north"}
-					}
-				}
-			]
-		}
-	},
-	"item_render_order": [
-		"hull",
-		"machine_overlay"
-	]
+  "loader": "neoforge:composite",
+  "parent": "block/cube",
+  "textures": {
+    "particle": "conductance:block/casing/tiered/front"
+  },
+  "children": {
+    "hull": {
+      "parent": "conductance:block/machine_casing_tiered",
+      "render_type": "solid"
+    },
+    "machine_overlay": {
+      "render_type": "cutout_mipped"
+    }
+  },
+  "item_render_order": [
+    "hull",
+    "machine_overlay"
+  ]
 }

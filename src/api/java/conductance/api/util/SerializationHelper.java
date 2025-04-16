@@ -1,13 +1,10 @@
 package conductance.api.util;
 
 import java.util.Arrays;
-import java.util.function.Predicate;
 import net.minecraft.Util;
-import com.mojang.datafixers.util.Pair;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.jetbrains.annotations.Nullable;
 
 public final class SerializationHelper {
 
@@ -75,26 +72,11 @@ public final class SerializationHelper {
 		return Util.make(new JsonArray(), arr -> Arrays.stream(numbers).forEachOrdered(arr::add));
 	}
 
-	public static JsonObject getOrOverrideObject(final JsonObject parent, final String name) {
+	public static JsonObject getOrOverrideObject(final String name, final JsonObject parent) {
 		if (!parent.has(name) || !parent.get(name).isJsonObject()) {
 			parent.add(name, new JsonObject());
 		}
 		return parent.getAsJsonObject(name);
-	}
-
-	@Nullable
-	public static Pair<JsonObject, String> findContainer(final JsonObject obj, final Predicate<JsonElement> predicate) {
-		for (final String key : obj.keySet()) {
-			if (predicate.test(obj.get(key))) {
-				return Pair.of(obj, key);
-			} else if (obj.get(key).isJsonObject()) {
-				final Pair<JsonObject, String> found = SerializationHelper.findContainer(obj.getAsJsonObject(key), predicate);
-				if (found != null) {
-					return found;
-				}
-			}
-		}
-		return null;
 	}
 
 	private SerializationHelper() {

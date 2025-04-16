@@ -1,11 +1,12 @@
 package conductance.runtimepack.client;
 
+import java.util.HashMap;
+import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import com.google.gson.JsonObject;
 import conductance.api.CAPI;
 import conductance.api.resource.RuntimeModelProvider;
 import conductance.core.machine.BlockModelBuilderImpl;
@@ -21,10 +22,13 @@ final class MachineModelHandler {
 			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
 			final RuntimeModelProvider modelProvider = ((MachineTypeImpl<?>) machineType).getModelProvider().apply(machineType);
 
-			final BlockModelBuilderImpl blockModelBuilder = new BlockModelBuilderImpl();
-			final JsonObject[] prebuiltModel = new JsonObject[1];
-			modelProvider.createBlockModel(blockId, blockModelBuilder, prebuilt -> prebuiltModel[0] = prebuilt);
-			RuntimeResourcePack.addBlockModel(blockId, prebuiltModel[0] == null ? blockModelBuilder.build() : prebuiltModel[0]);
+			final HashMap<ResourceLocation, BlockModelBuilderImpl> blockModelBuilders = new HashMap<>();
+			modelProvider.createBlockModel(
+					blockId,
+					loc -> Util.make(new BlockModelBuilderImpl(), builder -> blockModelBuilders.put(loc, builder)),
+					RuntimeResourcePack::addBlockModel
+			);
+			blockModelBuilders.forEach((loc, builder) -> RuntimeResourcePack.addBlockModel(loc, builder.build()));
 
 			final ItemModelBuilderImpl itemModelBuilder = new ItemModelBuilderImpl();
 			if (!modelProvider.createItemModel(blockId, itemModelBuilder)) {
@@ -33,10 +37,14 @@ final class MachineModelHandler {
 				RuntimeResourcePack.addItemModel(blockId, itemModelBuilder.build());
 			}
 
-			final BlockStateBuilderImpl blockStateBuilder = new BlockStateBuilderImpl();
-			final JsonObject[] prebuiltBlockState = new JsonObject[1];
-			modelProvider.createBlockState(blockId, blockStateBuilder, blockId.withPrefix("block/"), prebuilt -> prebuiltBlockState[0] = prebuilt);
-			RuntimeResourcePack.addBlockState(blockId, prebuiltBlockState[0] == null ? blockStateBuilder.build() : prebuiltBlockState[0]);
+			final HashMap<ResourceLocation, BlockStateBuilderImpl> blockStateBuilders = new HashMap<>();
+			modelProvider.createBlockState(
+					blockId,
+					loc -> Util.make(new BlockStateBuilderImpl(), builder -> blockStateBuilders.put(loc, builder)),
+					blockId.withPrefix("block/"),
+					RuntimeResourcePack::addBlockState
+			);
+			blockStateBuilders.forEach((loc, builder) -> RuntimeResourcePack.addBlockState(loc, builder.build()));
 		});
 	}
 
