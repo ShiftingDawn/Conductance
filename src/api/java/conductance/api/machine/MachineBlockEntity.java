@@ -145,10 +145,10 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 //			ioMode = IOMode.OUTPUT;
 //		}
 		final IOItemTransferList transferList = new IOItemTransferList(handlers, ioMode, this.getItemCapFilter(side));
-		if (!useCovers || side == null) {
+//		if (!useCovers || side == null) {
 			return transferList;
-		}
-		return null;
+//		}
+//		return null;
 		//TODO covers
 //		return this.getCoverManager().getCover(side)
 //				.filter(cover -> cover instanceof IDelegateItemHandler)
@@ -171,10 +171,10 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 //			ioMode = IOMode.OUTPUT;
 //		}
 		final IOFluidTransferList transferList = new IOFluidTransferList(handlers, ioMode, this.getFluidCapFilter(side));
-		if (!useCovers || side == null) {
+//		if (!useCovers || side == null) {
 			return transferList;
-		}
-		return null;
+//		}
+//		return null;
 		//TODO covers
 //		return this.getCoverManager().getCover(side)
 //				.filter(cover -> cover instanceof IDelegateItemHandler)

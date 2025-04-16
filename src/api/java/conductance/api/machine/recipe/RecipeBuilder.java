@@ -162,9 +162,7 @@ public interface RecipeBuilder {
 		return this.out(fluid, FluidType.BUCKET_VOLUME);
 	}
 
-	default RecipeBuilder outEnergy(final long energy) {
-		return this.out(NCRecipeElementTypes.ENERGY, energy);
-	}
+	RecipeBuilder outEnergy(long energy);
 	//endregion
 
 	@SuppressWarnings("unchecked")

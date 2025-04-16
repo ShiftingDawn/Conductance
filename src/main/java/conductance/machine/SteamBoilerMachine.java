@@ -100,11 +100,16 @@ public abstract class SteamBoilerMachine<T extends SteamBoilerMachine<T>> extend
 	}
 
 	protected void updateAutoOutputSubscription() {
-		if (Direction.stream()
-				.filter(direction -> direction != this.getFrontFacing() && direction != Direction.DOWN)
-				.anyMatch(direction -> FluidTransferHelper.getFluidTransfer(this.getLevel(), this.getBlockPos().relative(direction), direction.getOpposite()) != null)) {
-			this.autoOutputSubs = this.addTick(this.autoOutputSubs, this::autoOutput);
-		} else if (this.autoOutputSubs != null) {
+		for (final Direction d : Direction.values()) {
+			if (d != this.getFrontFacing() && d != Direction.DOWN) {
+				final var h = FluidTransferHelper.getFluidTransfer(this.getLevel(), this.getBlockPos().relative(d.getOpposite()), d.getOpposite());
+				if (h != null) {
+					this.autoOutputSubs = this.addTick(this.autoOutputSubs, this::autoOutput);
+					return;
+				}
+			}
+		}
+		if (this.autoOutputSubs != null) {
 			this.autoOutputSubs.invalidate();
 			this.autoOutputSubs = null;
 		}

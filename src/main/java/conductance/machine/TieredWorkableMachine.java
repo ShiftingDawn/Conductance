@@ -76,6 +76,7 @@ public class TieredWorkableMachine<T extends TieredWorkableMachine<T>> extends M
 	public TieredWorkableMachine(final MachineType<T> machineType, final BlockPos pos, final BlockState blockState, final Tier tier) {
 		super(machineType, pos, blockState);
 		this.tier = tier;
+		this.overclockTier = tier;
 		this.recipeCapabilities = Tables.newCustomTable(new EnumMap<>(IOMode.class), HashMap::new);
 		this.inputInventory = this.createItemInputAction();
 		this.outputInventory = this.createItemOutputAction();

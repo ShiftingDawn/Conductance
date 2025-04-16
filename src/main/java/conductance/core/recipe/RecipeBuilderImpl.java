@@ -78,6 +78,15 @@ public class RecipeBuilderImpl implements RecipeBuilder {
 	}
 
 	@Override
+	public RecipeBuilder outEnergy(final long energy) {
+		final boolean wasPerTick = this.perTick;
+		this.perTick = true;
+		this.out(NCRecipeElementTypes.ENERGY, energy);
+		this.perTick = wasPerTick;
+		return this;
+	}
+
+	@Override
 	public IRecipe build() {
 		return new RecipeImpl(
 				this.recipeType,
