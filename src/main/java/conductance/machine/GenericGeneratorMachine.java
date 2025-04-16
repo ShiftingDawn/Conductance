@@ -56,7 +56,7 @@ public class GenericGeneratorMachine extends TieredWorkableMachine<GenericGenera
 
 	public static final Function<NCRecipeType, MachineGuiSupplier> GUI_SUPPLIER = recipeType -> new MachineGuiSupplier(() ->
 			recipeType.createGuiTemplate().createDefault(),
-			(template, machine, autoCalc) -> {
+			(template, machine, theme, autoCalc) -> {
 				if (machine instanceof GenericGeneratorMachine generatorMachine) {
 					RecipeHolder recipeHolder = new RecipeHolder(
 							generatorMachine.getRecipeProcessor()::getProgressPercentage,
@@ -65,7 +65,7 @@ public class GenericGeneratorMachine extends TieredWorkableMachine<GenericGenera
 							generatorMachine.getInputTank(),
 							generatorMachine.getOutputTank()
 					);
-					generatorMachine.getRecipeType().createGuiTemplate().setupGui(template, recipeHolder, autoCalc);
+					generatorMachine.getRecipeType().createGuiTemplate().setupGui(template, recipeHolder, theme, autoCalc);
 				}
 			}
 	);

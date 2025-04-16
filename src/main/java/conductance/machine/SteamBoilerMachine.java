@@ -32,6 +32,7 @@ import conductance.api.machine.MachineRunnable;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.capability.MachineRecipeCapabilityFluids;
 import conductance.api.machine.gui.GuiTextures;
+import conductance.api.machine.gui.GuiTheme;
 import conductance.api.machine.gui.MachineGuiHolder;
 import conductance.api.util.IOMode;
 import conductance.api.util.MiscUtils;
@@ -259,19 +260,24 @@ public abstract class SteamBoilerMachine<T extends SteamBoilerMachine<T>> extend
 	@Override
 	public void populateWidgetPanel(final WidgetGroup panel) {
 		panel.addWidget(new ProgressWidget(this::getTemperaturePercent, 96, 15, 10, 54)
-				.setProgressTexture(GuiTextures.BRONZE_SLOT, GuiTextures.BOILER_TEMPERATURE_FULL)
+				.setProgressTexture(GuiTextures.BOILER_SLOT, GuiTextures.BOILER_TEMPERATURE)
 				.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
 				.setDynamicHoverTips(pct -> I18n.get("tooltip.conductance.boiler.temperature", (int) (this.currentTemperature + 274.15), (int) (this.getMaxTemperature() + 274.15)))
 		);
 		panel.addWidget(new TankWidget(this.waterTank.getFluidTanks()[0], 83, 15, 10, 54, false, true)
 				.setShowAmount(false)
 				.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-				.setBackground(GuiTextures.BRONZE_SLOT)
+				.setBackground(GuiTextures.BOILER_SLOT)
 		);
 		panel.addWidget(new TankWidget(this.steamTank.getFluidTanks()[0], 70, 15, 10, 54, true, false)
 				.setShowAmount(false)
 				.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-				.setBackground(GuiTextures.BRONZE_SLOT)
+				.setBackground(GuiTextures.BOILER_SLOT)
 		);
+	}
+
+	@Override
+	public GuiTheme getGuiTheme() {
+		return GuiTheme.THEME_BRONZE;
 	}
 }

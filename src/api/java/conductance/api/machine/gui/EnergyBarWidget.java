@@ -17,12 +17,12 @@ public class EnergyBarWidget extends ProgressWidget {
 
 	private final IEnergyHandler handler;
 
-	public EnergyBarWidget(final IEnergyHandler handler) {
+	public EnergyBarWidget(final GuiTheme theme, final IEnergyHandler handler) {
 		super(ProgressWidget.JEIProgress, 0, 0, 162, 6);
 		this.handler = handler;
 		this.setProgressSupplier(() -> handler.getEnergyStored() * 1.0 / handler.getEnergyCapacity());
-		this.setProgressTexture(IGuiTexture.EMPTY, GuiTextures.ENERGY_BAR_OVERLAY);
-		this.setBackground(GuiTextures.ENERGY_BAR);
+		this.setProgressTexture(IGuiTexture.EMPTY, theme.getEnergyBarOverlay());
+		this.setBackground(theme.getEnergyBar());
 		this.setFillDirection(ProgressTexture.FillDirection.LEFT_TO_RIGHT);
 	}
 

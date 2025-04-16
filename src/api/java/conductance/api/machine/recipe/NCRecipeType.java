@@ -8,6 +8,7 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import conductance.api.machine.gui.GuiTheme;
 import conductance.api.machine.gui.MachineGuiTemplate;
 import conductance.api.registry.IRegistryObject;
 
@@ -23,7 +24,7 @@ public interface NCRecipeType extends IRegistryObject<ResourceLocation>, RecipeT
 
 	ProgressTexture.FillDirection getProgressBarDirection();
 
-	WidgetGroup createGuiTemplate(DoubleSupplier progressSupplier, IItemHandlerModifiable inputItems, IItemHandlerModifiable outputItems, IFluidHandler inputFluids, IFluidHandler outputFluids);
+	WidgetGroup createGuiTemplate(DoubleSupplier progressSupplier, IItemHandlerModifiable inputItems, IItemHandlerModifiable outputItems, IFluidHandler inputFluids, IFluidHandler outputFluids, GuiTheme theme);
 
 	MachineGuiTemplate<WidgetGroup, RecipeHolder> createGuiTemplate();
 }

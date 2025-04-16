@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import conductance.api.machine.gui.GuiTextures;
+import conductance.api.machine.gui.GuiTheme;
 
 public final class GuiHelper {
 
@@ -41,7 +41,7 @@ public final class GuiHelper {
 		return -1;
 	}
 
-	public static WidgetGroup createPlayerInventory(final Inventory player) {
+	public static WidgetGroup createPlayerInventory(final Inventory player, final GuiTheme theme) {
 		return Util.make(new WidgetGroup(0, 0, 9 * 18, 4 * 18 + 4), group -> {
 			group.addWidget(Util.make(new WidgetGroup(0, 0, group.getSizeWidth(), 3 * 18), container -> {
 				for (int row = 0; row < 3; ++row) {
@@ -50,10 +50,10 @@ public final class GuiHelper {
 								.setBackgroundTexture(null)
 								.setLocationInfo(true, false)
 								.setDrawHoverOverlay(false)
-								.setHoverTexture(GuiTextures.SLOT_HOVER));
+								.setHoverTexture(theme.getSlotHover()));
 					}
 				}
-				container.setBackground(GuiTextures.PLAYER_INVENTORY);
+				container.setBackground(theme.getPlayerInventory());
 			}));
 			group.addWidget(Util.make(new WidgetGroup(0, group.getSizeHeight() - 18, group.getSizeWidth(), 18), container -> {
 				for (int i = 0; i < 9; ++i) {
@@ -61,9 +61,9 @@ public final class GuiHelper {
 							.setBackgroundTexture(null)
 							.setLocationInfo(true, true)
 							.setDrawHoverOverlay(false)
-							.setHoverTexture(GuiTextures.SLOT_HOVER));
+							.setHoverTexture(theme.getSlotHover()));
 				}
-				container.setBackground(GuiTextures.PLAYER_HOTBAR);
+				container.setBackground(theme.getPlayerHotbar());
 			}));
 		});
 	}

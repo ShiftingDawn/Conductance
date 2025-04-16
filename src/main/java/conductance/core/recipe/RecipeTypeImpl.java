@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import lombok.Getter;
 import conductance.api.NCRecipeElementTypes;
-import conductance.api.machine.gui.GuiTextures;
+import conductance.api.machine.gui.GuiTheme;
 import conductance.api.machine.gui.MachineGuiTemplate;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeSerializer;
@@ -79,11 +79,12 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 
 	@Override
 	public WidgetGroup createGuiTemplate(
-			final DoubleSupplier progressSupplier, final IItemHandlerModifiable inputItems, final IItemHandlerModifiable outputItems, final IFluidHandler inputFluids, final IFluidHandler outputFluids
+			final DoubleSupplier progressSupplier, final IItemHandlerModifiable inputItems, final IItemHandlerModifiable outputItems, final IFluidHandler inputFluids, final IFluidHandler outputFluids,
+			final GuiTheme theme
 	) {
 		final MachineGuiTemplate<WidgetGroup, RecipeHolder> template = this.createGuiTemplate();
 		final WidgetGroup group = template.createDefault();
-		template.setupGui(group, new RecipeHolder(progressSupplier, inputItems, outputItems, inputFluids, outputFluids), false);
+		template.setupGui(group, new RecipeHolder(progressSupplier, inputItems, outputItems, inputFluids, outputFluids), theme, false);
 		return group;
 	}
 
@@ -111,7 +112,7 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 			group.addWidget(progressWidget);
 
 			return group;
-		}, (template, recipeHolder, autoCalc) -> {
+		}, (template, recipeHolder, theme, autoCalc) -> {
 			final boolean isRecipeView = recipeHolder.progressSupplier() == ProgressWidget.JEIProgress;
 			final List<Widget> progressWidgets = new ArrayList<>();
 			GuiHelper.getWidgetByIdForEach(template, GuiHelper.NAME_PROGRESS_REGEX, ProgressWidget.class, progressWidget -> {
@@ -149,14 +150,14 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 			final AtomicReference<WidgetGroup> inputGroup = new AtomicReference<>();
 			GuiHelper.getWidgetByIdForEach(template, NCRecipeElementTypes.ITEM.getGroupName(IOMode.INPUT), WidgetGroup.class, itemGroup -> {
 				if (!itemGroup.widgets.isEmpty()) {
-					itemGroup.setBackground(GuiTextures.getItemSlots(recipeHolder.inputItems().getSlots(), false));
+					itemGroup.setBackground(theme.getItemSlots(recipeHolder.inputItems().getSlots(), false));
 				}
 			});
 			GuiHelper.getWidgetByIdForEach(template, NAME_SLOT_REGEX.formatted(NCRecipeElementTypes.ITEM.getSlotName(IOMode.INPUT)), SlotWidget.class, slot -> {
 				final int index = GuiHelper.getWidgetIndex(slot);
 				if (index >= 0 && index < recipeHolder.inputItems().getSlots()) {
 					slot.setBackgroundTexture(null);
-					slot.setHoverTexture(GuiTextures.SLOT_HOVER);
+					slot.setHoverTexture(theme.getSlotHover());
 					slot.setDrawHoverOverlay(false);
 					slot.setHandlerSlot(recipeHolder.inputItems(), index);
 					slot.setIngredientIO(IngredientIO.INPUT);
@@ -169,14 +170,14 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 			});
 			GuiHelper.getWidgetByIdForEach(template, NCRecipeElementTypes.FLUID.getGroupName(IOMode.INPUT), WidgetGroup.class, fluidGroup -> {
 				if (!fluidGroup.widgets.isEmpty()) {
-					fluidGroup.setBackground(GuiTextures.getFluidSlots(recipeHolder.inputFluids().getTanks(), false));
+					fluidGroup.setBackground(theme.getFluidSlots(recipeHolder.inputFluids().getTanks(), false));
 				}
 			});
 			GuiHelper.getWidgetByIdForEach(template, NAME_SLOT_REGEX.formatted(NCRecipeElementTypes.FLUID.getSlotName(IOMode.INPUT)), TankWidget.class, tank -> {
 				final int index = GuiHelper.getWidgetIndex(tank);
 				if (index >= 0 && index < recipeHolder.inputFluids().getTanks()) {
 					tank.setBackground((IGuiTexture) null);
-					tank.setHoverTexture(GuiTextures.SLOT_HOVER);
+					tank.setHoverTexture(theme.getSlotHover());
 					tank.setDrawHoverOverlay(false);
 					tank.setFluidTank(recipeHolder.inputFluids(), index);
 					tank.setIngredientIO(IngredientIO.INPUT);
@@ -193,14 +194,14 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 			final AtomicReference<WidgetGroup> outputGroup = new AtomicReference<>();
 			GuiHelper.getWidgetByIdForEach(template, NCRecipeElementTypes.ITEM.getGroupName(IOMode.OUTPUT), WidgetGroup.class, itemGroup -> {
 				if (!itemGroup.widgets.isEmpty()) {
-					itemGroup.setBackground(GuiTextures.getItemSlots(recipeHolder.outputItems().getSlots(), true));
+					itemGroup.setBackground(theme.getItemSlots(recipeHolder.outputItems().getSlots(), true));
 				}
 			});
 			GuiHelper.getWidgetByIdForEach(template, NCRecipeElementTypes.ITEM.getSlotName(IOMode.OUTPUT), SlotWidget.class, slot -> {
 				final int index = GuiHelper.getWidgetIndex(slot);
 				if (index >= 0 && index < recipeHolder.outputItems().getSlots()) {
 					slot.setBackgroundTexture(null);
-					slot.setHoverTexture(GuiTextures.SLOT_HOVER);
+					slot.setHoverTexture(theme.getSlotHover());
 					slot.setDrawHoverOverlay(false);
 					slot.setHandlerSlot(recipeHolder.outputItems(), index);
 					slot.setIngredientIO(IngredientIO.OUTPUT);
@@ -213,14 +214,14 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 			});
 			GuiHelper.getWidgetByIdForEach(template, NCRecipeElementTypes.FLUID.getGroupName(IOMode.OUTPUT), WidgetGroup.class, fluidGroup -> {
 				if (!fluidGroup.widgets.isEmpty()) {
-					fluidGroup.setBackground(GuiTextures.getFluidSlots(recipeHolder.outputFluids().getTanks(), true));
+					fluidGroup.setBackground(theme.getFluidSlots(recipeHolder.outputFluids().getTanks(), true));
 				}
 			});
 			GuiHelper.getWidgetByIdForEach(template, NAME_SLOT_REGEX.formatted(NCRecipeElementTypes.FLUID.getSlotName(IOMode.OUTPUT)), TankWidget.class, tank -> {
 				final int index = GuiHelper.getWidgetIndex(tank);
 				if (index >= 0 && index < recipeHolder.outputFluids().getTanks()) {
 					tank.setBackground((IGuiTexture) null);
-					tank.setHoverTexture(GuiTextures.SLOT_HOVER);
+					tank.setHoverTexture(theme.getSlotHover());
 					tank.setDrawHoverOverlay(false);
 					tank.setFluidTank(recipeHolder.outputFluids(), index);
 					tank.setIngredientIO(IngredientIO.OUTPUT);

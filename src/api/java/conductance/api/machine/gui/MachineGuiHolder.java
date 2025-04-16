@@ -21,4 +21,8 @@ public interface MachineGuiHolder extends IUIHolder.Block {
 	default int getPlayerInvY() {
 		return 101;
 	}
+
+	default GuiTheme getGuiTheme() {
+		return GuiTheme.THEME_DEFAULT;
+	}
 }

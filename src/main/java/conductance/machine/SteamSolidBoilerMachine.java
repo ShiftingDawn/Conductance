@@ -35,7 +35,7 @@ public final class SteamSolidBoilerMachine extends SteamBoilerMachine<SteamSolid
 	@Override
 	public void populateWidgetPanel(final WidgetGroup panel) {
 		super.populateWidgetPanel(panel);
-		panel.addWidget(new SlotWidget(this.inputInventory.inventory, 0, 115, 51).setBackgroundTexture(GuiTextures.BRONZE_SLOT));
+		panel.addWidget(new SlotWidget(this.inputInventory.inventory, 0, 115, 51).setBackgroundTexture(this.getGuiTheme().getSlotItem1()));
 		panel.addWidget(new ProgressWidget(this::getBurnTimePercentage, 115, 30, 18, 18)
 				.setProgressTexture(
 						GuiTextures.BOILER_FUEL.getSubTexture(0, 0, 1, 0.5),

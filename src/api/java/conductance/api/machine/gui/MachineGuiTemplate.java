@@ -8,7 +8,7 @@ public interface MachineGuiTemplate<WIDGET extends Widget, T> {
 
 	WIDGET createDefault();
 
-	void setupGui(WidgetGroup template, T instance, boolean autoCalc);
+	void setupGui(WidgetGroup template, T instance, GuiTheme theme, boolean autoCalc);
 
 	record Default<A extends Widget, B>(Supplier<A> supplier, MachineGuiBinder<B> binder) implements MachineGuiTemplate<A, B> {
 
@@ -18,8 +18,8 @@ public interface MachineGuiTemplate<WIDGET extends Widget, T> {
 		}
 
 		@Override
-		public void setupGui(final WidgetGroup template, final B instance, final boolean autoCalc) {
-			this.binder.bindTemplate(template, instance, autoCalc);
+		public void setupGui(final WidgetGroup template, final B instance, final GuiTheme theme, final boolean autoCalc) {
+			this.binder.bindTemplate(template, instance, theme, autoCalc);
 		}
 	}
 }

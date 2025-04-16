@@ -20,7 +20,7 @@ public class MachineGuiSupplier implements MachineGuiTemplate<WidgetGroup, Machi
 	}
 
 	@Override
-	public void setupGui(final WidgetGroup template, final MachineBlockEntity<?> instance, final boolean fixBounds) {
-		this.binder.bindTemplate(template, instance, fixBounds);
+	public void setupGui(final WidgetGroup template, final MachineBlockEntity<?> instance, final GuiTheme theme, final boolean autoCalc) {
+		this.binder.bindTemplate(template, instance, theme, autoCalc);
 	}
 }
