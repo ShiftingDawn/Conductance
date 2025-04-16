@@ -1,11 +1,13 @@
 package conductance.api.machine;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import conductance.api.machine.gui.MachineGuiSupplier;
 import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.resource.RuntimeModelProvider;
 import conductance.api.util.RotationState;
 
 public interface MachineBuilder<T extends MachineBlockEntity<T>> {
@@ -17,6 +19,8 @@ public interface MachineBuilder<T extends MachineBlockEntity<T>> {
 	MachineBuilder<T> recipeModifier(BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> modifier);
 
 	MachineBuilder<T> rotationState(RotationState rotationState);
+
+	MachineBuilder<T> setModelProvider(Function<MachineType<?>, RuntimeModelProvider> modelProvider);
 
 	MachineBuilder<T> guiSupplier(MachineGuiSupplier guiSupplier);
 

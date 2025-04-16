@@ -49,7 +49,7 @@ public class DirectionalMachineRuntimeModelProvider implements RuntimeModelProvi
 
 	@Override
 	public void createBlockModel(final ResourceLocation blockId, final BlockModelBuilder<?> builder, final Consumer<JsonObject> prebuilt) {
-		final JsonObject json = DirectionalMachineRuntimeModelProvider.loadJson();
+		final JsonObject json = this.loadJson();
 		final Pair<JsonObject, String> frontOverlayHolder =
 				SerializationHelper.findContainer(json, e -> e instanceof final JsonPrimitive prim && prim.isString() && prim.getAsString().equals("@@MACHINE_OVERLAY_FRONT@@"));
 		if (frontOverlayHolder != null) {
@@ -58,8 +58,12 @@ public class DirectionalMachineRuntimeModelProvider implements RuntimeModelProvi
 		prebuilt.accept(json);
 	}
 
-	private static JsonObject loadJson() {
-		try (final BufferedReader reader = Minecraft.getInstance().getResourceManager().openAsReader(Conductance.id("models/block/cube_machine_overlay.json"))) {
+	protected String getModelPath() {
+		return "models/block/machine_block_tiered.json";
+	}
+
+	private JsonObject loadJson() {
+		try (final BufferedReader reader = Minecraft.getInstance().getResourceManager().openAsReader(Conductance.id(this.getModelPath()))) {
 			return GsonHelper.parse(reader, true);
 		} catch (final IOException e) {
 			throw new RuntimeException(e);

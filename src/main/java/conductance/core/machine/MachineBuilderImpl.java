@@ -37,8 +37,6 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	private MachineBlockFactory<T> blockFactory = MachineBlock::new;
 	@Setter
 	private MachineBlockEntityFactory<T> blockEntityFactory;
-	@Setter
-	@Getter
 	private Function<MachineType<?>, RuntimeModelProvider> modelProvider = DirectionalMachineRuntimeModelProvider::new;
 	@Getter
 	private NCRecipeType[] recipeTypes = new NCRecipeType[0];
@@ -98,6 +96,12 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	@Override
 	public MachineBuilder<T> rotationState(final RotationState rotState) {
 		this.rotationState = rotState;
+		return this;
+	}
+
+	@Override
+	public MachineBuilder<T> setModelProvider(final Function<MachineType<?>, RuntimeModelProvider> provider) {
+		this.modelProvider = provider;
 		return this;
 	}
 

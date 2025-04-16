@@ -3,6 +3,7 @@ package conductance.init;
 import conductance.api.NCRecipeTypes;
 import conductance.api.NCTiers;
 import conductance.api.plugin.MachineRegister;
+import conductance.core.machine.BronzeDirectionalMachineRuntimeModelProvider;
 import conductance.machine.GenericGeneratorMachine;
 import conductance.machine.GenericRecipeMachine;
 import conductance.machine.SteamSolidBoilerMachine;
@@ -17,6 +18,7 @@ public final class ConductanceMachines {
 //						Component.translatable("tooltip.conductance.boiler.explode_on_water_fill")
 //				)
 //				.localized("Solid Fuel Steam Boiler")
+				.setModelProvider(BronzeDirectionalMachineRuntimeModelProvider::new)
 				.build();
 
 		register.<GenericGeneratorMachine>register("steam_turbine", (type, pos, blockState) -> new GenericGeneratorMachine(type, pos, blockState, NCTiers.LV))

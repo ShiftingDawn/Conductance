@@ -6,7 +6,7 @@
 	},
 	"children": {
 		"hull": {
-			"parent": "conductance:block/cube_machine",
+			"parent": "conductance:block/machine_casing_tiered",
 			"render_type": "solid"
 		},
 		"machine_overlay": {
