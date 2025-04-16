@@ -11,12 +11,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialStack;
 import conductance.api.material.MaterialTextureSet;
+import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitFluid;
@@ -32,6 +34,8 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	private final MaterialTraitMapImpl traits;
 	private final MaterialFlagMap flags;
 	private final List<MaterialStack> componentList = new ArrayList<>();
+	@Nullable
+	private MaterialTraitKey<? extends MaterialTraitFluid<?>> defaultFluid;
 	private boolean calculateColor = false;
 
 	public MaterialBuilderImpl(final ResourceLocation registryName) {
@@ -105,6 +109,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	@Override
 	public MaterialBuilder liquid() {
 		this.traits.set(NCMaterialTraits.LIQUID, new MaterialTraitFluid.Liquid());
+		this.defaultFluid(NCMaterialTraits.LIQUID, false);
 		return this;
 	}
 
@@ -116,12 +121,14 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	@Override
 	public MaterialBuilder liquid(final Consumer<MaterialTraitFluid.Liquid> builder) {
 		this.traits.set(NCMaterialTraits.LIQUID, Util.make(new MaterialTraitFluid.Liquid(), Objects.requireNonNull(builder)));
+		this.defaultFluid(NCMaterialTraits.LIQUID, false);
 		return this;
 	}
 
 	@Override
 	public MaterialBuilder gas() {
 		this.traits.set(NCMaterialTraits.GAS, new MaterialTraitFluid.Gas());
+		this.defaultFluid(NCMaterialTraits.GAS, false);
 		return this;
 	}
 
@@ -133,12 +140,14 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	@Override
 	public MaterialBuilder gas(final Consumer<MaterialTraitFluid.Gas> builder) {
 		this.traits.set(NCMaterialTraits.GAS, Util.make(new MaterialTraitFluid.Gas(), Objects.requireNonNull(builder)));
+		this.defaultFluid(NCMaterialTraits.GAS, false);
 		return this;
 	}
 
 	@Override
 	public MaterialBuilder plasma() {
 		this.traits.set(NCMaterialTraits.PLASMA, new MaterialTraitFluid.Plasma());
+		this.defaultFluid(NCMaterialTraits.PLASMA, false);
 		return this;
 	}
 
@@ -150,6 +159,19 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	@Override
 	public MaterialBuilder plasma(final Consumer<MaterialTraitFluid.Plasma> builder) {
 		this.traits.set(NCMaterialTraits.PLASMA, Util.make(new MaterialTraitFluid.Plasma(), Objects.requireNonNull(builder)));
+		this.defaultFluid(NCMaterialTraits.PLASMA, false);
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder defaultFluid(final MaterialTraitKey<? extends MaterialTraitFluid<?>> fluidType) {
+		return this.defaultFluid(fluidType, true);
+	}
+
+	private MaterialBuilder defaultFluid(final MaterialTraitKey<? extends MaterialTraitFluid<?>> fluidType, final boolean override) {
+		if (this.defaultFluid == null || override) {
+			this.defaultFluid = fluidType;
+		}
 		return this;
 	}
 
@@ -286,7 +308,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	@Override
 	public Material build() {
 		final MaterialDataMapImpl dataFinalized = this.data.build(ImmutableList.copyOf(this.componentList));
-		final MaterialImpl material = new MaterialImpl(this.registryName, dataFinalized, this.traits, this.flags);
+		final MaterialImpl material = new MaterialImpl(this.registryName, dataFinalized, this.traits, this.flags, this.defaultFluid);
 		this.traits.setMaterial(material);
 		material.verify(this.calculateColor);
 		CAPI.regs().materials().register(material.getRegistryKey(), material);

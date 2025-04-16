@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.registry.IRegistryObject;
 
 public interface Material extends IRegistryObject<ResourceLocation> {
@@ -56,6 +57,9 @@ public interface Material extends IRegistryObject<ResourceLocation> {
 	}
 
 	String getUnlocalizedName();
+
+	@Nullable
+	MaterialTraitKey<? extends MaterialTraitFluid<?>> getDefaultFluid();
 
 	default TagKey<Block> getRequiredToolTag() {
 		return this.getData().getBlockRequiredToolTag();

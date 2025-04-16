@@ -9,6 +9,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialStack;
 import conductance.api.material.MaterialTextureSet;
+import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitFluid;
 
@@ -49,6 +50,8 @@ public interface MaterialBuilder {
 	MaterialBuilder plasma(int temperature);
 
 	MaterialBuilder plasma(Consumer<MaterialTraitFluid.Plasma> builder);
+
+	MaterialBuilder defaultFluid(MaterialTraitKey<? extends MaterialTraitFluid<?>> defaultFluid);
 
 	MaterialBuilder requiredTool(TagKey<Block> requiredToolTag);
 

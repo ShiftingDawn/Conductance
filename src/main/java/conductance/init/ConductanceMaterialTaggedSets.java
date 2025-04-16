@@ -126,7 +126,7 @@ public final class ConductanceMaterialTaggedSets {
 				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.ORE))
 				.build();
 
-		LIQUID = register.register("liquid", mat -> mat.hasTrait(NCMaterialTraits.INGOT) ? "molten_%s" : "%s")
+		LIQUID = register.register("liquid", ConductanceMaterialTaggedSets::liquidUnlocalizedNameGenerator)
 				.addTag("%s")
 				.generateFluids(true)
 				.textureType(NCTextureTypes.LIQUID)
@@ -138,7 +138,7 @@ public final class ConductanceMaterialTaggedSets {
 						.lightLevel(mat.getData().getBlockLightLevel())
 				))
 				.build();
-		GAS = register.register("gas")
+		GAS = register.register("gas", ConductanceMaterialTaggedSets::gasUnlocalizedNameGenerator)
 				.addTag("gases/%s")
 				.generateFluids(true)
 				.textureType(NCTextureTypes.GAS)
@@ -295,6 +295,23 @@ public final class ConductanceMaterialTaggedSets {
 			return "%s_bar";
 		}
 		return "%s_ingot";
+	}
+
+	private static String liquidUnlocalizedNameGenerator(final Material material) {
+		if (material.hasTrait(NCMaterialTraits.INGOT)) {
+			return "molten_%s";
+		}
+		if (material.getDefaultFluid() == NCMaterialTraits.GAS) {
+			return "liquid_%s";
+		}
+		return "%s";
+	}
+
+	private static String gasUnlocalizedNameGenerator(final Material material) {
+		if (material.getDefaultFluid() == NCMaterialTraits.GAS) {
+			return "%s";
+		}
+		return "%s_gas";
 	}
 
 	private static String plateUnlocalizedNameGenerator(final Material material) {

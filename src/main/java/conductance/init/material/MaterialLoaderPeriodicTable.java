@@ -1,6 +1,7 @@
 package conductance.init.material;
 
 import net.minecraft.tags.BlockTags;
+import conductance.api.NCMaterialTraits;
 import conductance.api.NCPeriodicElements;
 import conductance.api.plugin.MaterialRegister;
 import static conductance.api.NCMaterialFlags.CAN_MORTAR;
@@ -168,6 +169,7 @@ public final class MaterialLoaderPeriodicTable {
 				.liquid().gas().plasma()
 				.color(255, 255, 0)
 				.periodicElement(NCPeriodicElements.HELIUM)
+				.defaultFluid(NCMaterialTraits.GAS)
 				.build();
 
 		HELIUM_3 = register.register("helium_3")
@@ -215,6 +217,7 @@ public final class MaterialLoaderPeriodicTable {
 				.gas().plasma().liquid(85)
 				.color(0, 100, 200)
 				.periodicElement(NCPeriodicElements.OXYGEN)
+				.defaultFluid(NCMaterialTraits.GAS)
 				.build();
 
 		FLUORINE = register.register("fluorine")
