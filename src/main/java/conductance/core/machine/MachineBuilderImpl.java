@@ -1,10 +1,12 @@
 package conductance.core.machine;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import net.minecraft.Util;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
@@ -14,43 +16,67 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.machine.IMachineBlockItem;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineBlockEntityFactory;
 import conductance.api.machine.MachineBlockFactory;
+import conductance.api.machine.MachineBlockItem;
+import conductance.api.machine.MachineBlockItemFactory;
 import conductance.api.machine.MachineBuilder;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiSupplier;
 import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.resource.RuntimeModelProvider;
+import conductance.api.machine.render.MachineOverlayRenderer;
 import conductance.api.util.RotationState;
+import conductance.Conductance;
+import conductance.runtimepack.client.MachineBlockModelHandler;
 import static conductance.core.apiimpl.ApiBridge.getRegistrate;
 
 public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements MachineBuilder<T> {
 
 	private final String registryKey;
-	@Setter
 	private MachineBlockFactory<T> blockFactory = MachineBlock::new;
-	@Setter
+	private MachineBlockItemFactory<T> itemFactory = MachineBlockItem::new;
 	private MachineBlockEntityFactory<T> blockEntityFactory;
-	private Function<MachineType<?>, RuntimeModelProvider> modelProvider = DirectionalMachineRuntimeModelProvider::new;
 	@Getter
 	private NCRecipeType[] recipeTypes = new NCRecipeType[0];
 	private Object2IntMap<IRecipeElementType<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
 	private BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> recipeModifier = (machine, recipe) -> recipe;
 	private RotationState rotationState = RotationState.HORIZONTAL;
+	private IRenderer modelRenderer;
 	@Getter
 	private MachineGuiSupplier guiSupplier;
 
 	public MachineBuilderImpl(final String registryKey, final MachineBlockEntityFactory<T> machineBlockEntityFactory) {
 		this.registryKey = registryKey;
 		this.blockEntityFactory = machineBlockEntityFactory;
+		this.defaultModelRenderer(Conductance.id("block/machine_casing_tiered"));
 	}
 
+	@Override
+	public MachineBuilder<T> blockFactory(final MachineBlockFactory<T> factory) {
+		this.blockFactory = factory;
+		return this;
+	}
+
+	@Override
+	public MachineBuilder<T> itemFactory(final MachineBlockItemFactory<T> factory) {
+		this.itemFactory = factory;
+		return this;
+	}
+
+	@Override
+	public MachineBuilder<T> blockEntityFactory(final MachineBlockEntityFactory<T> factory) {
+		this.blockEntityFactory = factory;
+		return this;
+	}
+
+	@SuppressWarnings("removal")
 	private BlockEntry<? extends MachineBlock<T>> createBlock(final MachineTypeImpl<T> machineType) {
 		final BlockBuilder<MachineBlock<T>, Registrate> blockBuilder = getRegistrate().block(this.registryKey, props -> {
 			RotationState.set(this.rotationState);
@@ -61,7 +87,14 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 		blockBuilder
 				.initialProperties(() -> Blocks.IRON_BLOCK)
 				.blockstate(NonNullBiConsumer.noop())
-				.item(BlockItem::new)
+				.addLayer(() -> RenderType::cutoutMipped)
+				.item((block, props) -> {
+					final IMachineBlockItem<T> item = this.itemFactory.newInstance(block, props);
+					if (!(item instanceof Item)) {
+						throw new IllegalArgumentException("Machine block item %s is not an Item".formatted(item.getClass().getName()));
+					}
+					return (Item) item;
+				})
 				.model(NonNullBiConsumer.noop())
 				.build();
 		return blockBuilder.register();
@@ -100,9 +133,22 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	}
 
 	@Override
-	public MachineBuilder<T> setModelProvider(final Function<MachineType<?>, RuntimeModelProvider> provider) {
-		this.modelProvider = provider;
+	public MachineBuilder<T> modelRenderer(final IRenderer renderer) {
+		this.modelRenderer = renderer;
 		return this;
+	}
+
+	@Override
+	public MachineBuilder<T> defaultModelRenderer(final ResourceLocation baseModelLocation, @Nullable final ResourceLocation overlayModelLocation) {
+		final ResourceLocation overlayLocation;
+		if (overlayModelLocation != null) {
+			overlayLocation = overlayModelLocation;
+			MachineBlockModelHandler.remove(this.registryKey);
+		} else {
+			overlayLocation = Conductance.id("block/machine/%s".formatted(this.registryKey));
+			MachineBlockModelHandler.add(this.registryKey, overlayLocation);
+		}
+		return this.modelRenderer(new MachineOverlayRenderer(baseModelLocation, overlayLocation));
 	}
 
 	@Override
@@ -116,10 +162,10 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 		final MachineTypeImpl<T> machineType = Util.make(new MachineTypeImpl<>(this.registryKey), result -> {
 			result.setBlock(this.createBlock(result));
 			result.setBlockEntityType(this.createBlockEntity(result));
-			result.setModelProvider(this.modelProvider);
 			result.setRecipeTypes(this.recipeTypes);
 			result.setRecipeOutputLimits(this.recipeOutputLimits);
 			result.setRecipeModifier(this.recipeModifier);
+			result.setModelRenderer(this.modelRenderer);
 			result.setGuiSupplier(this.guiSupplier);
 		});
 		machineType.validate();

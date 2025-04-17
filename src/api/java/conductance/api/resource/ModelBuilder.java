@@ -13,6 +13,12 @@ public interface ModelBuilder<BUILDER extends ModelBuilder<BUILDER>> {
 
 	BUILDER loader(ResourceLocation loader);
 
+	BUILDER renderType(ResourceLocation renderType);
+
+	default BUILDER renderType(final String renderType) {
+		return this.renderType(ResourceLocation.withDefaultNamespace(renderType));
+	}
+
 	ModelDisplayBuilder<BUILDER> display(ItemDisplayContext context);
 
 	BUILDER texture(String textureKey, ResourceLocation texture);

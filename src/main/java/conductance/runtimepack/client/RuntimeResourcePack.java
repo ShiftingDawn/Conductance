@@ -17,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.Conductance;
 import conductance.Config;
-import conductance.runtimepack.AbstractRuntimePack;
 import conductance.core.apiimpl.TranslationRegistryImpl;
+import conductance.runtimepack.AbstractRuntimePack;
 
 public final class RuntimeResourcePack extends AbstractRuntimePack {
 
@@ -60,7 +60,7 @@ public final class RuntimeResourcePack extends AbstractRuntimePack {
 		RuntimeResourcePack.addReloadListener(MaterialBlockModelHandler::reload);
 		RuntimeResourcePack.addReloadListener(MaterialOreModelHandler::reload);
 		RuntimeResourcePack.addReloadListener(MaterialFluidModelHandler::reload);
-		RuntimeResourcePack.addReloadListener(MachineModelHandler::reload);
+		RuntimeResourcePack.addReloadListener(MachineBlockModelHandler::reload);
 	}
 
 	public static void load() {

@@ -9,7 +9,6 @@ import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.ModelBuilder;
@@ -24,6 +23,8 @@ public abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>
 	private ResourceLocation parent;
 	@Nullable
 	private ResourceLocation loader;
+	@Nullable
+	private ResourceLocation renderType;
 
 	public ModelBuilderImpl(final ResourceLocation defaultParent) {
 		this.parent = defaultParent;
@@ -43,6 +44,12 @@ public abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>
 	@Override
 	public BUILDER loader(final ResourceLocation newLoader) {
 		this.loader = newLoader;
+		return this.self();
+	}
+
+	@Override
+	public BUILDER renderType(final ResourceLocation type) {
+		this.renderType = type;
 		return this.self();
 	}
 
@@ -75,6 +82,9 @@ public abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>
 			json.addProperty("parent", this.parent.toString());
 			if (this.loader != null) {
 				json.addProperty("loader", this.loader.toString());
+			}
+			if (this.renderType != null) {
+				json.addProperty("render_type", this.renderType.toString());
 			}
 			if (!this.displays.isEmpty()) {
 				json.add("display", Util.make(new JsonObject(), displayJson -> {

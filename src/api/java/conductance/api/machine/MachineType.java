@@ -3,6 +3,8 @@ package conductance.api.machine;
 import java.util.Map;
 import java.util.function.BiFunction;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.gui.MachineGuiSupplier;
@@ -23,6 +25,12 @@ public interface MachineType<T extends MachineBlockEntity<T>> extends IRegistryO
 
 	NonNullSupplier<BlockEntityType<T>> getBlockEntityType();
 
+	IRenderer getModelRenderer();
+
 	@Nullable
 	MachineGuiSupplier getGuiSupplier();
+
+	default BlockState getDefaultBlockState() {
+		return this.getBlock().get().defaultBlockState();
+	}
 }

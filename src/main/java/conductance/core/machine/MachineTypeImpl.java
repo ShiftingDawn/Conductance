@@ -2,16 +2,16 @@ package conductance.core.machine;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineType;
@@ -20,7 +20,6 @@ import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.registry.RegistryObject;
-import conductance.api.resource.RuntimeModelProvider;
 
 public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryObject<String> implements MachineType<T> {
 
@@ -30,18 +29,20 @@ public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryOb
 	private BlockEntityEntry<T> blockEntityType;
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
-	private Function<MachineType<?>, RuntimeModelProvider> modelProvider;
-	@Getter
-	@Setter(AccessLevel.PACKAGE)
 	private NCRecipeType[] recipeTypes;
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
-	private Object2IntMap<IRecipeElementType<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
+	private Object2IntMap<IRecipeElementType<?>> recipeOutputLimits;
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
+	@Nullable
 	private BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> recipeModifier;
 	@Getter
+	@Setter
+	private IRenderer modelRenderer;
+	@Getter
 	@Setter(AccessLevel.PACKAGE)
+	@Nullable
 	private MachineGuiSupplier guiSupplier;
 
 	public MachineTypeImpl(final String registryKey) {
@@ -54,8 +55,8 @@ public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryOb
 	protected void validate() {
 		Objects.requireNonNull(this.block, "No block");
 		Objects.requireNonNull(this.blockEntityType, "No block entity type");
-		Objects.requireNonNull(this.modelProvider, "No model provider");
 		Objects.requireNonNull(this.recipeTypes, "No recipe types");
+		Objects.requireNonNull(this.modelRenderer, "No model renderer");
 	}
 
 	@Override

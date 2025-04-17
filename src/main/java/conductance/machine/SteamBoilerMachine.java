@@ -95,7 +95,7 @@ public abstract class SteamBoilerMachine<T extends SteamBoilerMachine<T>> extend
 	}
 
 	@Override
-	protected void onNeighborChanged(final BlockPos neighborPos, final BlockState neighborState, final Direction neighborSide) {
+	public void onNeighborChanged(final BlockPos neighborPos, final BlockState neighborState, final Direction neighborSide) {
 		super.onNeighborChanged(neighborPos, neighborState, neighborSide);
 		this.updateAutoOutputSubscription();
 	}

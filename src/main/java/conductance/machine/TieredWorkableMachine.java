@@ -162,7 +162,7 @@ public class TieredWorkableMachine<T extends TieredWorkableMachine<T>> extends M
 
 	@Override
 	public void setOverclockTier(final Tier newTier) {
-		if (!this.isRemote() && newTier.getIndex() >= this.getMinOverclockTier().getIndex() && newTier.getIndex() <= this.getMaxOverclockTier().getIndex()) {
+		if (!this.isClientSide() && newTier.getIndex() >= this.getMinOverclockTier().getIndex() && newTier.getIndex() <= this.getMaxOverclockTier().getIndex()) {
 			this.overclockTier = newTier;
 			this.recipeProcessor.markDirty();
 		}

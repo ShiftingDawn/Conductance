@@ -34,7 +34,7 @@ import conductance.api.machine.recipe.RecipeProcessor;
 import conductance.api.util.IOMode;
 import conductance.api.util.RotationState;
 
-public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity implements IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IEnhancedManaged {
+public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity implements IBlockEntity, IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IEnhancedManaged {
 
 	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineBlockEntity.class);
 	private final int timerOffset = CAPI.RANDOM.nextInt(20);
@@ -146,7 +146,7 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 //		}
 		final IOItemTransferList transferList = new IOItemTransferList(handlers, ioMode, this.getItemCapFilter(side));
 //		if (!useCovers || side == null) {
-			return transferList;
+		return transferList;
 //		}
 //		return null;
 		//TODO covers
@@ -172,7 +172,7 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 //		}
 		final IOFluidTransferList transferList = new IOFluidTransferList(handlers, ioMode, this.getFluidCapFilter(side));
 //		if (!useCovers || side == null) {
-			return transferList;
+		return transferList;
 //		}
 //		return null;
 		//TODO covers
@@ -196,9 +196,10 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 		this.capabilities.forEach(MachineCapability::onUnload);
 	}
 
+	@Override
 	@Nullable
 	public final MachineRunnable addTick(final Runnable action) {
-		if (!this.isRemote()) {
+		if (!this.isClientSide()) {
 			return Util.make(new MachineRunnable(action), result -> {
 				this.pending.add(result);
 				if (!this.getBlockState().getValue(MachineBlock.LIT) && this.getLevel() instanceof final ServerLevel serverLevel) {
@@ -208,14 +209,6 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 			});
 		}
 		return null;
-	}
-
-	@Nullable
-	public final MachineRunnable addTick(@Nullable final MachineRunnable previous, final Runnable action) {
-		if (previous == null || !previous.isValid()) {
-			return this.addTick(action);
-		}
-		return previous;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -251,7 +244,7 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 	public void scheduleRenderUpdate() {
 		if (this.level != null) {
 			final var state = this.level.getBlockState(this.getBlockPos());
-			if (this.level.isClientSide) {
+			if (this.isClientSide()) {
 				this.level.sendBlockUpdated(this.getBlockPos(), state, state, 1 << 3);
 			} else {
 				this.level.blockEvent(this.getBlockPos(), state.getBlock(), 1, 0);
@@ -261,7 +254,8 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 	//endregion
 
 	//region Event
-	protected void onNeighborChanged(final BlockPos neighborPos, final BlockState neighborState, final Direction neighborSide) {
+	@Override
+	public void onNeighborChanged(final BlockPos neighborPos, final BlockState neighborState, final Direction neighborSide) {
 	}
 
 	protected boolean canConnectRedstone(@Nullable final Direction direction) {
@@ -312,29 +306,16 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 		return false;
 	}
 
-	public final boolean hasTicksPassed(final int offset) {
-		return this.getTimerOffset() % offset == 0;
-	}
-
+	@Override
 	public final long getTimerOffset() {
 		return this.level != null ? this.level.getGameTime() + this.timerOffset : this.timerOffset;
-	}
-
-	public final int getTimerOffsetValue() {
-		return this.timerOffset;
-	}
-
-	/**
-	 * @return <code>true</code> if the currently executing code is running on a client or <code>false</code> if it's a server
-	 */
-	public boolean isRemote() {
-		return this.getLevel() == null ? CAPI.isClient() : this.getLevel().isClientSide();
 	}
 
 	/**
 	 * @return <code>true</code> if the BlockEntity should be considered valid, <code>false</code> otherwise
 	 * @see #isInvalid()
 	 */
+	@Override
 	public boolean isValid() {
 		return !this.isRemoved();
 	}
@@ -343,6 +324,7 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 	 * @return <code>true</code> if the BlockEntity should be considered invalid, <code>false</code> otherwise
 	 * @see #isValid()
 	 */
+	@Override
 	public boolean isInvalid() {
 		return this.isRemoved();
 	}
@@ -351,6 +333,11 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 	public void setRemoved() {
 		super.setRemoved();
 		this.onUnload();
+	}
+
+	@Override
+	public IBlockEntity getBlockEntity() {
+		return this;
 	}
 	//endregion
 }
