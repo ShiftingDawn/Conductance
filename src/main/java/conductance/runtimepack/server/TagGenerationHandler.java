@@ -81,12 +81,12 @@ public final class TagGenerationHandler {
 	}
 
 	private static void addFluidEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
-		// TODO Fluids
-		//		MaterialRegistryImpl.INSTANCE.getFluidTable().values().forEach(fluids -> fluids.forEach(fluid -> {
-		//			final ResourceLocation fluidName = BuiltInRegistries.FLUID.getKey(fluid);
-		//			final ResourceLocation tagName = TagHelper.tagForPlatform(BuiltInRegistries.FLUID, fluidName.getPath(), fluidName.getPath()).location();
-		//			tagMap.computeIfAbsent(tagName, k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(fluidName), TagGenerationHandler.TAG_SOURCE));
-		//		}));
+		MaterialRegistry.INSTANCE.getFluidTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, fluids) -> fluids.forEach(fluid -> {
+			final ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
+			taggedSet.streamAllBlockTags(material).forEach(tagKey -> {
+				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(fluidId), TagGenerationHandler.TAG_SOURCE));
+			});
+		})));
 	}
 
 	private TagGenerationHandler() {
