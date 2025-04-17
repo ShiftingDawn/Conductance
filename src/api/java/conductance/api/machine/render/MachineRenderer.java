@@ -47,18 +47,18 @@ public class MachineRenderer extends TextureOverrideRenderer implements /* ICove
 
 	@OnlyIn(Dist.CLIENT)
 	public void renderBaseModel(
-			final List<BakedQuad> quads, final MachineType<?> machineType, @Nullable final MachineBlockEntity<?> metaBlockEntity, final Direction frontFacing, @Nullable final Direction side,
+			final List<BakedQuad> quads, final MachineType<?> machineType, @Nullable final MachineBlockEntity<?> machine, final Direction frontFacing, @Nullable final Direction side,
 			final RandomSource rand) {
 		quads.addAll(this.getRotatedModel(frontFacing).getQuads(machineType.getDefaultBlockState(), side, rand));
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public void renderMachine(
-			final List<BakedQuad> quads, final MachineType<?> machineType, @Nullable final MachineBlockEntity<?> metaBlockEntity, final Direction front, @Nullable final Direction side,
+			final List<BakedQuad> quads, final MachineType<?> machineType, @Nullable final MachineBlockEntity<?> machine, final Direction front, @Nullable final Direction side,
 			final RandomSource rand, @Nullable final Direction modelFacing, final ModelState modelState
 	) {
 		//Dynamic rendering like CTM, multi texture replacement here
-		this.renderBaseModel(quads, machineType, metaBlockEntity, front, side, rand);
+		this.renderBaseModel(quads, machineType, machine, front, side, rand);
 	}
 
 	@Override

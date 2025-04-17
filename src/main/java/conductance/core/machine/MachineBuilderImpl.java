@@ -32,6 +32,7 @@ import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.render.MachineOverlayRenderer;
+import conductance.api.machine.render.WorkableMachineRenderer;
 import conductance.api.util.RotationState;
 import conductance.Conductance;
 import conductance.runtimepack.client.MachineBlockModelHandler;
@@ -149,6 +150,11 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 			MachineBlockModelHandler.add(this.registryKey, overlayLocation);
 		}
 		return this.modelRenderer(new MachineOverlayRenderer(baseModelLocation, overlayLocation));
+	}
+
+	@Override
+	public MachineBuilder<T> workableModelRenderer(final ResourceLocation baseModelLocation) {
+		return this.modelRenderer(new WorkableMachineRenderer(baseModelLocation, Conductance.id("block/machine/%s".formatted(this.registryKey))));
 	}
 
 	@Override

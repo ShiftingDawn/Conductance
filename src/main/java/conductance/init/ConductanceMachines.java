@@ -19,18 +19,20 @@ public final class ConductanceMachines {
 //						Component.translatable("tooltip.conductance.boiler.explode_on_water_fill")
 //				)
 //				.localized("Solid Fuel Steam Boiler")
-				.defaultModelRenderer(Conductance.id("block/machine_casing_bronze"))
+				.workableModelRenderer(Conductance.id("block/machine_casing_bronze"))
 				.build();
 
 		register.<GenericGeneratorMachine>register("steam_turbine", (type, pos, blockState) -> new GenericGeneratorMachine(type, pos, blockState, NCTiers.LV))
 				.recipeType(NCRecipeTypes.STEAM_TURBINE)
 				.recipeModifier(GenericGeneratorMachine::recipeModifier)
 				.guiSupplier(GenericGeneratorMachine.GUI_SUPPLIER.apply(NCRecipeTypes.STEAM_TURBINE))
+				.workableModelRenderer(Conductance.id("block/machine_casing_tiered"))
 				.build();
 
 		register.<GenericRecipeMachine>register("bender", (type, pos, blockState) -> new GenericRecipeMachine(type, pos, blockState, NCTiers.LV))
 				.recipeType(NCRecipeTypes.BENDER)
 				.guiSupplier(GenericRecipeMachine.GUI_SUPPLIER.apply(NCRecipeTypes.BENDER))
+				.workableModelRenderer(Conductance.id("block/machine_casing_tiered"))
 				.build();
 	}
 

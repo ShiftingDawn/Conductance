@@ -35,6 +35,7 @@ public interface MachineBuilder<T extends MachineBlockEntity<T>> {
 		return this.defaultModelRenderer(baseModelLocation, null);
 	}
 
+	MachineBuilder<T> workableModelRenderer(ResourceLocation baseModelLocation);
 
 	MachineBuilder<T> guiSupplier(MachineGuiSupplier guiSupplier);
 
