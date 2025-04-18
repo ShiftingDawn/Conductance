@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -26,11 +27,12 @@ import com.lowdragmc.lowdraglib.gui.factory.BlockEntityUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.util.IInteractable;
 import conductance.api.util.MiscUtils;
 import conductance.api.util.RotationState;
 
 @SuppressWarnings("deprecation")
-public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements IMachineBlock<T> {
+public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements IMachineBlock<T>, IInteractable {
 
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 	private final MachineType<T> machineType;
@@ -110,14 +112,15 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 		return this.getMachineType().getBlockEntityType().get().create(blockPos, blockState);
 	}
 
+
 	@Override
-	protected InteractionResult useWithoutItem(final BlockState state, final Level level, final BlockPos pos, final Player player, final BlockHitResult hitResult) {
+	public InteractionResult onRightClick(final BlockState blockState, final Level level, final BlockPos pos, final Player player, final InteractionHand hand, final BlockHitResult hit) {
 		return this.<InteractionResult>getMachine(level, pos, mbt -> {
 			if (mbt instanceof final IUIHolder.Block holder && !level.isClientSide && player instanceof final ServerPlayer serverPlayer) {
 				BlockEntityUIFactory.INSTANCE.openUI(holder.self(), serverPlayer);
 			}
 			return InteractionResult.sidedSuccess(level.isClientSide);
-		}, () -> super.useWithoutItem(state, level, pos, player, hitResult));
+		}, () -> InteractionResult.PASS);
 	}
 
 	@Nullable
