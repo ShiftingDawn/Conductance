@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.capability.CapabilityHelper;
+import conductance.api.capability.cover.ICoverable;
 import conductance.api.capability.energy.EnergyHandlerList;
 import conductance.api.capability.energy.IEnergyHandler;
 import conductance.api.util.RotationState;
@@ -97,6 +98,9 @@ public interface IMachineBlock<T extends MachineBlockEntity<T>> extends EntityBl
 				}
 			}
 			return null;
+		}, this.self());
+		event.registerBlock(CapabilityHelper.COVERABLE_BLOCK, (level, blockPos, blockState, blockEntity, unused) -> {
+			return blockEntity instanceof final ICoverable coverable ? coverable : null;
 		}, this.self());
 	}
 }

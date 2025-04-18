@@ -14,6 +14,9 @@
 
     <suppress files="Config\.java" checks="[a-zA-Z0-9]*"/>
 
+    <suppress files="NCCovers\.java" checks="VisibilityModifier"/>
+    <suppress files="NCCovers\.java" checks="StaticVariableName"/>
+
     <suppress files="NCMachines\.java" checks="VisibilityModifier"/>
     <suppress files="NCMachines\.java" checks="StaticVariableName"/>
 

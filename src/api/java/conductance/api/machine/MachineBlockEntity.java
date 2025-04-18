@@ -3,6 +3,7 @@ package conductance.api.machine;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -20,6 +21,8 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
@@ -27,6 +30,8 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.capability.cover.CoverManager;
+import conductance.api.capability.cover.ICoverable;
 import conductance.api.machine.capability.MachineCapability;
 import conductance.api.machine.capability.MachineRecipeCapability;
 import conductance.api.machine.recipe.IRecipeElementType;
@@ -34,7 +39,7 @@ import conductance.api.machine.recipe.RecipeProcessor;
 import conductance.api.util.IOMode;
 import conductance.api.util.RotationState;
 
-public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity implements IBlockEntity, IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IEnhancedManaged {
+public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity implements IBlockEntity, IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IEnhancedManaged, ICoverable {
 
 	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineBlockEntity.class);
 	private final int timerOffset = CAPI.RANDOM.nextInt(20);
@@ -45,10 +50,20 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 	private final MachineType<T> machineType;
 	@Getter
 	private final List<MachineCapability> capabilities = new ArrayList<>();
+	@Getter
+	@DescSynced
+	@Persisted(key = "cover")
+	protected final CoverManager coverManager;
 
 	public MachineBlockEntity(final MachineType<T> machineType, final BlockPos pos, final BlockState blockState) {
 		super(machineType.getBlockEntityType().get(), pos, blockState);
 		this.machineType = machineType;
+		this.coverManager = new CoverManager(this) {
+			@Override
+			public double getCoverBackplateThickness() {
+				return 0;
+			}
+		};
 	}
 
 	//region SyncData
@@ -109,24 +124,22 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 	}
 
 	protected Predicate<ItemStack> getItemCapFilter(@Nullable final Direction side) {
-		//TODO covers
-//		if (side != null) {
-//			final Optional<?> cover = this.getCoverManager().getCover(side);
-//			if (cover.isPresent() && cover.get() instanceof final IItemFilterHolder filterHolder) {
-//				return filterHolder.getItemFilter();
-//			}
-//		}
+		if (side != null && this instanceof final ICoverable coverable) {
+			final Optional<?> cover = coverable.getCoverManager().getCover(side);
+			if (cover.isPresent() && cover.get() instanceof final IItemFilterHolder filterHolder) {
+				return filterHolder.getItemFilter();
+			}
+		}
 		return item -> true;
 	}
 
 	protected Predicate<FluidStack> getFluidCapFilter(@Nullable final Direction side) {
-		//TODO covers
-//		if (side != null) {
-//			final Optional<?> cover = this.getCoverManager().getCover(side);
-//			if (cover.isPresent() && cover.get() instanceof final IFluidFilterHolder filterHolder) {
-//				return filterHolder.getFluidFilter();
-//			}
-//		}
+		if (side != null && this instanceof final ICoverable coverable) {
+			final Optional<?> cover = coverable.getCoverManager().getCover(side);
+			if (cover.isPresent() && cover.get() instanceof final IFluidFilterHolder filterHolder) {
+				return filterHolder.getFluidFilter();
+			}
+		}
 		return fluid -> true;
 	}
 
@@ -145,15 +158,13 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 //			ioMode = IOMode.OUTPUT;
 //		}
 		final IOItemTransferList transferList = new IOItemTransferList(handlers, ioMode, this.getItemCapFilter(side));
-//		if (!useCovers || side == null) {
-		return transferList;
-//		}
-//		return null;
-		//TODO covers
-//		return this.getCoverManager().getCover(side)
-//				.filter(cover -> cover instanceof IDelegateItemHandler)
-//				.map(cover -> ((IDelegateItemHandler) cover).getItemHandlerCapability())
-//				.orElse(transferList);
+		if (!useCovers || side == null || !(this instanceof final ICoverable coverable)) {
+			return transferList;
+		}
+		return coverable.getCoverManager().getCover(side)
+				.filter(cover -> cover instanceof IItemCapabilityProvider)
+				.map(cover -> ((IItemCapabilityProvider) cover).getItemHandlerCapability())
+				.orElse(transferList);
 	}
 
 	@Nullable
@@ -171,15 +182,13 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 //			ioMode = IOMode.OUTPUT;
 //		}
 		final IOFluidTransferList transferList = new IOFluidTransferList(handlers, ioMode, this.getFluidCapFilter(side));
-//		if (!useCovers || side == null) {
-		return transferList;
-//		}
-//		return null;
-		//TODO covers
-//		return this.getCoverManager().getCover(side)
-//				.filter(cover -> cover instanceof IDelegateItemHandler)
-//				.map(cover -> ((IDelegateItemHandler) cover).getItemHandlerCapability())
-//				.orElse(transferList);
+		if (!useCovers || side == null || !(this instanceof final ICoverable coverable)) {
+			return transferList;
+		}
+		return coverable.getCoverManager().getCover(side)
+				.filter(cover -> cover instanceof IFluidCapabilityProvider)
+				.map(cover -> ((IFluidCapabilityProvider) cover).getFluidHandlerCapability())
+				.orElse(transferList);
 	}
 	//endregion
 
@@ -188,12 +197,14 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 	public void onLoad() {
 		super.onLoad();
 		this.capabilities.forEach(MachineCapability::onLoad);
+		this.coverManager.onLoaded();
 	}
 
 	public void onUnload() {
+		this.capabilities.forEach(MachineCapability::onUnload);
+		this.coverManager.onUnloaded();
 		this.ticks.forEach(MachineRunnable::invalidate);
 		this.ticks.clear();
-		this.capabilities.forEach(MachineCapability::onUnload);
 	}
 
 	@Override
@@ -242,14 +253,7 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 
 	@Override
 	public void scheduleRenderUpdate() {
-		if (this.level != null) {
-			final var state = this.level.getBlockState(this.getBlockPos());
-			if (this.isClientSide()) {
-				this.level.sendBlockUpdated(this.getBlockPos(), state, state, 1 << 3);
-			} else {
-				this.level.blockEvent(this.getBlockPos(), state.getBlock(), 1, 0);
-			}
-		}
+		IBlockEntity.super.scheduleRenderUpdate();
 	}
 	//endregion
 
@@ -279,6 +283,7 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 	//endregion
 
 	//region Misc
+	@Override
 	public Direction getFrontFacing() {
 		final var blockState = this.getBlockState();
 		if (blockState.getBlock() instanceof final IMachineBlock<?> machineBlock) {
@@ -300,8 +305,8 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 			return false;
 		}
 		final var blockState = this.getBlockState();
-		if (blockState.getBlock() instanceof final IMachineBlock<?> metaBlock) {
-			return metaBlock.getRotationState().test(facing);
+		if (blockState.getBlock() instanceof final IMachineBlock<?> machineBlock) {
+			return machineBlock.getRotationState().test(facing);
 		}
 		return false;
 	}

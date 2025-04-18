@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import net.minecraft.Util;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -17,6 +18,10 @@ import org.objectweb.asm.Type;
 import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
+import conductance.api.capability.cover.CoverEntity;
+import conductance.api.capability.cover.CoverEntityConstructor;
+import conductance.api.capability.cover.CoverRenderer;
+import conductance.api.capability.cover.CoverType;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.RecipeElementCloner;
 import conductance.api.material.IMaterialTrait;
@@ -26,10 +31,12 @@ import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
+import conductance.api.plugin.CoverRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.Conductance;
+import conductance.core.cover.CoverTypeImpl;
 import conductance.core.machine.MachineBuilderImpl;
 import conductance.core.recipe.RecipeElementTypeSerializer;
 import conductance.core.recipe.RecipeTypeBuilderImpl;
@@ -153,6 +160,15 @@ public final class PluginManager {
 
 	public static void dispatchRegisterMachines() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMachines(MachineBuilderImpl::new));
+	}
+
+	public static void dispatchRegisterCovers() {
+		PluginManager.execute((plugin, modid) -> plugin.registerCovers(new CoverRegister() {
+			@Override
+			public <COVER extends CoverEntity<COVER>> CoverType<COVER> register(final String registryName, final Function<CoverType<COVER>, CoverRenderer> coverRenderer, final CoverEntityConstructor<COVER> constructor) {
+				return new CoverTypeImpl<>(ResourceLocation.fromNamespaceAndPath(modid, registryName), coverRenderer, constructor);
+			}
+		}));
 	}
 
 	public static void dispatchMaterialOverrides() {

@@ -6,10 +6,12 @@ import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
-import conductance.item.CraftingToolItem;
-import conductance.item.MaterialItem;
+import conductance.api.NCCovers;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.MaterialTaggedSet;
+import conductance.item.CraftingToolItem;
+import conductance.item.MaterialItem;
+import conductance.item.SimpleCoverItem;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class ConductanceItems {
@@ -21,6 +23,9 @@ public final class ConductanceItems {
 	public static void init() {
 		ConductanceItems.generateMaterialItems();
 		ConductanceItems.generateCraftingTools();
+		ApiBridge.getRegistrate().item("lv_conveyor_module", props -> new SimpleCoverItem(props, NCCovers.LV_CONVEYOR))
+				.model(NonNullBiConsumer.noop())//ModelUtils.generatedItem(Conductance.id("item/%s".formatted(name))))
+				.register();
 	}
 
 	private static void generateMaterialItems() {

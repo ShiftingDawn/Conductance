@@ -1,6 +1,7 @@
 package conductance.api.registry;
 
 import net.minecraft.resources.ResourceLocation;
+import conductance.api.capability.cover.CoverType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
@@ -39,4 +40,6 @@ public interface RegistryProvider {
 	ConductanceRegistry<String, Tier> tiers();
 
 	ConductanceRegistry<String, MachineType<?>> machines();
+
+	ConductanceRegistry<ResourceLocation, CoverType<?>> covers();
 }

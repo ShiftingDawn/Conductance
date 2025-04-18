@@ -31,13 +31,13 @@ import com.lowdragmc.lowdraglib.client.model.custommodel.ICTMPredicate;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.capability.cover.ICoverable;
 import conductance.api.machine.IMachineBlock;
 import conductance.api.machine.IMachineBlockItem;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineType;
 
-//TODO covers
-public class MachineRenderer extends TextureOverrideRenderer implements /* ICoverRenderer,  */ ICTMPredicate {
+public class MachineRenderer extends TextureOverrideRenderer implements ICoverRenderer, ICTMPredicate {
 
 	private static final ResourceLocation TEXTURE_IO_PORT = ResourceLocation.fromNamespaceAndPath(CAPI.MOD_ID, "block/machine/machine_hull/io_port");
 
@@ -95,10 +95,9 @@ public class MachineRenderer extends TextureOverrideRenderer implements /* ICove
 					final MachineType<?> machineType = machine.getMachineType();
 					this.renderMachine(quads, machineType, machine, machineFrontFace, side, rand, modelFacing, modelState);
 				}
-				//TODO covers
-//				if (be instanceof final ICoverable coverable) {
-//					this.renderCovers(quads, side, rand, coverable, modelFacing, modelState);
-//				}
+				if (be instanceof final ICoverable coverable) {
+					this.renderCovers(quads, side, rand, coverable, modelFacing, modelState);
+				}
 				return quads;
 			}
 		}

@@ -6,6 +6,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import conductance.api.capability.cover.CoverType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
@@ -42,6 +43,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 
 	private final ConductanceRegistryImpl<String, Tier> tiers = RegistryProviderImpl.makeStringKeyed("tiers");
 	private final ConductanceRegistryImpl<String, MachineType<?>> machines = RegistryProviderImpl.makeStringKeyed("machine_type");
+	private final ConductanceRegistryImpl<ResourceLocation, CoverType<?>> covers = RegistryProviderImpl.makeResourceKeyed("cover");
 
 	RegistryProviderImpl(final IEventBus modEventBus) {
 		modEventBus.addListener(this::onRegisterEvent);

@@ -1,13 +1,23 @@
 package conductance.core;
 
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import conductance.api.capability.CapabilityHelper;
+import conductance.api.capability.cover.CoverEntity;
+import conductance.api.capability.cover.CoverManager;
+import conductance.api.capability.cover.CoverType;
+import conductance.api.capability.cover.ICoverItem;
+import conductance.api.capability.cover.ICoverable;
 import conductance.api.util.IExtendedInteractable;
 import conductance.api.util.InteractType;
 import conductance.api.util.RotationState;
@@ -17,14 +27,16 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 public final class ExtendedInteractionHelper {
 
 	public static boolean shouldUseExtendedInteraction(final UseOnContext ctx) {
+		if (ctx.getPlayer() == null) {
+			return false;
+		}
 		final BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
 		final BlockEntity blockEntity = ctx.getLevel().getBlockEntity(ctx.getClickedPos());
 		if (blockEntity != null) {
-			//TODO covers
-//			final ICoverable coverable = CapabilityHelper.getCoverable(ctx.getLevel(), ctx.getClickedPos(), null);
-//			if (coverable != null && (ctx.getItemInHand().getItem() instanceof ICoverItem || ctx.getPlayer().isCrouching() || InteractType.CROWBAR.is(ctx.getItemInHand()))) {
-//				return true;
-//			}
+			final ICoverable coverable = CapabilityHelper.getCoverable(ctx.getLevel(), ctx.getClickedPos());
+			if (coverable != null && (ctx.getItemInHand().getItem() instanceof ICoverItem || ctx.getPlayer().isCrouching() || InteractType.HAMMER.is(ctx.getItemInHand()))) {
+				return true;
+			}
 			if (ctx.getPlayer().isCrouching() && (blockState.getBlock() instanceof IExtendedInteractable || blockEntity instanceof IExtendedInteractable)) {
 				return true;
 			}
@@ -60,39 +72,45 @@ public final class ExtendedInteractionHelper {
 				}
 			}
 		}
-		//TODO covers
-//		final ICoverable coverable = CapabilityHelper.getCoverable(ctx.getLevel(), ctx.getClickedPos(), side);
-//		if (coverable != null) {
-//			final CoverManager coverManager = coverable.getCoverManager();
-//			//TODO handle gui open
-//			if (coverManager.getCover(side).isPresent()) {
-//				if (interactType == InteractType.CROWBAR) {
-//					final CoverType<?> removedCover = coverManager.removeCover(side);
-//					if (removedCover != null) {
-//						if (!ctx.getLevel().isClientSide) {
-//							//TODO drop cover
-//						}
+		final ICoverable coverable = CapabilityHelper.getCoverable(ctx.getLevel(), ctx.getClickedPos());
+		if (coverable != null && ctx.getPlayer() != null) {
+			final CoverManager coverManager = coverable.getCoverManager();
+			final Optional<? extends CoverEntity<?>> cover = coverManager.getCover(side);
+			if (cover.isPresent()) {
+				final CoverEntity<?> coverEntity = cover.get();
+				if (interactType == InteractType.HAMMER) {
+					final ItemStack coverItem = coverEntity.getAttachItem();
+					final CoverType<?> removedCover = coverManager.removeCover(side);
+					if (removedCover != null) {
+						if (!ctx.getLevel().isClientSide) {
+							if (!ctx.getPlayer().isCreative() && !ctx.getPlayer().addItem(coverItem)) {
+								Block.popResourceFromFace(ctx.getLevel(), ctx.getClickedPos(), ctx.getClickedFace(), coverItem);
+							}
+						}
+						//TODO play cover break sound
 //						ConductanceSounds.TOOL_CROWBAR.play(ctx.getLevel(), ctx.getPlayer(), ctx.getClickedPos(), 1.0f, 0.15f);
-//					}
-//					return InteractionResult.sidedSuccess(ctx.getLevel().isClientSide);
-//				} else if (ctx.getPlayer().isCrouching() && ctx.getPlayer().getItemInHand(ctx.getHand()).isEmpty()) {
-//					final CoverEntity<?> coverEntity = coverManager.getCover(side).get();
+					}
+					return InteractionResult.sidedSuccess(ctx.getLevel().isClientSide);
+				} else if (ctx.getPlayer().isCrouching() && ctx.getPlayer().getItemInHand(ctx.getHand()).isEmpty()) {
+					//TODO handle gui open
 //					if (!ctx.getLevel().isClientSide) {
 //						CoverGuiFactory.INSTANCE.openUI(coverEntity, (ServerPlayer) ctx.getPlayer());
 //					}
-//					return InteractionResult.sidedSuccess(ctx.getLevel().isClientSide);
-//				}
-//			} else if (ctx.getItemInHand().getItem() instanceof final ICoverItem<?> coverItem) {
-//				if (!ctx.getLevel().isClientSide && coverManager.canAcceptCover(coverItem.getCoverType(), side)) {
-//					coverManager.attachCover(coverItem.getCoverType(), side, ctx.getItemInHand(), (ServerPlayer) ctx.getPlayer());
-//				}
-//				return InteractionResult.sidedSuccess(ctx.getLevel().isClientSide);
-//			}
-//		}
+					return InteractionResult.sidedSuccess(ctx.getLevel().isClientSide);
+				}
+			} else if (ctx.getItemInHand().getItem() instanceof final ICoverItem<?> coverItem) {
+				if (!ctx.getLevel().isClientSide && coverManager.canAcceptCover(coverItem.getCoverType(), side)) {
+					if (coverManager.attachCover(coverItem.getCoverType(), side, ctx.getItemInHand(), (ServerPlayer) ctx.getPlayer()) && !ctx.getPlayer().isCreative()) {
+						ctx.getItemInHand().shrink(1);
+					}
+				}
+				return InteractionResult.sidedSuccess(ctx.getLevel().isClientSide);
+			}
+		}
 		if (interactType != null) {
 			if (interactType == InteractType.WRENCH && ExtendedInteractionHelper.tryWrench(ctx, side)) {
+				//TODO play wrench sound
 //				if (ctx.getLevel().isClientSide) {
-				//TODO play sound
 //					ConductanceSounds.TOOL_WRENCH.play(ctx.getLevel(), ctx.getPlayer());
 //				}
 				return InteractionResult.sidedSuccess(ctx.getLevel().isClientSide);

@@ -7,6 +7,7 @@ import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
 import conductance.api.NCMaterialTaggedSets;
+import conductance.api.plugin.CoverRegister;
 import conductance.api.plugin.MachineRegister;
 import conductance.api.plugin.MaterialFlagRegister;
 import conductance.api.plugin.MaterialOreTypeRegister;
@@ -23,6 +24,7 @@ import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.api.plugin.RecipeTypeRegister;
 import conductance.api.plugin.TagRegister;
 import conductance.api.plugin.TierRegister;
+import conductance.init.ConductanceCovers;
 import conductance.init.ConductanceItems;
 import conductance.init.ConductanceMachines;
 import conductance.init.ConductanceMaterialFlags;
@@ -124,6 +126,11 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 	@Override
 	public void registerMachines(final MachineRegister register) {
 		ConductanceMachines.init(register);
+	}
+
+	@Override
+	public void registerCovers(final CoverRegister register) {
+		ConductanceCovers.init(register);
 	}
 
 	@Override

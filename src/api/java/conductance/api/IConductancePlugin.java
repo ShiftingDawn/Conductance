@@ -1,6 +1,7 @@
 package conductance.api;
 
 import net.minecraft.data.recipes.RecipeOutput;
+import conductance.api.plugin.CoverRegister;
 import conductance.api.plugin.MachineRegister;
 import conductance.api.plugin.MaterialFlagRegister;
 import conductance.api.plugin.MaterialOreTypeRegister;
@@ -54,6 +55,9 @@ public interface IConductancePlugin {
 	}
 
 	default void registerMachines(final MachineRegister register) {
+	}
+
+	default void registerCovers(final CoverRegister register) {
 	}
 
 	default void registerMaterialOverrides(final MaterialOverrideMap overrides) {

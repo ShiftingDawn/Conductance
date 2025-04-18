@@ -49,6 +49,8 @@ public final class CommonProxy {
 		PluginManager.dispatchRecipeElementTypes();
 		PluginManager.dispatchRecipeTypes();
 
+		PluginManager.dispatchRegisterCovers();
+
 		ConductanceItems.init();
 		ConductanceBlocks.init();
 		ConductanceFluids.init();
@@ -57,19 +59,19 @@ public final class CommonProxy {
 	}
 
 	private static void handleRightClickBlock(final PlayerInteractEvent.RightClickBlock event) {
-		final BlockState blockState = event.getLevel().getBlockState(event.getPos());
-		if (blockState.getBlock() instanceof final IInteractable interactable) {
-			final InteractionResult result = interactable.onRightClick(blockState, event.getLevel(), event.getPos(), event.getEntity(), event.getHand(), event.getHitVec());
+		final UseOnContext ctx = new UseOnContext(event.getLevel(), event.getEntity(), event.getHand(), event.getItemStack(), event.getHitVec());
+		final Direction side = InteractionHelper.getInteractSide(event.getHitVec());
+		if (ExtendedInteractionHelper.shouldUseExtendedInteraction(ctx)) {
+			final InteractionResult result = ExtendedInteractionHelper.handleExtendedInteraction(ctx, side);
 			if (result.consumesAction()) {
 				event.setCanceled(true);
 				event.setCancellationResult(result);
 				return;
 			}
 		}
-		final UseOnContext ctx = new UseOnContext(event.getLevel(), event.getEntity(), event.getHand(), event.getItemStack(), event.getHitVec());
-		final Direction side = InteractionHelper.getInteractSide(event.getHitVec());
-		if (ExtendedInteractionHelper.shouldUseExtendedInteraction(ctx)) {
-			final InteractionResult result = ExtendedInteractionHelper.handleExtendedInteraction(ctx, side);
+		final BlockState blockState = event.getLevel().getBlockState(event.getPos());
+		if (blockState.getBlock() instanceof final IInteractable interactable) {
+			final InteractionResult result = interactable.onRightClick(blockState, event.getLevel(), event.getPos(), event.getEntity(), event.getHand(), event.getHitVec());
 			if (result.consumesAction()) {
 				event.setCanceled(true);
 				event.setCancellationResult(result);
@@ -79,18 +81,18 @@ public final class CommonProxy {
 
 	private static void handleLeftClickBlock(final PlayerInteractEvent.LeftClickBlock event) {
 		final BlockState blockState = event.getLevel().getBlockState(event.getPos());
-		if (blockState.getBlock() instanceof final IInteractable interactable) {
-			if (interactable.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(), event.getFace())) {
-				event.setCanceled(true);
-				return;
-			}
-		}
 		if (blockState.hasBlockEntity()) {
 			final BlockEntity blockEntity = event.getLevel().getBlockEntity(event.getPos());
 			if (blockEntity instanceof final IInteractable interactable) {
 				if (interactable.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(), event.getFace())) {
 					event.setCanceled(true);
+					return;
 				}
+			}
+		}
+		if (blockState.getBlock() instanceof final IInteractable interactable) {
+			if (interactable.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(), event.getFace())) {
+				event.setCanceled(true);
 			}
 		}
 	}
