@@ -13,7 +13,7 @@ import conductance.api.util.SafeOptional;
 import conductance.Conductance;
 import conductance.Config;
 
-@SuppressWarnings({ "DataFlowIssue", "ConstantValue" })
+@SuppressWarnings({"DataFlowIssue", "ConstantValue"})
 final class ResourceFinderImpl implements ResourceFinder {
 
 	private final Table<MaterialTextureSet, MaterialTextureType, Table<String, String, SafeOptional<ResourceLocation>>> blockTextureCache = HashBasedTable.create();
@@ -125,7 +125,7 @@ final class ResourceFinderImpl implements ResourceFinder {
 	}
 
 	private SafeOptional<ResourceLocation> getResourceCascaded(final String resourceType, final String pathPrepend, final MaterialTextureSet set, final MaterialTextureType type, @Nullable final String extension,
-			@Nullable final String pathPrefix, @Nullable final String pathSuffix) {
+	                                                           @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
 		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix;
 		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : pathSuffix;
 		MaterialTextureSet currentSet = set;
@@ -152,7 +152,7 @@ final class ResourceFinderImpl implements ResourceFinder {
 	}
 
 	private static Table<String, String, SafeOptional<ResourceLocation>> innerTable(final Table<MaterialTextureSet, MaterialTextureType, Table<String, String, SafeOptional<ResourceLocation>>> parentTable,
-			final MaterialTextureSet set, final MaterialTextureType type) {
+	                                                                                final MaterialTextureSet set, final MaterialTextureType type) {
 		Table<String, String, SafeOptional<ResourceLocation>> rootTable = parentTable.get(set, type);
 		if (rootTable == null) {
 			rootTable = HashBasedTable.create();

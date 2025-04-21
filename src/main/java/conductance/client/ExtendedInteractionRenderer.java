@@ -184,12 +184,12 @@ final class ExtendedInteractionRenderer {
 
 	private static boolean shouldRenderCross(final Level level, final BlockPos pos, final BlockState state, @Nullable final BlockEntity tile, final Direction side) {
 		//TODO pipe
-//		if (tile instanceof final IPipeNode<?, ?> pipeNode && pipeNode.isConnected(side)) {
+//		if (tile instanceof final IPipeNode<?, ?> pipeNode && pipeNode.isConnected(endSide)) {
 //			return true;
 		//TODO covers
 //		} else if (tile != null) {
 //			final ICoverable coverable = CapabilityHelper.getCoverable(level, pos, null);
-//			if (coverable != null && coverable.getCoverManager().getCover(side).isPresent()) {
+//			if (coverable != null && coverable.getCoverManager().getCover(endSide).isPresent()) {
 //				return true;
 //			}
 //		}

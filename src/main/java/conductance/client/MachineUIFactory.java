@@ -20,8 +20,8 @@ public class MachineUIFactory extends UIFactory<MachineBlockEntity<?>> {
 		super(Conductance.id("machine"));
 	}
 
-	public static <T extends MachineBlockEntity<?> & MachineGuiHolder> ModularUI createGui(final T machine, final Player player) {
-		return new ModularUI(GuiHelper.GUI_WIDTH, GuiHelper.GUI_HEIGHT, machine, player).widget(new RootWidget(machine));
+	public static ModularUI createGui(final MachineBlockEntity<?> machine, final MachineGuiHolder holder, final Player player) {
+		return new ModularUI(GuiHelper.GUI_WIDTH, GuiHelper.GUI_HEIGHT, holder, player).widget(new RootWidget(machine, holder));
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package conductance.api;
 
 import conductance.api.material.MaterialTraitKey;
+import conductance.api.material.traits.MaterialTraitCable;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
@@ -20,6 +21,8 @@ public final class NCMaterialTraits {
 	public static MaterialTraitKey<MaterialTraitFluid.Liquid> LIQUID;
 	public static MaterialTraitKey<MaterialTraitFluid.Gas> GAS;
 	public static MaterialTraitKey<MaterialTraitFluid.Plasma> PLASMA;
+
+	public static MaterialTraitKey<MaterialTraitCable> CABLE;
 
 	private NCMaterialTraits() {
 	}

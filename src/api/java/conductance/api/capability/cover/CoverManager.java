@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
@@ -25,11 +26,12 @@ import com.lowdragmc.lowdraglib.syncdata.managed.IRef;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.EnvironmentProvider;
+import conductance.api.machine.IAppearance;
 import conductance.api.machine.IBlockEntity;
 import conductance.api.machine.MachineRunnable;
 import conductance.api.machine.RunnableContainer;
 
-public class CoverManager implements IEnhancedManaged, EnvironmentProvider, RunnableContainer {
+public class CoverManager implements IEnhancedManaged, EnvironmentProvider, RunnableContainer, IAppearance {
 
 	public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverManager.class);
 	private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -219,5 +221,12 @@ public class CoverManager implements IEnhancedManaged, EnvironmentProvider, Runn
 		final CoverType<?> coverType = CAPI.regs().covers().get(coverId);
 		assert coverType != null;
 		return coverType.instantiate(this, side);
+	}
+
+	@Override
+	public BlockState getAppearance(final BlockState state, final BlockAndTintGetter level, final BlockPos pos, final Direction side, @Nullable final BlockState queryState, @Nullable final BlockPos queryPos) {
+		return this.getCover(side).filter(cover -> cover instanceof IAppearance)
+				.map(cover -> ((IAppearance) cover).getAppearance(state, level, pos, side, queryState, queryPos))
+				.orElse(state);
 	}
 }

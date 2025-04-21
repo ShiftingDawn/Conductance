@@ -13,6 +13,7 @@ import conductance.api.util.IInteractable;
 import conductance.client.MachineUIFactory;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.PluginManager;
+import conductance.init.ConductanceBlockEntities;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
 import conductance.init.ConductanceFluids;
@@ -31,8 +32,9 @@ public final class CommonProxy {
 
 		ConductanceCreativeTabs.init();
 
-		PluginManager.dispatchPeriodicElements();
+		PluginManager.dispatchTiers();
 
+		PluginManager.dispatchPeriodicElements();
 		PluginManager.dispatchMaterialTextureTypes();
 		PluginManager.dispatchMaterialTextureSets();
 		PluginManager.dispatchMaterialTraits();
@@ -40,9 +42,6 @@ public final class CommonProxy {
 		PluginManager.dispatchMaterialOreTypes();
 		PluginManager.dispatchMaterialTaggedSets();
 		PluginManager.dispatchMaterials();
-
-		PluginManager.dispatchTiers();
-
 		PluginManager.dispatchMaterialOverrides();
 		PluginManager.dispatchMaterialUnitOverrides();
 
@@ -50,11 +49,10 @@ public final class CommonProxy {
 		PluginManager.dispatchRecipeTypes();
 
 		PluginManager.dispatchRegisterCovers();
-
 		ConductanceItems.init();
 		ConductanceBlocks.init();
 		ConductanceFluids.init();
-
+		ConductanceBlockEntities.init();
 		PluginManager.dispatchRegisterMachines();
 	}
 

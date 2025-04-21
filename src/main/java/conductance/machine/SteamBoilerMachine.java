@@ -254,7 +254,7 @@ public abstract class SteamBoilerMachine<T extends SteamBoilerMachine<T>> extend
 
 	@Override
 	public ModularUI createUI(final Player entityPlayer) {
-		return MachineUIFactory.createGui(this, entityPlayer);
+		return MachineUIFactory.createGui(this, this, entityPlayer);
 	}
 
 	@Override

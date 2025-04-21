@@ -18,10 +18,10 @@ public class RootWidget extends WidgetGroup {
 	private final MachineBlockEntity<?> machine;
 	private final MachineGuiHolder holder;
 
-	public <T extends MachineBlockEntity<?> & MachineGuiHolder> RootWidget(final T machine) {
+	public RootWidget(final MachineBlockEntity<?> machine, final MachineGuiHolder holder) {
 		super(0, 0, GUI_WIDTH, GUI_HEIGHT);
 		this.machine = machine;
-		this.holder = machine;
+		this.holder = holder;
 		this.setBackground(this.holder.getGuiTheme().getBackground());
 	}
 

@@ -40,7 +40,7 @@ public class GenericGeneratorMachine extends TieredWorkableMachine<GenericGenera
 
 	@Override
 	public ModularUI createUI(final Player entityPlayer) {
-		return MachineUIFactory.createGui(this, entityPlayer);
+		return MachineUIFactory.createGui(this, this, entityPlayer);
 	}
 
 	public static IRecipe recipeModifier(final MachineBlockEntity<?> machine, final IRecipe recipe) {

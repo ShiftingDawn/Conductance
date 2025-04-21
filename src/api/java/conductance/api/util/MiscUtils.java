@@ -8,6 +8,8 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -65,6 +67,17 @@ public final class MiscUtils {
 				}
 			});
 		});
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Enum<T>> T readEnumFromNbt(final CompoundTag nbt, final String key, final T fallback) {
+		if (nbt.contains(key, Tag.TAG_INT)) {
+			final int ordinal = nbt.getInt(key);
+			if (ordinal >= 0 && ordinal < fallback.getClass().getEnumConstants().length) {
+				return (T) fallback.getClass().getEnumConstants()[ordinal];
+			}
+		}
+		return fallback;
 	}
 
 	private MiscUtils() {

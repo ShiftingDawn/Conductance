@@ -20,12 +20,14 @@ import conductance.api.material.MaterialStack;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
+import conductance.api.material.traits.MaterialTraitCable;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
 import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.material.traits.MaterialTraitOre;
 import conductance.api.plugin.MaterialBuilder;
+import conductance.api.util.tier.Tier;
 
 public final class MaterialBuilderImpl implements MaterialBuilder {
 
@@ -302,6 +304,13 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder wood() {
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder cable(final Tier tier, final int amperage, final int cableLoss) {
+		this.dust();
+		this.traits.set(NCMaterialTraits.CABLE, new MaterialTraitCable(tier, amperage, cableLoss));
 		return this;
 	}
 

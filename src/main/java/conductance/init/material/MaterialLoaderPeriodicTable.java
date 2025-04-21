@@ -3,6 +3,7 @@ package conductance.init.material;
 import net.minecraft.tags.BlockTags;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCPeriodicElements;
+import conductance.api.NCTiers;
 import conductance.api.plugin.MaterialRegister;
 import static conductance.api.NCMaterialFlags.CAN_MORTAR;
 import static conductance.api.NCMaterialFlags.GENERATE_BOLT_AND_SCREW;
@@ -252,6 +253,7 @@ public final class MaterialLoaderPeriodicTable {
 				.color(128, 200, 240)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.ALUMINIUM)
+				.cable(NCTiers.LV, 1, 1) //TODO EV
 				.build();
 
 		SILICON = register.register("silicon")

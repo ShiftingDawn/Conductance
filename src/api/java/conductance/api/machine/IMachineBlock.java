@@ -8,7 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -23,13 +23,18 @@ import conductance.api.capability.energy.EnergyHandlerList;
 import conductance.api.capability.energy.IEnergyHandler;
 import conductance.api.util.RotationState;
 
-public interface IMachineBlock<T extends MachineBlockEntity<T>> extends EntityBlock, IBlockRendererProvider {
+public interface IMachineBlock<T extends MachineBlockEntity<T>> extends IBlockEntityBlock, IBlockRendererProvider {
 
 	default Block self() {
 		return (Block) this;
 	}
 
 	MachineType<T> getMachineType();
+
+	@Override
+	default BlockEntityType<?> getBlockEntityType() {
+		return this.getMachineType().getBlockEntityType().get();
+	}
 
 	RotationState getRotationState();
 

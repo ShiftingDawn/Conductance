@@ -8,6 +8,12 @@ import conductance.api.NCTextureTypes;
 import conductance.api.material.Material;
 import conductance.api.plugin.MaterialTaggedSetRegister;
 import static conductance.api.NCMaterialTaggedSets.BOLT;
+import static conductance.api.NCMaterialTaggedSets.CABLE_12X;
+import static conductance.api.NCMaterialTaggedSets.CABLE_16X;
+import static conductance.api.NCMaterialTaggedSets.CABLE_1X;
+import static conductance.api.NCMaterialTaggedSets.CABLE_2X;
+import static conductance.api.NCMaterialTaggedSets.CABLE_4X;
+import static conductance.api.NCMaterialTaggedSets.CABLE_8X;
 import static conductance.api.NCMaterialTaggedSets.DUST;
 import static conductance.api.NCMaterialTaggedSets.FINE_WIRE;
 import static conductance.api.NCMaterialTaggedSets.FOIL;
@@ -37,6 +43,12 @@ import static conductance.api.NCMaterialTaggedSets.ROD;
 import static conductance.api.NCMaterialTaggedSets.ROTOR;
 import static conductance.api.NCMaterialTaggedSets.SCREW;
 import static conductance.api.NCMaterialTaggedSets.STORAGE_BLOCK;
+import static conductance.api.NCMaterialTaggedSets.WIRE_12X;
+import static conductance.api.NCMaterialTaggedSets.WIRE_16X;
+import static conductance.api.NCMaterialTaggedSets.WIRE_1X;
+import static conductance.api.NCMaterialTaggedSets.WIRE_2X;
+import static conductance.api.NCMaterialTaggedSets.WIRE_4X;
+import static conductance.api.NCMaterialTaggedSets.WIRE_8X;
 import static conductance.api.NCMaterialTaggedSets.hasFlag;
 
 public final class ConductanceMaterialTaggedSets {
@@ -279,6 +291,67 @@ public final class ConductanceMaterialTaggedSets {
 				.generateBlocks(true)
 				.textureType(NCTextureTypes.FRAME_BOX)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FRAME))
+				.build();
+
+		WIRE_1X = register.register("1x_wire", "1x_%s_wire")
+				.addTag("1x_wires/%s")
+				.addTagUnformatted("1x_wires")
+				.unitValue(CAPI.UNIT / 2)
+				.build();
+		WIRE_2X = register.register("2x_wire", "2x_%s_wire")
+				.addTag("2x_wires/%s")
+				.addTagUnformatted("2x_wires")
+				.unitValue(CAPI.UNIT)
+				.build();
+		WIRE_4X = register.register("4x_wire", "4x_%s_wire")
+				.addTag("4x_wires/%s")
+				.addTagUnformatted("4x_wires")
+				.unitValue(CAPI.UNIT * 2)
+				.build();
+		WIRE_8X = register.register("8x_wire", "8x_%s_wire")
+				.addTag("8x_wires/%s")
+				.addTagUnformatted("8x_wires")
+				.unitValue(CAPI.UNIT * 4)
+				.build();
+		WIRE_12X = register.register("12x_wire", "12x_%s_wire")
+				.addTag("12x_wires/%s")
+				.addTagUnformatted("12x_wires")
+				.unitValue(CAPI.UNIT * 6)
+				.build();
+		WIRE_16X = register.register("16x_wire", "16x_%s_wire")
+				.addTag("16x_wires/%s")
+				.addTagUnformatted("16x_wires")
+				.unitValue(CAPI.UNIT * 8)
+				.build();
+		CABLE_1X = register.register("1x_cable", "1x_%s_cable")
+				.addTag("1x_cables/%s")
+				.addTagUnformatted("1x_cables")
+				.unitValue(CAPI.UNIT / 2)
+				.build();
+		CABLE_2X = register.register("2x_cable", "2x_%s_cable")
+				.addTag("2x_cables/%s")
+				.addTagUnformatted("2x_cables")
+				.unitValue(CAPI.UNIT)
+				.build();
+		CABLE_4X = register.register("4x_cable", "4x_%s_cable")
+				.addTag("4x_cables/%s")
+				.addTagUnformatted("4x_cables")
+				.unitValue(CAPI.UNIT * 2)
+				.build();
+		CABLE_8X = register.register("8x_cable", "8x_%s_cable")
+				.addTag("8x_cables/%s")
+				.addTagUnformatted("8x_cables")
+				.unitValue(CAPI.UNIT * 4)
+				.build();
+		CABLE_12X = register.register("12x_cable", "12x_%s_cable")
+				.addTag("12x_cables/%s")
+				.addTagUnformatted("12x_cables")
+				.unitValue(CAPI.UNIT * 6)
+				.build();
+		CABLE_16X = register.register("16x_cable", "16x_%s_cable")
+				.addTag("16x_cables/%s")
+				.addTagUnformatted("16x_cables")
+				.unitValue(CAPI.UNIT * 8)
 				.build();
 	}
 	//@formatter:on

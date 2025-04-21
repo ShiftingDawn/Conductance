@@ -1,20 +1,13 @@
 package conductance.api.machine;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -29,7 +22,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.CAPI;
 import conductance.api.capability.cover.CoverManager;
 import conductance.api.capability.cover.ICoverable;
 import conductance.api.machine.capability.MachineCapability;
@@ -39,12 +31,9 @@ import conductance.api.machine.recipe.RecipeProcessor;
 import conductance.api.util.IOMode;
 import conductance.api.util.RotationState;
 
-public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity implements IBlockEntity, IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IEnhancedManaged, ICoverable {
+public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BaseBlockEntity implements IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IEnhancedManaged, ICoverable {
 
 	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineBlockEntity.class);
-	private final int timerOffset = CAPI.RANDOM.nextInt(20);
-	private final List<MachineRunnable> ticks = new ArrayList<>();
-	private final List<MachineRunnable> pending = new ArrayList<>();
 	private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
 	@Getter
 	private final MachineType<T> machineType;
@@ -197,70 +186,22 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 	public void onLoad() {
 		super.onLoad();
 		this.capabilities.forEach(MachineCapability::onLoad);
-		this.coverManager.onLoaded();
-	}
-
-	public void onUnload() {
-		this.capabilities.forEach(MachineCapability::onUnload);
-		this.coverManager.onUnloaded();
-		this.ticks.forEach(MachineRunnable::invalidate);
-		this.ticks.clear();
 	}
 
 	@Override
-	@Nullable
-	public final MachineRunnable addTick(final Runnable action) {
-		if (!this.isClientSide()) {
-			return Util.make(new MachineRunnable(action), result -> {
-				this.pending.add(result);
-				if (!this.getBlockState().getValue(MachineBlock.LIT) && this.getLevel() instanceof final ServerLevel serverLevel) {
-					final BlockState newState = this.getBlockState().setValue(MachineBlock.LIT, true);
-					serverLevel.setBlockAndUpdate(this.getBlockPos(), newState);
-				}
-			});
-		}
-		return null;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	protected void onClientTick() {
-	}
-
-	public void onAnimateTick(final RandomSource random) {
-	}
-
-	protected final void handleServerTick() {
-		if (!this.pending.isEmpty()) {
-			this.ticks.addAll(this.pending);
-			this.pending.clear();
-		}
-		final Iterator<MachineRunnable> iterator = this.ticks.iterator();
-		while (iterator.hasNext()) {
-			final MachineRunnable tick = iterator.next();
-			tick.tick();
-			if (this.isInvalid()) {
-				break;
-			}
-			if (!tick.isValid()) {
-				iterator.remove();
-			}
-		}
-		if (this.isValid() && this.ticks.isEmpty() && this.pending.isEmpty()) {
-			assert this.level != null;
-			this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(MachineBlock.LIT, false));
-		}
+	public void onUnload() {
+		super.onUnload();
+		this.capabilities.forEach(MachineCapability::onUnload);
 	}
 
 	@Override
 	public void scheduleRenderUpdate() {
-		IBlockEntity.super.scheduleRenderUpdate();
+		super.scheduleRenderUpdate();
 	}
+
 	//endregion
 
 	//region Event
-	@Override
-	public void onNeighborChanged(final BlockPos neighborPos, final BlockState neighborState, final Direction neighborSide) {
-	}
 
 	protected boolean canConnectRedstone(@Nullable final Direction direction) {
 		return false;
@@ -309,40 +250,6 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 			return machineBlock.getRotationState().test(facing);
 		}
 		return false;
-	}
-
-	@Override
-	public final long getTimerOffset() {
-		return this.level != null ? this.level.getGameTime() + this.timerOffset : this.timerOffset;
-	}
-
-	/**
-	 * @return <code>true</code> if the BlockEntity should be considered valid, <code>false</code> otherwise
-	 * @see #isInvalid()
-	 */
-	@Override
-	public boolean isValid() {
-		return !this.isRemoved();
-	}
-
-	/**
-	 * @return <code>true</code> if the BlockEntity should be considered invalid, <code>false</code> otherwise
-	 * @see #isValid()
-	 */
-	@Override
-	public boolean isInvalid() {
-		return this.isRemoved();
-	}
-
-	@Override
-	public void setRemoved() {
-		super.setRemoved();
-		this.onUnload();
-	}
-
-	@Override
-	public IBlockEntity getBlockEntity() {
-		return this;
 	}
 	//endregion
 }

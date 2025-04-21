@@ -14,9 +14,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -107,11 +104,6 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 		return state.rotate(mirror.getRotation(state.getValue(this.rotationState.property)));
 	}
 
-	@Override
-	public BlockEntity newBlockEntity(final BlockPos blockPos, final BlockState blockState) {
-		return this.getMachineType().getBlockEntityType().get().create(blockPos, blockState);
-	}
-
 
 	@Override
 	public InteractionResult onRightClick(final BlockState blockState, final Level level, final BlockPos pos, final Player player, final InteractionHand hand, final BlockHitResult hit) {
@@ -121,29 +113,6 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 			}
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}, () -> InteractionResult.PASS);
-	}
-
-	@Nullable
-	@Override
-	public <BE extends BlockEntity> BlockEntityTicker<BE> getTicker(final Level level, final BlockState state, final BlockEntityType<BE> blockEntityType) {
-		if (blockEntityType == this.machineType.getBlockEntityType().get()) {
-			if (level.isClientSide()) {
-				return (level1, blockPos, blockState, be) -> {
-					if (be instanceof final MachineBlockEntity<?> baseBlockEntity) {
-						baseBlockEntity.onClientTick();
-					}
-				};
-			} else {
-				if (state.getValue(MachineBlock.LIT)) {
-					return (level1, blockPos, blockState, be) -> {
-						if (be instanceof final MachineBlockEntity<?> baseBlockEntity) {
-							baseBlockEntity.handleServerTick();
-						}
-					};
-				}
-			}
-		}
-		return null;
 	}
 
 	@Override

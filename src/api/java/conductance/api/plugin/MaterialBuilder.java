@@ -12,6 +12,7 @@ import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitFluid;
+import conductance.api.util.tier.Tier;
 
 public interface MaterialBuilder {
 
@@ -90,6 +91,8 @@ public interface MaterialBuilder {
 	MaterialBuilder ore(int dropMultiplier, int byproductMultiplier, boolean emissive);
 
 	MaterialBuilder wood();
+
+	MaterialBuilder cable(Tier tier, int amps, int cableLoss);
 
 	Material build();
 }

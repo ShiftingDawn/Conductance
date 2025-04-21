@@ -36,7 +36,7 @@ public class GenericRecipeMachine extends TieredWorkableMachine<GenericRecipeMac
 
 	@Override
 	public ModularUI createUI(final Player entityPlayer) {
-		return MachineUIFactory.createGui(this, entityPlayer);
+		return MachineUIFactory.createGui(this, this, entityPlayer);
 	}
 
 	public static final Function<NCRecipeType, MachineGuiSupplier> GUI_SUPPLIER = recipeType -> new MachineGuiSupplier(() ->

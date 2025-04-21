@@ -21,6 +21,7 @@ import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.tier.TierRegistry;
 import conductance.Conductance;
+import conductance.core.pipenet.CableRegistry;
 import conductance.core.recipe.RecipeHelperImpl;
 import conductance.core.register.ConductanceRegistrate;
 import conductance.core.register.MaterialRegistry;
@@ -80,6 +81,7 @@ public final class ApiBridge {
 
 		MaterialRegistry.INSTANCE.freeze();
 		TierRegistryImpl.freeze();
+		CableRegistry.freeze();
 	}
 
 	public static void handleDataPackRegistryStage(final DataPackRegistryLoadStage stage) {
