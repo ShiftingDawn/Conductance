@@ -12,7 +12,5 @@
     "TagLoaderMixin",
     "TagManagerMixin"
   ],
-  "client": [
-    "ModelManagerMixin"
-  ]
+  "client": ["BlockModelMixin", "ModelManagerMixin"]
 }

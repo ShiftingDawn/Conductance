@@ -16,8 +16,6 @@ import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.TextHelper;
-import conductance.Conductance;
-import conductance.Config;
 
 public final class TranslationRegistryImpl implements TranslationRegistry {
 
@@ -28,23 +26,10 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 	@Override
 	public String translate(final String key, final Supplier<String> fallback, final Object... format) {
 		return this.cache.computeIfAbsent(key, k -> {
-			if (Config.debug_translationRegistryDebugLogging.get() > 0) {
-				Conductance.LOGGER.info("[TRANSLATIONS]Processing un-cached translation key: {}", key);
-			}
 			if (CAPI.isClient() && I18n.exists(key)) {
-				final String result = TranslationRegistryImpl.format(key, format);
-				if (Config.debug_translationRegistryDebugLogging.get() > 0) {
-					Conductance.LOGGER.info("[TRANSLATIONS]\tFound custom translation for key: {}", key);
-					Conductance.LOGGER.info("[TRANSLATIONS]\t\tResult: {}", result);
-				}
-				return result;
+				return TranslationRegistryImpl.format(key, format);
 			} else {
-				final String result = TranslationRegistryImpl.format(fallback.get(), format);
-				if (Config.debug_translationRegistryDebugLogging.get() == 2) {
-					Conductance.LOGGER.info("[TRANSLATIONS]\tFalling back to generated translation for key: {}", key);
-					Conductance.LOGGER.info("[TRANSLATIONS]\t\tResult: {}", result);
-				}
-				return result;
+				return TranslationRegistryImpl.format(fallback.get(), format);
 			}
 		});
 	}

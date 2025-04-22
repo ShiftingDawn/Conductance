@@ -24,6 +24,12 @@ public final class ConductanceCreativeTabs {
 			.title(Component.translatable("itemGroup.conductance.general"))
 			.build()
 	).register();
+	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> DECORATION = getRegistrate().defaultCreativeTab("decoration", builder -> builder
+			.displayItems(new TabDisplayGen("decoration"))
+			.icon(() -> new ItemStack(ConductanceItems.CRAFTING_TOOL_WRENCH.asItem()))
+			.title(Component.translatable("itemGroup.conductance.decoration"))
+			.build()
+	).register();
 
 	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> MATERIAL_ITEMS = getRegistrate().defaultCreativeTab("material_items", builder -> builder
 			.displayItems(new TabDisplayGen("material_items"))

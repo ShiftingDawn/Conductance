@@ -10,8 +10,6 @@ import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.ResourceFinder;
 import conductance.api.util.SafeOptional;
-import conductance.Conductance;
-import conductance.Config;
 
 @SuppressWarnings({"DataFlowIssue", "ConstantValue"})
 final class ResourceFinderImpl implements ResourceFinder {
@@ -124,8 +122,10 @@ final class ResourceFinderImpl implements ResourceFinder {
 		return this.getResourceCascaded("models", "block", set, type, "json", prefix, suffix);
 	}
 
-	private SafeOptional<ResourceLocation> getResourceCascaded(final String resourceType, final String pathPrepend, final MaterialTextureSet set, final MaterialTextureType type, @Nullable final String extension,
-	                                                           @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
+	private SafeOptional<ResourceLocation> getResourceCascaded(
+			final String resourceType, final String pathPrepend, final MaterialTextureSet set, final MaterialTextureType type, @Nullable final String extension,
+			@Nullable final String pathPrefix, @Nullable final String pathSuffix
+	) {
 		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix;
 		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : pathSuffix;
 		MaterialTextureSet currentSet = set;
@@ -137,14 +137,7 @@ final class ResourceFinderImpl implements ResourceFinder {
 			currentSet = currentSet.getParentSet();
 		}
 		final ResourceLocation location = ResourceFinderImpl.getResourceUnchecked(pathPrepend, currentSet, type, prefix, suffix);
-		if (!this.isResourceValid(location)) {
-			if (Config.debug_textureSetDebugLogging.get()) {
-				Conductance.LOGGER.warn("Could not find cascaded resource {} while looking for: {}", location,
-						ResourceFinderImpl.getResourceUnchecked("%s/%s".formatted(resourceType, pathPrepend), set, type, prefix, suffix + (extension != null ? "." + extension : "")));
-			}
-			return SafeOptional.ofFallback(location);
-		}
-		return SafeOptional.of(location);
+		return this.isResourceValid(location) ? SafeOptional.of(location) : SafeOptional.ofFallback(location);
 	}
 
 	private static ResourceLocation getResourceUnchecked(final String pathPrepend, final MaterialTextureSet set, final MaterialTextureType texType, final String prefix, final String suffix) {

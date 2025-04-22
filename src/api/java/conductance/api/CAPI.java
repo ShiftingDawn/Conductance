@@ -1,11 +1,16 @@
 package conductance.api;
 
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -90,6 +95,25 @@ public final class CAPI {
 		public static final TagKey<Item> TAG_HAMMER = TagHelper.itemTagForMod("hammers");
 		public static final TagKey<Item> TAG_WIRE_CUTTERS = TagHelper.itemTagForMod("wire_cutters");
 	}
+
+	public static final Map<DyeColor, Integer> COLORS = Collections.unmodifiableMap(Util.make(new EnumMap<>(DyeColor.class), map -> {
+		map.put(DyeColor.WHITE, 0xFFF9FFFE);
+		map.put(DyeColor.ORANGE, 0xFFF9801D);
+		map.put(DyeColor.MAGENTA, 0xFFC354CD);
+		map.put(DyeColor.LIGHT_BLUE, 0xFF3AB3DA);
+		map.put(DyeColor.YELLOW, 0xFFFED83D);
+		map.put(DyeColor.LIME, 0xFF80C71F);
+		map.put(DyeColor.PINK, 0xFFF38BAA);
+		map.put(DyeColor.GRAY, 0xFF474F52);
+		map.put(DyeColor.LIGHT_GRAY, 0xFF9D9D97);
+		map.put(DyeColor.CYAN, 0xFF169C9C);
+		map.put(DyeColor.PURPLE, 0xFF8932B8);
+		map.put(DyeColor.BLUE, 0xFF3C44AA);
+		map.put(DyeColor.BROWN, 0xFF835432);
+		map.put(DyeColor.GREEN, 0xFF5E7C16);
+		map.put(DyeColor.RED, 0xFFB02E26);
+		map.put(DyeColor.BLACK, 0xFF1D1D21);
+	}));
 
 	static {
 		GSON = new GsonBuilder()

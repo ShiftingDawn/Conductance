@@ -16,6 +16,7 @@ import conductance.core.apiimpl.PluginManager;
 import conductance.init.ConductanceBlockEntities;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
+import conductance.init.ConductanceDecoration;
 import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
 
@@ -54,6 +55,7 @@ public final class CommonProxy {
 		ConductanceFluids.init();
 		ConductanceBlockEntities.init();
 		PluginManager.dispatchRegisterMachines();
+		ConductanceDecoration.init();
 	}
 
 	private static void handleRightClickBlock(final PlayerInteractEvent.RightClickBlock event) {

@@ -26,13 +26,11 @@ public final class Conductance {
 	}
 
 	private void modLoad(final IEventBus modEventBus, final ModContainer modContainer) {
+		modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
 		CommonProxy.init(modEventBus);
 		if (CAPI.isClient()) {
 			ClientProxy.init(modEventBus);
-		}
-
-		modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-		if (CAPI.isClient()) {
 			modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 		}
 	}
