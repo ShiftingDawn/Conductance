@@ -7,31 +7,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.NCMaterialTraits;
 import conductance.api.capability.CapabilityHelper;
 import conductance.api.capability.energy.IEnergyHandler;
-import conductance.api.material.traits.MaterialTraitCable;
 import conductance.api.util.InteractType;
 import conductance.core.pipenet.CableData;
-import conductance.core.pipenet.CableType;
 import conductance.core.pipenet.EnergyNet;
 import conductance.core.pipenet.EnergyNetHandler;
 import conductance.core.pipenet.LevelEnergyNet;
 import conductance.core.pipenet.PipeNetHelper;
 
 public class CableBlockEntity extends PipeBlockEntity<CableData, LevelEnergyNet> {
-
-	private final Lazy<CableData> cableData = Lazy.of(() -> {
-		if (this.getPipeBlock() instanceof CableBlock cableBlock) {
-			MaterialTraitCable props = cableBlock.getMaterial().getTrait(NCMaterialTraits.CABLE);
-			CableType type = cableBlock.getCableType();
-			assert props != null;
-			return new CableData(props, type);
-		}
-		throw new AssertionError();
-	});
 
 	public CableBlockEntity(final BlockEntityType<?> type, final BlockPos pos, final BlockState state) {
 		super(type, pos, state);
@@ -49,7 +35,7 @@ public class CableBlockEntity extends PipeBlockEntity<CableData, LevelEnergyNet>
 
 	@Override
 	public CableData getData() {
-		return this.cableData.get();
+		return ((CableBlock) this.getPipeBlock()).getRealProps();
 	}
 
 	@Override

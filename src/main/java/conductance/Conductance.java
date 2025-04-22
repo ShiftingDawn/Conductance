@@ -1,5 +1,6 @@
 package conductance;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
@@ -38,5 +39,9 @@ public final class Conductance {
 
 	public static ResourceLocation id(final String path) {
 		return ResourceLocation.fromNamespaceAndPath(Conductance.MODID, path);
+	}
+
+	public static Component tooltip(final String suffix, final Object... args) {
+		return Component.translatable("tooltip.%s.%s".formatted(Conductance.MODID, suffix), args);
 	}
 }

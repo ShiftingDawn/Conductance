@@ -10,7 +10,6 @@ import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.capability.CapabilityHelper;
 import conductance.api.capability.energy.IEnergyHandler;
-import conductance.api.material.traits.MaterialTraitCable;
 import conductance.Conductance;
 
 public class EnergyNetHandler implements IEnergyHandler {
@@ -69,8 +68,8 @@ public class EnergyNetHandler implements IEnergyHandler {
 			ampsUsed += ampsAccepted;
 			long voltageTraveled = volts;
 			for (final INetworkNode<CableData> pathNode : path.getPath()) {
-				final MaterialTraitCable pathCableData = pathNode.getData().properties();
-				voltageTraveled -= pathCableData.getCableLoss();
+				final CableData pathCableData = pathNode.getData();
+				voltageTraveled -= pathCableData.cableLoss();
 				if (voltageTraveled <= 0) {
 					break;
 				}
@@ -94,12 +93,12 @@ public class EnergyNetHandler implements IEnergyHandler {
 
 	@Override
 	public long getInputAmperage() {
-		return this.cable.getData().properties().getAmperage();
+		return this.cable.getData().amperage();
 	}
 
 	@Override
 	public long getInputVoltage() {
-		return this.cable.getData().properties().getTier().getVoltage();
+		return this.cable.getData().voltage();
 	}
 
 	@Override

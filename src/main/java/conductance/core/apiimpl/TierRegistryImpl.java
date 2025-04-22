@@ -39,7 +39,7 @@ public class TierRegistryImpl implements TierRegistry {
 			return TierRegistryImpl.TIER_BY_VOLTAGE_CACHE.get(voltage, () -> {
 				for (int i = 0; i < TierRegistryImpl.TIERS.size(); ++i) {
 					final Tier tier = TierRegistryImpl.TIERS.get(i);
-					if (voltage < tier.getVoltage()) {
+					if (voltage <= tier.getVoltage()) {
 						return tier;
 					}
 				}

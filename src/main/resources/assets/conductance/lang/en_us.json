@@ -14,5 +14,10 @@
 
   "tooltip.conductance.energy_bar.title": "Stored Energy",
   "tooltip.conductance.energy_bar.stored": "Stored: %s",
-  "tooltip.conductance.energy_bar.capacity": "Capacity: %s"
+  "tooltip.conductance.energy_bar.capacity": "Capacity: %s",
+
+  "tooltip.conductance.cable.superconductor": "§d%s Superconductor",
+  "tooltip.conductance.cable.voltage": "Max Voltage: §a%d%s §a(%s§a)",
+  "tooltip.conductance.cable.amperage": "Max Amperage: §e%d",
+  "tooltip.conductance.cable.cable_loss": "Cable Loss: §c%d§7%s per block"
 }

@@ -44,7 +44,6 @@ public abstract class LevelPipeNetwork<DATA> extends SavedData {
 		final PipeNetwork<DATA> network;
 		if (connectedNetworks.size() == 1) {
 			network = connectedNetworks.getFirst();
-			network.addNode(pos);
 		} else {
 			network = this.createNetwork();
 			connectedNetworks.forEach(connectedNetwork ->
@@ -53,6 +52,7 @@ public abstract class LevelPipeNetwork<DATA> extends SavedData {
 					)
 			);
 		}
+		network.addNode(pos);
 		this.networks.put(pos, network);
 		network.applyConnections(pos, connections);
 		network.recalculate();

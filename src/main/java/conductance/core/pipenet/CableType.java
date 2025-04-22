@@ -55,4 +55,14 @@ public enum CableType {
 		}
 		return model;
 	}
+
+	public CableData getPhysicalProperties(final CableData baseProps) {
+		final int lossPerBlock;
+		if (!baseProps.superconductor() && baseProps.cableLoss() == 0) {
+			lossPerBlock = (int) (0.75 * this.lossMultiplier);
+		} else {
+			lossPerBlock = baseProps.cableLoss() * this.lossMultiplier;
+		}
+		return new CableData(baseProps.voltage(), baseProps.amperage() * this.amperage, lossPerBlock, baseProps.superconductor());
+	}
 }

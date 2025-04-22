@@ -22,7 +22,8 @@ public class EnergyNet extends PipeNetwork<CableData> {
 	protected NetworkPath<CableData> createNetworkPath(final BlockPos startPos, final BlockPos endPos, final Direction endSide, final GraphPath<BlockPos, DefaultEdge> path) {
 		final int totalLoss = path.getVertexList().stream().map(this::getActualNode)
 				.map(Objects::requireNonNull)
-				.mapToInt(node -> node.getData().properties().getCableLoss()).sum();
+				.mapToInt(node -> node.getData().cableLoss())
+				.sum();
 		return new NetworkPath<>(endPos, endSide, path.getVertexList().stream().map(this::getActualNode).toList(), new EnergyPathData(totalLoss));
 	}
 
