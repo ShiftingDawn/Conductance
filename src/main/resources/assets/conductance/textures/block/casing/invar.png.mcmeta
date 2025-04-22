@@ -1,0 +1,5 @@
+{
+  "ldlib": {
+    "connection": "conductance:block/casing/invar_ctm"
+  }
+}

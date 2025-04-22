@@ -9,6 +9,7 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
+import conductance.api.NCBlocks;
 import conductance.api.NCMaterialTraits;
 import conductance.block.CableBlock;
 import conductance.block.CableBlockItem;
@@ -17,15 +18,21 @@ import conductance.block.MaterialBlockItem;
 import conductance.block.MaterialOreBlock;
 import conductance.block.MaterialOreBlockItem;
 import conductance.block.MaterialOreRotatedPillarBlock;
+import conductance.block.SimpleDynamicBlock;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.MaterialOreTypeImpl;
 import conductance.core.apiimpl.MaterialTaggedSet;
 import conductance.core.pipenet.CableRegistry;
 import conductance.core.pipenet.CableType;
+import conductance.item.RenderedBlockItem;
 
 public final class ConductanceBlocks {
 
 	public static void init() {
+		NCBlocks.CASING_STEEL = ConductanceBlocks.machineCasingBlock("steel");
+		NCBlocks.CASING_INVAR = ConductanceBlocks.machineCasingBlock("invar");
+		NCBlocks.CASING_ALUMINIUM = ConductanceBlocks.machineCasingBlock("aluminium");
+
 		CAPI.regs().materials().forEach(material -> CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.canGenerateBlock(material)).forEach(set -> {
 			final String name = set.getUnlocalizedName(material);
 			final BlockBuilder<MaterialBlock, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> new MaterialBlock(props, material, set))
@@ -57,6 +64,16 @@ public final class ConductanceBlocks {
 			blockBuilder.register();
 		}));
 		ConductanceBlocks.generateCables();
+	}
+
+	private static BlockEntry<SimpleDynamicBlock> machineCasingBlock(final String name) {
+		return ApiBridge.getRegistrate().block("%s_machine_casing".formatted(name), props -> new SimpleDynamicBlock(props, "casing/%s".formatted(name)))
+				.initialProperties(() -> Blocks.IRON_BLOCK)
+				.blockstate(NonNullBiConsumer.noop())
+				.item(RenderedBlockItem::new)
+				.model(NonNullBiConsumer.noop())
+				.build()
+				.register();
 	}
 
 	@SuppressWarnings("removal")

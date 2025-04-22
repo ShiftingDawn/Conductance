@@ -1,0 +1,5 @@
+{
+  "ldlib": {
+    "connection": "conductance:block/casing/aluminium_ctm"
+  }
+}

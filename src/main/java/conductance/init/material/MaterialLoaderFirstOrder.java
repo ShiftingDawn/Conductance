@@ -386,7 +386,7 @@ public final class MaterialLoaderFirstOrder {
 		INVAR = register.register("invar")
 				.ingot()
 				.liquid(1916)
-				.color(180, 180, 120).textureSet(METALLIC)
+				.color(0x78b446).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_EXTRA2, CAN_MORTAR, GENERATE_GEAR, GENERATE_FRAME)
 				.components(IRON, 2, NICKEL)
 				.build();

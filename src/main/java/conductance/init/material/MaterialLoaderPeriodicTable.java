@@ -250,7 +250,7 @@ public final class MaterialLoaderPeriodicTable {
 				.ingot()
 				.liquid(933)
 				.ore()
-				.color(128, 200, 240)
+				.color(0x80c8f0)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.ALUMINIUM)
 				.cable(NCTiers.LV, 1, 1) //TODO EV
