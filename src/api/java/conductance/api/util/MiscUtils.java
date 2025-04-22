@@ -36,7 +36,7 @@ public final class MiscUtils {
 
 	public static Direction getNeighborSide(final BlockPos selfPos, final BlockPos neighborPos) {
 		final BlockPos delta = neighborPos.subtract(selfPos);
-		return Optional.ofNullable(Direction.fromDelta(delta.getX(), delta.getY(), delta.getX())).orElse(Direction.NORTH);
+		return Optional.ofNullable(Direction.fromDelta(delta.getX(), delta.getY(), delta.getZ())).orElse(Direction.NORTH);
 	}
 
 	public static void explode(final MachineBlockEntity<?> machine, final long voltage) {

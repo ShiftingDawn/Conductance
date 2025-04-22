@@ -92,6 +92,10 @@ public abstract class PipeNetwork<DATA> {
 		return true;
 	}
 
+	public boolean isEndpoint(final BlockPos pos, final Direction side) {
+		return this.endpoints.containsKey(pos) && this.endpoints.get(pos).contains(side);
+	}
+
 	protected final Set<BlockPos> consume(final PipeNetwork<DATA> other) {
 		for (final BlockPos vertex : other.graph.vertexSet()) {
 			this.graph.addVertex(vertex);

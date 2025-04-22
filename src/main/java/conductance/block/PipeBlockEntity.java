@@ -84,9 +84,15 @@ public abstract class PipeBlockEntity<DATA, LEVELNET extends LevelPipeNetwork<DA
 	@Override
 	public void onNeighborChanged(final BlockPos neighborPos, final BlockState neighborState, final Direction neighborSide) {
 		if (this.getLevel() instanceof final ServerLevel serverLevel) {
-			final INetworkNode<DATA> node = this.getPipeBlock().getPipeBlockEntity(serverLevel, neighborPos);
-			if (node != null) {
-				System.out.println(neighborState);
+			if (this.getPipeBlock().getPipeBlockEntity(serverLevel, neighborPos) == null) {
+				if (this.getNetwork(serverLevel).isEndpoint(this.getBlockPos(), neighborSide)) {
+					if (!this.canConnectTo(serverLevel, this.getBlockPos(), neighborSide)) {
+						this.getNetwork(serverLevel).addEndpoint(this.getBlockPos(), neighborSide, false);
+						this.setConnections(PipeNetHelper.setConnection(this.getConnections(), neighborSide, false));
+					}
+				} else {
+					this.setConnections(PipeNetHelper.setConnection(this.getConnections(), neighborSide, false));
+				}
 			}
 		}
 	}

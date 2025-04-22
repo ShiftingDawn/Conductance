@@ -108,6 +108,11 @@ public abstract class LevelPipeNetwork<DATA> extends SavedData {
 		network.recalculate();
 	}
 
+	public boolean isEndpoint(final BlockPos pos, final Direction side) {
+		final PipeNetwork<DATA> network = this.networks.get(pos);
+		return network.isEndpoint(pos, side);
+	}
+
 	@Nullable
 	public Set<NetworkPath<DATA>> getPaths(final INetworkNode<DATA> node) {
 		return this.networks.get(node.getBlockPos()).getPaths(node.getBlockPos());
