@@ -6,12 +6,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import conductance.api.CAPI;
+import conductance.api.NCDecoration;
+import conductance.api.NCMachines;
 import conductance.api.NCMaterialTaggedSets;
 import conductance.api.NCMaterials;
+import conductance.api.NCTiers;
 import conductance.item.IConductanceItem;
 import static conductance.core.apiimpl.ApiBridge.getRegistrate;
 
@@ -24,10 +28,11 @@ public final class ConductanceCreativeTabs {
 			.title(Component.translatable("itemGroup.conductance.general"))
 			.build()
 	).register();
-	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> DECORATION = getRegistrate().defaultCreativeTab("decoration", builder -> builder
-			.displayItems(new TabDisplayGen("decoration"))
-			.icon(() -> new ItemStack(ConductanceItems.CRAFTING_TOOL_WRENCH.asItem()))
-			.title(Component.translatable("itemGroup.conductance.decoration"))
+
+	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> MACHINES = getRegistrate().defaultCreativeTab("machines", builder -> builder
+			.displayItems(new TabDisplayGen("machines"))
+			.icon(() -> new ItemStack(NCMachines.BENDERS.get(NCTiers.LV).getBlock().get()))
+			.title(Component.translatable("itemGroup.conductance.machines"))
 			.build()
 	).register();
 
@@ -47,6 +52,13 @@ public final class ConductanceCreativeTabs {
 			.displayItems(new TabDisplayGen("material_fluids"))
 			.icon(() -> CAPI.materials().getBucketUnsafe(NCMaterialTaggedSets.LIQUID, NCMaterials.ALUMINIUM).getDefaultInstance())
 			.title(Component.translatable("itemGroup.conductance.material_fluids"))
+			.build()
+	).register();
+
+	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> DECORATION = getRegistrate().defaultCreativeTab("decoration", builder -> builder
+			.displayItems(new TabDisplayGen("decoration"))
+			.icon(() -> NCDecoration.LUX.get(DyeColor.CYAN).asStack())
+			.title(Component.translatable("itemGroup.conductance.decoration"))
 			.build()
 	).register();
 	//@formatter:on

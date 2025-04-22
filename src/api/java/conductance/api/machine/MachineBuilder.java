@@ -39,7 +39,15 @@ public interface MachineBuilder<T extends MachineBlockEntity<T>> {
 		return this.defaultModelRenderer(baseModelLocation, null);
 	}
 
+	MachineBuilder<T> tieredModelRenderer(ResourceLocation baseModelLocation, String baseMachineKey, @Nullable ResourceLocation overlayModelLocation);
+
+	default MachineBuilder<T> tieredModelRenderer(final ResourceLocation baseModelLocation, final String baseMachineKey) {
+		return this.tieredModelRenderer(baseModelLocation, baseMachineKey, null);
+	}
+
 	MachineBuilder<T> workableModelRenderer(ResourceLocation baseModelLocation);
+
+	MachineBuilder<T> tieredWorkableModelRenderer(ResourceLocation baseModelLocation, String baseMachineKey);
 
 	MachineBuilder<T> guiSupplier(MachineGuiSupplier guiSupplier);
 

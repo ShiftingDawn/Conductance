@@ -7,10 +7,6 @@
     "defaultRequire": 1,
     "maxShiftBy": 5
   },
-  "mixins": [
-    "ReloadableServerResourcesMixin",
-    "TagLoaderMixin",
-    "TagManagerMixin"
-  ],
+  "mixins": ["MachineBlockMixin", "ReloadableServerResourcesMixin", "TagLoaderMixin", "TagManagerMixin"],
   "client": ["BlockModelMixin", "ModelManagerMixin"]
 }

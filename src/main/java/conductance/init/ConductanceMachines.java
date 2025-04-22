@@ -1,9 +1,18 @@
 package conductance.init;
 
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import net.minecraft.Util;
+import conductance.api.CAPI;
 import conductance.api.NCMachines;
 import conductance.api.NCRecipeTypes;
 import conductance.api.NCTiers;
+import conductance.api.machine.MachineType;
+import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.plugin.MachineRegister;
+import conductance.api.util.TextHelper;
+import conductance.api.util.tier.Tier;
 import conductance.Conductance;
 import conductance.machine.GenericGeneratorMachine;
 import conductance.machine.GenericRecipeMachine;
@@ -26,12 +35,22 @@ public final class ConductanceMachines {
 				.guiSupplier(GenericGeneratorMachine.GUI_SUPPLIER.apply(NCRecipeTypes.STEAM_TURBINE))
 				.workableModelRenderer(Conductance.id("block/machine_casing_tiered"))
 				.build();
+		NCMachines.BENDERS = ConductanceMachines.tiered(register, "bender", NCRecipeTypes.BENDER);
+	}
 
-		register.<GenericRecipeMachine>register("bender", (type, pos, blockState) -> new GenericRecipeMachine(type, pos, blockState, NCTiers.LV))
-				.recipeType(NCRecipeTypes.BENDER)
-				.guiSupplier(GenericRecipeMachine.GUI_SUPPLIER.apply(NCRecipeTypes.BENDER))
-				.workableModelRenderer(Conductance.id("block/machine_casing_tiered"))
-				.build();
+	private static Map<Tier, MachineType<?>> tiered(final MachineRegister register, final String name, final NCRecipeType recipeType) {
+		return Collections.unmodifiableMap(Util.make(new IdentityHashMap<>(), map -> CAPI.tiers().getTiers().forEach(tier -> {
+			final String realName = name.contains("%s") ? name.formatted(tier.getRegistryKey()) : "%s_%s".formatted(tier.getRegistryKey(), name);
+			final String localizedName = name.contains("%s")
+					? TextHelper.lowerUnderscoreToEnglish(name).formatted(tier.getLocalizedNameUnformatted())
+					: "%s %s".formatted(tier.getLocalizedNameUnformatted(), TextHelper.lowerUnderscoreToEnglish(name));
+			map.put(tier, register.<GenericRecipeMachine>register(realName, (type, pos, blockState) -> new GenericRecipeMachine(type, pos, blockState, tier))
+					.recipeType(recipeType)
+					.guiSupplier(GenericRecipeMachine.GUI_SUPPLIER.apply(recipeType))
+					.localized(localizedName)
+					.tieredWorkableModelRenderer(Conductance.id("block/machine_casing_tiered_%s".formatted(tier.getRegistryKey())), name)
+					.build());
+		})));
 	}
 
 	private ConductanceMachines() {

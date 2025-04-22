@@ -6,6 +6,9 @@ import conductance.api.util.tier.Tier;
 public final class NCTiers {
 
 	public static Tier LV;
+	public static Tier MV;
+	public static Tier HV;
+	public static Tier EV;
 
 	private NCTiers() {
 	}

@@ -1,0 +1,10 @@
+{
+  "parent": "conductance:block/machine_base",
+  "textures": {
+    "top": "conductance:block/casing/tiered/lv/top",
+    "bottom": "conductance:block/casing/tiered/lv/bottom",
+    "front": "conductance:block/casing/tiered/lv/front",
+    "back": "conductance:block/casing/tiered/lv/back",
+    "side": "conductance:block/casing/tiered/lv/side"
+  }
+}

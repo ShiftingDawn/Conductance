@@ -165,8 +165,26 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	}
 
 	@Override
+	public MachineBuilder<T> tieredModelRenderer(final ResourceLocation baseModelLocation, final String baseMachineKey, @Nullable final ResourceLocation overlayModelLocation) {
+		final ResourceLocation overlayLocation;
+		if (overlayModelLocation != null) {
+			overlayLocation = overlayModelLocation;
+			MachineBlockModelHandler.remove(this.registryKey);
+		} else {
+			overlayLocation = Conductance.id("block/machine/%s".formatted(baseMachineKey));
+			MachineBlockModelHandler.add(this.registryKey, overlayLocation);
+		}
+		return this.modelRenderer(new MachineOverlayRenderer(baseModelLocation, overlayLocation));
+	}
+
+	@Override
 	public MachineBuilder<T> workableModelRenderer(final ResourceLocation baseModelLocation) {
 		return this.modelRenderer(new WorkableMachineRenderer(baseModelLocation, Conductance.id("block/machine/%s".formatted(this.registryKey))));
+	}
+
+	@Override
+	public MachineBuilder<T> tieredWorkableModelRenderer(final ResourceLocation baseModelLocation, final String baseMachineKey) {
+		return this.modelRenderer(new WorkableMachineRenderer(baseModelLocation, Conductance.id("block/machine/%s".formatted(baseMachineKey))));
 	}
 
 	@Override
