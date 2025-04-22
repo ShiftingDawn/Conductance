@@ -150,11 +150,11 @@ public abstract class SteamBoilerMachine<T extends SteamBoilerMachine<T>> extend
 
 		if (this.hasTicksPassed(SteamBoilerMachine.TICKRATE_MAIN_LOOP)) {
 			if (this.currentTemperature >= 100) {
-				final int fillAmount = (int) (this.getBaseSteamOutput() * (this.currentTemperature / (this.getMaxTemperature() * 1.0)) / 2);
-				final boolean hasDrainedWater = !this.waterTank.drainInternal(FluidType.BUCKET_VOLUME / 1000, IFluidHandler.FluidAction.EXECUTE).isEmpty();
+				final int fillAmount = (int) (this.getSteamPerSecond() * (this.currentTemperature / (this.getMaxTemperature() * 1.0)) / (20.0 / SteamBoilerMachine.TICKRATE_MAIN_LOOP));
+				final boolean hasDrainedWater = !this.waterTank.drainInternal(1, IFluidHandler.FluidAction.EXECUTE).isEmpty();
 				var filledSteam = 0L;
 				if (hasDrainedWater) {
-					filledSteam = this.steamTank.fillInternal(CAPI.materials().getFluid(NCMaterialTaggedSets.GAS, NCMaterials.STEAM, fillAmount * FluidType.BUCKET_VOLUME / 1000), IFluidHandler.FluidAction.EXECUTE);
+					filledSteam = this.steamTank.fillInternal(CAPI.materials().getFluid(NCMaterialTaggedSets.GAS, NCMaterials.STEAM, fillAmount), IFluidHandler.FluidAction.EXECUTE);
 				}
 				if (this.hasNoWater && hasDrainedWater) {
 					MiscUtils.explode(this.getLevel(), this.getBlockPos(), 2.0f);
@@ -213,7 +213,7 @@ public abstract class SteamBoilerMachine<T extends SteamBoilerMachine<T>> extend
 		return this.currentTemperature / (this.getMaxTemperature() * 1.0);
 	}
 
-	protected long getBaseSteamOutput() {
+	protected long getSteamPerSecond() {
 		return 1280;
 	}
 

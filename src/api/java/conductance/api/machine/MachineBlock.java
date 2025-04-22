@@ -1,12 +1,18 @@
 package conductance.api.machine;
 
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -22,8 +28,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import com.lowdragmc.lowdraglib.gui.factory.BlockEntityUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
 import conductance.api.util.IInteractable;
 import conductance.api.util.MiscUtils;
 import conductance.api.util.RotationState;
@@ -60,6 +68,12 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 		if (rotState != RotationState.NONE) {
 			builder.add(rotState.property);
 		}
+	}
+
+	@Override
+	public MutableComponent getName() {
+		final String localized = this.getMachineType().getLocalizedName();
+		return localized != null ? Component.literal(localized) : super.getName();
 	}
 
 	@Override
@@ -139,6 +153,15 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	@Override
 	protected int getAnalogOutputSignal(final BlockState state, final Level level, final BlockPos pos) {
 		return this.getMachine(level, pos, MachineBlockEntity::getRedstoneAnalog, super.getAnalogOutputSignal(state, level, pos));
+	}
+
+	@Override
+	public void appendHoverText(final ItemStack stack, final Item.TooltipContext context, final List<Component> tooltip, final TooltipFlag tooltipFlag) {
+		this.getMachineType().getTooltipBuilder().accept(stack, tooltip);
+		final String mainKey = String.format("tooltip.%s.machine.%s", CAPI.MOD_ID, this.getMachineType().getRegistryKey());
+		if (LocalizationUtils.exist(mainKey)) {
+			tooltip.add(1, Component.translatable(mainKey));
+		}
 	}
 
 	@Override

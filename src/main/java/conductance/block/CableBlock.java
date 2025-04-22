@@ -4,6 +4,7 @@ import java.util.List;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -16,6 +17,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.Lazy;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
 import conductance.api.NCMaterialTraits;
 import conductance.api.capability.CapabilityHelper;
 import conductance.api.machine.IPaintable;
@@ -39,13 +41,25 @@ public final class CableBlock extends PipeBlock<CableData, LevelEnergyNet> {
 	private final CableType cableType;
 	private final Lazy<PipeModel> pipeModel;
 	private final PipeBlockRenderer pipeRenderer;
+	private final String unlocalizedName;
 
 	public CableBlock(final Properties properties, final CableType cableType, final Material material) {
 		super(properties, EnergyNet.TYPE);
 		this.cableType = cableType;
 		this.material = material;
+		this.unlocalizedName = "block.%s.%s".formatted(material.getRegistryKey().getNamespace(), cableType.getMaterialTaggedSet().getUnlocalizedName(material));
 		this.pipeModel = Lazy.of(() -> cableType.createPipeModel(material));
 		this.pipeRenderer = new PipeBlockRenderer(this.pipeModel, this);
+	}
+
+	@Override
+	public String getDescriptionId() {
+		return this.unlocalizedName;
+	}
+
+	@Override
+	public MutableComponent getName() {
+		return CAPI.translations().makeLocalizedName(this.getDescriptionId(), this.cableType.getMaterialTaggedSet(), this.material);
 	}
 
 	public CableData getBaseProps() {

@@ -1,7 +1,11 @@
 package conductance.core.machine;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
@@ -44,6 +48,13 @@ public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryOb
 	@Setter(AccessLevel.PACKAGE)
 	@Nullable
 	private MachineGuiSupplier guiSupplier;
+	@Getter
+	@Setter(AccessLevel.PACKAGE)
+	@Nullable
+	private String localizedName;
+	@Setter(AccessLevel.PACKAGE)
+	@Getter
+	private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
 
 	public MachineTypeImpl(final String registryKey) {
 		super(registryKey);
@@ -57,6 +68,7 @@ public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryOb
 		Objects.requireNonNull(this.blockEntityType, "No block entity type");
 		Objects.requireNonNull(this.recipeTypes, "No recipe types");
 		Objects.requireNonNull(this.modelRenderer, "No model renderer");
+		Objects.requireNonNull(this.tooltipBuilder, "No tooltip builder");
 	}
 
 	@Override

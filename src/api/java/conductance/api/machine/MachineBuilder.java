@@ -1,7 +1,11 @@
 package conductance.api.machine;
 
+import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +42,12 @@ public interface MachineBuilder<T extends MachineBlockEntity<T>> {
 	MachineBuilder<T> workableModelRenderer(ResourceLocation baseModelLocation);
 
 	MachineBuilder<T> guiSupplier(MachineGuiSupplier guiSupplier);
+
+	MachineBuilder<T> tooltip(Component... tooltipLines);
+
+	MachineBuilder<T> tooltip(BiConsumer<ItemStack, List<Component>> tooltipBuilder);
+
+	MachineBuilder<T> localized(String localizedName);
 
 	MachineType<T> build();
 }

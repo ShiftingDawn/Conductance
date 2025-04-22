@@ -8,17 +8,15 @@ import conductance.Conductance;
 import conductance.machine.GenericGeneratorMachine;
 import conductance.machine.GenericRecipeMachine;
 import conductance.machine.SteamSolidBoilerMachine;
+import static conductance.Conductance.tooltip;
 
 public final class ConductanceMachines {
 
 	public static void init(final MachineRegister register) {
 		NCMachines.STEAM_BOILER_SOLID_FUEL = register.register("steam_solid_fuel_boiler", SteamSolidBoilerMachine::new)
 				.recipeType(NCRecipeTypes.STEAM_BOILER)
-//				.tooltip(
-//						Component.translatable("tooltip.conductance.generic.produces_fluid", 64),
-//						Component.translatable("tooltip.conductance.boiler.explode_on_water_fill")
-//				)
-//				.localized("Solid Fuel Steam Boiler")
+				.tooltip(tooltip("generic.produces_fluid", 64), tooltip("boiler.explode_on_water_fill"))
+				.localized("Solid Fuel Steam Boiler")
 				.workableModelRenderer(Conductance.id("block/machine_casing_bronze"))
 				.build();
 

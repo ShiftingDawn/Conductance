@@ -16,8 +16,16 @@
   "tooltip.conductance.energy_bar.stored": "Stored: %s",
   "tooltip.conductance.energy_bar.capacity": "Capacity: %s",
 
+  "tooltip.conductance.generic.produces_fluid": "Produces %s mB/t",
+  "tooltip.conductance.generic.energy_input": "§aMax input voltage: §f%d%s (%s§f)",
+  "tooltip.conductance.generic.energy_output": "§aMax output voltage: §f%d%s (%s§f)",
+  "tooltip.conductance.generic.energy_storage": "§cEnergy Capacity: §r%d%s",
+  "tooltip.conductance.generic.tank_capacity": "§9Fluid Capacity: §f%d mB",
+  "tooltip.conductance.generic.inventory_capacity": "§6Item Slots: §f%s",
+
   "tooltip.conductance.cable.superconductor": "§d%s Superconductor",
   "tooltip.conductance.cable.voltage": "Max Voltage: §a%d%s §a(%s§a)",
   "tooltip.conductance.cable.amperage": "Max Amperage: §e%d",
-  "tooltip.conductance.cable.cable_loss": "Cable Loss: §c%d§7%s per block"
+  "tooltip.conductance.cable.cable_loss": "Cable Loss: §c%d§7%s per block",
+  "tooltip.conductance.boiler.explode_on_water_fill": "§cWill explode when water is added to a heated empty boiler§r"
 }

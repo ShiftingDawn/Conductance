@@ -1,7 +1,11 @@
 package conductance.api.machine;
 
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -29,6 +33,11 @@ public interface MachineType<T extends MachineBlockEntity<T>> extends IRegistryO
 
 	@Nullable
 	MachineGuiSupplier getGuiSupplier();
+
+	@Nullable
+	String getLocalizedName();
+
+	BiConsumer<ItemStack, List<Component>> getTooltipBuilder();
 
 	default BlockState getDefaultBlockState() {
 		return this.getBlock().get().defaultBlockState();

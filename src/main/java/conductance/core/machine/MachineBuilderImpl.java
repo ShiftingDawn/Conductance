@@ -1,10 +1,17 @@
 package conductance.core.machine;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
@@ -52,6 +59,11 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	private IRenderer modelRenderer;
 	@Getter
 	private MachineGuiSupplier guiSupplier;
+	private final List<Component> tooltips = new ArrayList<>();
+	@Nullable
+	private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
+	@Nullable
+	private String localized = null;
 
 	public MachineBuilderImpl(final String registryKey, final MachineBlockEntityFactory<T> machineBlockEntityFactory) {
 		this.registryKey = registryKey;
@@ -164,6 +176,24 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	}
 
 	@Override
+	public MachineBuilder<T> tooltip(final Component... lines) {
+		Arrays.stream(lines).filter(Objects::nonNull).forEach(this.tooltips::add);
+		return this;
+	}
+
+	@Override
+	public MachineBuilder<T> tooltip(final BiConsumer<ItemStack, List<Component>> builder) {
+		this.tooltipBuilder = builder;
+		return this;
+	}
+
+	@Override
+	public MachineBuilder<T> localized(final String localizedName) {
+		this.localized = localizedName;
+		return this;
+	}
+
+	@Override
 	public MachineType<T> build() {
 		final MachineTypeImpl<T> machineType = Util.make(new MachineTypeImpl<>(this.registryKey), result -> {
 			result.setBlock(this.createBlock(result));
@@ -173,6 +203,13 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 			result.setRecipeModifier(this.recipeModifier);
 			result.setModelRenderer(this.modelRenderer);
 			result.setGuiSupplier(this.guiSupplier);
+			result.setLocalizedName(this.localized);
+			result.setTooltipBuilder((stack, tooltip) -> {
+				tooltip.addAll(this.tooltips);
+				if (this.tooltipBuilder != null) {
+					this.tooltipBuilder.accept(stack, tooltip);
+				}
+			});
 		});
 		machineType.validate();
 		CAPI.regs().machines().register(machineType.getRegistryKey(), machineType);
