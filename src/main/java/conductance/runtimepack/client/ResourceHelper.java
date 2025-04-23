@@ -35,6 +35,15 @@ public final class ResourceHelper {
 		return null;
 	}
 
+	@Nullable
+	public static ResourceLocation getCustomItemTexture(final ResourceLocation itemId) {
+		final ResourceLocation texturePath = itemId.withPrefix("item/");
+		if (CAPI.resourceFinder().isResourceValid(texturePath.withPrefix("textures/").withSuffix(".png"))) {
+			return texturePath;
+		}
+		return null;
+	}
+
 	private ResourceHelper() {
 	}
 }

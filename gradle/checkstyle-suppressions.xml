@@ -23,6 +23,9 @@
     <suppress files="NCDecoration\.java" checks="VisibilityModifier"/>
     <suppress files="NCDecoration\.java" checks="StaticVariableName"/>
 
+    <suppress files="NCItems\.java" checks="VisibilityModifier"/>
+    <suppress files="NCItems\.java" checks="StaticVariableName"/>
+
     <suppress files="NCMachines\.java" checks="VisibilityModifier"/>
     <suppress files="NCMachines\.java" checks="StaticVariableName"/>
 

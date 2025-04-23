@@ -1,17 +1,25 @@
 package conductance.init;
 
+import java.util.EnumMap;
+import java.util.HashMap;
+import net.minecraft.Util;
 import net.minecraft.world.item.Item;
+import com.google.common.collect.Tables;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
 import conductance.api.NCCovers;
+import conductance.api.util.TieredItemType;
+import conductance.api.util.tier.Tier;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.MaterialTaggedSet;
 import conductance.item.CraftingToolItem;
 import conductance.item.MaterialItem;
-import conductance.item.SimpleCoverItem;
+import conductance.item.TieredCoverItem;
+import conductance.item.TieredItem;
+import static conductance.api.NCItems.TIERED;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class ConductanceItems {
@@ -23,9 +31,8 @@ public final class ConductanceItems {
 	public static void init() {
 		ConductanceItems.generateMaterialItems();
 		ConductanceItems.generateCraftingTools();
-		ApiBridge.getRegistrate().item("lv_conveyor_module", props -> new SimpleCoverItem(props, NCCovers.LV_CONVEYOR))
-				.model(NonNullBiConsumer.noop())//ModelUtils.generatedItem(Conductance.id("item/%s".formatted(name))))
-				.register();
+
+		ConductanceItems.generateTieredItems();
 	}
 
 	private static void generateMaterialItems() {
@@ -47,6 +54,24 @@ public final class ConductanceItems {
 				.defaultModel().register();
 		ConductanceItems.CRAFTING_TOOL_WIRE_CUTTERS = ApiBridge.getRegistrate().item("wire_cutters", CraftingToolItem::new)
 				.defaultModel().register();
+	}
+
+	private static void generateTieredItems() {
+		TIERED = Tables.unmodifiableTable(Util.make(Tables.newCustomTable(new EnumMap<>(TieredItemType.class), HashMap::new), table -> {
+			for (final TieredItemType tieredItemType : TieredItemType.values()) {
+				for (final Tier tier : CAPI.tiers().getTiers()) {
+					final String name = tieredItemType.getUnlocalizedNameFactory().formatted(tier.getRegistryKey());
+					final ItemEntry<? extends Item> item = ApiBridge.getRegistrate().item(name, props -> switch (tieredItemType) {
+								case CONVEYOR_MODULE -> new TieredCoverItem<>(props, tieredItemType, tier, NCCovers.CONVEYORS.get(tier));
+								default -> new TieredItem(props, tieredItemType, tier);
+							})
+							.model(NonNullBiConsumer.noop())
+							.color(() -> TieredItem::handleColorTint)
+							.register();
+					table.put(tieredItemType, tier, item);
+				}
+			}
+		}));
 	}
 
 	private ConductanceItems() {
