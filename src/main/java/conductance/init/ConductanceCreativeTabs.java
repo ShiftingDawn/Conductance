@@ -31,7 +31,7 @@ public final class ConductanceCreativeTabs {
 
 	public static final RegistryEntry<CreativeModeTab, CreativeModeTab> MACHINES = getRegistrate().defaultCreativeTab("machines", builder -> builder
 			.displayItems(new TabDisplayGen("machines"))
-			.icon(() -> new ItemStack(NCMachines.BENDERS.get(NCTiers.LV).getBlock().get()))
+			.icon(() -> new ItemStack(NCMachines.BENDING_MACHINE.get(NCTiers.LV).getBlock().get()))
 			.title(Component.translatable("itemGroup.conductance.machines"))
 			.build()
 	).register();

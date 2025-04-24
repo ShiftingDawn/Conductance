@@ -35,7 +35,13 @@ public final class ConductanceMachines {
 				.guiSupplier(GenericGeneratorMachine.GUI_SUPPLIER.apply(NCRecipeTypes.STEAM_TURBINE))
 				.workableModelRenderer(Conductance.id("block/machine_casing_tiered"))
 				.build();
-		NCMachines.BENDERS = ConductanceMachines.tiered(register, "bender", NCRecipeTypes.BENDER);
+
+		NCMachines.BENDING_MACHINE = ConductanceMachines.tiered(register, "bending_machine", NCRecipeTypes.BENDING_MACHINE);
+		NCMachines.PULVERIZER = ConductanceMachines.tiered(register, "pulverizer", NCRecipeTypes.PULVERIZER);
+		NCMachines.CUTTING_MACHINE = ConductanceMachines.tiered(register, "cutting_machine", NCRecipeTypes.PULVERIZER);
+		NCMachines.LATHE = ConductanceMachines.tiered(register, "lathe", NCRecipeTypes.LATHE);
+		NCMachines.COMPRESSOR = ConductanceMachines.tiered(register, "compressor", NCRecipeTypes.COMPRESSOR);
+
 	}
 
 	private static Map<Tier, MachineType<?>> tiered(final MachineRegister register, final String name, final NCRecipeType recipeType) {

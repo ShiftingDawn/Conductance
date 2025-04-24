@@ -40,7 +40,7 @@ final class MaterialRecipes {
 			shapeless(output, "double_%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE_DOUBLE, material, 1),
 					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material), 2);
 
-			builderFactory.build(NCRecipeTypes.BENDER, id("%s_plate".formatted(material.getName())))
+			builderFactory.build(NCRecipeTypes.BENDING_MACHINE, id("%s_plate".formatted(material.getName())))
 					.in(NCMaterialTaggedSets.INGOT, material)
 					.out(NCMaterialTaggedSets.PLATE, material)
 					.save(output);
