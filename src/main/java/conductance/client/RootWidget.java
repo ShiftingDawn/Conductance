@@ -34,14 +34,17 @@ public class RootWidget extends WidgetGroup {
 		});
 		final MachineGuiSupplier guiSupplier = this.machine.getMachineType().getGuiSupplier();
 		if (guiSupplier != null) {
+			final WidgetGroup container = new WidgetGroup(0, 0, this.getSizeWidth(), this.getSizeHeight() / 2);
+			this.addWidget(container);
 			final WidgetGroup contents = guiSupplier.createDefault();
 			guiSupplier.setupGui(contents, this.machine, this.holder.getGuiTheme(), true);
-			this.addWidget(contents);
+			contents.setSelfPosition((container.getSizeWidth() - contents.getSizeWidth()) / 2, (container.getSizeHeight() - contents.getSizeHeight()) / 2);
+			container.addWidget(contents);
 
 			if (this.machine.getCapability(MachineRecipeCapabilityEnergy.class) instanceof final IEnergyHandler energyHandler) {
 				final ProgressWidget energyBar = new EnergyBarWidget(this.holder.getGuiTheme(), energyHandler);
 				energyBar.setSelfPosition(new Position(this.holder.getPlayerInvX(), this.holder.getPlayerInvY() - 8));
-				contents.addWidget(energyBar);
+				container.addWidget(energyBar);
 			}
 			//TODO add auto output buttons
 		} else {

@@ -9,7 +9,6 @@ import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeTypeBuilder;
-import conductance.Conductance;
 
 public class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 
@@ -63,7 +62,6 @@ public class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 	public NCRecipeType build() {
 		ResourceLocation realProgressBar = this.progressBar.withPrefix("textures/gui/progress_bars/").withSuffix(".png");
 		if (!CAPI.resourceFinder().isResourceValid(realProgressBar)) {
-			Conductance.LOGGER.warn("Could not find progressbar texture {}, falling back to generic_arrow", realProgressBar);
 			realProgressBar = this.progressBar.withPath("textures/gui/progress_bars/generic_arrow.png");
 		}
 		final ResourceLocation realRecipeViewProgressBar = this.recipeViewProgressBar == null ? realProgressBar : this.recipeViewProgressBar.withPrefix("textures/gui/progress_bars/").withSuffix(".png");

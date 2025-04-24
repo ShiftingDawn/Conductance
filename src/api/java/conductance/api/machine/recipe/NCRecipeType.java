@@ -1,7 +1,10 @@
 package conductance.api.machine.recipe;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -27,4 +30,10 @@ public interface NCRecipeType extends IRegistryObject<ResourceLocation>, RecipeT
 	WidgetGroup createGuiTemplate(DoubleSupplier progressSupplier, IItemHandlerModifiable inputItems, IItemHandlerModifiable outputItems, IFluidHandler inputFluids, IFluidHandler outputFluids, GuiTheme theme);
 
 	MachineGuiTemplate<WidgetGroup, RecipeHolder> createGuiTemplate();
+
+	Supplier<ItemStack> getRecipeTypeIcon();
+
+	String getDescriptionId();
+
+	Component getName();
 }

@@ -4,14 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
@@ -23,6 +30,8 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import lombok.Getter;
+import lombok.Setter;
+import conductance.api.CAPI;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.gui.GuiTheme;
 import conductance.api.machine.gui.MachineGuiTemplate;
@@ -32,9 +41,10 @@ import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeHolder;
 import conductance.api.registry.RegistryObject;
 import conductance.api.util.IOMode;
+import conductance.api.util.TextHelper;
+import conductance.Conductance;
 import conductance.client.GuiHelper;
-import static conductance.client.GuiHelper.GUI_HEIGHT;
-import static conductance.client.GuiHelper.GUI_WIDTH;
+import conductance.compat.emi.ConductanceEmiPlugin;
 import static conductance.client.GuiHelper.NAME_SLOT_REGEX;
 
 public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements NCRecipeType {
@@ -46,6 +56,10 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 	@Getter
 	private final ProgressTexture.FillDirection progressBarDirection;
 	private final ResourceTexture recipeViewProgressBar;
+	@Setter
+	@Getter
+	private Supplier<ItemStack> recipeTypeIcon = Items.DEAD_BUSH::getDefaultInstance;
+	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("recipe", this.getRegistryKey()));
 
 	public RecipeTypeImpl(
 			final ResourceLocation registryKey,
@@ -94,12 +108,12 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 			final WidgetGroup inputs = this.makeIOGroup(true);
 			final WidgetGroup outputs = this.makeIOGroup(false);
 
-			final WidgetGroup group = new WidgetGroup(0, 0, Math.max(GUI_WIDTH, inputs.getSize().width + outputs.getSize().width + 40),
-					Math.max(GUI_HEIGHT / 2, Math.max(inputs.getSize().height, outputs.getSize().height)));
+			final WidgetGroup group = new WidgetGroup(0, 0,
+					Math.max(inputs.getSize().width, outputs.getSize().width) * 2 + 40, Math.max(inputs.getSize().height, outputs.getSize().height));
 			final Size size = group.getSize();
 
-			inputs.setSelfPosition(new Position((size.width / 2 - inputs.getSize().width) / 2, (size.height - inputs.getSize().height) / 2));
-			outputs.setSelfPosition(new Position(size.width / 2 + (size.width / 2 - outputs.getSize().width) / 2, (size.height - outputs.getSize().height) / 2));
+			inputs.setSelfPosition(new Position(0, (size.height - inputs.getSize().height) / 2));
+			outputs.setSelfPosition(new Position(size.width / 2 + 20, (size.height - outputs.getSize().height) / 2));
 			group.addWidget(inputs);
 			group.addWidget(outputs);
 
@@ -123,29 +137,26 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 				}
 				progressWidgets.add(progressWidget);
 			});
-			//			// todo add recipe button
-			//			if (!isRecipeView && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded())) {
-			//				for (final Widget widget : progressWidgets) {
-			//					template.addWidget(new ButtonWidget(widget.getPosition().x, widget.getPosition().y, widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, clickData -> {
-			//						if (clickData.isRemote) {
-			//							//TODO REI
-			//							//							if (LDLib.isReiLoaded()) {
-			//							//								ViewSearchBuilder.builder().addCategory(GTRecipeTypeDisplayCategory.CATEGORIES.apply(GTRecipeType.this)).open();
-			//							//							} else
-			//
-			//							// TODO JEI
-			//							//							if (LDLib.isJeiLoaded()) {
-			//							//								JEIPlugin.jeiRuntime.getRecipesGui().showTypes(List.of(GenericRecipeTypeCategory.TYPES.apply(this)));
-			//							//							} else
-			//
-			//							//TODO EMI
-			//							//							if (LDLib.isEmiLoaded()) {
-			//							//								EmiApi.displayRecipeCategory(conductance.compat.emi.GenericRecipeTypeCategory.CATEGORIES.apply(this));
-			//							//						}
-			//						}
-			//					}).setHoverTooltips("tooltip.conductance.recipe.show_all"));
-			//				}
-			//			}
+			// todo add recipe button
+			if (!isRecipeView && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded())) {
+				for (final Widget widget : progressWidgets) {
+					template.addWidget(new ButtonWidget(widget.getPosition().x, widget.getPosition().y, widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, clickData -> {
+						if (clickData.isRemote) {
+							//TODO REI
+							//							if (LDLib.isReiLoaded()) {
+							//								ViewSearchBuilder.builder().addCategory(GTRecipeTypeDisplayCategory.CATEGORIES.apply(GTRecipeType.this)).open();
+							//							} else
+							// TODO JEI
+							//							if (LDLib.isJeiLoaded()) {
+							//								JEIPlugin.jeiRuntime.getRecipesGui().showTypes(List.of(GenericRecipeTypeCategory.TYPES.apply(this)));
+							//							} else
+							if (LDLib.isEmiLoaded()) {
+								ConductanceEmiPlugin.displayEmiCategory(this);
+							}
+						}
+					}).setHoverTooltips(Conductance.tooltipText("recipe.show_all")));
+				}
+			}
 
 			final AtomicReference<WidgetGroup> inputGroup = new AtomicReference<>();
 			GuiHelper.getWidgetByIdForEach(template, NCRecipeElementTypes.ITEM.getGroupName(IOMode.INPUT), WidgetGroup.class, itemGroup -> {
@@ -236,6 +247,16 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 				this.fixGroupBounding(outputGroup.get());
 			}
 		});
+	}
+
+	@Override
+	public String getDescriptionId() {
+		return this.descriptionId.get();
+	}
+
+	@Override
+	public Component getName() {
+		return CAPI.translations().makeLocalizedName(this.getDescriptionId(), () -> TextHelper.lowerUnderscoreToEnglish(this.getRegistryKey().getPath()));
 	}
 
 	private void fixGroupBounding(final WidgetGroup group) {

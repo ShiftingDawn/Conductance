@@ -39,7 +39,11 @@ public final class Conductance {
 		return ResourceLocation.fromNamespaceAndPath(Conductance.MODID, path);
 	}
 
+	public static String tooltipText(final String suffix) {
+		return "tooltip.%s.%s".formatted(Conductance.MODID, suffix);
+	}
+
 	public static Component tooltip(final String suffix, final Object... args) {
-		return Component.translatable("tooltip.%s.%s".formatted(Conductance.MODID, suffix), args);
+		return Component.translatable(Conductance.tooltipText(suffix), args);
 	}
 }

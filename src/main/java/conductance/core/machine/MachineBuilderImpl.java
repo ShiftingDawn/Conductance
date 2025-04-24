@@ -42,6 +42,7 @@ import conductance.api.machine.render.MachineOverlayRenderer;
 import conductance.api.machine.render.WorkableMachineRenderer;
 import conductance.api.util.RotationState;
 import conductance.Conductance;
+import conductance.core.recipe.RecipeTypeImpl;
 import conductance.runtimepack.client.MachineBlockModelHandler;
 import static conductance.core.apiimpl.ApiBridge.getRegistrate;
 
@@ -231,6 +232,7 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 		});
 		machineType.validate();
 		CAPI.regs().machines().register(machineType.getRegistryKey(), machineType);
+		Arrays.stream(this.recipeTypes).forEach(type -> ((RecipeTypeImpl) type).setRecipeTypeIcon(() -> new ItemStack(machineType.getBlock().get())));
 		return machineType;
 	}
 }

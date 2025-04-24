@@ -21,11 +21,27 @@ public interface IRecipe extends Recipe<RecipeInput> {
 
 	Map<IRecipeElementType<?>, List<RecipeElement>> getInputs();
 
+	default List<RecipeElement> getInputs(final IRecipeElementType<?> type) {
+		return this.getInputs().getOrDefault(type, List.of());
+	}
+
 	Map<IRecipeElementType<?>, List<RecipeElement>> getInputsPerTick();
+
+	default List<RecipeElement> getInputsPerTick(final IRecipeElementType<?> type) {
+		return this.getInputsPerTick().getOrDefault(type, List.of());
+	}
 
 	Map<IRecipeElementType<?>, List<RecipeElement>> getOutputs();
 
+	default List<RecipeElement> getOutputs(final IRecipeElementType<?> type) {
+		return this.getOutputs().getOrDefault(type, List.of());
+	}
+
 	Map<IRecipeElementType<?>, List<RecipeElement>> getOutputsPerTick();
+
+	default List<RecipeElement> getOutputsPerTick(final IRecipeElementType<?> type) {
+		return this.getOutputsPerTick().getOrDefault(type, List.of());
+	}
 
 	int getProcessTime();
 

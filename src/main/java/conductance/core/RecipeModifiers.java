@@ -1,6 +1,5 @@
 package conductance.core;
 
-import java.util.ArrayList;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -45,16 +44,14 @@ public final class RecipeModifiers {
 	}
 
 	public static IRecipe applyOverclock(final Overclock logic, IRecipe recipe, final long maxOverclockVoltage) {
-		long recipeEnergyPerTick = recipe.getInputsPerTick().getOrDefault(NCRecipeElementTypes.ENERGY, new ArrayList<>())
-				.stream().mapToLong(element -> (long) element.data()).sum();
+		long recipeEnergyPerTick = recipe.getInputsPerTick(NCRecipeElementTypes.ENERGY).stream().mapToLong(element -> (long) element.data()).sum();
 		if (recipeEnergyPerTick > 0) {
 			final OverclockResult overclockResult = RecipeModifiers.performOverclocking(logic, recipe, recipeEnergyPerTick, maxOverclockVoltage);
 			if (overclockResult.newEnergy() != recipeEnergyPerTick || recipe.getProcessTime() != overclockResult.newTime()) {
 				recipe = recipe.copy(overclockResult, false);
 			}
 		}
-		recipeEnergyPerTick = recipe.getOutputsPerTick().getOrDefault(NCRecipeElementTypes.ENERGY, new ArrayList<>())
-				.stream().mapToLong(element -> (long) element.data()).sum();
+		recipeEnergyPerTick = recipe.getOutputsPerTick(NCRecipeElementTypes.ENERGY).stream().mapToLong(element -> (long) element.data()).sum();
 		if (recipeEnergyPerTick > 0) {
 			final OverclockResult overclockResult = RecipeModifiers.performOverclocking(logic, recipe, recipeEnergyPerTick, maxOverclockVoltage);
 			if (overclockResult.newEnergy() != recipeEnergyPerTick || recipe.getProcessTime() != overclockResult.newTime()) {
