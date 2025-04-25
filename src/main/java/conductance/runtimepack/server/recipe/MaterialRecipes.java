@@ -18,7 +18,12 @@ final class MaterialRecipes {
 	public static void add(final RecipeOutput output, final RecipeBuilderFactory builderFactory) {
 		CAPI.regs().materials().forEach(material -> {
 			material.executeIf(NCMaterialTraits.ORE, $ -> MaterialRecipes.addOreRecipes(output, builderFactory, material));
-			material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> MaterialRecipes.addPlateRecipes(output, builderFactory, material));
+			material.executeIf(NCMaterialTraits.INGOT, () -> MaterialRecipes.addIngotRecipes(output, builderFactory, material));
+			material.executeIf(NCMaterialTraits.GEM, () -> MaterialRecipes.addGemRecipes(output, builderFactory, material));
+
+			material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> {
+				MaterialRecipes.addPlateRecipes(output, builderFactory, material);
+			});
 		});
 	}
 
@@ -33,6 +38,12 @@ final class MaterialRecipes {
 		}
 	}
 
+	private static void addIngotRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
+	}
+
+	private static void addGemRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
+	}
+
 	private static void addPlateRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
 		if (material.hasTrait(NCMaterialTraits.INGOT)) {
 			shapeless(output, "%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE, material, 1),
@@ -41,10 +52,20 @@ final class MaterialRecipes {
 					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material), 2);
 			matRecipe(output, builderFactory, "%s_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE, b -> b.program(1));
 			matRecipe(output, builderFactory, "%s_double_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
-			matRecipe(output, builderFactory, "%s_dense_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+			matRecipe(output, builderFactory, "%s_dense_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+			matRecipe(output, builderFactory, "%s_double_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(output, builderFactory, "%s_dense_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+		} else if (material.hasTrait(NCMaterialTraits.WOOD)) {
+			matRecipe(output, builderFactory, "%s_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE, null);
+			matRecipe(output, builderFactory, "%s_double_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(output, builderFactory, "%s_dense_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+			matRecipe(output, builderFactory, "%s_double_plank_from_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(output, builderFactory, "%s_dense_plank_from_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+		} else {
+			matRecipe(output, builderFactory, "%s_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE, b -> b.program(1));
+			matRecipe(output, builderFactory, "%s_double_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(output, builderFactory, "%s_dense_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
 		}
-		matRecipe(output, builderFactory, "%s_double_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
-		matRecipe(output, builderFactory, "%s_dense_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
 	}
 
 	private MaterialRecipes() {
