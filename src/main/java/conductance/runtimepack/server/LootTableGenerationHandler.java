@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import com.mojang.serialization.JsonOps;
+import conductance.api.CAPI;
 import conductance.core.register.MaterialRegistryImpl;
 
 final class LootTableGenerationHandler {
@@ -14,6 +15,7 @@ final class LootTableGenerationHandler {
 	static void generate(final HolderLookup.Provider provider) {
 		final VanillaBlockLoot loot = new VanillaBlockLoot(provider);
 		LootTableGenerationHandler.generateMaterialBlocks(loot, provider);
+		CAPI.regs().machines().forEach(machineType -> LootTableGenerationHandler.dropSelf(machineType.getBlock().get(), loot, provider));
 	}
 
 	private static void generateMaterialBlocks(final VanillaBlockLoot loot, final HolderLookup.Provider provider) {
