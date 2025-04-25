@@ -26,7 +26,9 @@
   "tooltip.conductance.generic.inventory_capacity": "§6Item Slots: §f%s",
 
   "tooltip.conductance.recipe.show_all": "Show all recipes",
-  "tooltip.conductance.recipe.process_time": "Duration: %,.2f secs",
+  "tooltip.conductance.recipe.program": "Program: %s",
+  "tooltip.conductance.recipe.program_any": "Program: any",
+  "tooltip.conductance.recipe.process_time": "Duration: %,.2f secs (%s ticks)",
   "tooltip.conductance.recipe.total_energy": "Total energy cost: %s%s",
   "tooltip.conductance.recipe.energy_produce": "Produces %s%s (%s)",
   "tooltip.conductance.recipe.energy_consume": "Consumes %s%s (%s)",

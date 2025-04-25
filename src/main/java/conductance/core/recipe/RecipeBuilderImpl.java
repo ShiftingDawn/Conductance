@@ -34,6 +34,8 @@ public class RecipeBuilderImpl implements RecipeBuilder {
 	private int tieredChanceBoost = 0;
 	@Getter
 	private int processTime = 200;
+	@Getter
+	private int program = 0;
 
 	public RecipeBuilderImpl(final NCRecipeType recipeType, final ResourceLocation recipeId) {
 		this.recipeType = recipeType;
@@ -78,6 +80,30 @@ public class RecipeBuilderImpl implements RecipeBuilder {
 	}
 
 	@Override
+	public <T> RecipeBuilder inNc(final IRecipeElementType<T> type, final T obj) {
+		final int wasChance = this.chance;
+		this.chance = 0;
+		this.add(true, type, obj);
+		this.chance = wasChance;
+		return this;
+	}
+
+	@Override
+	public RecipeBuilder inEnergy(final long energy) {
+		final boolean wasPerTick = this.perTick;
+		this.perTick = true;
+		this.in(NCRecipeElementTypes.ENERGY, energy);
+		this.perTick = wasPerTick;
+		return this;
+	}
+
+	@Override
+	public RecipeBuilder program(final int programNr) {
+		this.program = programNr;
+		return this;
+	}
+
+	@Override
 	public RecipeBuilder outEnergy(final long energy) {
 		final boolean wasPerTick = this.perTick;
 		this.perTick = true;
@@ -95,7 +121,8 @@ public class RecipeBuilderImpl implements RecipeBuilder {
 				this.outputs,
 				this.inputsPerTick,
 				this.outputsPerTick,
-				this.processTime
+				this.processTime,
+				this.program
 		);
 	}
 
@@ -116,6 +143,7 @@ public class RecipeBuilderImpl implements RecipeBuilder {
 			copy.maxChance = this.maxChance;
 			copy.tieredChanceBoost = this.tieredChanceBoost;
 			copy.processTime = this.processTime;
+			copy.program = this.program;
 		});
 	}
 

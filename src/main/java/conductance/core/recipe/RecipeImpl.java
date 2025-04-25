@@ -35,12 +35,14 @@ public class RecipeImpl implements IRecipe {
 	private final Map<IRecipeElementType<?>, List<RecipeElement>> outputsPerTick;
 	@Getter
 	private final int processTime;
+	@Getter
+	private final int program;
 
 	public RecipeImpl(
 			final RecipeType<?> recipeType, final ResourceLocation id,
 			final Map<IRecipeElementType<?>, List<RecipeElement>> inputs, final Map<IRecipeElementType<?>, List<RecipeElement>> outputs,
 			final Map<IRecipeElementType<?>, List<RecipeElement>> inputsPerTick, final Map<IRecipeElementType<?>, List<RecipeElement>> outputsPerTick,
-			final int processTime,
+			final int processTime, final int program,
 			final boolean mutable
 	) {
 		if (!(recipeType instanceof NCRecipeType)) {
@@ -53,15 +55,16 @@ public class RecipeImpl implements IRecipe {
 		this.inputsPerTick = mutable ? RecipeImpl.makeMutable(inputsPerTick) : RecipeImpl.makeImmutable(inputsPerTick);
 		this.outputsPerTick = mutable ? RecipeImpl.makeMutable(outputsPerTick) : RecipeImpl.makeImmutable(outputsPerTick);
 		this.processTime = processTime;
+		this.program = program;
 	}
 
 	public RecipeImpl(
 			final RecipeType<?> recipeType, final ResourceLocation id,
 			final Map<IRecipeElementType<?>, List<RecipeElement>> inputs, final Map<IRecipeElementType<?>, List<RecipeElement>> outputs,
 			final Map<IRecipeElementType<?>, List<RecipeElement>> inputsPerTick, final Map<IRecipeElementType<?>, List<RecipeElement>> outputsPerTick,
-			final int processTime
+			final int processTime, final int program
 	) {
-		this(recipeType, id, inputs, outputs, inputsPerTick, outputsPerTick, processTime, false);
+		this(recipeType, id, inputs, outputs, inputsPerTick, outputsPerTick, processTime, program, false);
 	}
 
 	private static Map<IRecipeElementType<?>, List<RecipeElement>> makeImmutable(final Map<IRecipeElementType<?>, List<RecipeElement>> map) {
@@ -78,7 +81,8 @@ public class RecipeImpl implements IRecipe {
 				this.type, this.id,
 				this.copyContentMap(this.getInputs(), modifier, null), this.copyContentMap(this.getOutputs(), modifier, null),
 				this.copyContentMap(this.getInputsPerTick(), modifier, null), this.copyContentMap(this.getOutputsPerTick(), modifier, null),
-				modifyProcessTime && modifier != null ? modifier.apply(this.processTime).intValue() : this.processTime
+				modifyProcessTime && modifier != null ? modifier.apply(this.processTime).intValue() : this.processTime,
+				this.program
 		);
 	}
 
@@ -93,7 +97,8 @@ public class RecipeImpl implements IRecipe {
 						: (elementType, content) -> elementType == NCRecipeElementTypes.ENERGY ? this.createOverclock(overclockResult, content) : content),
 				this.copyContentMap(this.outputsPerTick, null, !modifyOutput ? null
 						: (elementType, content) -> elementType == NCRecipeElementTypes.ENERGY ? this.createOverclock(overclockResult, content) : content),
-				(int) overclockResult.newTime()
+				(int) overclockResult.newTime(),
+				this.program
 		);
 	}
 
@@ -108,6 +113,7 @@ public class RecipeImpl implements IRecipe {
 				this.copyContentMap(this.getInputs(), null, null), this.copyContentMap(this.getOutputs(), null, null),
 				this.copyContentMap(this.getInputsPerTick(), null, null), this.copyContentMap(this.getOutputsPerTick(), null, null),
 				this.processTime,
+				this.program,
 				true
 		);
 	}

@@ -37,12 +37,10 @@ public interface RecipeBuilder {
 
 	<T> RecipeBuilder add(boolean input, IRecipeElementType<T> type, T obj);
 
-	//region IN
 	default <T> RecipeBuilder in(final IRecipeElementType<T> type, final T obj) {
 		return this.add(true, type, obj);
 	}
 
-	//region Item IN
 	default RecipeBuilder in(final SizedIngredient item) {
 		return this.in(NCRecipeElementTypes.ITEM, item);
 	}
@@ -62,9 +60,7 @@ public interface RecipeBuilder {
 	default RecipeBuilder in(final ItemLike item) {
 		return this.in(SizedIngredient.of(item, 1));
 	}
-	//endregion
 
-	//region Fluid IN
 	default RecipeBuilder in(final SizedFluidIngredient fluid) {
 		return this.in(NCRecipeElementTypes.FLUID, fluid);
 	}
@@ -84,7 +80,6 @@ public interface RecipeBuilder {
 	default RecipeBuilder in(final Fluid fluid) {
 		return this.in(fluid, FluidType.BUCKET_VOLUME);
 	}
-	//endregion
 
 	@SuppressWarnings("unchecked")
 	default RecipeBuilder in(final TagKey<?> tag, final int count) {
@@ -112,14 +107,84 @@ public interface RecipeBuilder {
 	default RecipeBuilder in(final TaggedMaterialSet taggedSet, final Material material) {
 		return this.in(taggedSet, material, 1);
 	}
-	//endregion
 
-	//region OUT
+	RecipeBuilder inEnergy(long energy);
+
+	RecipeBuilder program(int program);
+
+	<T> RecipeBuilder inNc(IRecipeElementType<T> type, T obj);
+
+	default RecipeBuilder inNc(final SizedIngredient item) {
+		return this.inNc(NCRecipeElementTypes.ITEM, item);
+	}
+
+	default RecipeBuilder inNc(final Ingredient item, final int count) {
+		return this.inNc(new SizedIngredient(item, count));
+	}
+
+	default RecipeBuilder inNc(final ItemStack item) {
+		return this.inNc(new SizedIngredient(Ingredient.of(item), item.getCount()));
+	}
+
+	default RecipeBuilder inNc(final ItemLike item, final int count) {
+		return this.inNc(SizedIngredient.of(item, count));
+	}
+
+	default RecipeBuilder inNc(final ItemLike item) {
+		return this.inNc(SizedIngredient.of(item, 1));
+	}
+
+	default RecipeBuilder inNc(final SizedFluidIngredient fluid) {
+		return this.inNc(NCRecipeElementTypes.FLUID, fluid);
+	}
+
+	default RecipeBuilder inNc(final FluidIngredient fluid, final int amount) {
+		return this.inNc(new SizedFluidIngredient(fluid, amount));
+	}
+
+	default RecipeBuilder inNc(final FluidStack fluid) {
+		return this.inNc(SizedFluidIngredient.of(fluid));
+	}
+
+	default RecipeBuilder inNc(final Fluid fluid, final int amount) {
+		return this.inNc(SizedFluidIngredient.of(fluid, amount));
+	}
+
+	default RecipeBuilder inNc(final Fluid fluid) {
+		return this.inNc(fluid, FluidType.BUCKET_VOLUME);
+	}
+
+	@SuppressWarnings("unchecked")
+	default RecipeBuilder inNc(final TagKey<?> tag, final int count) {
+		if (tag.registry() == Registries.ITEM) {
+			return this.inNc(SizedIngredient.of((TagKey<Item>) tag, Math.abs(count)));
+		} else if (tag.registry() == Registries.FLUID) {
+			return this.inNc(SizedFluidIngredient.of((TagKey<Fluid>) tag, Math.abs(count) * (count < 0 ? FluidType.BUCKET_VOLUME : 1)));
+		}
+		return this;
+	}
+
+	default RecipeBuilder inNc(final TagKey<?> tagKey) {
+		return this.inNc(tagKey, -1);
+	}
+
+	default RecipeBuilder inNc(final TaggedMaterialSet taggedSet, final Material material, final int count) {
+		if (taggedSet.isItemGenerator() || taggedSet.isBlockGenerator()) {
+			this.inNc(MiscUtils.getItemTag(taggedSet, material), count);
+		} else if (taggedSet.isFluidGenerator()) {
+			this.inNc(MiscUtils.getFluidTag(taggedSet, material), count);
+		}
+		return this;
+	}
+
+	default RecipeBuilder inNc(final TaggedMaterialSet taggedSet, final Material material) {
+		return this.inNc(taggedSet, material, 1);
+	}
+
 	default <T> RecipeBuilder out(final IRecipeElementType<T> type, final T obj) {
 		return this.add(false, type, obj);
 	}
 
-	//region Item OUT
 	default RecipeBuilder out(final SizedIngredient item) {
 		return this.out(NCRecipeElementTypes.ITEM, item);
 	}
@@ -139,9 +204,7 @@ public interface RecipeBuilder {
 	default RecipeBuilder out(final ItemLike item) {
 		return this.out(SizedIngredient.of(item, 1));
 	}
-	//endregion
 
-	//region Fluid OUT
 	default RecipeBuilder out(final SizedFluidIngredient fluid) {
 		return this.out(NCRecipeElementTypes.FLUID, fluid);
 	}
@@ -163,7 +226,6 @@ public interface RecipeBuilder {
 	}
 
 	RecipeBuilder outEnergy(long energy);
-	//endregion
 
 	@SuppressWarnings("unchecked")
 	default RecipeBuilder out(final TagKey<?> tag, final int count) {
@@ -191,7 +253,6 @@ public interface RecipeBuilder {
 	default RecipeBuilder out(final TaggedMaterialSet taggedSet, final Material material) {
 		return this.out(taggedSet, material, 1);
 	}
-	//endregion
 
 	IRecipe build();
 

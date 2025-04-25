@@ -39,6 +39,7 @@ public class RecipeSerializerImpl implements NCRecipeSerializer {
 		RecipeSerializerImpl.writeRecipeMap(buf, recipe.getInputsPerTick());
 		RecipeSerializerImpl.writeRecipeMap(buf, recipe.getOutputsPerTick());
 		buf.writeVarInt(recipe.getProcessTime());
+		buf.writeVarInt(recipe.getProgram());
 	}
 
 
@@ -50,6 +51,7 @@ public class RecipeSerializerImpl implements NCRecipeSerializer {
 				RecipeSerializerImpl.loadRecipeMap(buf),
 				RecipeSerializerImpl.loadRecipeMap(buf),
 				RecipeSerializerImpl.loadRecipeMap(buf),
+				buf.readVarInt(),
 				buf.readVarInt()
 		);
 	}
@@ -85,7 +87,8 @@ public class RecipeSerializerImpl implements NCRecipeSerializer {
 				RecipeCodecs.ELEMENT_MAP.fieldOf("outputs").forGetter(IRecipe::getOutputs),
 				RecipeCodecs.ELEMENT_MAP.fieldOf("inputspertick").forGetter(IRecipe::getInputsPerTick),
 				RecipeCodecs.ELEMENT_MAP.fieldOf("outputspertick").forGetter(IRecipe::getOutputsPerTick),
-				Codec.INT.fieldOf("processtime").forGetter(IRecipe::getProcessTime)
+				Codec.INT.fieldOf("processtime").forGetter(IRecipe::getProcessTime),
+				Codec.INT.fieldOf("program").forGetter(IRecipe::getProgram)
 		).apply(ins, RecipeImpl::new));
 	}
 }

@@ -14,12 +14,11 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.gui.widget.layout.Layout;
 import com.lowdragmc.lowdraglib.utils.CycleFluidTransfer;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.lowdragmc.lowdraglib.utils.Size;
 import conductance.api.CAPI;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.gui.GuiTheme;
@@ -29,6 +28,7 @@ import conductance.api.util.IOMode;
 import conductance.api.util.TextHelper;
 import conductance.Conductance;
 import conductance.client.GuiHelper;
+import static conductance.client.GuiHelper.GUI_WIDTH;
 import static conductance.client.GuiHelper.NAME_SLOT_REGEX;
 
 public final class ConductanceRecipeWidget extends WidgetGroup {
@@ -190,9 +190,22 @@ public final class ConductanceRecipeWidget extends WidgetGroup {
 			}
 		});
 
-		final WidgetGroup infoPanel = new WidgetGroup();
-		infoPanel.setLayout(Layout.VERTICAL_LEFT);
-		infoPanel.addWidget(new LabelWidget(0, 0, LocalizationUtils.format(Conductance.tooltipText("recipe.process_time"), recipe.getProcessTime() / 20f)));
+		this.addWidget(template);
+		this.setSize(GUI_WIDTH, template.getSizeHeight() + 10);
+		template.setSelfPosition((this.getSizeWidth() - template.getSizeWidth()) / 2, 5);
+		final Size size = this.getSize();
+
+		int yPos = this.getSizeHeight() + 1;
+
+		if (recipe.getProgram() == 0) {
+			this.addWidget(new LabelWidget(5, yPos, LocalizationUtils.format(Conductance.tooltipText("recipe.program_any"))));
+			yPos += 10;
+		} else {
+			this.addWidget(new LabelWidget(5, yPos, LocalizationUtils.format(Conductance.tooltipText("recipe.program"), recipe.getProgram())));
+			yPos += 10;
+		}
+		this.addWidget(new LabelWidget(5, yPos, LocalizationUtils.format(Conductance.tooltipText("recipe.process_time"), recipe.getProcessTime() / 20f, recipe.getProcessTime())));
+		yPos += 10;
 		long energyPerTick = recipe.getInputsPerTick(NCRecipeElementTypes.ENERGY).stream().mapToLong(content -> (long) content.data()).sum();
 		boolean isOutput = false;
 		if (energyPerTick == 0) {
@@ -200,19 +213,13 @@ public final class ConductanceRecipeWidget extends WidgetGroup {
 			isOutput = true;
 		}
 		if (energyPerTick > 0) {
-			infoPanel.addWidget(new LabelWidget(0, 0, Conductance.tooltip("recipe.total_energy", energyPerTick * recipe.getProcessTime(), TextHelper.ENERGY_FORMAT)));
-			infoPanel.addWidget(new LabelWidget(0, 0, Conductance.tooltip("recipe.energy_%s".formatted(isOutput ? "produce" : "consume"), energyPerTick, TextHelper.ENERGY_FORMAT_PER_TICK,
+			this.addWidget(new LabelWidget(5, yPos, Conductance.tooltip("recipe.total_energy", energyPerTick * recipe.getProcessTime(), TextHelper.ENERGY_FORMAT)));
+			yPos += 10;
+			this.addWidget(new LabelWidget(5, yPos, Conductance.tooltip("recipe.energy_%s".formatted(isOutput ? "produce" : "consume"), energyPerTick, TextHelper.ENERGY_FORMAT_PER_TICK,
 					CAPI.tiers().getTierByVoltage(energyPerTick).getLocalizedName())));
+			yPos += 10;
 		}
 
-		final WidgetGroup container = new WidgetGroup();
-		container.setLayout(Layout.VERTICAL_LEFT);
-		container.addWidget(template);
-		container.addWidget(new Widget(0, 0, 0, 6));
-		container.addWidget(infoPanel);
-		container.setDynamicSized(true);
-		this.addWidget(container);
-		this.setSize(container.getSize().add(10, 10));
-		container.setSelfPosition(5, 5);
+		this.setSize(size.getWidth(), size.getHeight() + yPos + 5);
 	}
 }

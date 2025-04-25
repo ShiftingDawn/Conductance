@@ -45,6 +45,8 @@ public interface IRecipe extends Recipe<RecipeInput> {
 
 	int getProcessTime();
 
+	int getProgram();
+
 	long getEnergyPerTick();
 
 	@Override
