@@ -29,3 +29,5 @@ run-data
 
 repo
 logs
+
+src/generated/resources/.cache/

@@ -3,9 +3,7 @@ package conductance.init;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -64,23 +62,6 @@ public final class ConductanceCreativeTabs {
 	//@formatter:on
 
 	public static void init() {
-		getRegistrate().addRegisterCallback(Registries.BLOCK, () -> getRegistrate().getAll(Registries.BLOCK).forEach(entry -> {
-			if (entry.get() instanceof final IConductanceItem conductanceItem) {
-				getRegistrate().setCreativeTab(entry, conductanceItem.getCreativeTab());
-			}
-		}));
-
-		getRegistrate().addRegisterCallback(Registries.ITEM, () -> getRegistrate().getAll(Registries.ITEM).forEach(entry -> {
-			if (entry.get() instanceof final BlockItem blockItem && blockItem.getBlock() instanceof IConductanceItem) {
-				return;
-			}
-			RegistryEntry<CreativeModeTab, CreativeModeTab> tab = ConductanceCreativeTabs.GENERAL;
-			if (entry.get() instanceof final IConductanceItem conductanceItem) {
-				tab = conductanceItem.getCreativeTab();
-			}
-			getRegistrate().setCreativeTab(entry, tab);
-		}));
-		getRegistrate().defaultCreativeTab(CreativeModeTabs.SEARCH);
 	}
 
 	private static final class TabDisplayGen implements CreativeModeTab.DisplayItemsGenerator {

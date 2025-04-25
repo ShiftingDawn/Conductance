@@ -5,7 +5,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
@@ -38,7 +37,6 @@ public final class ConductanceBlocks {
 			final String name = set.getUnlocalizedName(material);
 			final BlockBuilder<MaterialBlock, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> new MaterialBlock(props, material, set))
 					.initialProperties(() -> Blocks.IRON_BLOCK)
-					.setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
 					.color(() -> MaterialBlock::handleColorTint)
 					.item(MaterialBlockItem::new)
 					.model(NonNullBiConsumer.noop())
@@ -57,7 +55,6 @@ public final class ConductanceBlocks {
 							case PILLAR -> new MaterialOreRotatedPillarBlock(props, material, oreType);
 						})
 						.initialProperties(() -> Blocks.STONE)
-						.setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
 						.color(() -> MaterialOreBlock::handleColorTint)
 						.item(MaterialOreBlockItem::new)
 						.model(NonNullBiConsumer.noop())
@@ -72,7 +69,6 @@ public final class ConductanceBlocks {
 	private static BlockEntry<SimpleDynamicBlock> machineCasingBlock(final String name) {
 		return ApiBridge.getRegistrate().block("%s_machine_casing".formatted(name), props -> new SimpleDynamicBlock(props, "casing/%s".formatted(name)))
 				.initialProperties(() -> Blocks.IRON_BLOCK)
-				.blockstate(NonNullBiConsumer.noop())
 				.item(RenderedBlockItem::new)
 				.model(NonNullBiConsumer.noop())
 				.build()
@@ -88,7 +84,6 @@ public final class ConductanceBlocks {
 					final BlockEntry<CableBlock> block = ApiBridge.getRegistrate().block(name, props -> new CableBlock(props, cableType, material))
 							.initialProperties(() -> Blocks.IRON_BLOCK)
 							.properties(props -> props.dynamicShape().noOcclusion())
-							.blockstate(NonNullBiConsumer.noop())
 							.addLayer(() -> RenderType::cutoutMipped)
 							.color(() -> CableBlock::handleColorTint)
 							.item(CableBlockItem::new)
