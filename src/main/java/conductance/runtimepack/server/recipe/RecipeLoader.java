@@ -108,7 +108,7 @@ public final class RecipeLoader {
 				.in(input, material, pair.inputCount())
 				.out(output, material, pair.outputCount())
 				.processTime(pair.processTime())
-				.inEnergy(pair.totalEnergy());
+				.inEnergy(NCTiers.LV.getRecipeVoltage());
 		if (consumer != null) {
 			consumer.accept(builder);
 		}
