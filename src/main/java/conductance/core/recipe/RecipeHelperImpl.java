@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import com.google.common.collect.Table;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.capability.MachineRecipeCapability;
+import conductance.api.machine.recipe.AutoRecipeData;
 import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
@@ -19,6 +20,7 @@ import conductance.api.machine.recipe.RecipeCapabilityHolder;
 import conductance.api.machine.recipe.RecipeElement;
 import conductance.api.machine.recipe.RecipeHelper;
 import conductance.api.machine.recipe.RecipeModifier;
+import conductance.api.registry.TaggedSet;
 import conductance.api.util.IOMode;
 
 public final class RecipeHelperImpl implements RecipeHelper {
@@ -220,5 +222,20 @@ public final class RecipeHelperImpl implements RecipeHelper {
 			outputs.computeIfAbsent(entry.getKey(), $ -> new ArrayList<>()).addAll(entry.getValue());
 		}
 		return outputs;
+	}
+
+	@Override
+	public <T> AutoRecipeData calculateRecipeData(final T obj, final TaggedSet<T> inputType, final TaggedSet<T> outputType, final int baseTime, final long baseEnergy) {
+		final long inputValue = inputType.getUnitValue(obj);
+		final long outputValue = inputType.getUnitValue(obj);
+		if (inputValue == outputValue) {
+			return new AutoRecipeData(1, 1, baseTime, baseEnergy);
+		} else if (inputValue < outputValue) {
+			final int diffAmount = (int) (outputValue / inputValue);
+			return new AutoRecipeData(diffAmount, 1, baseTime * diffAmount, baseEnergy * diffAmount);
+		} else {
+			final int diffAmount = (int) (inputValue / outputValue);
+			return new AutoRecipeData(1, diffAmount, baseTime * diffAmount, baseEnergy * diffAmount);
+		}
 	}
 }

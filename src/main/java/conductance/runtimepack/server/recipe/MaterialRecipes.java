@@ -10,7 +10,7 @@ import conductance.api.material.Material;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.util.MiscUtils;
 import conductance.core.register.MaterialOverrideRegister;
-import static conductance.Conductance.id;
+import static conductance.runtimepack.server.recipe.RecipeLoader.matRecipe;
 import static conductance.runtimepack.server.recipe.RecipeLoader.shapeless;
 
 final class MaterialRecipes {
@@ -39,12 +39,12 @@ final class MaterialRecipes {
 					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.INGOT, material), 2);
 			shapeless(output, "double_%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE_DOUBLE, material, 1),
 					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material), 2);
-
-			builderFactory.build(NCRecipeTypes.BENDING_MACHINE, id("%s_plate".formatted(material.getName())))
-					.in(NCMaterialTaggedSets.INGOT, material)
-					.out(NCMaterialTaggedSets.PLATE, material)
-					.save(output);
+			matRecipe(output, builderFactory, "%s_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE, b -> b.program(1));
+			matRecipe(output, builderFactory, "%s_double_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(output, builderFactory, "%s_dense_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
 		}
+		matRecipe(output, builderFactory, "%s_double_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+		matRecipe(output, builderFactory, "%s_dense_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
 	}
 
 	private MaterialRecipes() {

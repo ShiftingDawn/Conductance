@@ -12,9 +12,9 @@ import static conductance.api.NCRecipeTypes.STEAM_TURBINE;
 public final class ConductanceRecipeTypes {
 
 	public static void init(final RecipeTypeRegister register) {
-		STEAM_BOILER = register.register("steam_boiler").setIO(1, 1, 0, 1).build();
+		STEAM_BOILER = register.register("steam_boiler").setIO(1, 1, 0, 1).setHidden().build();
 
-		STEAM_TURBINE = register.register("steam_turbine").setIO(0, 1, 0, 0).build();
+		STEAM_TURBINE = register.register("steam_turbine").setIO(0, 1, 0, 0).setHidden().build();
 
 		BENDING_MACHINE = register.register("bending_machine").setIO(2, 0, 2, 0).build();
 		PULVERIZER = register.register("pulverizer").setIO(1, 0, 4, 0).build();
