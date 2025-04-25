@@ -227,7 +227,7 @@ public final class RecipeHelperImpl implements RecipeHelper {
 	@Override
 	public <T> AutoRecipeData calculateRecipeData(final T obj, final TaggedSet<T> inputType, final TaggedSet<T> outputType, final int baseTime, final long baseEnergy) {
 		final long inputValue = inputType.getUnitValue(obj);
-		final long outputValue = inputType.getUnitValue(obj);
+		final long outputValue = outputType.getUnitValue(obj);
 		if (inputValue == outputValue) {
 			return new AutoRecipeData(1, 1, baseTime, baseEnergy);
 		} else if (inputValue < outputValue) {
