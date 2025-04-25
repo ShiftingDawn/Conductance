@@ -26,6 +26,7 @@ import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
 import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.material.traits.MaterialTraitOre;
+import conductance.api.material.traits.MaterialTraitWood;
 import conductance.api.plugin.MaterialBuilder;
 import conductance.api.util.tier.Tier;
 
@@ -304,6 +305,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder wood() {
+		this.traits.set(NCMaterialTraits.WOOD, new MaterialTraitWood());
 		return this;
 	}
 
