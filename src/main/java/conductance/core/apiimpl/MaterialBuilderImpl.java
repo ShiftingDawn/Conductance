@@ -30,7 +30,7 @@ import conductance.api.material.traits.MaterialTraitWood;
 import conductance.api.plugin.MaterialBuilder;
 import conductance.api.util.tier.Tier;
 
-public final class MaterialBuilderImpl implements MaterialBuilder {
+final class MaterialBuilderImpl implements MaterialBuilder {
 
 	private final ResourceLocation registryName;
 	private final MaterialDataMapImpl.Builder data;

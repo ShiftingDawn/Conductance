@@ -24,7 +24,7 @@ import conductance.api.util.TextHelper;
 
 @SuppressWarnings("unchecked")
 @Accessors(fluent = true)
-public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER extends TaggedSetBuilder<TYPE, SET, BUILDER>> implements TaggedSetBuilder<TYPE, SET, BUILDER> {
+abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER extends TaggedSetBuilder<TYPE, SET, BUILDER>> implements TaggedSetBuilder<TYPE, SET, BUILDER> {
 
 	@Getter(AccessLevel.PACKAGE)
 	private final List<TagHandler<TYPE>> tags = new ArrayList<>();

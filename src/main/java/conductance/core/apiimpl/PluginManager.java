@@ -26,7 +26,6 @@ import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.RecipeElementCloner;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.MaterialFlag;
-import conductance.api.material.MaterialOreType;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
@@ -121,13 +120,10 @@ public final class PluginManager {
 	}
 
 	public static void dispatchMaterialOreTypes() {
-		PluginManager.execute(
-				(plugin, modid) -> plugin.registerMaterialOreTypes((registryName, oreBlockType, bearingBlockModel, unlocalizedNameFactory, stoneTagName, hasDoubleOutput, hasGravity, mapColor, soundType) -> {
-					final MaterialOreType result = new MaterialOreTypeImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName), oreBlockType, bearingBlockModel, unlocalizedNameFactory, stoneTagName,
-							hasDoubleOutput, hasGravity, mapColor, soundType);
-					CAPI.regs().materialOreTypes().register(result.getRegistryKey(), result);
-					return result;
-				}));
+		PluginManager.execute((plugin, modid) -> plugin.registerMaterialOreTypes(
+				(registryName, bearingBlockModel, unlocalizedNameFactory, bearingStoneTagName, mapColor, soundType) ->
+						new MaterialOreTypeBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName), bearingBlockModel, unlocalizedNameFactory, bearingStoneTagName, mapColor, soundType))
+		);
 	}
 
 	public static void dispatchMaterialTaggedSets() {

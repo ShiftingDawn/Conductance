@@ -1,6 +1,8 @@
 package conductance.core.apiimpl;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 import lombok.Getter;
@@ -23,9 +25,13 @@ public final class MaterialOreTypeImpl extends RegistryObject<ResourceLocation> 
 	private final MapColor mapColor;
 	@Getter
 	private final SoundType soundType;
+	@Getter
+	private final TagKey<Block> requiredToolType;
 
-	public MaterialOreTypeImpl(final ResourceLocation registryKey, final OreBlockType oreBlockType, final ResourceLocation bearingBlockModel, final String unlocalizedNameFactory, final String bearingStoneTagName,
-			final boolean hasDoubleOutput, final boolean hasGravity, final MapColor mapColor, final SoundType soundType) {
+	public MaterialOreTypeImpl(
+			final ResourceLocation registryKey, final OreBlockType oreBlockType, final ResourceLocation bearingBlockModel, final String unlocalizedNameFactory, final String bearingStoneTagName,
+			final boolean hasDoubleOutput, final boolean hasGravity, final MapColor mapColor, final SoundType soundType, final TagKey<Block> requiredToolType
+	) {
 		super(registryKey);
 		this.oreBlockType = oreBlockType;
 		this.bearingBlockModel = bearingBlockModel;
@@ -35,6 +41,7 @@ public final class MaterialOreTypeImpl extends RegistryObject<ResourceLocation> 
 		this.hasGravity = hasGravity;
 		this.mapColor = mapColor;
 		this.soundType = soundType;
+		this.requiredToolType = requiredToolType;
 	}
 
 	@Override

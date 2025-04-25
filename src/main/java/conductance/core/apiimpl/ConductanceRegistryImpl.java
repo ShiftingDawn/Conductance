@@ -16,7 +16,7 @@ import conductance.api.registry.IRegistryObject;
 import conductance.api.registry.RegistryObject;
 import conductance.Conductance;
 
-public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>> extends RegistryObject<ResourceLocation> implements ConductanceRegistry<KEY, VALUE> {
+abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>> extends RegistryObject<ResourceLocation> implements ConductanceRegistry<KEY, VALUE> {
 
 	private final HashBiMap<KEY, VALUE> registry;
 	@Getter

@@ -1,6 +1,7 @@
 package conductance.runtimepack.server.recipe;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.HolderLookup;
@@ -36,7 +37,7 @@ public final class DynamicRecipeHandler {
 		PluginManager.dispatchRegisterRecipes(output, RecipeBuilderImpl::new);
 	}
 
-	public static void removeRecipes() {
+	public static void removeRecipes(final Consumer<ResourceLocation> remover) {
 	}
 
 	private DynamicRecipeHandler() {

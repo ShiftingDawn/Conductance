@@ -24,6 +24,7 @@ import conductance.core.apiimpl.MaterialOreTypeImpl;
 import conductance.core.apiimpl.MaterialTaggedSet;
 import conductance.core.pipenet.CableRegistry;
 import conductance.core.pipenet.CableType;
+import conductance.core.register.MaterialOverrideRegister;
 import conductance.item.RenderedBlockItem;
 
 public final class ConductanceBlocks {
@@ -48,21 +49,23 @@ public final class ConductanceBlocks {
 			}
 			CAPI.materials().register(set, material, blockBuilder.register());
 		}));
-		CAPI.regs().materials().values().stream().filter(material -> material.hasTrait(NCMaterialTraits.ORE)).forEach(material -> CAPI.regs().materialOreTypes().forEach(oreType -> {
-			final String name = "%s_%s_ore".formatted(oreType.getRegistryKey().getPath(), material.getRegistryKey().getPath());
-			final BlockBuilder<? extends Block, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> switch (((MaterialOreTypeImpl) oreType).getOreBlockType()) {
-						case DEFAULT -> new MaterialOreBlock(props, material, oreType);
-						case PILLAR -> new MaterialOreRotatedPillarBlock(props, material, oreType);
-					})
-					.initialProperties(() -> Blocks.STONE)
-					.setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
-					.color(() -> MaterialOreBlock::handleColorTint)
-					.item(MaterialOreBlockItem::new)
-					.model(NonNullBiConsumer.noop())
-					.color(() -> MaterialOreBlockItem::handleColorTint)
-					.build();
-			blockBuilder.register();
-		}));
+		CAPI.regs().materials().values().stream().filter(material -> material.hasTrait(NCMaterialTraits.ORE)).forEach(material -> {
+			CAPI.regs().materialOreTypes().values().stream().filter(oreType -> !MaterialOverrideRegister.has(oreType, material)).forEach(oreType -> {
+				final String name = oreType.getUnlocalizedNameFactory().formatted(material.getRegistryKey().getPath());
+				final BlockBuilder<? extends Block, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> switch (((MaterialOreTypeImpl) oreType).getOreBlockType()) {
+							case DEFAULT -> new MaterialOreBlock(props, material, oreType);
+							case PILLAR -> new MaterialOreRotatedPillarBlock(props, material, oreType);
+						})
+						.initialProperties(() -> Blocks.STONE)
+						.setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
+						.color(() -> MaterialOreBlock::handleColorTint)
+						.item(MaterialOreBlockItem::new)
+						.model(NonNullBiConsumer.noop())
+						.color(() -> MaterialOreBlockItem::handleColorTint)
+						.build();
+				CAPI.materials().register(oreType, material, blockBuilder.register());
+			});
+		});
 		ConductanceBlocks.generateCables();
 	}
 

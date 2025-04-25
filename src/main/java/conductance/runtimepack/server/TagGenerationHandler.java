@@ -13,11 +13,12 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.Tags;
 import conductance.block.IConductanceBlock;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.PluginManager;
 import conductance.core.apiimpl.TaggedSetImpl;
-import conductance.core.register.MaterialRegistry;
+import conductance.core.register.MaterialRegistryImpl;
 
 public final class TagGenerationHandler {
 
@@ -42,15 +43,28 @@ public final class TagGenerationHandler {
 	}
 
 	private static void addItemEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
-		MaterialRegistry.INSTANCE.getItemTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, items) -> items.forEach(item -> {
+		MaterialRegistryImpl.INSTANCE.getItemTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, items) -> items.forEach(item -> {
 			taggedSet.streamAllItemTags(material).forEach(tagKey -> {
-				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.ITEM.getKey(item)), TagGenerationHandler.TAG_SOURCE));
+				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
+						.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.ITEM.getKey(item)), TagGenerationHandler.TAG_SOURCE));
 			});
 		})));
-		MaterialRegistry.INSTANCE.getBlockTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
+		MaterialRegistryImpl.INSTANCE.getBlockTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
 			taggedSet.streamAllItemTags(material).forEach(tagKey -> {
-				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.BLOCK.getKey(block)), TagGenerationHandler.TAG_SOURCE));
+				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
+						.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.BLOCK.getKey(block)), TagGenerationHandler.TAG_SOURCE));
 			});
+		})));
+		MaterialRegistryImpl.INSTANCE.getOreTable().rowMap().forEach((oreType, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
+			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
+			tagMap.computeIfAbsent(Tags.Items.ORES.location(), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			tagMap.computeIfAbsent(ResourceLocation.fromNamespaceAndPath("c", "ores_in_ground/%s".formatted(oreType.getBearingStoneTagName())), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			tagMap.computeIfAbsent(ResourceLocation.fromNamespaceAndPath("c", "ores/%s".formatted(material.getRegistryKey().getPath())), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			tagMap.computeIfAbsent(ResourceLocation.withDefaultNamespace("%s_ores".formatted(material.getRegistryKey().getPath())), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
 		})));
 		TagGenerationHandler.CUSTOM_ITEM_TAGS.forEach((taggedSet, items) -> {
 			final List<TagLoader.EntryWithSource> tags = new ArrayList<>();
@@ -62,29 +76,48 @@ public final class TagGenerationHandler {
 	private static void addBlockEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
 		ApiBridge.getRegistrate().getAll(Registries.BLOCK).forEach(blockEntry -> {
 			if (blockEntry.get() instanceof final IConductanceBlock conductanceBlock) {
-				tagMap.computeIfAbsent(conductanceBlock.getMiningToolTag().location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(blockEntry.getId()), TagGenerationHandler.TAG_SOURCE));
+				tagMap.computeIfAbsent(conductanceBlock.getMiningToolTag().location(), k -> new ArrayList<>())
+						.add(new TagLoader.EntryWithSource(TagEntry.element(blockEntry.getId()), TagGenerationHandler.TAG_SOURCE));
 			}
 		});
-		MaterialRegistry.INSTANCE.getBlockTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
+		MaterialRegistryImpl.INSTANCE.getBlockTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
 			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
 			taggedSet.streamAllBlockTags(material).forEach(tagKey -> {
-				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
+						.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
 			});
 			// Mining tool tags
-			tagMap.computeIfAbsent(material.getRequiredToolTag().location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			tagMap.computeIfAbsent(material.getRequiredToolTag().location(), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
 			if (!((TaggedSetImpl<?>) taggedSet).getMiningTags().isEmpty()) {
 				((TaggedSetImpl<?>) taggedSet).getMiningTags().forEach(tagKey -> {
-					tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+					tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
+							.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
 				});
 			}
+		})));
+		MaterialRegistryImpl.INSTANCE.getOreTable().rowMap().forEach((oreType, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
+			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
+			tagMap.computeIfAbsent(Tags.Blocks.ORES.location(), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			tagMap.computeIfAbsent(ResourceLocation.fromNamespaceAndPath("c", "ores_in_ground/%s".formatted(oreType.getBearingStoneTagName())), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			tagMap.computeIfAbsent(ResourceLocation.fromNamespaceAndPath("c", "ores/%s".formatted(material.getRegistryKey().getPath())), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			tagMap.computeIfAbsent(ResourceLocation.withDefaultNamespace("%s_ores".formatted(material.getRegistryKey().getPath())), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			// Mining tool level (type is handled by the block)
+			tagMap.computeIfAbsent(material.getRequiredToolTag().location(), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
 		})));
 	}
 
 	private static void addFluidEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
-		MaterialRegistry.INSTANCE.getFluidTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, fluids) -> fluids.forEach(fluid -> {
+		MaterialRegistryImpl.INSTANCE.getFluidTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, fluids) -> fluids.forEach(fluid -> {
 			final ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
-			taggedSet.streamAllBlockTags(material).forEach(tagKey -> {
-				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>()).add(new TagLoader.EntryWithSource(TagEntry.element(fluidId), TagGenerationHandler.TAG_SOURCE));
+			taggedSet.streamAllFluidTags(material).forEach(tagKey -> {
+				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
+						.add(new TagLoader.EntryWithSource(TagEntry.element(fluidId), TagGenerationHandler.TAG_SOURCE));
 			});
 		})));
 	}

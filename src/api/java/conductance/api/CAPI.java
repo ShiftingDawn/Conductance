@@ -18,11 +18,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.recipe.RecipeHelper;
-import conductance.api.material.Material;
 import conductance.api.material.ResourceFinder;
-import conductance.api.material.TaggedMaterialSet;
+import conductance.api.registry.MaterialRegistry;
 import conductance.api.registry.RegistryProvider;
-import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.GsonItemStackAdapter;
 import conductance.api.util.TagHelper;
@@ -42,7 +40,7 @@ public final class CAPI {
 
 	private static RegistryProvider registryProvider;
 	private static ResourceFinder resourceFinder;
-	private static TaggedSetRegistry<Material, TaggedMaterialSet> materialRegistry;
+	private static MaterialRegistry materialRegistry;
 	private static TranslationRegistry translationRegistry;
 	private static TierRegistry tierRegistry;
 	private static RecipeHelper recipeHelper;
@@ -58,7 +56,7 @@ public final class CAPI {
 		return CAPI.resourceFinder;
 	}
 
-	public static TaggedSetRegistry<Material, TaggedMaterialSet> materials() {
+	public static MaterialRegistry materials() {
 		return CAPI.materialRegistry;
 	}
 

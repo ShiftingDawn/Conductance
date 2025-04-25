@@ -16,15 +16,15 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.recipe.RecipeHelper;
 import conductance.api.material.ResourceFinder;
+import conductance.api.registry.MaterialRegistry;
 import conductance.api.registry.RegistryProvider;
-import conductance.api.registry.TaggedSetRegistry;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.tier.TierRegistry;
 import conductance.Conductance;
 import conductance.core.pipenet.CableRegistry;
 import conductance.core.recipe.RecipeHelperImpl;
 import conductance.core.register.ConductanceRegistrate;
-import conductance.core.register.MaterialRegistry;
+import conductance.core.register.MaterialRegistryImpl;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 @EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
@@ -45,7 +45,7 @@ public final class ApiBridge {
 		NeoForge.EVENT_BUS.addListener(ApiBridge::onServerStopped);
 		ApiBridge.setApiValue(RegistryProvider.class, ApiBridge.regs);
 		ApiBridge.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
-		ApiBridge.setApiValue(TaggedSetRegistry.class, MaterialRegistry.INSTANCE);
+		ApiBridge.setApiValue(MaterialRegistry.class, MaterialRegistryImpl.INSTANCE);
 		ApiBridge.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
 		ApiBridge.setApiValue(TierRegistry.class, TierRegistryImpl.INSTANCE);
 		ApiBridge.setApiValue(RecipeHelper.class, RecipeHelperImpl.INSTANCE);
@@ -79,7 +79,7 @@ public final class ApiBridge {
 		ApiBridge.REGISTRIES.freeze();
 		ApiBridge.REGISTRIES.values().forEach(ConductanceRegistryImpl::freeze);
 
-		MaterialRegistry.INSTANCE.freeze();
+		MaterialRegistryImpl.INSTANCE.freeze();
 		TierRegistryImpl.freeze();
 		CableRegistry.freeze();
 	}

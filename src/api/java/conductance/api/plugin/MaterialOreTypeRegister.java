@@ -3,14 +3,12 @@ package conductance.api.plugin;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
-import conductance.api.material.MaterialOreType;
 
 public interface MaterialOreTypeRegister {
 
-	MaterialOreType register(String registryName, MaterialOreType.OreBlockType blockType, ResourceLocation bearingBlockModel, String unlocalizedNameFactory, String bearingStoneTagName, boolean hasDoubleOutput,
-			boolean hasGravity, MapColor mapColor, SoundType soundType);
+	MaterialOreTypeBuilder register(String registryName, ResourceLocation bearingBlockModel, String unlocalizedNameFactory, String bearingStoneTagName, MapColor mapColor, SoundType soundType);
 
-	default MaterialOreType register(String registryName, ResourceLocation bearingBlockModel, boolean hasDoubleOutput, boolean hasGravity, MapColor mapColor, SoundType soundType) {
-		return this.register(registryName, MaterialOreType.OreBlockType.DEFAULT, bearingBlockModel, registryName + "_%s_ore", registryName, hasDoubleOutput, hasGravity, mapColor, soundType);
+	default MaterialOreTypeBuilder register(final String registryName, final ResourceLocation bearingBlockModel, final MapColor mapColor, final SoundType soundType) {
+		return this.register(registryName, bearingBlockModel, registryName + "_%s_ore", registryName, mapColor, soundType);
 	}
 }

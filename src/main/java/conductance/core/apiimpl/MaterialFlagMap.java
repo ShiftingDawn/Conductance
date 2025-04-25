@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 
-public final class MaterialFlagMap {
+final class MaterialFlagMap {
 
 	private final Set<MaterialFlag> flags = new HashSet<>();
 

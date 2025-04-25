@@ -20,7 +20,7 @@ import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.PeriodicElement;
 
 @Getter
-public final class MaterialDataMapImpl implements MaterialDataMap {
+final class MaterialDataMapImpl implements MaterialDataMap {
 
 	private int burnTime;
 	private TagKey<Block> blockRequiredToolTag = BlockTags.NEEDS_STONE_TOOL;

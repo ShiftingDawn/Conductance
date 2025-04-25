@@ -17,6 +17,7 @@ public final class NCMaterialOreTypes {
 
 	public static MaterialOreType ORE_TYPE_END_STONE;
 
+	public static MaterialOreType ORE_TYPE_GRAVEL;
 	public static MaterialOreType ORE_TYPE_SAND;
 	public static MaterialOreType ORE_TYPE_RED_SAND;
 

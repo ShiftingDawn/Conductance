@@ -7,11 +7,13 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
@@ -21,8 +23,9 @@ import lombok.Getter;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
-import conductance.runtimepack.client.MaterialOreModelHandler;
+import conductance.core.apiimpl.MaterialOreTypeImpl;
 import conductance.init.ConductanceCreativeTabs;
+import conductance.runtimepack.client.MaterialOreModelHandler;
 
 public class MaterialOreBlock extends ConductanceBlock implements IMaterialOreBlock {
 
@@ -55,6 +58,11 @@ public class MaterialOreBlock extends ConductanceBlock implements IMaterialOreBl
 	@Override
 	public RegistryEntry<CreativeModeTab, CreativeModeTab> getCreativeTab() {
 		return ConductanceCreativeTabs.MATERIAL_BLOCKS;
+	}
+
+	@Override
+	public TagKey<Block> getMiningToolTag() {
+		return ((MaterialOreTypeImpl) this.oreType).getRequiredToolType();
 	}
 
 	@Override
