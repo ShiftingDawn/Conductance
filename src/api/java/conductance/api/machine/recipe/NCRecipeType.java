@@ -31,6 +31,8 @@ public interface NCRecipeType extends IRegistryObject<ResourceLocation>, RecipeT
 
 	MachineGuiTemplate<WidgetGroup, RecipeHolder> createGuiTemplate();
 
+	boolean isHidden();
+
 	Supplier<ItemStack> getRecipeTypeIcon();
 
 	String getDescriptionId();

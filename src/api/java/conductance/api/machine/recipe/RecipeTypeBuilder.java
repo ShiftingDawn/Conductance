@@ -16,6 +16,8 @@ public interface RecipeTypeBuilder {
 
 	RecipeTypeBuilder setProgressBarDirection(ProgressTexture.FillDirection direction);
 
+	RecipeTypeBuilder setHidden();
+
 	RecipeTypeBuilder setRecipeViewProgressBar(String name);
 
 	NCRecipeType build();

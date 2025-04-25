@@ -19,6 +19,7 @@ public class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 	@Nullable
 	private ResourceLocation recipeViewProgressBar = null;
 	private ProgressTexture.FillDirection progressBarDirection = ProgressTexture.FillDirection.LEFT_TO_RIGHT;
+	private boolean hidden = false;
 
 	public RecipeTypeBuilderImpl(final ResourceLocation registryKey) {
 		this.registryKey = registryKey;
@@ -53,6 +54,12 @@ public class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 	}
 
 	@Override
+	public RecipeTypeBuilder setHidden() {
+		this.hidden = true;
+		return this;
+	}
+
+	@Override
 	public RecipeTypeBuilder setRecipeViewProgressBar(final String name) {
 		this.recipeViewProgressBar = this.registryKey.withPath(name);
 		return this;
@@ -71,6 +78,7 @@ public class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 				this.maxInputs,
 				this.maxOutputs,
 				realProgressBar,
+				this.hidden,
 				realRecipeViewProgressBar,
 				this.progressBarDirection
 		);

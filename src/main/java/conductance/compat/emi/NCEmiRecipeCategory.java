@@ -28,6 +28,9 @@ final class NCEmiRecipeCategory extends EmiRecipeCategory {
 
 	public static void register(final EmiRegistry registry) {
 		CAPI.regs().recipeTypes().values().forEach(recipeType -> {
+			if (recipeType.isHidden()) {
+				return;
+			}
 			final NCEmiRecipeCategory category = NCEmiRecipeCategory.CATEGORIES.apply(recipeType);
 			registry.addCategory(category);
 			registry.getRecipeManager().getAllRecipesFor(recipeType).stream()

@@ -55,6 +55,8 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 	private final ResourceTexture progressBar;
 	@Getter
 	private final ProgressTexture.FillDirection progressBarDirection;
+	@Getter
+	private final boolean hidden;
 	private final ResourceTexture recipeViewProgressBar;
 	@Setter
 	@Getter
@@ -66,12 +68,14 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 			final Object2IntMap<IRecipeElementType<?>> maxInputs,
 			final Object2IntMap<IRecipeElementType<?>> maxOutputs,
 			final ResourceLocation progressBar,
+			final boolean hidden,
 			final ResourceLocation recipeViewProgressBar,
 			final ProgressTexture.FillDirection direction) {
 		super(registryKey);
 		this.maxInputs = Object2IntMaps.unmodifiable(maxInputs);
 		this.maxOutputs = Object2IntMaps.unmodifiable(maxOutputs);
 		this.progressBar = new ResourceTexture(progressBar.toString());
+		this.hidden = hidden;
 		this.recipeViewProgressBar = new ResourceTexture(recipeViewProgressBar.toString());
 		this.progressBarDirection = direction;
 	}
@@ -137,8 +141,7 @@ public class RecipeTypeImpl extends RegistryObject<ResourceLocation> implements 
 				}
 				progressWidgets.add(progressWidget);
 			});
-			// todo add recipe button
-			if (!isRecipeView && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded())) {
+			if (!this.hidden && !isRecipeView && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded())) {
 				for (final Widget widget : progressWidgets) {
 					template.addWidget(new ButtonWidget(widget.getPosition().x, widget.getPosition().y, widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, clickData -> {
 						if (clickData.isRemote) {
