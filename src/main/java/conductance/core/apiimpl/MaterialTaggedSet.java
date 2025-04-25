@@ -1,7 +1,9 @@
 package conductance.core.apiimpl;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
+import conductance.api.material.MaterialOreType;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.core.register.MaterialOverrideRegister;
@@ -11,10 +13,14 @@ public final class MaterialTaggedSet extends TaggedSetImpl<Material> implements 
 
 	@Getter
 	private final MaterialTextureType textureType;
+	@Nullable
+	@Getter
+	private final MaterialOreType oreType;
 
 	public MaterialTaggedSet(final MaterialTaggedSetBuilder builder) {
 		super(builder);
 		this.textureType = builder.textureType();
+		this.oreType = builder.oreType();
 	}
 
 	@Override

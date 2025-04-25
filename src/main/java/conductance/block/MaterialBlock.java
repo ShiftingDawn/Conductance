@@ -10,8 +10,8 @@ import lombok.Getter;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.runtimepack.client.MaterialBlockModelHandler;
 import conductance.init.ConductanceCreativeTabs;
+import conductance.runtimepack.client.MaterialBlockModelHandler;
 
 public class MaterialBlock extends ConductanceBlock {
 

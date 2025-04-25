@@ -1,13 +1,13 @@
 package conductance.init;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 import conductance.api.material.MaterialOreType;
 import conductance.api.plugin.MaterialOreTypeRegister;
 import static conductance.api.NCMaterialOreTypes.ORE_TYPE_ANDESITE;
 import static conductance.api.NCMaterialOreTypes.ORE_TYPE_BASALT;
+import static conductance.api.NCMaterialOreTypes.ORE_TYPE_BLACKSTONE;
 import static conductance.api.NCMaterialOreTypes.ORE_TYPE_DEEPSLATE;
 import static conductance.api.NCMaterialOreTypes.ORE_TYPE_DIORITE;
 import static conductance.api.NCMaterialOreTypes.ORE_TYPE_END_STONE;
@@ -22,7 +22,7 @@ import static conductance.api.NCMaterialOreTypes.ORE_TYPE_TUFF;
 public final class ConductanceMaterialOreTypes {
 
 	public static void init(final MaterialOreTypeRegister register) {
-		ORE_TYPE_STONE = register.register("stone", ConductanceMaterialOreTypes.vanillaBlock("stone"), "%s_ore", "stone", MapColor.STONE, SoundType.STONE)
+		ORE_TYPE_STONE = register.register("stone", ConductanceMaterialOreTypes.vanillaBlock("stone"), MapColor.STONE, SoundType.STONE)
 				.build();
 		ORE_TYPE_GRANITE = register.register("granite", ConductanceMaterialOreTypes.vanillaBlock("granite"), MapColor.STONE, SoundType.STONE)
 				.build();
@@ -42,6 +42,9 @@ public final class ConductanceMaterialOreTypes {
 				.blockType(MaterialOreType.OreBlockType.PILLAR)
 				.doubleOutput()
 				.build();
+		ORE_TYPE_BLACKSTONE = register.register("blackstone", ConductanceMaterialOreTypes.vanillaBlock("blackstone"), MapColor.COLOR_BLACK, SoundType.STONE)
+				.doubleOutput()
+				.build();
 
 		ORE_TYPE_END_STONE = register.register("end_stone", ConductanceMaterialOreTypes.vanillaBlock("end_stone"), MapColor.SAND, SoundType.STONE)
 				.doubleOutput()
@@ -49,15 +52,12 @@ public final class ConductanceMaterialOreTypes {
 
 		ORE_TYPE_GRAVEL = register.register("gravel", ConductanceMaterialOreTypes.vanillaBlock("gravel"), MapColor.STONE, SoundType.GRAVEL)
 				.hasGravity()
-				.requiredTool(BlockTags.MINEABLE_WITH_SHOVEL)
 				.build();
 		ORE_TYPE_SAND = register.register("sand", ConductanceMaterialOreTypes.vanillaBlock("sand"), MapColor.SAND, SoundType.SAND)
 				.hasGravity()
-				.requiredTool(BlockTags.MINEABLE_WITH_SHOVEL)
 				.build();
 		ORE_TYPE_RED_SAND = register.register("red_sand", ConductanceMaterialOreTypes.vanillaBlock("red_sand"), MapColor.COLOR_ORANGE, SoundType.SAND)
 				.hasGravity()
-				.requiredTool(BlockTags.MINEABLE_WITH_SHOVEL)
 				.build();
 	}
 

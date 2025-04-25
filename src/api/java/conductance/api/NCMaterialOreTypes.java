@@ -14,6 +14,7 @@ public final class NCMaterialOreTypes {
 
 	public static MaterialOreType ORE_TYPE_NETHERRACK;
 	public static MaterialOreType ORE_TYPE_BASALT;
+	public static MaterialOreType ORE_TYPE_BLACKSTONE;
 
 	public static MaterialOreType ORE_TYPE_END_STONE;
 

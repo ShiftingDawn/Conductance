@@ -121,8 +121,8 @@ public final class PluginManager {
 
 	public static void dispatchMaterialOreTypes() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMaterialOreTypes(
-				(registryName, bearingBlockModel, unlocalizedNameFactory, bearingStoneTagName, mapColor, soundType) ->
-						new MaterialOreTypeBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName), bearingBlockModel, unlocalizedNameFactory, bearingStoneTagName, mapColor, soundType))
+				(registryName, bearingBlockModel, mapColor, soundType) ->
+						new MaterialOreTypeBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName), bearingBlockModel, mapColor, soundType))
 		);
 	}
 

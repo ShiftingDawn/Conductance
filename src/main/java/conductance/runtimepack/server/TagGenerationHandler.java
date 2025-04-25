@@ -13,7 +13,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.Tags;
 import conductance.block.IConductanceBlock;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.PluginManager;
@@ -55,17 +54,6 @@ public final class TagGenerationHandler {
 						.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.BLOCK.getKey(block)), TagGenerationHandler.TAG_SOURCE));
 			});
 		})));
-		MaterialRegistryImpl.INSTANCE.getOreTable().rowMap().forEach((oreType, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
-			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
-			tagMap.computeIfAbsent(Tags.Items.ORES.location(), k -> new ArrayList<>())
-					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-			tagMap.computeIfAbsent(ResourceLocation.fromNamespaceAndPath("c", "ores_in_ground/%s".formatted(oreType.getBearingStoneTagName())), k -> new ArrayList<>())
-					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-			tagMap.computeIfAbsent(ResourceLocation.fromNamespaceAndPath("c", "ores/%s".formatted(material.getRegistryKey().getPath())), k -> new ArrayList<>())
-					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-			tagMap.computeIfAbsent(ResourceLocation.withDefaultNamespace("%s_ores".formatted(material.getRegistryKey().getPath())), k -> new ArrayList<>())
-					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-		})));
 		TagGenerationHandler.CUSTOM_ITEM_TAGS.forEach((taggedSet, items) -> {
 			final List<TagLoader.EntryWithSource> tags = new ArrayList<>();
 			items.forEach(item -> tags.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.ITEM.getKey(item.asItem())), TagGenerationHandler.TAG_SOURCE)));
@@ -95,20 +83,6 @@ public final class TagGenerationHandler {
 							.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
 				});
 			}
-		})));
-		MaterialRegistryImpl.INSTANCE.getOreTable().rowMap().forEach((oreType, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
-			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
-			tagMap.computeIfAbsent(Tags.Blocks.ORES.location(), k -> new ArrayList<>())
-					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-			tagMap.computeIfAbsent(ResourceLocation.fromNamespaceAndPath("c", "ores_in_ground/%s".formatted(oreType.getBearingStoneTagName())), k -> new ArrayList<>())
-					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-			tagMap.computeIfAbsent(ResourceLocation.fromNamespaceAndPath("c", "ores/%s".formatted(material.getRegistryKey().getPath())), k -> new ArrayList<>())
-					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-			tagMap.computeIfAbsent(ResourceLocation.withDefaultNamespace("%s_ores".formatted(material.getRegistryKey().getPath())), k -> new ArrayList<>())
-					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-			// Mining tool level (type is handled by the block)
-			tagMap.computeIfAbsent(material.getRequiredToolTag().location(), k -> new ArrayList<>())
-					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
 		})));
 	}
 

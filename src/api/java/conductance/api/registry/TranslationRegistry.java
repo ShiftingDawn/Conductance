@@ -6,7 +6,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidType;
 import conductance.api.material.Material;
-import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
 
 public interface TranslationRegistry {
@@ -30,6 +29,4 @@ public interface TranslationRegistry {
 	MutableComponent makeLocalizedName(FluidType fluid, Supplier<MutableComponent> override);
 
 	MutableComponent makeLocalizedName(String key, TaggedMaterialSet taggedSet, Material material);
-
-	MutableComponent makeLocalizedName(String key, MaterialOreType oreType, Material material);
 }

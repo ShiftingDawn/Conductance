@@ -12,7 +12,6 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
-import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.TextHelper;
@@ -97,15 +96,6 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 		return this.handle(key, () -> {
 			final String materialName = this.translate(material.getUnlocalizedName(), () -> TextHelper.lowerUnderscoreToEnglish(material.getName()));
 			final String translation = this.translate(key, () -> TextHelper.lowerUnderscoreToEnglish(taggedSet.getUnlocalizedNameFactory().apply(material)), materialName);
-			return Component.literal(translation);
-		});
-	}
-
-	@Override
-	public MutableComponent makeLocalizedName(final String key, final MaterialOreType oreType, final Material material) {
-		return this.handle(key, () -> {
-			final String materialName = this.translate(material.getUnlocalizedName(), () -> TextHelper.lowerUnderscoreToEnglish(material.getName()));
-			final String translation = this.translate(key, () -> TextHelper.lowerUnderscoreToEnglish(oreType.getUnlocalizedNameFactory()), materialName);
 			return Component.literal(translation);
 		});
 	}

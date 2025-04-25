@@ -35,12 +35,12 @@ public final class CommonProxy {
 
 		PluginManager.dispatchTiers();
 
+		PluginManager.dispatchMaterialOreTypes();
 		PluginManager.dispatchPeriodicElements();
 		PluginManager.dispatchMaterialTextureTypes();
 		PluginManager.dispatchMaterialTextureSets();
 		PluginManager.dispatchMaterialTraits();
 		PluginManager.dispatchMaterialFlags();
-		PluginManager.dispatchMaterialOreTypes();
 		PluginManager.dispatchMaterialTaggedSets();
 		PluginManager.dispatchMaterials();
 		PluginManager.dispatchMaterialOverrides();

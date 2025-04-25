@@ -15,10 +15,6 @@ public final class MaterialOreTypeImpl extends RegistryObject<ResourceLocation> 
 	private final OreBlockType oreBlockType;
 	@Getter
 	private final ResourceLocation bearingBlockModel;
-	@Getter
-	private final String unlocalizedNameFactory;
-	@Getter
-	private final String bearingStoneTagName;
 	private final boolean hasDoubleOutput;
 	private final boolean hasGravity;
 	@Getter
@@ -29,14 +25,12 @@ public final class MaterialOreTypeImpl extends RegistryObject<ResourceLocation> 
 	private final TagKey<Block> requiredToolType;
 
 	public MaterialOreTypeImpl(
-			final ResourceLocation registryKey, final OreBlockType oreBlockType, final ResourceLocation bearingBlockModel, final String unlocalizedNameFactory, final String bearingStoneTagName,
+			final ResourceLocation registryKey, final OreBlockType oreBlockType, final ResourceLocation bearingBlockModel,
 			final boolean hasDoubleOutput, final boolean hasGravity, final MapColor mapColor, final SoundType soundType, final TagKey<Block> requiredToolType
 	) {
 		super(registryKey);
 		this.oreBlockType = oreBlockType;
 		this.bearingBlockModel = bearingBlockModel;
-		this.unlocalizedNameFactory = unlocalizedNameFactory;
-		this.bearingStoneTagName = bearingStoneTagName;
 		this.hasDoubleOutput = hasDoubleOutput;
 		this.hasGravity = hasGravity;
 		this.mapColor = mapColor;

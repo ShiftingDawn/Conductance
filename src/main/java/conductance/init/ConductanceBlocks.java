@@ -10,6 +10,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
 import conductance.api.NCBlocks;
 import conductance.api.NCMaterialTraits;
+import conductance.api.material.MaterialOreType;
 import conductance.block.CableBlock;
 import conductance.block.CableBlockItem;
 import conductance.block.MaterialBlock;
@@ -23,7 +24,6 @@ import conductance.core.apiimpl.MaterialOreTypeImpl;
 import conductance.core.apiimpl.MaterialTaggedSet;
 import conductance.core.pipenet.CableRegistry;
 import conductance.core.pipenet.CableType;
-import conductance.core.register.MaterialOverrideRegister;
 import conductance.item.RenderedBlockItem;
 
 @SuppressWarnings("removal")
@@ -49,22 +49,24 @@ public final class ConductanceBlocks {
 			}
 			CAPI.materials().register(set, material, blockBuilder.register());
 		}));
-		CAPI.regs().materials().values().stream().filter(material -> material.hasTrait(NCMaterialTraits.ORE)).forEach(material -> {
-			CAPI.regs().materialOreTypes().values().stream().filter(oreType -> !MaterialOverrideRegister.has(oreType, material)).forEach(oreType -> {
-				final String name = oreType.getUnlocalizedNameFactory().formatted(material.getRegistryKey().getPath());
-				final BlockBuilder<? extends Block, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> switch (((MaterialOreTypeImpl) oreType).getOreBlockType()) {
-							case DEFAULT -> new MaterialOreBlock(props, material, oreType);
-							case PILLAR -> new MaterialOreRotatedPillarBlock(props, material, oreType);
-						})
-						.initialProperties(() -> Blocks.STONE)
-						.color(() -> MaterialOreBlock::handleColorTint)
-						.item(MaterialOreBlockItem::new)
-						.model(NonNullBiConsumer.noop())
-						.color(() -> MaterialOreBlockItem::handleColorTint)
-						.build();
-				CAPI.materials().register(oreType, material, blockBuilder.register());
-			});
-		});
+		CAPI.regs().materials().values().stream().filter(material -> material.hasTrait(NCMaterialTraits.ORE)).forEach(material ->
+				CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.getOreType() != null).forEach(set -> {
+					final MaterialOreType oreType = set.getOreType();
+					final String name = set.getUnlocalizedName(material);
+					final BlockBuilder<? extends Block, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> switch (((MaterialOreTypeImpl) oreType).getOreBlockType()) {
+								case DEFAULT -> new MaterialOreBlock(props, material, set, oreType);
+								case PILLAR -> new MaterialOreRotatedPillarBlock(props, material, set, oreType);
+							})
+							.initialProperties(() -> Blocks.STONE)
+							.properties(props -> props.mapColor(oreType.getMapColor()).sound(oreType.getSoundType()))
+							.color(() -> MaterialOreBlock::handleColorTint)
+							.item(MaterialOreBlockItem::new)
+							.model(NonNullBiConsumer.noop())
+							.color(() -> MaterialOreBlockItem::handleColorTint)
+							.build();
+					CAPI.materials().register(set, material, blockBuilder.register());
+				})
+		);
 		ConductanceBlocks.generateCables();
 	}
 

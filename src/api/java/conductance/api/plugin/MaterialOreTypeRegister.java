@@ -6,9 +6,5 @@ import net.minecraft.world.level.material.MapColor;
 
 public interface MaterialOreTypeRegister {
 
-	MaterialOreTypeBuilder register(String registryName, ResourceLocation bearingBlockModel, String unlocalizedNameFactory, String bearingStoneTagName, MapColor mapColor, SoundType soundType);
-
-	default MaterialOreTypeBuilder register(final String registryName, final ResourceLocation bearingBlockModel, final MapColor mapColor, final SoundType soundType) {
-		return this.register(registryName, bearingBlockModel, registryName + "_%s_ore", registryName, mapColor, soundType);
-	}
+	MaterialOreTypeBuilder register(String registryName, ResourceLocation bearingBlockModel, MapColor mapColor, SoundType soundType);
 }

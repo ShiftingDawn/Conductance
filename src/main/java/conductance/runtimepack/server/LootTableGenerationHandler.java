@@ -22,9 +22,6 @@ final class LootTableGenerationHandler {
 		MaterialRegistryImpl.INSTANCE.getBlockTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
 			LootTableGenerationHandler.dropSelf(block, loot, provider);
 		})));
-		MaterialRegistryImpl.INSTANCE.getOreTable().rowMap().forEach((oreType, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
-			LootTableGenerationHandler.dropSelf(block, loot, provider);
-		})));
 	}
 
 	private static void dropSelf(final Block block, final VanillaBlockLoot loot, final HolderLookup.Provider provider) {

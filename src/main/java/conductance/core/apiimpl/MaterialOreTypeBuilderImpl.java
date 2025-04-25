@@ -14,23 +14,16 @@ final class MaterialOreTypeBuilderImpl implements MaterialOreTypeBuilder {
 
 	private final ResourceLocation registryName;
 	private final ResourceLocation bearingBlockModel;
-	private final String unlocalizedNameFactory;
-	private final String bearingStoneTagName;
 	private final MapColor mapColor;
 	private final SoundType soundType;
 	private MaterialOreType.OreBlockType blockType = MaterialOreType.OreBlockType.DEFAULT;
-	private TagKey<Block> requiredToolType = BlockTags.MINEABLE_WITH_PICKAXE;
+	private final TagKey<Block> requiredToolType = BlockTags.MINEABLE_WITH_PICKAXE;
 	private boolean doubleOutput = false;
 	private boolean hasGravity = false;
 
-	MaterialOreTypeBuilderImpl(
-			final ResourceLocation registryName, final ResourceLocation bearingBlockModel, final String unlocalizedNameFactory, final String bearingStoneTagName,
-			final MapColor mapColor, final SoundType soundType
-	) {
+	MaterialOreTypeBuilderImpl(final ResourceLocation registryName, final ResourceLocation bearingBlockModel, final MapColor mapColor, final SoundType soundType) {
 		this.registryName = registryName;
 		this.bearingBlockModel = bearingBlockModel;
-		this.unlocalizedNameFactory = unlocalizedNameFactory;
-		this.bearingStoneTagName = bearingStoneTagName;
 		this.mapColor = mapColor;
 		this.soundType = soundType;
 	}
@@ -54,15 +47,9 @@ final class MaterialOreTypeBuilderImpl implements MaterialOreTypeBuilder {
 	}
 
 	@Override
-	public MaterialOreTypeBuilder requiredTool(final TagKey<Block> type) {
-		this.requiredToolType = type;
-		return this;
-	}
-
-	@Override
 	public MaterialOreType build() {
 		final MaterialOreType result = new MaterialOreTypeImpl(
-				this.registryName, this.blockType, this.bearingBlockModel, this.unlocalizedNameFactory, this.bearingStoneTagName,
+				this.registryName, this.blockType, this.bearingBlockModel,
 				this.doubleOutput, this.hasGravity, this.mapColor, this.soundType, this.requiredToolType
 		);
 		CAPI.regs().materialOreTypes().register(result.getRegistryKey(), result);

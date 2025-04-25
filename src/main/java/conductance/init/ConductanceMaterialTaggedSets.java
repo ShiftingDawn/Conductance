@@ -3,6 +3,7 @@ package conductance.init;
 import net.minecraft.tags.BlockTags;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialFlags;
+import conductance.api.NCMaterialOreTypes;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCTextureTypes;
 import conductance.api.material.Material;
@@ -29,6 +30,19 @@ import static conductance.api.NCMaterialTaggedSets.INGOT;
 import static conductance.api.NCMaterialTaggedSets.LENS;
 import static conductance.api.NCMaterialTaggedSets.LIQUID;
 import static conductance.api.NCMaterialTaggedSets.NUGGET;
+import static conductance.api.NCMaterialTaggedSets.ORE_ANDESITE;
+import static conductance.api.NCMaterialTaggedSets.ORE_BASALT;
+import static conductance.api.NCMaterialTaggedSets.ORE_BLACKSTONE;
+import static conductance.api.NCMaterialTaggedSets.ORE_DEEPSLATE;
+import static conductance.api.NCMaterialTaggedSets.ORE_DIORITE;
+import static conductance.api.NCMaterialTaggedSets.ORE_END_STONE;
+import static conductance.api.NCMaterialTaggedSets.ORE_GRANITE;
+import static conductance.api.NCMaterialTaggedSets.ORE_GRAVEL;
+import static conductance.api.NCMaterialTaggedSets.ORE_NETHERRACK;
+import static conductance.api.NCMaterialTaggedSets.ORE_RED_SAND;
+import static conductance.api.NCMaterialTaggedSets.ORE_SAND;
+import static conductance.api.NCMaterialTaggedSets.ORE_STONE;
+import static conductance.api.NCMaterialTaggedSets.ORE_TUFF;
 import static conductance.api.NCMaterialTaggedSets.PLASMA;
 import static conductance.api.NCMaterialTaggedSets.PLATE;
 import static conductance.api.NCMaterialTaggedSets.PLATE_DENSE;
@@ -50,6 +64,7 @@ import static conductance.api.NCMaterialTaggedSets.WIRE_2X;
 import static conductance.api.NCMaterialTaggedSets.WIRE_4X;
 import static conductance.api.NCMaterialTaggedSets.WIRE_8X;
 import static conductance.api.NCMaterialTaggedSets.hasFlag;
+import static conductance.api.NCMaterialTaggedSets.hasTrait;
 
 public final class ConductanceMaterialTaggedSets {
 
@@ -123,26 +138,144 @@ public final class ConductanceMaterialTaggedSets {
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
 				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.INGOT) || mat.hasTrait(NCMaterialTraits.GEM) || mat.hasFlag(NCMaterialFlags.GENERATE_BLOCK))
 				.build();
+
+		ORE_STONE = register.register("ore", "%s_ore", NCMaterialOreTypes.ORE_TYPE_STONE)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/stone")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_GRANITE = register.register("granite_ore", "granite_%s_ore", NCMaterialOreTypes.ORE_TYPE_GRANITE)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/granite")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_DIORITE = register.register("diorite_ore", "diorite_%s_ore", NCMaterialOreTypes.ORE_TYPE_DIORITE)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/diorite")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_ANDESITE = register.register("andesite_ore", "andesite_%s_ore", NCMaterialOreTypes.ORE_TYPE_ANDESITE)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/andesite")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_TUFF = register.register("tuff_ore", "tuff_%s_ore", NCMaterialOreTypes.ORE_TYPE_TUFF)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/tuff")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_DEEPSLATE = register.register("deepslate_ore", "deepslate_%s_ore", NCMaterialOreTypes.ORE_TYPE_DEEPSLATE)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/deepslate")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_NETHERRACK = register.register("nether_ore", "nether_%s_ore", NCMaterialOreTypes.ORE_TYPE_NETHERRACK)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/netherrack")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_BASALT = register.register("basalt_ore", "basalt_%s_ore", NCMaterialOreTypes.ORE_TYPE_BASALT)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/basalt")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_BLACKSTONE = register.register("blackstone_ore", "blackstone_%s_ore", NCMaterialOreTypes.ORE_TYPE_BLACKSTONE)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/blackstone")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_END_STONE = register.register("end_ore", "end_%s_ore", NCMaterialOreTypes.ORE_TYPE_END_STONE)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/end_stone")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_GRAVEL = register.register("gravel_ore", "gravel_%s_ore", NCMaterialOreTypes.ORE_TYPE_GRAVEL)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/gravel")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_SHOVEL)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_SAND = register.register("sand_ore", "sand_%s_ore", NCMaterialOreTypes.ORE_TYPE_SAND)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/sand")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_SHOVEL)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
+		ORE_RED_SAND = register.register("red_sand_ore", "red_sand_%s_ore", NCMaterialOreTypes.ORE_TYPE_RED_SAND)
+				.addTag("ores/%s")
+				.addTagVanilla("%s_ores")
+				.addTagUnformatted("ores")
+				.addTagUnformatted("ores_in_ground/red_sand")
+				.hasBlocks(true, false)
+				.miningTool(BlockTags.MINEABLE_WITH_SHOVEL)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
+				.build();
 		RAW_ORE = register.register("raw_ore", "raw_%s")
 				.addTag("raw_materials/%s")
 				.addTagUnformatted("raw_materials")
 				.hasItems(true)
 				.textureType(NCTextureTypes.RAW_ORE)
-				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.ORE))
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
 				.build();
 		RAW_ORE_BLOCK = register.register("raw_ore_block", "raw_%s_block")
 				.addTag("storage_blocks/raw_%s")
 				.addTagUnformatted("storage_blocks")
 				.hasBlocks(true)
 				.textureType(NCTextureTypes.RAW_ORE_BLOCK)
-				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.ORE))
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
 				.build();
 
 		LIQUID = register.register("liquid", ConductanceMaterialTaggedSets::liquidUnlocalizedNameGenerator)
 				.addTag("%s")
 				.hasFluids(true)
 				.textureType(NCTextureTypes.LIQUID)
-				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.LIQUID))
+				.generatorPredicate(hasTrait(NCMaterialTraits.LIQUID))
 				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
 						.density(mat.getTrait(NCMaterialTraits.LIQUID).getDensity())
 						.viscosity(mat.getTrait(NCMaterialTraits.LIQUID).getViscosity())
@@ -154,7 +287,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("gases/%s")
 				.hasFluids(true)
 				.textureType(NCTextureTypes.GAS)
-				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.GAS))
+				.generatorPredicate(hasTrait(NCMaterialTraits.GAS))
 				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
 						.density(mat.getTrait(NCMaterialTraits.GAS).getDensity())
 						.viscosity(mat.getTrait(NCMaterialTraits.GAS).getViscosity())
@@ -166,7 +299,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("plasmas/%s")
 				.hasFluids(true)
 				.textureType(NCTextureTypes.PLASMA)
-				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.PLASMA))
+				.generatorPredicate(hasTrait(NCMaterialTraits.PLASMA))
 				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
 						.density(mat.getTrait(NCMaterialTraits.PLASMA).getDensity())
 						.viscosity(mat.getTrait(NCMaterialTraits.PLASMA).getViscosity())

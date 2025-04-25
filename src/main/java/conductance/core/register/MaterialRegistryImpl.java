@@ -20,7 +20,6 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
-import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.registry.MaterialRegistry;
 import conductance.Conductance;
@@ -34,12 +33,9 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 	private final Table<TaggedMaterialSet, Material, BlockEntry<? extends Block>> generatedBlockRegistry = HashBasedTable.create();
 	@Getter
 	private final Table<TaggedMaterialSet, Material, FluidEntry<? extends Fluid>> generatedFluidRegistry = HashBasedTable.create();
-	@Getter
-	private final Table<MaterialOreType, Material, BlockEntry<? extends Block>> generatedOreRegistry = HashBasedTable.create();
 	private final Table<TaggedMaterialSet, Material, List<Item>> itemRegistry = HashBasedTable.create();
 	private final Table<TaggedMaterialSet, Material, List<Block>> blockRegistry = HashBasedTable.create();
 	private final Table<TaggedMaterialSet, Material, List<Fluid>> fluidRegistry = HashBasedTable.create();
-	private final Table<MaterialOreType, Material, List<Block>> oreRegistry = HashBasedTable.create();
 	private boolean frozen = false;
 
 	@Override
@@ -94,23 +90,6 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 	}
 
 	@Override
-	public Optional<Block> getOre(final MaterialOreType oreType, final Material material) {
-		return Optional.ofNullable(this.getOreUnsafe(oreType, material));
-	}
-
-	@Override
-	public ItemStack getOre(final MaterialOreType oreType, final Material material, final int count) {
-		return this.getOre(oreType, material).map(block -> new ItemStack(block, count)).orElse(ItemStack.EMPTY);
-	}
-
-	@Override
-	@Nullable
-	public Block getOreUnsafe(final MaterialOreType oreType, final Material material) {
-		final List<Block> list = this.oreRegistry.get(oreType, material);
-		return list == null || list.isEmpty() ? null : list.getFirst();
-	}
-
-	@Override
 	public Optional<BucketItem> getBucket(final TaggedMaterialSet taggedSet, final Material object) {
 		return Optional.ofNullable(this.getBucketUnsafe(taggedSet, object));
 	}
@@ -146,14 +125,6 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		this.generatedFluidRegistry.put(taggedSet, material, fluid);
 	}
 
-	@Override
-	public void register(final MaterialOreType oreType, final Material material, final BlockEntry<? extends Block> block) {
-		if (this.frozen) {
-			throw new IllegalStateException("Trying to register ore in frozen MaterialRegistry!");
-		}
-		this.generatedOreRegistry.put(oreType, material, block);
-	}
-
 	public void freeze() {
 		Conductance.LOGGER.info("MaterialRegistry has been frozen!");
 		this.frozen = true;
@@ -169,10 +140,6 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 
 	public Table<TaggedMaterialSet, Material, List<Fluid>> getFluidTable() {
 		return ImmutableTable.copyOf(this.fluidRegistry);
-	}
-
-	public Table<MaterialOreType, Material, List<Block>> getOreTable() {
-		return ImmutableTable.copyOf(this.oreRegistry);
 	}
 
 	private void registerItemInternal(final TaggedMaterialSet taggedSet, final Material material, final ItemLike... items) {
@@ -204,27 +171,16 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		list.addAll(Arrays.asList(fluids));
 	}
 
-	private void registerOreInternal(final MaterialOreType oreType, final Material material, final Block... blocks) {
-		List<Block> list = this.oreRegistry.get(oreType, material);
-		if (list == null) {
-			list = new ArrayList<>();
-			this.oreRegistry.put(oreType, material, list);
-		}
-		list.addAll(Arrays.asList(blocks));
-	}
-
 	public void reload() {
 		this.itemRegistry.clear();
 		this.blockRegistry.clear();
 		this.fluidRegistry.clear();
-		this.oreRegistry.clear();
 
 		MaterialRegistryImpl.registerOverriddenComponents();
 
 		this.generatedItemRegistry.cellSet().forEach(cell -> this.registerItemInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
 		this.generatedBlockRegistry.cellSet().forEach(cell -> this.registerBlockInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
 		this.generatedFluidRegistry.cellSet().forEach(cell -> this.registerFluidInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
-		this.generatedOreRegistry.cellSet().forEach(cell -> this.registerOreInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
 	}
 
 	private static void registerOverriddenComponents() {
@@ -237,9 +193,6 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 					MaterialRegistryImpl.INSTANCE.registerItemInternal(set, material, override);
 				}
 			});
-		}));
-		MaterialOverrideRegister.getOreOverrides().rowMap().forEach((oreType, mapping) -> mapping.forEach((material, overrides) -> {
-			MaterialRegistryImpl.INSTANCE.registerOreInternal(oreType, material, overrides);
 		}));
 	}
 }

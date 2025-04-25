@@ -23,6 +23,7 @@ import lombok.Getter;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
+import conductance.api.material.TaggedMaterialSet;
 import conductance.core.apiimpl.MaterialOreTypeImpl;
 import conductance.init.ConductanceCreativeTabs;
 import conductance.runtimepack.client.MaterialOreModelHandler;
@@ -31,15 +32,17 @@ public class MaterialOreBlock extends ConductanceBlock implements IMaterialOreBl
 
 	@Getter
 	private final Material material;
+	private final TaggedMaterialSet set;
 	@Getter
 	private final MaterialOreType oreType;
 	private final String unlocalizedName;
 
-	public MaterialOreBlock(final Properties properties, final Material material, final MaterialOreType oreType) {
+	public MaterialOreBlock(final Properties properties, final Material material, final TaggedMaterialSet set, final MaterialOreType oreType) {
 		super(properties);
 		this.material = material;
+		this.set = set;
 		this.oreType = oreType;
-		this.unlocalizedName = "block.%s.%s".formatted(material.getRegistryKey().getNamespace(), oreType.getUnlocalizedNameFactory().formatted(material.getRegistryKey().getPath()));
+		this.unlocalizedName = "block.%s.%s".formatted(material.getRegistryKey().getNamespace(), set.getUnlocalizedName(material));
 		if (CAPI.isClient()) {
 			MaterialOreModelHandler.add(this, material, oreType);
 		}
@@ -52,7 +55,7 @@ public class MaterialOreBlock extends ConductanceBlock implements IMaterialOreBl
 
 	@Override
 	public MutableComponent getName() {
-		return CAPI.translations().makeLocalizedName(this.getDescriptionId(), this.oreType, this.material);
+		return CAPI.translations().makeLocalizedName(this.getDescriptionId(), this.set, this.material);
 	}
 
 	@Override

@@ -9,10 +9,6 @@ public interface MaterialOreType extends IRegistryObject<ResourceLocation> {
 
 	ResourceLocation getBearingBlockModel();
 
-	String getUnlocalizedNameFactory();
-
-	String getBearingStoneTagName();
-
 	boolean hasDoubleOutput();
 
 	boolean hasGravity();
