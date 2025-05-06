@@ -1,9 +1,6 @@
 package conductance.init;
 
-import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Map;
-import net.minecraft.Util;
 import conductance.api.CAPI;
 import conductance.api.NCMachines;
 import conductance.api.NCRecipeTypes;
@@ -41,22 +38,21 @@ public final class ConductanceMachines {
 		NCMachines.CUTTING_MACHINE = ConductanceMachines.tiered(register, "cutting_machine", NCRecipeTypes.PULVERIZER);
 		NCMachines.LATHE = ConductanceMachines.tiered(register, "lathe", NCRecipeTypes.LATHE);
 		NCMachines.COMPRESSOR = ConductanceMachines.tiered(register, "compressor", NCRecipeTypes.COMPRESSOR);
-
 	}
 
 	private static Map<Tier, MachineType<?>> tiered(final MachineRegister register, final String name, final NCRecipeType recipeType) {
-		return Collections.unmodifiableMap(Util.make(new IdentityHashMap<>(), map -> CAPI.tiers().getTiers().forEach(tier -> {
+		return CAPI.tiers().newMap(tier -> {
 			final String realName = name.contains("%s") ? name.formatted(tier.getRegistryKey()) : "%s_%s".formatted(tier.getRegistryKey(), name);
 			final String localizedName = name.contains("%s")
 					? TextHelper.lowerUnderscoreToEnglish(name).formatted(tier.getLocalizedNameUnformatted())
 					: "%s %s".formatted(tier.getLocalizedNameUnformatted(), TextHelper.lowerUnderscoreToEnglish(name));
-			map.put(tier, register.<GenericRecipeMachine>register(realName, (type, pos, blockState) -> new GenericRecipeMachine(type, pos, blockState, tier))
+			return register.<GenericRecipeMachine>register(realName, (type, pos, blockState) -> new GenericRecipeMachine(type, pos, blockState, tier))
 					.recipeType(recipeType)
 					.guiSupplier(GenericRecipeMachine.GUI_SUPPLIER.apply(recipeType))
 					.localized(localizedName)
 					.tieredWorkableModelRenderer(Conductance.id("block/machine_casing_tiered_%s".formatted(tier.getRegistryKey())), name)
-					.build());
-		})));
+					.build();
+		});
 	}
 
 	private ConductanceMachines() {

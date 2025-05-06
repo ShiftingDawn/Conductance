@@ -1,10 +1,15 @@
 package conductance.core.apiimpl;
 
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -54,6 +59,15 @@ public class TierRegistryImpl implements TierRegistry {
 	@Override
 	public List<Tier> getTiers() {
 		return ImmutableList.copyOf(TierRegistryImpl.TIERS);
+	}
+
+	@Override
+	public <T> Map<Tier, T> newMap(final Function<Tier, T> factory) {
+		return Collections.unmodifiableMap(Util.make(new IdentityHashMap<>(), map -> {
+			for (final Tier tier : this.getTiers()) {
+				map.put(tier, factory.apply(tier));
+			}
+		}));
 	}
 
 	static void insertTier(final TierImpl tier) {
