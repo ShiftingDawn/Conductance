@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
-public interface INetworkNode<DATA> {
+public interface INetworkNode<NODE extends INetworkNode<NODE, DATA>, DATA> {
 
 	void setConnections(int connections);
 
@@ -18,7 +18,7 @@ public interface INetworkNode<DATA> {
 
 	ResourceLocation getNodeType();
 
-	LevelPipeNetwork<DATA> getNetwork(ServerLevel serverLevel);
+	LevelPipeNetwork<NODE, DATA> getNetwork(ServerLevel serverLevel);
 
 	boolean canConnectTo(Level level, BlockPos pos, Direction side);
 }

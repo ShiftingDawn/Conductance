@@ -28,12 +28,13 @@ import conductance.Conductance;
 import conductance.core.pipenet.CableData;
 import conductance.core.pipenet.CableType;
 import conductance.core.pipenet.EnergyNet;
+import conductance.core.pipenet.ICableNode;
 import conductance.core.pipenet.LevelEnergyNet;
 import conductance.core.pipenet.PipeBlockRenderer;
 import conductance.core.pipenet.PipeModel;
 import conductance.init.ConductanceBlockEntities;
 
-public final class CableBlock extends PipeBlock<CableData, LevelEnergyNet> {
+public final class CableBlock extends PipeBlock<ICableNode, CableData, LevelEnergyNet> {
 
 	@Getter
 	private final Material material;
@@ -73,7 +74,7 @@ public final class CableBlock extends PipeBlock<CableData, LevelEnergyNet> {
 	}
 
 	@Override
-	public BlockEntityType<? extends PipeBlockEntity<CableData, LevelEnergyNet>> getBlockEntityType() {
+	public BlockEntityType<? extends PipeBlockEntity<ICableNode, CableData, LevelEnergyNet>> getBlockEntityType() {
 		return ConductanceBlockEntities.CABLE.get();
 	}
 

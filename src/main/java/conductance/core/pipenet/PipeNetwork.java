@@ -20,23 +20,23 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
 @RequiredArgsConstructor
-public abstract class PipeNetwork<DATA> {
+public abstract class PipeNetwork<NODE extends INetworkNode<NODE, DATA>, DATA> {
 
 	private final SimpleGraph<BlockPos, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
 	private final Map<BlockPos, Set<Direction>> endpoints = new HashMap<>();
-	private final Map<BlockPos, Set<NetworkPath<DATA>>> paths = new HashMap<>();
-	private final LevelPipeNetwork<DATA> levelNet;
+	private final Map<BlockPos, Set<NetworkPath<NODE, DATA>>> paths = new HashMap<>();
+	private final LevelPipeNetwork<NODE, DATA> levelNet;
 	private final ResourceLocation networkType;
 
-	protected abstract NetworkPath<DATA> createNetworkPath(BlockPos startPos, BlockPos endPos, Direction endSide, GraphPath<BlockPos, DefaultEdge> path);
+	protected abstract NetworkPath<NODE, DATA> createNetworkPath(BlockPos startPos, BlockPos endPos, Direction endSide, GraphPath<BlockPos, DefaultEdge> path);
 
 	protected abstract boolean isEndpointStillValid(Level level, BlockPos pos, Direction side);
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	protected INetworkNode<DATA> getActualNode(final BlockPos pos) {
-		if (this.levelNet.getLevel().getBlockEntity(pos) instanceof final INetworkNode<?> node && node.getNodeType().equals(this.networkType)) {
-			return (INetworkNode<DATA>) node;
+	protected NODE getActualNode(final BlockPos pos) {
+		if (this.levelNet.getLevel().getBlockEntity(pos) instanceof final INetworkNode<?, ?> node && node.getNodeType().equals(this.networkType)) {
+			return (NODE) node;
 		}
 		return null;
 	}
@@ -96,7 +96,7 @@ public abstract class PipeNetwork<DATA> {
 		return this.endpoints.containsKey(pos) && this.endpoints.get(pos).contains(side);
 	}
 
-	protected final Set<BlockPos> consume(final PipeNetwork<DATA> other) {
+	protected final Set<BlockPos> consume(final PipeNetwork<NODE, DATA> other) {
 		for (final BlockPos vertex : other.graph.vertexSet()) {
 			this.graph.addVertex(vertex);
 		}
@@ -153,19 +153,19 @@ public abstract class PipeNetwork<DATA> {
 	}
 
 	@Nullable
-	public Set<NetworkPath<DATA>> getPaths(final BlockPos pos) {
+	public Set<NetworkPath<NODE, DATA>> getPaths(final BlockPos pos) {
 		return this.paths.get(pos);
 	}
 
-	final Set<PipeNetwork<DATA>> findIslands() {
+	final Set<PipeNetwork<NODE, DATA>> findIslands() {
 		final ConnectivityInspector<BlockPos, DefaultEdge> inspector = new ConnectivityInspector<>(this.graph);
 		final List<Set<BlockPos>> components = inspector.connectedSets();
 		if (components.size() <= 1) {
 			return Set.of(this);
 		}
-		final Set<PipeNetwork<DATA>> networks = new HashSet<>();
+		final Set<PipeNetwork<NODE, DATA>> networks = new HashSet<>();
 		for (final Set<BlockPos> component : components) {
-			final PipeNetwork<DATA> newNet = this.levelNet.createNetwork();
+			final PipeNetwork<NODE, DATA> newNet = this.levelNet.createNetwork();
 			for (final BlockPos node : component) {
 				newNet.addNode(node);
 			}

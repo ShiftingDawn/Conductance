@@ -15,9 +15,9 @@ import conductance.Conductance;
 public class EnergyNetHandler implements IEnergyHandler {
 
 	private final ServerLevel level;
-	private final INetworkNode<CableData> cable;
+	private final ICableNode cable;
 
-	public EnergyNetHandler(final ServerLevel serverLevel, final INetworkNode<CableData> cable) {
+	public EnergyNetHandler(final ServerLevel serverLevel, final ICableNode cable) {
 		this.level = serverLevel;
 		this.cable = cable;
 	}
@@ -26,11 +26,11 @@ public class EnergyNetHandler implements IEnergyHandler {
 	public long receiveEnergy(@Nullable final Direction receivingSide, final long volts, final long amps) {
 		long ampsUsed = 0L;
 		final Set<BlockPos> burnedCables = new HashSet<>();
-		final Set<NetworkPath<CableData>> paths = this.cable.getNetwork(this.level).getPaths(this.cable);
+		final Set<NetworkPath<ICableNode, CableData>> paths = this.cable.getNetwork(this.level).getPaths(this.cable);
 		if (paths == null || paths.isEmpty()) {
 			return ampsUsed;
 		}
-		for (final NetworkPath<CableData> path : paths) {
+		for (final NetworkPath<ICableNode, CableData> path : paths) {
 			final EnergyPathData data = (EnergyPathData) path.getData();
 			assert data != null;
 			if (data.totalLoss() >= volts) {
@@ -44,20 +44,17 @@ public class EnergyNetHandler implements IEnergyHandler {
 			if (destination == null || !destination.canReceiveEnergy(destinationSide) || destination.getEnergySpace() <= 0) {
 				continue;
 			}
-			final long energyLeftOver = volts - data.totalLoss();
+			long energyLeftOver = volts - data.totalLoss();
 			if (energyLeftOver <= 0) {
 				continue;
 			}
-//			for (final Pair<BlockPos, CableData> pair : path.path()) {
-//				final MaterialTypeCable cable = pair.getSecond().properties();
-//				if (cable.tier.getVoltage() < voltage) {
-//					final int heat = (int) (Math.log(CAPI.TIERS.getTierByVoltage(voltage).getIndex() - CAPI.TIERS.getTierByVoltage(cable.getVoltage()).getIndex()) * 45 + 36.5);
-//					if (this.energyNet.applyHeat(pair.getFirst(), heat)) {
-//						burnedCables.add(pair.getFirst());
-//					}
-//					energyLeftOver = Math.min(cable.getVoltage(), energyLeftOver);
-//				}
-//			}
+			for (final ICableNode pathNode : path.getPath()) {
+				final CableData pathNodeData = pathNode.getData();
+				if (pathNodeData.voltage() < volts) {
+					burnedCables.add(pathNode.getBlockPos());
+					energyLeftOver = Math.min(pathNodeData.voltage(), energyLeftOver);
+				}
+			}
 			if (!burnedCables.isEmpty()) {
 				break;
 			}
@@ -67,28 +64,25 @@ public class EnergyNetHandler implements IEnergyHandler {
 			}
 			ampsUsed += ampsAccepted;
 			long voltageTraveled = volts;
-			for (final INetworkNode<CableData> pathNode : path.getPath()) {
-				final CableData pathCableData = pathNode.getData();
-				voltageTraveled -= pathCableData.cableLoss();
+			for (final ICableNode pathNode : path.getPath()) {
+				final CableData pathNodeData = pathNode.getData();
+				voltageTraveled -= pathNodeData.cableLoss();
 				if (voltageTraveled <= 0) {
 					break;
 				}
-//				if (this.energyNet.incrementAmperage(pathNode.getFirst(), ampsAccepted, pathCableData.amperage)) {
-//					burnedCables.add(pathNode.getFirst());
-//				}
+				pathNode.handleEnergyTransferred(ampsAccepted, voltageTraveled);
+				if (pathNode.getAmpsTransferred() > pathNodeData.amperage()) {
+					burnedCables.add(pathNode.getBlockPos());
+				}
 			}
 			if (!burnedCables.isEmpty() || amps == ampsUsed) {
 				break;
 			}
 		}
-//		for (final BlockPos pos : burnedCables) {
-//			this.burnCable(this.energyNet.getLevel(), pos);
-//		}
+		for (final BlockPos pos : burnedCables) {
+			this.level.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
+		}
 		return ampsUsed;
-	}
-
-	private void burnCable(final ServerLevel serverLevel, final BlockPos pos) {
-		serverLevel.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
 	}
 
 	@Override

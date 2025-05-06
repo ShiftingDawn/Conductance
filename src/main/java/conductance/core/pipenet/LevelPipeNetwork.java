@@ -18,13 +18,13 @@ import org.jetbrains.annotations.Nullable;
 import conductance.Conductance;
 
 @RequiredArgsConstructor
-public abstract class LevelPipeNetwork<DATA> extends SavedData {
+public abstract class LevelPipeNetwork<NODE extends INetworkNode<NODE, DATA>, DATA> extends SavedData {
 
-	private final Map<BlockPos, PipeNetwork<DATA>> networks = new HashMap<>();
+	private final Map<BlockPos, PipeNetwork<NODE, DATA>> networks = new HashMap<>();
 	@Getter
 	private final ServerLevel level;
 
-	protected abstract PipeNetwork<DATA> createNetwork();
+	protected abstract PipeNetwork<NODE, DATA> createNetwork();
 
 	public void add(final BlockPos pos, final int connections) {
 		if (this.networks.containsKey(pos)) {
@@ -36,12 +36,12 @@ public abstract class LevelPipeNetwork<DATA> extends SavedData {
 			return;
 		}
 		final List<Direction> connectedSides = PipeNetHelper.getConnections(connections);
-		final List<PipeNetwork<DATA>> connectedNetworks = connectedSides.stream().map(pos::relative).map(this.networks::get).filter(Objects::nonNull).toList();
+		final List<PipeNetwork<NODE, DATA>> connectedNetworks = connectedSides.stream().map(pos::relative).map(this.networks::get).filter(Objects::nonNull).toList();
 		if (connectedNetworks.isEmpty()) {
 			this.networks.put(pos, Util.make(this.createNetwork(), net -> net.addNode(pos)));
 			return;
 		}
-		final PipeNetwork<DATA> network;
+		final PipeNetwork<NODE, DATA> network;
 		if (connectedNetworks.size() == 1) {
 			network = connectedNetworks.getFirst();
 		} else {
@@ -62,10 +62,10 @@ public abstract class LevelPipeNetwork<DATA> extends SavedData {
 		if (!this.networks.containsKey(pos)) {
 			return;
 		}
-		final PipeNetwork<DATA> network = this.networks.get(pos);
+		final PipeNetwork<NODE, DATA> network = this.networks.get(pos);
 		network.removeNode(pos);
 		this.networks.remove(pos);
-		final Set<PipeNetwork<DATA>> islands = network.findIslands();
+		final Set<PipeNetwork<NODE, DATA>> islands = network.findIslands();
 		islands.forEach(island -> {
 			island.getNodes().forEach(node -> {
 				this.networks.put(node, island);
@@ -74,16 +74,17 @@ public abstract class LevelPipeNetwork<DATA> extends SavedData {
 		});
 	}
 
-	public void setConnected(final INetworkNode<DATA> node, final INetworkNode<DATA> otherNode, final Direction side, final boolean connect) {
+	public void setConnected(final NODE node, final NODE otherNode, final Direction side, final boolean connect) {
 		if (PipeNetHelper.isConnected(node.getConnections(), side) == connect) {
 			return;
 		}
 		node.setConnections(PipeNetHelper.setConnection(node.getConnections(), side, connect));
 		otherNode.setConnections(PipeNetHelper.setConnection(otherNode.getConnections(), side.getOpposite(), connect));
-		final PipeNetwork<DATA> network = this.networks.get(node.getBlockPos());
+		final PipeNetwork<NODE, DATA> network = this.networks.get(node.getBlockPos());
 		if (connect) {
 			final List<Direction> connectedSides = PipeNetHelper.getConnections(node.getConnections());
-			final List<PipeNetwork<DATA>> connectedNetworks = connectedSides.stream().map(node.getBlockPos()::relative).map(this.networks::get).filter(Objects::nonNull).toList();
+			final List<PipeNetwork<NODE, DATA>> connectedNetworks = connectedSides.stream().map(node.getBlockPos()::relative)
+					.map(this.networks::get).filter(Objects::nonNull).toList();
 			connectedNetworks.forEach(connectedNetwork -> {
 				if (connectedNetwork != network) {
 					network.consume(connectedNetwork).forEach(connectedPos ->
@@ -103,18 +104,18 @@ public abstract class LevelPipeNetwork<DATA> extends SavedData {
 	}
 
 	public void addEndpoint(final BlockPos pos, final Direction side, final boolean connect) {
-		final PipeNetwork<DATA> network = this.networks.get(pos);
+		final PipeNetwork<NODE, DATA> network = this.networks.get(pos);
 		network.addEndpoint(pos, side, connect);
 		network.recalculate();
 	}
 
 	public boolean isEndpoint(final BlockPos pos, final Direction side) {
-		final PipeNetwork<DATA> network = this.networks.get(pos);
+		final PipeNetwork<NODE, DATA> network = this.networks.get(pos);
 		return network.isEndpoint(pos, side);
 	}
 
 	@Nullable
-	public Set<NetworkPath<DATA>> getPaths(final INetworkNode<DATA> node) {
+	public Set<NetworkPath<NODE, DATA>> getPaths(final NODE node) {
 		return this.networks.get(node.getBlockPos()).getPaths(node.getBlockPos());
 	}
 

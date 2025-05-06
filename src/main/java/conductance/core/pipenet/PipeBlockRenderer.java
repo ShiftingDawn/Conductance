@@ -39,9 +39,9 @@ public class PipeBlockRenderer implements IRenderer, ICoverRenderer {
 
 	@Getter
 	private final Lazy<PipeModel> pipeModel;
-	private final PipeBlock<?, ?> block;
+	private final PipeBlock<?, ?, ?> block;
 
-	public PipeBlockRenderer(final Lazy<PipeModel> pipeModel, final PipeBlock<?, ?> block) {
+	public PipeBlockRenderer(final Lazy<PipeModel> pipeModel, final PipeBlock<?, ?, ?> block) {
 		this.pipeModel = pipeModel;
 		this.block = block;
 		if (CAPI.isClient()) {
@@ -70,7 +70,6 @@ public class PipeBlockRenderer implements IRenderer, ICoverRenderer {
 		return true;
 	}
 
-
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public List<BakedQuad> renderModel(
@@ -79,7 +78,7 @@ public class PipeBlockRenderer implements IRenderer, ICoverRenderer {
 	) {
 		if (level == null) {
 			return this.pipeModel.get().bakeQuads(side, PipeNetHelper.ITEM_CONNECTIONS);
-		} else if (level.getBlockEntity(pos) instanceof final INetworkNode<?> networkNode) {
+		} else if (level.getBlockEntity(pos) instanceof final INetworkNode<?, ?> networkNode) {
 			final List<BakedQuad> quads = new LinkedList<>(this.pipeModel.get().bakeQuads(side, networkNode.getConnections()));
 			final ModelState modelState = ModelFactory.getRotation(((ICoverable) networkNode).getFrontFacing());
 			final Direction modelFacing = side == null ? null : ModelFactory.modelFacing(side, ((ICoverable) networkNode).getFrontFacing());

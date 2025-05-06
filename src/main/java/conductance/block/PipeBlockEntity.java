@@ -29,8 +29,8 @@ import conductance.core.pipenet.INetworkNode;
 import conductance.core.pipenet.LevelPipeNetwork;
 import conductance.core.pipenet.PipeNetHelper;
 
-public abstract class PipeBlockEntity<DATA, LEVELNET extends LevelPipeNetwork<DATA>> extends BaseBlockEntity
-		implements INetworkNode<DATA>, IEnhancedManaged, IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, ICoverable, IExtendedInteractable, IPaintable {
+public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DATA, LEVELNET extends LevelPipeNetwork<NODE, DATA>> extends BaseBlockEntity
+		implements INetworkNode<NODE, DATA>, IEnhancedManaged, IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, ICoverable, IExtendedInteractable, IPaintable {
 
 	public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PipeBlockEntity.class);
 	@Getter
@@ -128,8 +128,8 @@ public abstract class PipeBlockEntity<DATA, LEVELNET extends LevelPipeNetwork<DA
 	}
 
 	@SuppressWarnings("unchecked")
-	public PipeBlock<DATA, LEVELNET> getPipeBlock() {
-		return (PipeBlock<DATA, LEVELNET>) this.getBlockState().getBlock();
+	public PipeBlock<NODE, DATA, LEVELNET> getPipeBlock() {
+		return (PipeBlock<NODE, DATA, LEVELNET>) this.getBlockState().getBlock();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -138,12 +138,12 @@ public abstract class PipeBlockEntity<DATA, LEVELNET extends LevelPipeNetwork<DA
 		if (interaction != this.getInteractType()) {
 			return InteractionResult.PASS;
 		}
-		if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof final PipeBlockEntity<?, ?> pipeBlockEntity) {
-			final INetworkNode<?> node = pipeBlockEntity.getPipeBlock().getPipeBlockEntity(context.getLevel(), context.getClickedPos().relative(side));
+		if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof final PipeBlockEntity<?, ?, ?> pipeBlockEntity) {
+			final INetworkNode<?, ?> node = pipeBlockEntity.getPipeBlock().getPipeBlockEntity(context.getLevel(), context.getClickedPos().relative(side));
 			if (node != null) {
 				if (this.getLevel() instanceof final ServerLevel serverLevel) {
 					final boolean connect = PipeNetHelper.isBlocked(this.getConnections(), side);
-					this.getNetwork(serverLevel).setConnected(this, (INetworkNode<DATA>) node, side, connect);
+					this.getNetwork(serverLevel).setConnected((NODE) this, (NODE) node, side, connect);
 				}
 				return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
 			}

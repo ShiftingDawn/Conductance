@@ -35,7 +35,7 @@ import conductance.core.pipenet.LevelPipeNetwork;
 import conductance.core.pipenet.PipeBlockRenderer;
 import conductance.core.pipenet.PipeModel;
 
-public abstract class PipeBlock<DATA, LEVELNET extends LevelPipeNetwork<DATA>> extends ConductanceBlock implements IBlockEntityBlock, IBlockRendererProvider {
+public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEVELNET extends LevelPipeNetwork<NODE, DATA>> extends ConductanceBlock implements IBlockEntityBlock, IBlockRendererProvider {
 
 	@Getter
 	private final ResourceLocation networkType;
@@ -46,13 +46,13 @@ public abstract class PipeBlock<DATA, LEVELNET extends LevelPipeNetwork<DATA>> e
 	}
 
 	@Override
-	public abstract BlockEntityType<? extends PipeBlockEntity<DATA, LEVELNET>> getBlockEntityType();
+	public abstract BlockEntityType<? extends PipeBlockEntity<NODE, DATA, LEVELNET>> getBlockEntityType();
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public INetworkNode<DATA> getPipeBlockEntity(final BlockGetter level, final BlockPos pos) {
-		if (level.getBlockEntity(pos) instanceof final INetworkNode<?> node && node.getNodeType().equals(this.getNetworkType())) {
-			return (INetworkNode<DATA>) node;
+	public NODE getPipeBlockEntity(final BlockGetter level, final BlockPos pos) {
+		if (level.getBlockEntity(pos) instanceof final INetworkNode<?, ?> node && node.getNodeType().equals(this.getNetworkType())) {
+			return (NODE) node;
 		}
 		return null;
 	}
@@ -71,7 +71,7 @@ public abstract class PipeBlock<DATA, LEVELNET extends LevelPipeNetwork<DATA>> e
 	@Override
 	public void onNeighborChange(final BlockState state, final LevelReader level, final BlockPos pos, final BlockPos neighbor) {
 		super.onNeighborChange(state, level, pos, neighbor);
-		if (level.getBlockEntity(pos) instanceof final PipeBlockEntity<?, ?> pipe) {
+		if (level.getBlockEntity(pos) instanceof final PipeBlockEntity<?, ?, ?> pipe) {
 			pipe.onNeighborChanged(neighbor, level.getBlockState(neighbor), MiscUtils.getNeighborSide(pos, neighbor));
 		}
 	}
@@ -83,7 +83,7 @@ public abstract class PipeBlock<DATA, LEVELNET extends LevelPipeNetwork<DATA>> e
 
 	@Override
 	public VoxelShape getShape(final BlockState state, final BlockGetter level, final BlockPos pos, final CollisionContext ctx) {
-		final INetworkNode<DATA> pipeNode = this.getPipeBlockEntity(level, pos);
+		final NODE pipeNode = this.getPipeBlockEntity(level, pos);
 		if (pipeNode != null) {
 			VoxelShape shape = this.getPipeModel().getShapes(pipeNode.getConnections());
 			shape = Shapes.or(shape, ((ICoverable) pipeNode).getCoverManager().getCoverCollisionShapes());
@@ -92,7 +92,7 @@ public abstract class PipeBlock<DATA, LEVELNET extends LevelPipeNetwork<DATA>> e
 				if (
 						held.is(CAPI.Tags.TAG_WIRE_CUTTERS) || held.is(CAPI.Tags.TAG_WRENCH)
 								|| (held.getItem() instanceof final ICoverItem<?> coverItem && ((ICoverable) pipeNode).getCoverManager().canAcceptCover(coverItem.getCoverType(), null))
-								|| (held.getItem() instanceof final BlockItem blockItem && blockItem.getBlock() instanceof final PipeBlock<?, ?> pipeBlock
+								|| (held.getItem() instanceof final BlockItem blockItem && blockItem.getBlock() instanceof final PipeBlock<?, ?, ?> pipeBlock
 								&& pipeBlock.networkType.equals(this.networkType))
 				) {
 					return Shapes.or(Shapes.block(), shape);
@@ -105,7 +105,7 @@ public abstract class PipeBlock<DATA, LEVELNET extends LevelPipeNetwork<DATA>> e
 
 	@Override
 	public BlockState getAppearance(final BlockState state, final BlockAndTintGetter level, final BlockPos pos, final Direction side, @Nullable final BlockState queryState, @Nullable final BlockPos queryPos) {
-		final INetworkNode<DATA> node = this.getPipeBlockEntity(level, pos);
+		final NODE node = this.getPipeBlockEntity(level, pos);
 		if (node != null) {
 			final BlockState appearance = ((ICoverable) node).getCoverManager().getAppearance(state, level, pos, side, queryState, queryPos);
 			if (appearance != state) {
@@ -119,7 +119,7 @@ public abstract class PipeBlock<DATA, LEVELNET extends LevelPipeNetwork<DATA>> e
 	public List<ItemStack> getDrops(final BlockState state, final LootParams.Builder builder) {
 		final LootParams lootParams = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
 		final BlockEntity blockEntity = lootParams.getParamOrNull(LootContextParams.BLOCK_ENTITY);
-		if (blockEntity instanceof final INetworkNode<?> networkNode) {
+		if (blockEntity instanceof final INetworkNode<?, ?> networkNode) {
 			for (final Direction direction : Direction.values()) {
 				((ICoverable) networkNode).getCoverManager().removeCover(direction);
 			}

@@ -10,16 +10,16 @@ import org.jgrapht.graph.DefaultEdge;
 import conductance.api.capability.CapabilityHelper;
 import conductance.Conductance;
 
-public class EnergyNet extends PipeNetwork<CableData> {
+public class EnergyNet extends PipeNetwork<ICableNode, CableData> {
 
 	public static final ResourceLocation TYPE = Conductance.id("energynet");
 
-	public EnergyNet(final LevelPipeNetwork<CableData> levelNet) {
+	public EnergyNet(final LevelPipeNetwork<ICableNode, CableData> levelNet) {
 		super(levelNet, EnergyNet.TYPE);
 	}
 
 	@Override
-	protected NetworkPath<CableData> createNetworkPath(final BlockPos startPos, final BlockPos endPos, final Direction endSide, final GraphPath<BlockPos, DefaultEdge> path) {
+	protected NetworkPath<ICableNode, CableData> createNetworkPath(final BlockPos startPos, final BlockPos endPos, final Direction endSide, final GraphPath<BlockPos, DefaultEdge> path) {
 		final int totalLoss = path.getVertexList().stream().map(this::getActualNode)
 				.map(Objects::requireNonNull)
 				.mapToInt(node -> node.getData().cableLoss())

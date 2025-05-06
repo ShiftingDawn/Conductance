@@ -54,7 +54,7 @@ public class PipeModel {
 	private TextureAtlasSprite spriteSide, spriteEnd, spriteSideSecondary, spriteEndSecondary, spriteSideOverlay, spriteEndOverlay;
 
 	public PipeModel(final float thickness, final Supplier<SafeOptional<ResourceLocation>> textureSide, final Supplier<SafeOptional<ResourceLocation>> textureEnd,
-	                 @Nullable final Supplier<SafeOptional<ResourceLocation>> textureSideSecondary, @Nullable final Supplier<SafeOptional<ResourceLocation>> textureEndSecondary) {
+			@Nullable final Supplier<SafeOptional<ResourceLocation>> textureSideSecondary, @Nullable final Supplier<SafeOptional<ResourceLocation>> textureEndSecondary) {
 		this.textureSide = textureSide;
 		this.textureEnd = textureEnd;
 		this.textureSideSecondary = textureSideSecondary;
@@ -178,7 +178,7 @@ public class PipeModel {
 
 	@OnlyIn(Dist.CLIENT)
 	public void renderItem(
-			final PipeBlock<?, ?> block, final ItemStack stack, final ItemDisplayContext transformType, final boolean leftHand, final PoseStack matrixStack, final MultiBufferSource buffer,
+			final PipeBlock<?, ?, ?> block, final ItemStack stack, final ItemDisplayContext transformType, final boolean leftHand, final PoseStack matrixStack, final MultiBufferSource buffer,
 			final int combinedLight, final int combinedOverlay, final BakedModel model
 	) {
 		IItemRendererProvider.disabled.set(true);
