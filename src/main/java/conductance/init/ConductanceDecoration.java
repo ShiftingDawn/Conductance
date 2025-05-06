@@ -1,11 +1,13 @@
 package conductance.init;
 
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
+import conductance.Conductance;
 import conductance.block.ConcreteBlock;
 import conductance.block.DecoEmissiveBlock;
 import conductance.block.DecoLuxBlock;
@@ -67,9 +69,9 @@ public final class ConductanceDecoration {
 			TILES_6.put(dyeColor, ConductanceDecoration.decoBlockTinted(dyeColor, "%s_tiles_6_block", "tiles/6"));
 		}
 
-		CAPI.translations().makeLocalizedName("block.conductance.me_block", () -> "ME Block"); //Force ME capitalized
+		CAPI.translations().addInterceptor("block.%s.me_block".formatted(Conductance.MODID), () -> Component.literal("ME Block")); //Force ME capitalized
 		ME_BLOCK = ConductanceDecoration.decoBlock("me_block", "me");
-		CAPI.translations().makeLocalizedName("block.conductance.active_me_block", () -> "Active ME Block"); //Force ME capitalized
+		CAPI.translations().addInterceptor("block.%s.active_me_block".formatted(Conductance.MODID), () -> Component.literal("Active ME Block")); //Force ME capitalized
 		ME_BLOCK_ACTIVE = ConductanceDecoration.decoBlock("active_me_block", "me_active");
 
 		CONCRETE_LIGHT = ConductanceDecoration.concrete("light_concrete", "light");

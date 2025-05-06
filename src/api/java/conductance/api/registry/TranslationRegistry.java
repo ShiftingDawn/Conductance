@@ -13,6 +13,8 @@ public interface TranslationRegistry {
 
 	String translate(String key, Supplier<String> fallback, Object... format);
 
+	void addInterceptor(String key, Supplier<MutableComponent> interceptor);
+
 	MutableComponent makeLocalizedName(String key, Supplier<String> fallback, Object... format);
 
 	MutableComponent makeLocalizedName(Block block);

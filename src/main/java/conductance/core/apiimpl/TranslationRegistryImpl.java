@@ -20,6 +20,7 @@ import conductance.api.util.TextHelper;
 public final class TranslationRegistryImpl implements TranslationRegistry {
 
 	public static final TranslationRegistryImpl INSTANCE = new TranslationRegistryImpl();
+	private final HashMap<String, Supplier<MutableComponent>> interceptors = new HashMap<>();
 	private final HashMap<String, String> cache = new HashMap<>();
 	private final HashMap<String, MutableComponent> componentCache = new HashMap<>();
 
@@ -43,8 +44,22 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 	}
 
 	@Override
+	public void addInterceptor(final String key, final Supplier<MutableComponent> interceptor) {
+		this.interceptors.put(key, interceptor);
+	}
+
+	private MutableComponent handle(final String key, final Supplier<MutableComponent> fallback) {
+		return this.componentCache.computeIfAbsent(key, k -> {
+			if (this.interceptors.containsKey(key)) {
+				return this.interceptors.get(key).get();
+			}
+			return fallback.get();
+		});
+	}
+
+	@Override
 	public MutableComponent makeLocalizedName(final String key, final Supplier<String> fallback, final Object... format) {
-		return this.componentCache.computeIfAbsent(key, k -> Component.literal(this.translate(key, fallback, format)));
+		return this.handle(key, () -> Component.literal(this.translate(key, fallback, format)));
 	}
 
 	@Override
@@ -54,7 +69,7 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 
 	@Override
 	public MutableComponent makeLocalizedName(final Block block, final Supplier<MutableComponent> override) {
-		return this.componentCache.computeIfAbsent(block.getDescriptionId(), k -> override.get());
+		return this.handle(block.getDescriptionId(), override);
 	}
 
 	@Override
@@ -64,7 +79,7 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 
 	@Override
 	public MutableComponent makeLocalizedName(final Item item, final Supplier<MutableComponent> override) {
-		return this.componentCache.computeIfAbsent(item.getDescriptionId(), k -> override.get());
+		return this.handle(item.getDescriptionId(), override);
 	}
 
 	@Override
@@ -74,12 +89,12 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 
 	@Override
 	public MutableComponent makeLocalizedName(final FluidType fluid, final Supplier<MutableComponent> override) {
-		return this.componentCache.computeIfAbsent(fluid.getDescriptionId(), k -> override.get());
+		return this.handle(fluid.getDescriptionId(), override);
 	}
 
 	@Override
 	public MutableComponent makeLocalizedName(final String key, final TaggedMaterialSet taggedSet, final Material material) {
-		return this.componentCache.computeIfAbsent(key, k -> {
+		return this.handle(key, () -> {
 			final String materialName = this.translate(material.getUnlocalizedName(), () -> TextHelper.lowerUnderscoreToEnglish(material.getName()));
 			final String translation = this.translate(key, () -> TextHelper.lowerUnderscoreToEnglish(taggedSet.getUnlocalizedNameFactory().apply(material)), materialName);
 			return Component.literal(translation);
@@ -88,7 +103,7 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 
 	@Override
 	public MutableComponent makeLocalizedName(final String key, final MaterialOreType oreType, final Material material) {
-		return this.componentCache.computeIfAbsent(key, k -> {
+		return this.handle(key, () -> {
 			final String materialName = this.translate(material.getUnlocalizedName(), () -> TextHelper.lowerUnderscoreToEnglish(material.getName()));
 			final String translation = this.translate(key, () -> TextHelper.lowerUnderscoreToEnglish(oreType.getUnlocalizedNameFactory()), materialName);
 			return Component.literal(translation);
