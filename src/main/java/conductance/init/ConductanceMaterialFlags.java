@@ -12,7 +12,7 @@ import static conductance.api.NCMaterialFlags.GENERATE_BLOCK;
 import static conductance.api.NCMaterialFlags.GENERATE_BOLT_AND_SCREW;
 import static conductance.api.NCMaterialFlags.GENERATE_FINE_WIRE;
 import static conductance.api.NCMaterialFlags.GENERATE_FOIL;
-import static conductance.api.NCMaterialFlags.GENERATE_FRAME;
+import static conductance.api.NCMaterialFlags.GENERATE_FRAME_BOX;
 import static conductance.api.NCMaterialFlags.GENERATE_GEAR;
 import static conductance.api.NCMaterialFlags.GENERATE_LENS;
 import static conductance.api.NCMaterialFlags.GENERATE_PLATE;
@@ -45,7 +45,7 @@ public final class ConductanceMaterialFlags {
 		GENERATE_RING = register.register("generate_ring", Set.of(), Set.of(NCMaterialTraits.INGOT));
 		GENERATE_FINE_WIRE = register.register("generate_fine_wire", Set.of(), Set.of(NCMaterialTraits.INGOT));
 		GENERATE_ROTOR = register.register("generate_rotor", Set.of(GENERATE_PLATE, GENERATE_BOLT_AND_SCREW, GENERATE_RING), Set.of(NCMaterialTraits.INGOT));
-		GENERATE_FRAME = register.register("generate_frame", Set.of(GENERATE_ROD), Set.of(NCMaterialTraits.INGOT));
+		GENERATE_FRAME_BOX = register.register("generate_frame", Set.of(GENERATE_ROD), Set.of(NCMaterialTraits.INGOT));
 
 		CAN_CRYSTALLIZE = register.register("autoclave_processable", Set.of(), Set.of(NCMaterialTraits.GEM));
 		GENERATE_LENS = register.register("generate_lens", Set.of(GENERATE_PLATE), Set.of(NCMaterialTraits.INGOT));
@@ -63,7 +63,7 @@ public final class ConductanceMaterialFlags {
 		METAL_EXTRA2.addAll(METAL_EXTRA);
 		METAL_EXTRA2.add(GENERATE_BOLT_AND_SCREW);
 		METAL_ALL.addAll(METAL_EXTRA2);
-		METAL_ALL.addAll(List.of(GENERATE_FRAME, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_FOIL, GENERATE_RING, GENERATE_ROTOR));
+		METAL_ALL.addAll(List.of(GENERATE_FRAME_BOX, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_FRAME_BOX, GENERATE_FOIL, GENERATE_RING, GENERATE_ROTOR));
 	}
 
 	private ConductanceMaterialFlags() {

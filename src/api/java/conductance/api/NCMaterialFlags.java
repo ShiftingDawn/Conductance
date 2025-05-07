@@ -25,7 +25,7 @@ public final class NCMaterialFlags {
 	public static MaterialFlag GENERATE_RING;
 	public static MaterialFlag GENERATE_FINE_WIRE;
 	public static MaterialFlag GENERATE_ROTOR;
-	public static MaterialFlag GENERATE_FRAME;
+	public static MaterialFlag GENERATE_FRAME_BOX;
 	// endregion
 
 	// region Gem traits

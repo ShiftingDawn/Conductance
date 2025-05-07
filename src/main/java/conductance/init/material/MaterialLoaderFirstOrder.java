@@ -12,7 +12,7 @@ import static conductance.api.NCMaterialFlags.GENERATE_BLOCK;
 import static conductance.api.NCMaterialFlags.GENERATE_BOLT_AND_SCREW;
 import static conductance.api.NCMaterialFlags.GENERATE_FINE_WIRE;
 import static conductance.api.NCMaterialFlags.GENERATE_FOIL;
-import static conductance.api.NCMaterialFlags.GENERATE_FRAME;
+import static conductance.api.NCMaterialFlags.GENERATE_FRAME_BOX;
 import static conductance.api.NCMaterialFlags.GENERATE_GEAR;
 import static conductance.api.NCMaterialFlags.GENERATE_LENS;
 import static conductance.api.NCMaterialFlags.GENERATE_PLATE;
@@ -387,7 +387,7 @@ public final class MaterialLoaderFirstOrder {
 				.ingot()
 				.liquid(1916)
 				.color(0x78b446).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA2, CAN_MORTAR, GENERATE_GEAR, GENERATE_FRAME)
+				.addFlagAndPreset(METAL_EXTRA2, CAN_MORTAR, GENERATE_GEAR, GENERATE_FRAME_BOX)
 				.components(IRON, 2, NICKEL)
 				.build();
 
@@ -498,7 +498,7 @@ public final class MaterialLoaderFirstOrder {
 		RURIDIT = register.register("ruridit")
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL)
 				.color(140, 140, 140).textureSet(BRIGHT)
-				.flags(GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_FRAME, GENERATE_BOLT_AND_SCREW)
+				.flags(GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_FRAME_BOX, GENERATE_BOLT_AND_SCREW)
 				.components(RUTHENIUM, 2, IRIDIUM)
 				.build();
 
@@ -881,7 +881,7 @@ public final class MaterialLoaderFirstOrder {
 		TPV_ALLOY = register.register("tpv_alloy")
 				.ingot()
 				.color(250, 170, 250).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA2, GENERATE_FRAME)
+				.addFlagAndPreset(METAL_EXTRA2, GENERATE_FRAME_BOX)
 				.components(TITANIUM, 3, PLATINUM, 3, VANADIUM)
 				.build();
 

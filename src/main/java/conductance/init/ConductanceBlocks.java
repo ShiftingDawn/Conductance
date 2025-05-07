@@ -26,6 +26,7 @@ import conductance.core.pipenet.CableType;
 import conductance.core.register.MaterialOverrideRegister;
 import conductance.item.RenderedBlockItem;
 
+@SuppressWarnings("removal")
 public final class ConductanceBlocks {
 
 	public static void init() {
@@ -37,6 +38,7 @@ public final class ConductanceBlocks {
 			final String name = set.getUnlocalizedName(material);
 			final BlockBuilder<MaterialBlock, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> new MaterialBlock(props, material, set))
 					.initialProperties(() -> Blocks.IRON_BLOCK)
+					.addLayer(() -> RenderType::cutoutMipped)
 					.color(() -> MaterialBlock::handleColorTint)
 					.item(MaterialBlockItem::new)
 					.model(NonNullBiConsumer.noop())
@@ -75,7 +77,6 @@ public final class ConductanceBlocks {
 				.register();
 	}
 
-	@SuppressWarnings("removal")
 	private static void generateCables() {
 		CAPI.regs().materials().values().stream().filter(mat -> mat.hasTrait(NCMaterialTraits.CABLE)).forEach(material -> {
 			for (final CableType cableType : CableType.values()) {

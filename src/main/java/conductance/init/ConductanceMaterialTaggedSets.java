@@ -290,7 +290,7 @@ public final class ConductanceMaterialTaggedSets {
 				.unitValue(CAPI.UNIT * 2)
 				.hasBlocks(true)
 				.textureType(NCTextureTypes.FRAME_BOX)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FRAME))
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FRAME_BOX))
 				.build();
 
 		WIRE_1X = register.register("1x_wire", "1x_%s_wire")

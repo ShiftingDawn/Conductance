@@ -2,7 +2,7 @@ package conductance.init.material;
 
 import conductance.api.plugin.MaterialRegister;
 import static conductance.api.NCMaterialFlags.CAN_MORTAR;
-import static conductance.api.NCMaterialFlags.GENERATE_FRAME;
+import static conductance.api.NCMaterialFlags.GENERATE_FRAME_BOX;
 import static conductance.api.NCMaterialFlags.GENERATE_PLATE;
 import static conductance.api.NCMaterialFlags.METAL_EXTRA2;
 import static conductance.api.NCMaterialFlags.NO_DECOMPOSE;
@@ -55,7 +55,7 @@ public final class MaterialLoaderThirdOrder {
 		HSS_G = register.register("hss_g")
 				.ingot()
 				.color(153, 153, 0).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA2, GENERATE_FRAME)
+				.addFlagAndPreset(METAL_EXTRA2, GENERATE_FRAME_BOX)
 				.components(TUNGSTENSTEEL, 5, CHROMIUM, MOLYBDENUM, 2, VANADIUM)
 				.build();
 	}
