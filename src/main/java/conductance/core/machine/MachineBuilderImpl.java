@@ -180,11 +180,13 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 
 	@Override
 	public MachineBuilder<T> workableModelRenderer(final ResourceLocation baseModelLocation) {
+		MachineBlockModelHandler.remove(this.registryKey);
 		return this.modelRenderer(new WorkableMachineRenderer(baseModelLocation, Conductance.id("block/machine/%s".formatted(this.registryKey))));
 	}
 
 	@Override
 	public MachineBuilder<T> tieredWorkableModelRenderer(final ResourceLocation baseModelLocation, final String baseMachineKey) {
+		MachineBlockModelHandler.remove(this.registryKey);
 		return this.modelRenderer(new WorkableMachineRenderer(baseModelLocation, Conductance.id("block/machine/%s".formatted(baseMachineKey))));
 	}
 
