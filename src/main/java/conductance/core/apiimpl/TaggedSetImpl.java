@@ -31,12 +31,12 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 	@Getter
 	private final List<TagKey<Block>> miningTags;
 
-	@Getter
-	private final boolean itemGenerator;
-	@Getter
-	private final boolean blockGenerator;
-	@Getter
-	private final boolean fluidGenerator;
+	private final boolean hasItems;
+	private final boolean autoGenerateItems;
+	private final boolean hasBlocks;
+	private final boolean autoGenerateBlocks;
+	private final boolean hasFluids;
+	private final boolean autoGenerateFluids;
 	@Nullable
 	private final Predicate<TYPE> generatorPredicate;
 	@Getter
@@ -63,16 +63,49 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 		this.tags = ImmutableList.copyOf(builder.tags());
 		this.miningTags = ImmutableList.copyOf(builder.miningTools());
 
-		this.itemGenerator = builder.generateItems();
-		this.blockGenerator = builder.generateBlocks();
-		this.fluidGenerator = builder.generateFluids();
-		this.generatorPredicate = builder.generatorPredicate();
+		this.hasItems = builder.hasItems();
+		this.autoGenerateItems = builder.autoGenerateItems();
 		this.itemGeneratorCallback = builder.itemGeneratorCallback();
+		this.hasBlocks = builder.hasBlocks();
+		this.autoGenerateBlocks = builder.autoGenerateBlocks();
 		this.blockGeneratorCallback = builder.blockGeneratorCallback();
+		this.hasFluids = builder.hasFluids();
+		this.autoGenerateFluids = builder.autoGenerateFluids();
 		this.fluidGeneratorCallback = builder.fluidGeneratorCallback();
+		this.generatorPredicate = builder.generatorPredicate();
 
 		this.maxStackSize = builder.maxStackSize();
 		this.unitValue = builder.unitValue();
+	}
+
+	@Override
+	public boolean shouldAutoGenerateItems() {
+		return this.autoGenerateItems;
+	}
+
+	@Override
+	public boolean hasItems() {
+		return this.hasItems;
+	}
+
+	@Override
+	public boolean shouldAutoGenerateBlocks() {
+		return this.autoGenerateBlocks;
+	}
+
+	@Override
+	public boolean hasBlocks() {
+		return this.hasBlocks;
+	}
+
+	@Override
+	public boolean shouldAutoGenerateFluids() {
+		return this.autoGenerateFluids;
+	}
+
+	@Override
+	public boolean hasFluids() {
+		return this.hasFluids;
 	}
 
 	@Override
@@ -122,16 +155,16 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 
 	@Override
 	public boolean canGenerateItem(final TYPE object) {
-		return this.isItemGenerator() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
+		return this.shouldAutoGenerateItems() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
 	}
 
 	@Override
 	public boolean canGenerateBlock(final TYPE object) {
-		return this.isBlockGenerator() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
+		return this.shouldAutoGenerateBlocks() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
 	}
 
 	@Override
 	public boolean canGenerateFluid(final TYPE object) {
-		return this.isFluidGenerator() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
+		return this.shouldAutoGenerateFluids() && (this.generatorPredicate == null || this.generatorPredicate.test(object));
 	}
 }

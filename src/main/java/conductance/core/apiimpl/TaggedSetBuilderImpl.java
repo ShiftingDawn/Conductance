@@ -39,11 +39,17 @@ abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER e
 	private final Function<TYPE, String> unlocalizedNameFactory;
 
 	@Getter
-	private boolean generateItems;
+	private boolean hasItems;
 	@Getter
-	private boolean generateBlocks;
+	private boolean autoGenerateItems;
 	@Getter
-	private boolean generateFluids;
+	private boolean hasBlocks;
+	@Getter
+	private boolean autoGenerateBlocks;
+	@Getter
+	private boolean hasFluids;
+	@Getter
+	private boolean autoGenerateFluids;
 	@Getter
 	@Nullable
 	private Predicate<TYPE> generatorPredicate;
@@ -118,20 +124,23 @@ abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER e
 
 	// region Generation
 	@Override
-	public BUILDER generateItems(final boolean doGenerateItems) {
-		this.generateItems = doGenerateItems;
+	public BUILDER hasItems(final boolean items, final boolean autoGenerate) {
+		this.hasItems = items;
+		this.autoGenerateItems = autoGenerate;
 		return (BUILDER) this;
 	}
 
 	@Override
-	public BUILDER generateBlocks(final boolean doGenerateBlocks) {
-		this.generateBlocks = doGenerateBlocks;
+	public BUILDER hasBlocks(final boolean blocks, final boolean autoGenerate) {
+		this.hasBlocks = blocks;
+		this.autoGenerateBlocks = autoGenerate;
 		return (BUILDER) this;
 	}
 
 	@Override
-	public BUILDER generateFluids(final boolean doGenerateFluids) {
-		this.generateFluids = doGenerateFluids;
+	public BUILDER hasFluids(final boolean fluids, final boolean autoGenerate) {
+		this.hasFluids = fluids;
+		this.autoGenerateFluids = autoGenerate;
 		return (BUILDER) this;
 	}
 

@@ -18,11 +18,11 @@ public final class MaterialTextureSetModelHandler {
 
 	static void reload() {
 		CAPI.regs().materialTextureSets().forEach(set -> {
-			CAPI.regs().materialTaggedSets().values().stream().filter(TaggedSet::isItemGenerator).map(TaggedMaterialSet::getTextureType).distinct().forEach(type -> {
+			CAPI.regs().materialTaggedSets().values().stream().filter(TaggedSet::hasItems).map(TaggedMaterialSet::getTextureType).distinct().forEach(type -> {
 				RuntimeResourcePack.addItemModel(ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(), "material/" + set + "/" + type.getRegistryKey().getPath()),
 						MaterialTextureSetModelHandler.createItemEntry(set, type));
 			});
-			CAPI.regs().materialTaggedSets().values().stream().filter(TaggedSet::isBlockGenerator).map(TaggedMaterialSet::getTextureType).distinct().forEach(type -> {
+			CAPI.regs().materialTaggedSets().values().stream().filter(TaggedSet::hasBlocks).map(TaggedMaterialSet::getTextureType).distinct().forEach(type -> {
 				RuntimeResourcePack.addBlockModel(ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(), "material/" + set + "/" + type.getRegistryKey().getPath()),
 						MaterialTextureSetModelHandler.createBlockEntry(set, type));
 			});

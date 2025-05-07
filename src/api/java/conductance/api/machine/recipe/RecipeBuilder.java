@@ -96,9 +96,9 @@ public interface RecipeBuilder {
 	}
 
 	default RecipeBuilder in(final TaggedMaterialSet taggedSet, final Material material, final int count) {
-		if (taggedSet.isItemGenerator() || taggedSet.isBlockGenerator()) {
+		if (taggedSet.hasItems() || taggedSet.hasBlocks()) {
 			this.in(MiscUtils.getItemTag(taggedSet, material), count);
-		} else if (taggedSet.isFluidGenerator()) {
+		} else if (taggedSet.hasFluids()) {
 			this.in(MiscUtils.getFluidTag(taggedSet, material), count);
 		}
 		return this;
@@ -169,9 +169,9 @@ public interface RecipeBuilder {
 	}
 
 	default RecipeBuilder inNc(final TaggedMaterialSet taggedSet, final Material material, final int count) {
-		if (taggedSet.isItemGenerator() || taggedSet.isBlockGenerator()) {
+		if (taggedSet.hasItems() || taggedSet.hasBlocks()) {
 			this.inNc(MiscUtils.getItemTag(taggedSet, material), count);
-		} else if (taggedSet.isFluidGenerator()) {
+		} else if (taggedSet.hasFluids()) {
 			this.inNc(MiscUtils.getFluidTag(taggedSet, material), count);
 		}
 		return this;
@@ -242,9 +242,9 @@ public interface RecipeBuilder {
 	}
 
 	default RecipeBuilder out(final TaggedMaterialSet taggedSet, final Material material, final int count) {
-		if (taggedSet.isItemGenerator() || taggedSet.isBlockGenerator()) {
+		if (taggedSet.hasItems() || taggedSet.hasBlocks()) {
 			this.out(MiscUtils.getItemTag(taggedSet, material), count);
-		} else if (taggedSet.isFluidGenerator()) {
+		} else if (taggedSet.hasFluids()) {
 			this.out(MiscUtils.getFluidTag(taggedSet, material), count);
 		}
 		return this;

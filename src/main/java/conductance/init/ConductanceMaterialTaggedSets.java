@@ -59,7 +59,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("dusts/%s")
 				.addTagUnformatted("dusts")
 				.unitValue(CAPI.UNIT)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.DUST)
 				.generatorPredicate(PREDICATE_HAS_DUST)
 				.build();
@@ -68,7 +68,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("ingots/%s")
 				.addTagUnformatted("ingots")
 				.unitValue(CAPI.UNIT)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.INGOT)
 				.generatorPredicate(PREDICATE_HAS_INGOT)
 				.build();
@@ -76,7 +76,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("nuggets/%s")
 				.addTagUnformatted("nuggets")
 				.unitValue(CAPI.UNIT / 9)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.NUGGET)
 				.generatorPredicate(PREDICATE_HAS_INGOT)
 				.build();
@@ -85,7 +85,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("gems/%s")
 				.addTagUnformatted("gems")
 				.unitValue(CAPI.UNIT)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.GEM)
 				.generatorPredicate(PREDICATE_HAS_GEM)
 				.build();
@@ -93,7 +93,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("flawed_gems/%s")
 				.addTagUnformatted("flawed_gems")
 				.unitValue(CAPI.UNIT / 2)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.GEM_FLAWED)
 				.generatorPredicate(PREDICATE_HAS_GEM)
 				.build();
@@ -101,7 +101,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("flawless_gems/%s")
 				.addTagUnformatted("flawless_gems")
 				.unitValue(CAPI.UNIT * 2)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.GEM_FLAWLESS)
 				.generatorPredicate(PREDICATE_HAS_GEM)
 				.build();
@@ -109,7 +109,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("exquisite_gems/%s")
 				.addTagUnformatted("exquisite_gems")
 				.unitValue(CAPI.UNIT * 4)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.GEM_EXQUISITE)
 				.generatorPredicate(PREDICATE_HAS_GEM)
 				.build();
@@ -118,7 +118,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("storage_blocks/%s")
 				.addTagUnformatted("storage_blocks")
 				.unitValue(CAPI.UNIT * 9)
-				.generateBlocks(true)
+				.hasBlocks(true)
 				.textureType(NCTextureTypes.STORAGE_BLOCK)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
 				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.INGOT) || mat.hasTrait(NCMaterialTraits.GEM) || mat.hasFlag(NCMaterialFlags.GENERATE_BLOCK))
@@ -126,21 +126,21 @@ public final class ConductanceMaterialTaggedSets {
 		RAW_ORE = register.register("raw_ore", "raw_%s")
 				.addTag("raw_materials/%s")
 				.addTagUnformatted("raw_materials")
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.RAW_ORE)
 				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.ORE))
 				.build();
 		RAW_ORE_BLOCK = register.register("raw_ore_block", "raw_%s_block")
 				.addTag("storage_blocks/raw_%s")
 				.addTagUnformatted("storage_blocks")
-				.generateBlocks(true)
+				.hasBlocks(true)
 				.textureType(NCTextureTypes.RAW_ORE_BLOCK)
 				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.ORE))
 				.build();
 
 		LIQUID = register.register("liquid", ConductanceMaterialTaggedSets::liquidUnlocalizedNameGenerator)
 				.addTag("%s")
-				.generateFluids(true)
+				.hasFluids(true)
 				.textureType(NCTextureTypes.LIQUID)
 				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.LIQUID))
 				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
@@ -152,7 +152,7 @@ public final class ConductanceMaterialTaggedSets {
 				.build();
 		GAS = register.register("gas", ConductanceMaterialTaggedSets::gasUnlocalizedNameGenerator)
 				.addTag("gases/%s")
-				.generateFluids(true)
+				.hasFluids(true)
 				.textureType(NCTextureTypes.GAS)
 				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.GAS))
 				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
@@ -164,7 +164,7 @@ public final class ConductanceMaterialTaggedSets {
 				.build();
 		PLASMA = register.register("plasma")
 				.addTag("plasmas/%s")
-				.generateFluids(true)
+				.hasFluids(true)
 				.textureType(NCTextureTypes.PLASMA)
 				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.PLASMA))
 				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
@@ -179,7 +179,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("plates/%s")
 				.addTagUnformatted("plates")
 				.unitValue(CAPI.UNIT)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.PLATE)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE))
 				.build();
@@ -187,7 +187,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("double_plates/%s")
 				.addTagUnformatted("double_plates")
 				.unitValue(CAPI.UNIT * 2)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.PLATE_DOUBLE)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE))
 				.build();
@@ -195,7 +195,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("dense_plates/%s")
 				.addTagUnformatted("dense_plates")
 				.unitValue(CAPI.UNIT * 9)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.PLATE_DENSE)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE))
 				.build();
@@ -203,7 +203,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("foils/%s")
 				.addTagUnformatted("foils")
 				.unitValue(CAPI.UNIT / 4)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.FOIL)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FOIL))
 				.build();
@@ -212,7 +212,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("gears/%s")
 				.addTagUnformatted("gears")
 				.unitValue(CAPI.UNIT * 4)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.GEAR)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_GEAR))
 				.build();
@@ -220,7 +220,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("small_gears/%s")
 				.addTagUnformatted("small_gears")
 				.unitValue(CAPI.UNIT)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.GEAR_SMALL)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_SMALL_GEAR))
 				.build();
@@ -229,7 +229,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("lenses/%s")
 				.addTagUnformatted("lenses")
 				.unitValue(CAPI.UNIT)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.LENS)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_LENS))
 				.build();
@@ -238,7 +238,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("rods/%s")
 				.addTagUnformatted("rods")
 				.unitValue(CAPI.UNIT / 2)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.ROD)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_ROD))
 				.build();
@@ -246,7 +246,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("bolts/%s")
 				.addTagUnformatted("bolts")
 				.unitValue(CAPI.UNIT / 8)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.BOLT)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_BOLT_AND_SCREW))
 				.build();
@@ -254,7 +254,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("screws/%s")
 				.addTagUnformatted("screws")
 				.unitValue(CAPI.UNIT / 8)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.SCREW)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_BOLT_AND_SCREW))
 				.build();
@@ -262,7 +262,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("rings/%s")
 				.addTagUnformatted("rings")
 				.unitValue(CAPI.UNIT / 4)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.RING)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_RING))
 				.build();
@@ -271,7 +271,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("fine_wires/%s")
 				.addTagUnformatted("fine_wires")
 				.unitValue(CAPI.UNIT / 8)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.FINE_WIRE)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FINE_WIRE))
 				.build();
@@ -279,7 +279,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("rotors/%s")
 				.addTagUnformatted("rotors")
 				.unitValue(CAPI.UNIT * 4)
-				.generateItems(true)
+				.hasItems(true)
 				.textureType(NCTextureTypes.ROTOR)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_ROTOR))
 				.build();
@@ -288,7 +288,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("frame_boxes/%s")
 				.addTagUnformatted("frame_boxes")
 				.unitValue(CAPI.UNIT * 2)
-				.generateBlocks(true)
+				.hasBlocks(true)
 				.textureType(NCTextureTypes.FRAME_BOX)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FRAME))
 				.build();
@@ -297,61 +297,73 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("1x_wires/%s")
 				.addTagUnformatted("1x_wires")
 				.unitValue(CAPI.UNIT / 2)
+				.hasBlocks(true, false)
 				.build();
 		WIRE_2X = register.register("2x_wire", "2x_%s_wire")
 				.addTag("2x_wires/%s")
 				.addTagUnformatted("2x_wires")
 				.unitValue(CAPI.UNIT)
+				.hasBlocks(true, false)
 				.build();
 		WIRE_4X = register.register("4x_wire", "4x_%s_wire")
 				.addTag("4x_wires/%s")
 				.addTagUnformatted("4x_wires")
 				.unitValue(CAPI.UNIT * 2)
+				.hasBlocks(true, false)
 				.build();
 		WIRE_8X = register.register("8x_wire", "8x_%s_wire")
 				.addTag("8x_wires/%s")
 				.addTagUnformatted("8x_wires")
 				.unitValue(CAPI.UNIT * 4)
+				.hasBlocks(true, false)
 				.build();
 		WIRE_12X = register.register("12x_wire", "12x_%s_wire")
 				.addTag("12x_wires/%s")
 				.addTagUnformatted("12x_wires")
 				.unitValue(CAPI.UNIT * 6)
+				.hasBlocks(true, false)
 				.build();
 		WIRE_16X = register.register("16x_wire", "16x_%s_wire")
 				.addTag("16x_wires/%s")
 				.addTagUnformatted("16x_wires")
 				.unitValue(CAPI.UNIT * 8)
+				.hasBlocks(true, false)
 				.build();
 		CABLE_1X = register.register("1x_cable", "1x_%s_cable")
 				.addTag("1x_cables/%s")
 				.addTagUnformatted("1x_cables")
 				.unitValue(CAPI.UNIT / 2)
+				.hasBlocks(true, false)
 				.build();
 		CABLE_2X = register.register("2x_cable", "2x_%s_cable")
 				.addTag("2x_cables/%s")
 				.addTagUnformatted("2x_cables")
 				.unitValue(CAPI.UNIT)
+				.hasBlocks(true, false)
 				.build();
 		CABLE_4X = register.register("4x_cable", "4x_%s_cable")
 				.addTag("4x_cables/%s")
 				.addTagUnformatted("4x_cables")
 				.unitValue(CAPI.UNIT * 2)
+				.hasBlocks(true, false)
 				.build();
 		CABLE_8X = register.register("8x_cable", "8x_%s_cable")
 				.addTag("8x_cables/%s")
 				.addTagUnformatted("8x_cables")
 				.unitValue(CAPI.UNIT * 4)
+				.hasBlocks(true, false)
 				.build();
 		CABLE_12X = register.register("12x_cable", "12x_%s_cable")
 				.addTag("12x_cables/%s")
 				.addTagUnformatted("12x_cables")
 				.unitValue(CAPI.UNIT * 6)
+				.hasBlocks(true, false)
 				.build();
 		CABLE_16X = register.register("16x_cable", "16x_%s_cable")
 				.addTag("16x_cables/%s")
 				.addTagUnformatted("16x_cables")
 				.unitValue(CAPI.UNIT * 8)
+				.hasBlocks(true, false)
 				.build();
 	}
 	//@formatter:on

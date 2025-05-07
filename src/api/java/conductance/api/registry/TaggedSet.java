@@ -36,15 +36,21 @@ public interface TaggedSet<TYPE> extends IRegistryObject<String> {
 		return String.format(this.getUnlocalizedNameFactory().apply(object), this.getObjectSerializer().apply(object));
 	}
 
-	boolean isItemGenerator();
+	boolean shouldAutoGenerateItems();
+
+	boolean hasItems();
 
 	boolean canGenerateItem(TYPE object);
 
-	boolean isBlockGenerator();
+	boolean shouldAutoGenerateBlocks();
+
+	boolean hasBlocks();
 
 	boolean canGenerateBlock(TYPE object);
 
-	boolean isFluidGenerator();
+	boolean shouldAutoGenerateFluids();
+
+	boolean hasFluids();
 
 	boolean canGenerateFluid(TYPE object);
 

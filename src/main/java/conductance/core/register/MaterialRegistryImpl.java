@@ -230,10 +230,10 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 	private static void registerOverriddenComponents() {
 		MaterialOverrideRegister.getOverrides().rowMap().forEach((set, mapping) -> mapping.forEach((material, overrides) -> {
 			Arrays.stream(overrides).forEach(override -> {
-				if (set.isBlockGenerator() && override instanceof final Block block) {
+				if (set.hasBlocks() && override instanceof final Block block) {
 					MaterialRegistryImpl.INSTANCE.registerBlockInternal(set, material, block);
 				}
-				if (set.isItemGenerator()) {
+				if (set.hasItems()) {
 					MaterialRegistryImpl.INSTANCE.registerItemInternal(set, material, override);
 				}
 			});

@@ -30,11 +30,24 @@ public interface TaggedSetBuilder<TYPE, SET extends TaggedSet<TYPE>, BUILDER ext
 	// endregion
 
 	// region Generation
-	BUILDER generateItems(boolean generateItems);
+	BUILDER hasItems(boolean hasItems, boolean autoGenerate);
 
-	BUILDER generateBlocks(boolean generateBlocks);
+	default BUILDER hasItems(final boolean generateItems) {
+		return this.hasItems(generateItems, true);
+	}
 
-	BUILDER generateFluids(boolean generateFluids);
+	BUILDER hasBlocks(boolean hasBlocks, boolean autoGenerate);
+
+	default BUILDER hasBlocks(final boolean generateBlocks) {
+		return this.hasBlocks(generateBlocks, true);
+
+	}
+
+	BUILDER hasFluids(boolean generateFluids, boolean autoGenerate);
+
+	default BUILDER hasFluids(final boolean hasFluids) {
+		return this.hasFluids(hasFluids, true);
+	}
 
 	BUILDER generatorPredicate(@Nullable Predicate<TYPE> predicate);
 
