@@ -33,6 +33,7 @@ public final class ConductanceMachines {
 				.workableModelRenderer(Conductance.id("block/machine_casing_tiered"))
 				.build();
 
+		NCMachines.WIREMILL = ConductanceMachines.tiered(register, "wiremill", NCRecipeTypes.WIREMILL);
 		NCMachines.BENDING_MACHINE = ConductanceMachines.tiered(register, "bending_machine", NCRecipeTypes.BENDING_MACHINE);
 		NCMachines.PULVERIZER = ConductanceMachines.tiered(register, "pulverizer", NCRecipeTypes.PULVERIZER);
 		NCMachines.CUTTING_MACHINE = ConductanceMachines.tiered(register, "cutting_machine", NCRecipeTypes.PULVERIZER);

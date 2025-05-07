@@ -1,6 +1,5 @@
 package conductance.api.material.traits;
 
-import net.minecraft.util.Tuple;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -26,10 +25,6 @@ public final class MaterialTraitOre implements IMaterialTrait<MaterialTraitOre> 
 	@Getter
 	@Nullable
 	private Material pulverizeResult;
-	@Setter
-	@Nullable
-	private Material washingFluid;
-	private int washingFluidAmount;
 
 	public void setDropMultiplier(final int dropMultiplier) {
 		if (dropMultiplier <= 0) {
@@ -45,18 +40,6 @@ public final class MaterialTraitOre implements IMaterialTrait<MaterialTraitOre> 
 		this.byproductMultiplier = byproductMultiplier;
 	}
 
-	public void setWashingFluidAmount(final int washingFluidAmount) {
-		if (washingFluidAmount <= 0) {
-			throw new IllegalArgumentException("washingFluidAmount cannot be <= 0!");
-		}
-		this.washingFluidAmount = washingFluidAmount;
-	}
-
-	@Nullable
-	public Tuple<Material, Integer> getOreWashFluid() {
-		return this.washingFluid != null ? new Tuple<>(this.washingFluid, this.washingFluidAmount) : null;
-	}
-
 	@Override
 	public void verify(final Material material, final MaterialTraitMap traitMap) {
 		traitMap.set(NCMaterialTraits.DUST, new MaterialTraitDust());
@@ -66,9 +49,6 @@ public final class MaterialTraitOre implements IMaterialTrait<MaterialTraitOre> 
 		}
 		if (this.pulverizeResult != null) {
 			this.pulverizeResult.getTraits().set(NCMaterialTraits.DUST, new MaterialTraitDust());
-		}
-		if (this.washingFluid != null) {
-			this.washingFluid.getTraits().set(NCMaterialTraits.LIQUID, new MaterialTraitFluid.Liquid());
 		}
 	}
 }

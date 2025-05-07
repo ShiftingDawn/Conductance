@@ -10,6 +10,7 @@ public final class NCMachines {
 	public static MachineType<?> STEAM_BOILER_SOLID_FUEL;
 	public static MachineType<?> STEAM_BOILER_LIQUID_FUEL;
 
+	public static Map<Tier, MachineType<?>> WIREMILL;
 	public static Map<Tier, MachineType<?>> BENDING_MACHINE;
 	public static Map<Tier, MachineType<?>> PULVERIZER;
 	public static Map<Tier, MachineType<?>> CUTTING_MACHINE;

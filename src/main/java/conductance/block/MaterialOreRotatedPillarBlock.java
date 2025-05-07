@@ -19,8 +19,8 @@ import lombok.Getter;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
-import conductance.runtimepack.client.MaterialOreModelHandler;
 import conductance.init.ConductanceCreativeTabs;
+import conductance.runtimepack.client.MaterialOreModelHandler;
 
 public class MaterialOreRotatedPillarBlock extends RotatedPillarBlock implements IConductanceBlock, IMaterialOreBlock {
 

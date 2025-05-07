@@ -8,6 +8,7 @@ import static conductance.api.NCRecipeTypes.LATHE;
 import static conductance.api.NCRecipeTypes.PULVERIZER;
 import static conductance.api.NCRecipeTypes.STEAM_BOILER;
 import static conductance.api.NCRecipeTypes.STEAM_TURBINE;
+import static conductance.api.NCRecipeTypes.WIREMILL;
 
 public final class ConductanceRecipeTypes {
 
@@ -16,6 +17,7 @@ public final class ConductanceRecipeTypes {
 
 		STEAM_TURBINE = register.register("steam_turbine").setIO(0, 1, 0, 0).setHidden().build();
 
+		WIREMILL = register.register("wiremill").setIO(2, 0, 2, 0).build();
 		BENDING_MACHINE = register.register("bending_machine").setIO(2, 0, 2, 0).build();
 		PULVERIZER = register.register("pulverizer").setIO(1, 0, 4, 0).build();
 		CUTTING_MACHINE = register.register("cutting_machine").setIO(2, 1, 2, 0).build();
