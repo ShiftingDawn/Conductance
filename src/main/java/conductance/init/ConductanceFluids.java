@@ -14,12 +14,15 @@ import conductance.runtimepack.client.MaterialFluidModelHandler;
 
 public final class ConductanceFluids {
 
+	@SuppressWarnings("UnstableApiUsage")
 	public static void init() {
 		CAPI.regs().materials().forEach(material -> CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.canGenerateFluid(material)).forEach(set -> {
 			final String name = set.getUnlocalizedName(material);
 			ApiBridge.getRegistrate().object(name);
+			//noinspection DataFlowIssue
 			final FluidBuilder<BaseFlowingFluid.Flowing, Registrate> fluidBuilder = ApiBridge.getRegistrate().fluid(name, ((properties, stillTexture, flowingTexture) -> new MaterialFluidType(material, set, properties)))
-					.noBlock().noBucket();
+					.noBlock().fluidProperties(p -> p.block(null))
+					.noBucket();
 			fluidBuilder.getOwner().item(fluidBuilder, name + "_bucket", p -> new MaterialBucketItem(fluidBuilder.getEntry(), p)).properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
 					.color(() -> MaterialBucketItem::handleColorTint).model(NonNullBiConsumer.noop()).build();
 			if (((TaggedMaterialSetImpl) set).getFluidGeneratorCallback() != null) {
