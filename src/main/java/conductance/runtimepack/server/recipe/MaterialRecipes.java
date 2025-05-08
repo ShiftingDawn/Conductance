@@ -1,6 +1,11 @@
 package conductance.runtimepack.server.recipe;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTaggedSets;
@@ -9,18 +14,23 @@ import conductance.api.NCRecipeTypes;
 import conductance.api.NCTiers;
 import conductance.api.machine.recipe.AutoRecipeData;
 import conductance.api.material.Material;
+import conductance.api.material.TaggedMaterialSet;
+import conductance.api.material.traits.MaterialTraitOre;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.util.MiscUtils;
 import conductance.core.register.MaterialOverrideRegister;
+import static conductance.Conductance.id;
+import static conductance.runtimepack.server.recipe.RecipeLoader.blasting;
 import static conductance.runtimepack.server.recipe.RecipeLoader.matRecipe;
 import static conductance.runtimepack.server.recipe.RecipeLoader.shaped;
 import static conductance.runtimepack.server.recipe.RecipeLoader.shapeless;
+import static conductance.runtimepack.server.recipe.RecipeLoader.smelting;
 
 final class MaterialRecipes {
 
 	public static void add(final RecipeOutput output, final RecipeBuilderFactory builderFactory) {
 		CAPI.regs().materials().forEach(material -> {
-			material.executeIf(NCMaterialTraits.ORE, $ -> MaterialRecipes.addOreRecipes(output, builderFactory, material));
+			material.executeIf(NCMaterialTraits.ORE, trait -> MaterialRecipes.addOreRecipes(output, builderFactory, material, trait));
 			material.executeIf(NCMaterialTraits.INGOT, () -> MaterialRecipes.addIngotRecipes(output, builderFactory, material));
 			material.executeIf(NCMaterialTraits.GEM, () -> MaterialRecipes.addGemRecipes(output, builderFactory, material));
 			material.executeIf(NCMaterialTraits.WOOD, () -> MaterialRecipes.addWoodRecipes(output, builderFactory, material));
@@ -31,7 +41,11 @@ final class MaterialRecipes {
 		});
 	}
 
-	private static void addOreRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
+	public static void remove(final Consumer<ResourceLocation> remover) {
+		MaterialRecipes.removeOreRecipes(remover);
+	}
+
+	private static void addOreRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material, final MaterialTraitOre trait) {
 		if (!MaterialOverrideRegister.has(NCMaterialTaggedSets.RAW_ORE_BLOCK, material)) {
 			shapeless(output, "raw_%s_ore_block".formatted(material.getName()), CAPI.materials().getBlock(NCMaterialTaggedSets.RAW_ORE_BLOCK, material, 1),
 					CAPI.materials().getItem(NCMaterialTaggedSets.RAW_ORE, material, 9));
@@ -40,6 +54,56 @@ final class MaterialRecipes {
 			shapeless(output, "raw_%s_ore".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.RAW_ORE, material, 9),
 					CAPI.materials().getBlock(NCMaterialTaggedSets.RAW_ORE_BLOCK, material, 1));
 		}
+		final Material pulverizeMaterial = trait.getPulverizeResult() != null ? trait.getPulverizeResult().get() : material;
+		final Material smeltMaterial = trait.getSmeltResult() != null ? trait.getSmeltResult().get() : material;
+		final TaggedMaterialSet smeltType = material.hasTrait(NCMaterialTraits.INGOT) ? NCMaterialTaggedSets.INGOT : material.hasTrait(NCMaterialTraits.GEM) ? NCMaterialTaggedSets.GEM : NCMaterialTaggedSets.DUST;
+		final BiConsumer<TaggedMaterialSet, Integer> pulverizeMaker = (set, multiplier) ->
+				builderFactory.build(NCRecipeTypes.PULVERIZER, id("%s_from_%s".formatted(NCMaterialTaggedSets.DUST.getUnlocalizedName(pulverizeMaterial), set.getUnlocalizedName(material))))
+						.in(CAPI.materials().getItem(set, material, 1)).out(NCMaterialTaggedSets.DUST, pulverizeMaterial, 2 * multiplier).inEnergy(4).processTime(100)
+						.save(output);
+		final BiConsumer<TaggedMaterialSet, Integer> smeltMaker = (set, multiplier) ->
+				smelting(output, "%s_from_%s".formatted(smeltType.getUnlocalizedName(smeltMaterial), set.getUnlocalizedName(material)),
+						CAPI.materials().getItem(smeltType, smeltMaterial, multiplier), Ingredient.of(CAPI.materials().getItem(set, material, 1)),
+						builder -> builder.experience(0.3f * multiplier));
+		final BiConsumer<TaggedMaterialSet, Integer> blastMaker = (set, multiplier) ->
+				blasting(output, "%s_from_%s".formatted(smeltType.getUnlocalizedName(smeltMaterial), set.getUnlocalizedName(material)),
+						CAPI.materials().getItem(smeltType, smeltMaterial, multiplier), Ingredient.of(CAPI.materials().getItem(set, material, 1)),
+						builder -> builder.experience(0.3f * multiplier));
+		CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.getOreType() != null).forEach(set -> {
+			final int multiplier = (set.getOreType().hasDoubleOutput() ? 2 : 1) * trait.getDropMultiplier();
+			pulverizeMaker.accept(set, multiplier);
+			smeltMaker.accept(set, multiplier);
+			blastMaker.accept(set, multiplier);
+		});
+		//Double output for raw ore is handled by the ore block drop
+		pulverizeMaker.accept(NCMaterialTaggedSets.RAW_ORE, trait.getDropMultiplier());
+		smeltMaker.accept(NCMaterialTaggedSets.RAW_ORE, trait.getDropMultiplier());
+		blastMaker.accept(NCMaterialTaggedSets.RAW_ORE, trait.getDropMultiplier());
+		pulverizeMaker.accept(NCMaterialTaggedSets.RAW_ORE_BLOCK, 9 * trait.getDropMultiplier());
+		smeltMaker.accept(NCMaterialTaggedSets.RAW_ORE_BLOCK, 9 * trait.getDropMultiplier());
+		blastMaker.accept(NCMaterialTaggedSets.RAW_ORE_BLOCK, 9 * trait.getDropMultiplier());
+	}
+
+	private static void removeOreRecipes(final Consumer<ResourceLocation> remover) {
+		Stream.of(
+				//Ore blocks
+				"coal_from_blasting_coal_ore", "coal_from_blasting_deepslate_coal_ore", "coal_from_smelting_coal_ore", "coal_from_smelting_deepslate_coal_ore",
+				"copper_ingot_from_blasting_copper_ore", "copper_ingot_from_blasting_deepslate_copper_ore", "copper_ingot_from_smelting_copper_ore", "copper_ingot_from_smelting_deepslate_copper_ore",
+				"diamond_from_blasting_deepslate_diamond_ore", "diamond_from_blasting_diamond_ore", "diamond_from_smelting_deepslate_diamond_ore", "diamond_from_smelting_diamond_ore",
+				"emerald_from_blasting_deepslate_emerald_ore", "emerald_from_blasting_emerald_ore", "emerald_from_smelting_deepslate_emerald_ore", "emerald_from_smelting_emerald_ore",
+				"gold_ingot_from_blasting_deepslate_gold_ore", "gold_ingot_from_blasting_gold_ore", "gold_ingot_from_blasting_nether_gold_ore", "gold_ingot_from_smelting_deepslate_gold_ore",
+				"gold_ingot_from_smelting_gold_ore", "gold_ingot_from_smelting_nether_gold_ore",
+				"iron_ingot_from_blasting_deepslate_iron_ore", "iron_ingot_from_blasting_iron_ore", "iron_ingot_from_smelting_deepslate_iron_ore", "iron_ingot_from_smelting_iron_ore",
+				"lapis_lazuli_from_blasting_deepslate_lapis_ore", "lapis_lazuli_from_blasting_lapis_ore", "lapis_lazuli_from_smelting_deepslate_lapis_ore", "lapis_lazuli_from_smelting_lapis_ore",
+				"redstone_from_blasting_deepslate_redstone_ore", "redstone_from_blasting_redstone_ore", "redstone_from_smelting_deepslate_redstone_ore", "redstone_from_smelting_redstone_ore",
+				//Raw ores
+				"copper_ingot_from_blasting_raw_copper",
+				"copper_ingot_from_smelting_raw_copper",
+				"gold_ingot_from_blasting_raw_gold",
+				"gold_ingot_from_smelting_raw_gold",
+				"iron_ingot_from_blasting_raw_iron",
+				"iron_ingot_from_smelting_raw_iron"
+		).map(ResourceLocation::withDefaultNamespace).forEach(remover);
 	}
 
 	private static void addIngotRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {

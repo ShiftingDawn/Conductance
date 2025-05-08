@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.Util;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -160,6 +161,7 @@ public final class PluginManager {
 
 	public static void dispatchRegisterCovers() {
 		PluginManager.execute((plugin, modid) -> plugin.registerCovers(new CoverRegister() {
+
 			@Override
 			public <COVER extends CoverEntity<COVER>> CoverType<COVER> register(final String registryName, final Function<CoverType<COVER>, CoverRenderer> coverRenderer, final CoverEntityConstructor<COVER> constructor) {
 				return new CoverTypeImpl<>(ResourceLocation.fromNamespaceAndPath(modid, registryName), coverRenderer, constructor);
@@ -181,6 +183,10 @@ public final class PluginManager {
 
 	public static void dispatchRegisterRecipes(final RecipeOutput recipeOutput, final RecipeBuilderFactory builderFactory) {
 		PluginManager.execute((plugin, modid) -> plugin.registerRecipes(recipeOutput, builderFactory));
+	}
+
+	public static void dispatchRemoveRecipes(final Consumer<ResourceLocation> remover) {
+		PluginManager.execute((plugin, modid) -> plugin.removeRecipes(remover));
 	}
 
 	private static void execute(final BiConsumer<IConductancePlugin, String> executor) {

@@ -38,6 +38,7 @@ public final class DynamicRecipeHandler {
 	}
 
 	public static void removeRecipes(final Consumer<ResourceLocation> remover) {
+		PluginManager.dispatchRemoveRecipes(remover);
 	}
 
 	private DynamicRecipeHandler() {

@@ -1,6 +1,8 @@
 package conductance;
 
+import java.util.function.Consumer;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import conductance.api.CAPI;
@@ -225,6 +227,11 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 
 	@Override
 	public void registerRecipes(final RecipeOutput recipeOutput, final RecipeBuilderFactory builderFactory) {
-		RecipeLoader.init(recipeOutput, builderFactory);
+		RecipeLoader.initAddition(recipeOutput, builderFactory);
+	}
+
+	@Override
+	public void removeRecipes(final Consumer<ResourceLocation> remover) {
+		RecipeLoader.initRemoval(remover);
 	}
 }

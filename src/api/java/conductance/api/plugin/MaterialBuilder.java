@@ -3,8 +3,10 @@ package conductance.api.plugin;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialStack;
@@ -82,13 +84,31 @@ public interface MaterialBuilder {
 
 	MaterialBuilder periodicElement(PeriodicElement periodicElement);
 
-	MaterialBuilder ore();
+	MaterialBuilder ore(int dropMultiplier, int byproductMultiplier, boolean emissive, @Nullable Supplier<Material> pulverizeResult, @Nullable Supplier<Material> smeltResult);
 
-	MaterialBuilder ore(boolean emissive);
+	default MaterialBuilder ore(final boolean emissive, @Nullable final Supplier<Material> pulverizeResult, @Nullable final Supplier<Material> smeltResult) {
+		return this.ore(1, 1, emissive, pulverizeResult, smeltResult);
+	}
 
-	MaterialBuilder ore(int dropMultiplier, int byproductMultiplier);
+	default MaterialBuilder ore(@Nullable final Supplier<Material> pulverizeResult, @Nullable final Supplier<Material> smeltResult) {
+		return this.ore(false, pulverizeResult, smeltResult);
+	}
 
-	MaterialBuilder ore(int dropMultiplier, int byproductMultiplier, boolean emissive);
+	default MaterialBuilder ore(final int dropMultiplier, final int byproductMultiplier, final boolean emissive) {
+		return this.ore(dropMultiplier, byproductMultiplier, emissive, null, null);
+	}
+
+	default MaterialBuilder ore(final int dropMultiplier, final int byproductMultiplier) {
+		return this.ore(dropMultiplier, byproductMultiplier, false);
+	}
+
+	default MaterialBuilder ore(final boolean emissive) {
+		return this.ore(1, 1, emissive);
+	}
+
+	default MaterialBuilder ore() {
+		return this.ore(1, 1, false);
+	}
 
 	MaterialBuilder wood();
 

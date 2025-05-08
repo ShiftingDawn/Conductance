@@ -20,6 +20,7 @@ import conductance.api.NCRecipeElementTypes;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.util.MiscUtils;
+import conductance.api.util.tier.Tier;
 
 public interface RecipeBuilder {
 
@@ -109,6 +110,10 @@ public interface RecipeBuilder {
 	}
 
 	RecipeBuilder inEnergy(long energy);
+
+	default RecipeBuilder inEnergy(final Tier tier) {
+		return this.inEnergy(tier.getRecipeVoltage());
+	}
 
 	RecipeBuilder program(int program);
 

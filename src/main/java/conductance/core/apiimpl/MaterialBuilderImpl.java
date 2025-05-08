@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -273,33 +274,14 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder ore() {
-		this.traits.set(NCMaterialTraits.ORE, new MaterialTraitOre());
-		return this;
-	}
-
-	@Override
-	public MaterialBuilder ore(final boolean emissive) {
-		this.traits.set(NCMaterialTraits.ORE, Util.make(new MaterialTraitOre(), ore -> ore.setEmissive(emissive)));
-		return this;
-	}
-
-	@Override
-	public MaterialBuilder ore(final int dropMultiplier, final int byproductMultiplier) {
-		this.traits.set(NCMaterialTraits.ORE, Util.make(new MaterialTraitOre(), ore -> {
-			ore.setDropMultiplier(dropMultiplier);
-			ore.setByproductMultiplier(byproductMultiplier);
-		}));
-		return this;
-	}
-
-	@Override
-	public MaterialBuilder ore(final int dropMultiplier, final int byproductMultiplier, final boolean emissive) {
-		this.traits.set(NCMaterialTraits.ORE, Util.make(new MaterialTraitOre(), ore -> {
-			ore.setDropMultiplier(dropMultiplier);
-			ore.setByproductMultiplier(byproductMultiplier);
-			ore.setEmissive(emissive);
-		}));
+	public MaterialBuilder ore(final int dropMultiplier, final int byproductMultiplier, final boolean emissive, @Nullable final Supplier<Material> pulverizeResult, @Nullable final Supplier<Material> smeltResult) {
+		if (dropMultiplier <= 0) {
+			throw new IllegalArgumentException("dropMultiplier cannot be <= 0!");
+		}
+		if (byproductMultiplier <= 0) {
+			throw new IllegalArgumentException("byproductMultiplier cannot be <= 0!");
+		}
+		this.traits.set(NCMaterialTraits.ORE, new MaterialTraitOre(dropMultiplier, byproductMultiplier, emissive, pulverizeResult, smeltResult));
 		return this;
 	}
 

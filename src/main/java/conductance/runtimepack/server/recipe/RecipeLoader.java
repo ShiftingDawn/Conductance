@@ -2,7 +2,9 @@ package conductance.runtimepack.server.recipe;
 
 import java.util.Map;
 import java.util.function.Consumer;
+import net.minecraft.Util;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,9 +31,13 @@ public final class RecipeLoader {
 	private static final Char2ObjectMap<TagKey<Item>> TOOL_LOOKUP = new Char2ObjectArrayMap<>(
 			Map.of(RecipeLoader.WRENCH, CAPI.Tags.TAG_WRENCH, RecipeLoader.HAMMER, CAPI.Tags.TAG_HAMMER, RecipeLoader.WIRE_CUTTERS, CAPI.Tags.TAG_WIRE_CUTTERS));
 
-	public static void init(final RecipeOutput output, final RecipeBuilderFactory builderFactory) {
+	public static void initAddition(final RecipeOutput output, final RecipeBuilderFactory builderFactory) {
 		MaterialRecipes.add(output, builderFactory);
 		FuelAndEnergyRecipes.add(output, builderFactory);
+	}
+
+	public static void initRemoval(final Consumer<ResourceLocation> remover) {
+		MaterialRecipes.remove(remover);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -96,6 +102,22 @@ public final class RecipeLoader {
 			}
 		}
 		builder.save(output);
+	}
+
+	public static void smelting(final RecipeOutput recipeOutput, final String name, final ItemStack result, final Ingredient input, @Nullable final Consumer<VanillaRecipeBuilders.Smelting> consumer) {
+		Util.make(new VanillaRecipeBuilders.Smelting(Conductance.id("smelting/" + name), result, input), builder -> {
+			if (consumer != null) {
+				consumer.accept(builder);
+			}
+		}).save(recipeOutput);
+	}
+
+	public static void blasting(final RecipeOutput recipeOutput, final String name, final ItemStack result, final Ingredient input, @Nullable final Consumer<VanillaRecipeBuilders.Blasting> consumer) {
+		Util.make(new VanillaRecipeBuilders.Blasting(Conductance.id("blasting/" + name), result, input), builder -> {
+			if (consumer != null) {
+				consumer.accept(builder);
+			}
+		}).save(recipeOutput);
 	}
 
 	public static void matRecipe(

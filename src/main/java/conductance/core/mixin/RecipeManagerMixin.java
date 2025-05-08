@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import conductance.Conductance;
 import conductance.runtimepack.server.recipe.DynamicRecipeHandler;
 
 @Mixin(value = RecipeManager.class, priority = 250)
@@ -17,6 +18,10 @@ public class RecipeManagerMixin {
 
 	@Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
 	private void conductance$removeRecipes(final Map<ResourceLocation, JsonElement> recipeMap, final ResourceManager resourceManager, final ProfilerFiller profiler, final CallbackInfo ci) {
-		DynamicRecipeHandler.removeRecipes(recipeMap::remove);
+		DynamicRecipeHandler.removeRecipes(id -> {
+			if (recipeMap.remove(id) == null) {
+				Conductance.LOGGER.warn("Trying to remove non-existing recipe: {}", id);
+			}
+		});
 	}
 }

@@ -1,11 +1,13 @@
 package conductance.init.material;
 
-import java.util.Objects;
 import net.minecraft.tags.BlockTags;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCTextureSets;
 import conductance.api.NCTiers;
 import conductance.api.plugin.MaterialRegister;
+import static net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL;
+import static net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL;
+import static net.minecraft.tags.BlockTags.NEEDS_STONE_TOOL;
 import static conductance.api.NCMaterialFlags.CAN_CENTRIFUGE;
 import static conductance.api.NCMaterialFlags.CAN_CRYSTALLIZE;
 import static conductance.api.NCMaterialFlags.CAN_MORTAR;
@@ -182,9 +184,6 @@ import static conductance.api.NCTextureSets.QUARTZ;
 import static conductance.api.NCTextureSets.ROUGH;
 import static conductance.api.NCTextureSets.SAND;
 import static conductance.api.NCTextureSets.SHINY;
-import static net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL;
-import static net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL;
-import static net.minecraft.tags.BlockTags.NEEDS_STONE_TOOL;
 
 public final class MaterialLoaderFirstOrder {
 
@@ -233,10 +232,10 @@ public final class MaterialLoaderFirstOrder {
 
 		PYRITE = register.register("pyrite")
 				.dust()
-				.ore().color(150, 120, 40).textureSet(ROUGH)
+				.ore(null, () -> IRON)
+				.color(150, 120, 40).textureSet(ROUGH)
 				.components(IRON, SULFUR, 2)
 				.build();
-		Objects.requireNonNull(PYRITE.getTrait(NCMaterialTraits.ORE)).setSmeltResult(IRON);
 
 		BRONZE = register.register("bronze")
 				.ingot().liquid(1357)
@@ -685,11 +684,10 @@ public final class MaterialLoaderFirstOrder {
 
 		CHALCOPYRITE = register.register("chalcopyrite")
 				.dust()
-				.ore()
+				.ore(null, () -> COPPER)
 				.color(160, 120, 40)
 				.components(COPPER, IRON, SULFUR, 2)
 				.build();
-		Objects.requireNonNull(CHALCOCITE.getTrait(NCMaterialTraits.ORE)).setSmeltResult(COPPER);
 
 		CUPRONICKEL = register.register("cupronickel")
 				.ingot()

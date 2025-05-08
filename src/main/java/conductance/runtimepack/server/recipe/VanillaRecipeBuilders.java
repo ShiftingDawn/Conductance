@@ -11,12 +11,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.BlastingRecipe;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.ItemLike;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 abstract class VanillaRecipeBuilders {
 
@@ -115,6 +120,58 @@ abstract class VanillaRecipeBuilders {
 					RecipeBuilder.determineBookCategory(RecipeCategory.MISC),
 					this.getResult(),
 					this.inputs
+			);
+		}
+	}
+
+	@Accessors(chain = true, fluent = true)
+	public static class Smelting extends VanillaRecipeBuilders {
+
+		private final Ingredient input;
+		@Setter
+		private float experience = 0f;
+		@Setter
+		private int cookingTime = 200;
+
+		Smelting(final ResourceLocation id, final ItemStack result, final Ingredient input) {
+			super(id, result.getItem(), result.getCount());
+			this.input = input;
+		}
+
+		@Override
+		protected Recipe<?> build() {
+			return new SmeltingRecipe("",
+					CookingBookCategory.MISC,
+					this.input,
+					this.getResult(),
+					this.experience,
+					this.cookingTime
+			);
+		}
+	}
+
+	@Accessors(chain = true, fluent = true)
+	public static class Blasting extends VanillaRecipeBuilders {
+
+		private final Ingredient input;
+		@Setter
+		private float experience = 0f;
+		@Setter
+		private int cookingTime = 100;
+
+		Blasting(final ResourceLocation id, final ItemStack result, final Ingredient input) {
+			super(id, result.getItem(), result.getCount());
+			this.input = input;
+		}
+
+		@Override
+		protected Recipe<?> build() {
+			return new BlastingRecipe("",
+					CookingBookCategory.MISC,
+					this.input,
+					this.getResult(),
+					this.experience,
+					this.cookingTime
 			);
 		}
 	}
