@@ -36,7 +36,11 @@ public interface TaggedSetBuilder<TYPE, SET extends TaggedSet<TYPE>, BUILDER ext
 		return this.hasItems(generateItems, true);
 	}
 
-	BUILDER hasBlocks(boolean hasBlocks, boolean autoGenerate);
+	BUILDER hasBlocks(boolean hasBlocks, boolean autoGenerate, boolean shouldOcclude);
+
+	default BUILDER hasBlocks(final boolean hasBlocks, final boolean autoGenerate) {
+		return this.hasBlocks(hasBlocks, autoGenerate, true);
+	}
 
 	default BUILDER hasBlocks(final boolean generateBlocks) {
 		return this.hasBlocks(generateBlocks, true);

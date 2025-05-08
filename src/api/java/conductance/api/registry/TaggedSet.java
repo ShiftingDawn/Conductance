@@ -46,6 +46,8 @@ public interface TaggedSet<TYPE> extends IRegistryObject<String> {
 
 	boolean hasBlocks();
 
+	boolean shouldOccludeBlocks();
+
 	boolean canGenerateBlock(TYPE object);
 
 	boolean shouldAutoGenerateFluids();

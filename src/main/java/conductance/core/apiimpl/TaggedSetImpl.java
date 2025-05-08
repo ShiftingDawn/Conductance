@@ -35,6 +35,7 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 	private final boolean autoGenerateItems;
 	private final boolean hasBlocks;
 	private final boolean autoGenerateBlocks;
+	private final boolean shouldOccludeBlocks;
 	private final boolean hasFluids;
 	private final boolean autoGenerateFluids;
 	@Nullable
@@ -69,6 +70,7 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 		this.hasBlocks = builder.hasBlocks();
 		this.autoGenerateBlocks = builder.autoGenerateBlocks();
 		this.blockGeneratorCallback = builder.blockGeneratorCallback();
+		this.shouldOccludeBlocks = builder.occludeBlocks();
 		this.hasFluids = builder.hasFluids();
 		this.autoGenerateFluids = builder.autoGenerateFluids();
 		this.fluidGeneratorCallback = builder.fluidGeneratorCallback();
@@ -91,6 +93,11 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 	@Override
 	public boolean shouldAutoGenerateBlocks() {
 		return this.autoGenerateBlocks;
+	}
+
+	@Override
+	public boolean shouldOccludeBlocks() {
+		return this.shouldOccludeBlocks;
 	}
 
 	@Override

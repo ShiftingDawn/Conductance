@@ -3,6 +3,7 @@ package conductance.init;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -21,7 +22,7 @@ import conductance.block.MaterialOreRotatedPillarBlock;
 import conductance.block.SimpleDynamicBlock;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.MaterialOreTypeImpl;
-import conductance.core.apiimpl.MaterialTaggedSet;
+import conductance.core.apiimpl.TaggedMaterialSetImpl;
 import conductance.core.pipenet.CableRegistry;
 import conductance.core.pipenet.CableType;
 import conductance.item.RenderedBlockItem;
@@ -37,15 +38,18 @@ public final class ConductanceBlocks {
 		CAPI.regs().materials().forEach(material -> CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.canGenerateBlock(material)).forEach(set -> {
 			final String name = set.getUnlocalizedName(material);
 			final BlockBuilder<MaterialBlock, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> new MaterialBlock(props, material, set))
-					.initialProperties(() -> Blocks.IRON_BLOCK)
-					.addLayer(() -> RenderType::cutoutMipped)
-					.color(() -> MaterialBlock::handleColorTint)
+					.initialProperties(() -> Blocks.IRON_BLOCK);
+			if (!set.shouldOccludeBlocks()) {
+				blockBuilder.properties(BlockBehaviour.Properties::noOcclusion)
+						.addLayer(() -> RenderType::cutoutMipped);
+			}
+			blockBuilder.color(() -> MaterialBlock::handleColorTint)
 					.item(MaterialBlockItem::new)
 					.model(NonNullBiConsumer.noop())
 					.color(() -> MaterialBlockItem::handleColorTint)
 					.build();
-			if (((MaterialTaggedSet) set).getBlockGeneratorCallback() != null) {
-				((MaterialTaggedSet) set).getBlockGeneratorCallback().accept(material, blockBuilder);
+			if (((TaggedMaterialSetImpl) set).getBlockGeneratorCallback() != null) {
+				((TaggedMaterialSetImpl) set).getBlockGeneratorCallback().accept(material, blockBuilder);
 			}
 			CAPI.materials().register(set, material, blockBuilder.register());
 		}));

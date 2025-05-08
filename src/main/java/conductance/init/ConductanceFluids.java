@@ -7,7 +7,7 @@ import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
 import conductance.core.apiimpl.ApiBridge;
-import conductance.core.apiimpl.MaterialTaggedSet;
+import conductance.core.apiimpl.TaggedMaterialSetImpl;
 import conductance.fluid.MaterialBucketItem;
 import conductance.fluid.MaterialFluidType;
 import conductance.runtimepack.client.MaterialFluidModelHandler;
@@ -22,8 +22,8 @@ public final class ConductanceFluids {
 					.noBlock().noBucket();
 			fluidBuilder.getOwner().item(fluidBuilder, name + "_bucket", p -> new MaterialBucketItem(fluidBuilder.getEntry(), p)).properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
 					.color(() -> MaterialBucketItem::handleColorTint).model(NonNullBiConsumer.noop()).build();
-			if (((MaterialTaggedSet) set).getFluidGeneratorCallback() != null) {
-				((MaterialTaggedSet) set).getFluidGeneratorCallback().accept(material, fluidBuilder);
+			if (((TaggedMaterialSetImpl) set).getFluidGeneratorCallback() != null) {
+				((TaggedMaterialSetImpl) set).getFluidGeneratorCallback().accept(material, fluidBuilder);
 			}
 			if (CAPI.isClient()) {
 				fluidBuilder.onRegister(fluid -> MaterialFluidModelHandler.add(fluid, material, set));

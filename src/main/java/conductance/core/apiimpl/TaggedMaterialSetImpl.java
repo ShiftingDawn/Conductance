@@ -9,7 +9,7 @@ import conductance.api.material.TaggedMaterialSet;
 import conductance.core.register.MaterialOverrideRegister;
 import conductance.core.register.MaterialUnitOverrideRegister;
 
-public final class MaterialTaggedSet extends TaggedSetImpl<Material> implements TaggedMaterialSet {
+public final class TaggedMaterialSetImpl extends TaggedSetImpl<Material> implements TaggedMaterialSet {
 
 	@Getter
 	private final MaterialTextureType textureType;
@@ -17,7 +17,7 @@ public final class MaterialTaggedSet extends TaggedSetImpl<Material> implements 
 	@Getter
 	private final MaterialOreType oreType;
 
-	public MaterialTaggedSet(final MaterialTaggedSetBuilder builder) {
+	public TaggedMaterialSetImpl(final MaterialTaggedSetBuilder builder) {
 		super(builder);
 		this.textureType = builder.textureType();
 		this.oreType = builder.oreType();

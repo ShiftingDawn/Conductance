@@ -421,7 +421,7 @@ public final class ConductanceMaterialTaggedSets {
 				.addTag("frame_boxes/%s")
 				.addTagUnformatted("frame_boxes")
 				.unitValue(CAPI.UNIT * 2)
-				.hasBlocks(true)
+				.hasBlocks(true, true, false)
 				.textureType(NCTextureTypes.FRAME_BOX)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FRAME_BOX))
 				.build();

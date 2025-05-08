@@ -14,7 +14,7 @@ import conductance.api.NCCovers;
 import conductance.api.util.TieredItemType;
 import conductance.api.util.tier.Tier;
 import conductance.core.apiimpl.ApiBridge;
-import conductance.core.apiimpl.MaterialTaggedSet;
+import conductance.core.apiimpl.TaggedMaterialSetImpl;
 import conductance.item.CraftingToolItem;
 import conductance.item.MaterialItem;
 import conductance.item.TieredCoverItem;
@@ -40,8 +40,8 @@ public final class ConductanceItems {
 			final String name = set.getUnlocalizedName(material);
 			final ItemBuilder<MaterialItem, Registrate> itemBuilder = ApiBridge.getRegistrate().item(name, props -> new MaterialItem(props, material, set)).model(NonNullBiConsumer.noop())
 					.properties(p -> p.stacksTo(set.getMaxStackSize())).color(() -> MaterialItem::handleColorTint);
-			if (((MaterialTaggedSet) set).getItemGeneratorCallback() != null) {
-				((MaterialTaggedSet) set).getItemGeneratorCallback().accept(material, itemBuilder);
+			if (((TaggedMaterialSetImpl) set).getItemGeneratorCallback() != null) {
+				((TaggedMaterialSetImpl) set).getItemGeneratorCallback().accept(material, itemBuilder);
 			}
 			CAPI.materials().register(set, material, itemBuilder.register());
 		}));

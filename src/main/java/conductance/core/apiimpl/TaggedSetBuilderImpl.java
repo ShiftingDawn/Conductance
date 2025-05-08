@@ -47,6 +47,8 @@ abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER e
 	@Getter
 	private boolean autoGenerateBlocks;
 	@Getter
+	private boolean occludeBlocks;
+	@Getter
 	private boolean hasFluids;
 	@Getter
 	private boolean autoGenerateFluids;
@@ -131,9 +133,10 @@ abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER e
 	}
 
 	@Override
-	public BUILDER hasBlocks(final boolean blocks, final boolean autoGenerate) {
+	public BUILDER hasBlocks(final boolean blocks, final boolean autoGenerate, final boolean shouldOcclude) {
 		this.hasBlocks = blocks;
 		this.autoGenerateBlocks = autoGenerate;
+		this.occludeBlocks = shouldOcclude;
 		return (BUILDER) this;
 	}
 

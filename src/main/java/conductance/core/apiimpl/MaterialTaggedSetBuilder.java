@@ -36,6 +36,6 @@ final class MaterialTaggedSetBuilder extends TaggedSetBuilderImpl<Material, Tagg
 
 	@Override
 	public TaggedMaterialSet build() {
-		return Util.make(new MaterialTaggedSet(this), set -> CAPI.regs().materialTaggedSets().register(set.getRegistryKey(), set));
+		return Util.make(new TaggedMaterialSetImpl(this), set -> CAPI.regs().materialTaggedSets().register(set.getRegistryKey(), set));
 	}
 }
