@@ -12,6 +12,7 @@
 				{
 					"from": [0, 0, 0],
 					"to": [16, 16, 16],
+					"shade": false,
 					"faces": {
 						"down": {"texture": "#particle", "cullface": "down", "tintindex": -101},
 						"up": {"texture": "#particle", "cullface": "up", "tintindex": -101},
