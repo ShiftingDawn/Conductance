@@ -26,12 +26,10 @@ public final class ConductanceMachines {
 				.workableModelRenderer(Conductance.id("block/machine_casing_bronze"))
 				.build();
 
-		register.<GenericGeneratorMachine>register("steam_turbine", (type, pos, blockState) -> new GenericGeneratorMachine(type, pos, blockState, NCTiers.LV))
-				.recipeType(NCRecipeTypes.STEAM_TURBINE)
-				.recipeModifier(GenericGeneratorMachine::recipeModifier)
-				.guiSupplier(GenericGeneratorMachine.GUI_SUPPLIER.apply(NCRecipeTypes.STEAM_TURBINE))
-				.workableModelRenderer(Conductance.id("block/machine_casing_tiered"))
-				.build();
+		NCMachines.LV_STEAM_TURBINE = ConductanceMachines.tieredGenerator(register, "steam_turbine", NCRecipeTypes.STEAM_TURBINE, NCTiers.LV);
+		NCMachines.MV_STEAM_TURBINE = ConductanceMachines.tieredGenerator(register, "steam_turbine", NCRecipeTypes.STEAM_TURBINE, NCTiers.MV);
+		NCMachines.HV_STEAM_TURBINE = ConductanceMachines.tieredGenerator(register, "steam_turbine", NCRecipeTypes.STEAM_TURBINE, NCTiers.HV);
+		NCMachines.EV_STEAM_TURBINE = ConductanceMachines.tieredGenerator(register, "steam_turbine", NCRecipeTypes.STEAM_TURBINE, NCTiers.EV);
 
 		NCMachines.WIREMILL = ConductanceMachines.tiered(register, "wiremill", NCRecipeTypes.WIREMILL);
 		NCMachines.BENDING_MACHINE = ConductanceMachines.tiered(register, "bending_machine", NCRecipeTypes.BENDING_MACHINE);
@@ -54,6 +52,20 @@ public final class ConductanceMachines {
 					.tieredWorkableModelRenderer(Conductance.id("block/machine_casing_tiered_%s".formatted(tier.getRegistryKey())), name)
 					.build();
 		});
+	}
+
+	private static MachineType<?> tieredGenerator(final MachineRegister register, final String name, final NCRecipeType recipeType, final Tier tier) {
+		final String realName = name.contains("%s") ? name.formatted(tier.getRegistryKey()) : "%s_%s".formatted(tier.getRegistryKey(), name);
+		final String localizedName = name.contains("%s")
+				? TextHelper.lowerUnderscoreToEnglish(name).formatted(tier.getLocalizedNameUnformatted())
+				: "%s %s".formatted(tier.getLocalizedNameUnformatted(), TextHelper.lowerUnderscoreToEnglish(name));
+		return register.<GenericGeneratorMachine>register(realName, (type, pos, blockState) -> new GenericGeneratorMachine(type, pos, blockState, tier))
+				.recipeType(recipeType)
+				.recipeModifier(GenericGeneratorMachine::recipeModifier)
+				.guiSupplier(GenericGeneratorMachine.GUI_SUPPLIER.apply(NCRecipeTypes.STEAM_TURBINE))
+				.localized(localizedName)
+				.tieredWorkableModelRenderer(Conductance.id("block/machine_casing_tiered_%s".formatted(tier.getRegistryKey())), name)
+				.build();
 	}
 
 	private ConductanceMachines() {
