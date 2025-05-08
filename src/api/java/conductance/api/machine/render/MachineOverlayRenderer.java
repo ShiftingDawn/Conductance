@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineType;
 
-@SuppressWarnings({"removal", "deprecation"})
+@SuppressWarnings({ "removal", "deprecation" })
 public class MachineOverlayRenderer extends MachineRenderer {
 
 	@Getter

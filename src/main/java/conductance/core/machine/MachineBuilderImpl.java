@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -57,7 +58,7 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	private Object2IntMap<IRecipeElementType<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
 	private BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> recipeModifier = (machine, recipe) -> recipe;
 	private RotationState rotationState = RotationState.HORIZONTAL;
-	private IRenderer modelRenderer;
+	private Supplier<IRenderer> modelRenderer;
 	@Getter
 	private MachineGuiSupplier guiSupplier;
 	private final List<Component> tooltips = new ArrayList<>();
@@ -69,7 +70,7 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	public MachineBuilderImpl(final String registryKey, final MachineBlockEntityFactory<T> machineBlockEntityFactory) {
 		this.registryKey = registryKey;
 		this.blockEntityFactory = machineBlockEntityFactory;
-		this.defaultModelRenderer(Conductance.id("block/machine_casing_tiered"));
+		this.defaultModelRenderer(Conductance.id("block/machine_casing_generic"));
 	}
 
 	@Override
@@ -147,7 +148,7 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	}
 
 	@Override
-	public MachineBuilder<T> modelRenderer(final IRenderer renderer) {
+	public MachineBuilder<T> modelRenderer(final Supplier<IRenderer> renderer) {
 		this.modelRenderer = renderer;
 		return this;
 	}
@@ -162,7 +163,7 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 			overlayLocation = Conductance.id("block/machine/%s".formatted(this.registryKey));
 			MachineBlockModelHandler.add(this.registryKey, overlayLocation);
 		}
-		return this.modelRenderer(new MachineOverlayRenderer(baseModelLocation, overlayLocation));
+		return this.modelRenderer(() -> new MachineOverlayRenderer(baseModelLocation, overlayLocation));
 	}
 
 	@Override
@@ -175,19 +176,19 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 			overlayLocation = Conductance.id("block/machine/%s".formatted(baseMachineKey));
 			MachineBlockModelHandler.add(this.registryKey, overlayLocation);
 		}
-		return this.modelRenderer(new MachineOverlayRenderer(baseModelLocation, overlayLocation));
+		return this.modelRenderer(() -> new MachineOverlayRenderer(baseModelLocation, overlayLocation));
 	}
 
 	@Override
 	public MachineBuilder<T> workableModelRenderer(final ResourceLocation baseModelLocation) {
 		MachineBlockModelHandler.remove(this.registryKey);
-		return this.modelRenderer(new WorkableMachineRenderer(baseModelLocation, Conductance.id("block/machine/%s".formatted(this.registryKey))));
+		return this.modelRenderer(() -> new WorkableMachineRenderer(baseModelLocation, Conductance.id("block/machine/%s".formatted(this.registryKey))));
 	}
 
 	@Override
 	public MachineBuilder<T> tieredWorkableModelRenderer(final ResourceLocation baseModelLocation, final String baseMachineKey) {
 		MachineBlockModelHandler.remove(this.registryKey);
-		return this.modelRenderer(new WorkableMachineRenderer(baseModelLocation, Conductance.id("block/machine/%s".formatted(baseMachineKey))));
+		return this.modelRenderer(() -> new WorkableMachineRenderer(baseModelLocation, Conductance.id("block/machine/%s".formatted(baseMachineKey))));
 	}
 
 	@Override
@@ -222,7 +223,7 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 			result.setRecipeTypes(this.recipeTypes);
 			result.setRecipeOutputLimits(this.recipeOutputLimits);
 			result.setRecipeModifier(this.recipeModifier);
-			result.setModelRenderer(this.modelRenderer);
+			result.setModelRenderer(this.modelRenderer.get());
 			result.setGuiSupplier(this.guiSupplier);
 			result.setLocalizedName(this.localized);
 			result.setTooltipBuilder((stack, tooltip) -> {

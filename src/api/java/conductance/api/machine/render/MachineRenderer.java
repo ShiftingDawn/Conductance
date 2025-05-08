@@ -37,6 +37,7 @@ import conductance.api.machine.IMachineBlockItem;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineType;
 
+@SuppressWarnings("deprecation")
 public class MachineRenderer extends TextureOverrideRenderer implements ICoverRenderer, ICTMPredicate {
 
 	private static final ResourceLocation TEXTURE_IO_PORT = ResourceLocation.fromNamespaceAndPath(CAPI.MOD_ID, "block/machine/machine_hull/io_port");

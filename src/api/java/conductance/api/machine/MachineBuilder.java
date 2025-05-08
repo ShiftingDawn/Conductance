@@ -3,6 +3,7 @@ package conductance.api.machine;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +32,7 @@ public interface MachineBuilder<T extends MachineBlockEntity<T>> {
 
 	MachineBuilder<T> rotationState(RotationState rotationState);
 
-	MachineBuilder<T> modelRenderer(IRenderer modelRenderer);
+	MachineBuilder<T> modelRenderer(Supplier<IRenderer> modelRenderer);
 
 	MachineBuilder<T> defaultModelRenderer(ResourceLocation baseModelLocation, @Nullable ResourceLocation overlayModelLocation);
 
