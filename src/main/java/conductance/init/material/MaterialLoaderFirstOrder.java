@@ -4,6 +4,7 @@ import java.util.Objects;
 import net.minecraft.tags.BlockTags;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCTextureSets;
+import conductance.api.NCTiers;
 import conductance.api.plugin.MaterialRegister;
 import static conductance.api.NCMaterialFlags.CAN_CENTRIFUGE;
 import static conductance.api.NCMaterialFlags.CAN_CRYSTALLIZE;
@@ -320,6 +321,7 @@ public final class MaterialLoaderFirstOrder {
 		ELECTRUM = register.register("electrum")
 				.ingot()
 				.liquid(1285)
+				.cable(NCTiers.HV, 1)
 				.color(255, 255, 100).textureSet(SHINY)
 				.addFlagAndPreset(METAL_EXTRA2, CAN_MORTAR, GENERATE_FINE_WIRE, GENERATE_RING)
 				.components(SILVER, GOLD)

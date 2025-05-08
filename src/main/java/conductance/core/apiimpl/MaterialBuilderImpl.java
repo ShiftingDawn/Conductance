@@ -310,9 +310,9 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder cable(final Tier tier, final int amperage, final int cableLoss) {
+	public MaterialBuilder cable(final Tier tier, final int amperage) {
 		this.dust();
-		this.traits.set(NCMaterialTraits.CABLE, new MaterialTraitCable(tier, amperage, cableLoss));
+		this.traits.set(NCMaterialTraits.CABLE, new MaterialTraitCable(tier, amperage));
 		return this;
 	}
 

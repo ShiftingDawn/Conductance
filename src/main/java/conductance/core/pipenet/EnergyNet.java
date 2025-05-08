@@ -1,6 +1,5 @@
 package conductance.core.pipenet;
 
-import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -20,11 +19,7 @@ public class EnergyNet extends PipeNetwork<ICableNode, CableData> {
 
 	@Override
 	protected NetworkPath<ICableNode, CableData> createNetworkPath(final BlockPos startPos, final BlockPos endPos, final Direction endSide, final GraphPath<BlockPos, DefaultEdge> path) {
-		final int totalLoss = path.getVertexList().stream().map(this::getActualNode)
-				.map(Objects::requireNonNull)
-				.mapToInt(node -> node.getData().cableLoss())
-				.sum();
-		return new NetworkPath<>(endPos, endSide, path.getVertexList().stream().map(this::getActualNode).toList(), new EnergyPathData(totalLoss));
+		return new NetworkPath<>(endPos, endSide, path.getVertexList().stream().map(this::getActualNode).toList(), new EnergyPathData());
 	}
 
 	@Override

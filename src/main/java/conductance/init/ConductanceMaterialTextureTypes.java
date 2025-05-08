@@ -30,13 +30,7 @@ import static conductance.api.NCTextureTypes.ROTOR;
 import static conductance.api.NCTextureTypes.SCREW;
 import static conductance.api.NCTextureTypes.STORAGE_BLOCK;
 import static conductance.api.NCTextureTypes.WIRE_BASE;
-import static conductance.api.NCTextureTypes.WIRE_INSULATION;
-import static conductance.api.NCTextureTypes.WIRE_INSULATION_0;
-import static conductance.api.NCTextureTypes.WIRE_INSULATION_1;
-import static conductance.api.NCTextureTypes.WIRE_INSULATION_2;
-import static conductance.api.NCTextureTypes.WIRE_INSULATION_3;
-import static conductance.api.NCTextureTypes.WIRE_INSULATION_4;
-import static conductance.api.NCTextureTypes.WIRE_INSULATION_5;
+import static conductance.api.NCTextureTypes.WIRE_SIDE;
 
 public final class ConductanceMaterialTextureTypes {
 
@@ -81,13 +75,7 @@ public final class ConductanceMaterialTextureTypes {
 		FRAME_BOX = register.register("frame_box");
 
 		WIRE_BASE = register.register("wire_base");
-		WIRE_INSULATION = register.register("wire_insulation");
-		WIRE_INSULATION_0 = register.register("wire_insulation_0");
-		WIRE_INSULATION_1 = register.register("wire_insulation_1");
-		WIRE_INSULATION_2 = register.register("wire_insulation_2");
-		WIRE_INSULATION_3 = register.register("wire_insulation_3");
-		WIRE_INSULATION_4 = register.register("wire_insulation_4");
-		WIRE_INSULATION_5 = register.register("wire_insulation_5");
+		WIRE_SIDE = register.register("wire_side");
 	}
 
 	private ConductanceMaterialTextureTypes() {

@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
@@ -23,6 +24,7 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
@@ -34,6 +36,7 @@ import conductance.core.pipenet.INetworkNode;
 import conductance.core.pipenet.LevelPipeNetwork;
 import conductance.core.pipenet.PipeBlockRenderer;
 import conductance.core.pipenet.PipeModel;
+import conductance.init.ConductanceCreativeTabs;
 
 public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEVELNET extends LevelPipeNetwork<NODE, DATA>> extends ConductanceBlock implements IBlockEntityBlock, IBlockRendererProvider {
 
@@ -47,6 +50,11 @@ public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEV
 
 	@Override
 	public abstract BlockEntityType<? extends PipeBlockEntity<NODE, DATA, LEVELNET>> getBlockEntityType();
+
+	@Override
+	public RegistryEntry<CreativeModeTab, CreativeModeTab> getCreativeTab() {
+		return ConductanceCreativeTabs.PIPELIKE;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Nullable

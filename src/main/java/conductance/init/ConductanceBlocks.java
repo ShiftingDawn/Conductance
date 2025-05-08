@@ -82,21 +82,19 @@ public final class ConductanceBlocks {
 	private static void generateCables() {
 		CAPI.regs().materials().values().stream().filter(mat -> mat.hasTrait(NCMaterialTraits.CABLE)).forEach(material -> {
 			for (final CableType cableType : CableType.values()) {
-				if (!cableType.isCable() || !material.getTrait(NCMaterialTraits.CABLE).isSuperconductor()) {
-					final String name = cableType.getMaterialTaggedSet().getUnlocalizedName(material);
-					final BlockEntry<CableBlock> block = ApiBridge.getRegistrate().block(name, props -> new CableBlock(props, cableType, material))
-							.initialProperties(() -> Blocks.IRON_BLOCK)
-							.properties(props -> props.dynamicShape().noOcclusion())
-							.addLayer(() -> RenderType::cutoutMipped)
-							.color(() -> CableBlock::handleColorTint)
-							.item(CableBlockItem::new)
-							.model(NonNullBiConsumer.noop())
-							.color(() -> CableBlockItem::handleColorTint)
-							.build()
-							.register();
-					CAPI.materials().register(cableType.getMaterialTaggedSet(), material, block);
-					CableRegistry.register(cableType, material, block);
-				}
+				final String name = cableType.getMaterialTaggedSet().getUnlocalizedName(material);
+				final BlockEntry<CableBlock> block = ApiBridge.getRegistrate().block(name, props -> new CableBlock(props, cableType, material))
+						.initialProperties(() -> Blocks.IRON_BLOCK)
+						.properties(props -> props.dynamicShape().noOcclusion())
+						.addLayer(() -> RenderType::cutoutMipped)
+						.color(() -> CableBlock::handleColorTint)
+						.item(CableBlockItem::new)
+						.model(NonNullBiConsumer.noop())
+						.color(() -> CableBlockItem::handleColorTint)
+						.build()
+						.register();
+				CAPI.materials().register(cableType.getMaterialTaggedSet(), material, block);
+				CableRegistry.register(cableType, material, block);
 			}
 		});
 	}

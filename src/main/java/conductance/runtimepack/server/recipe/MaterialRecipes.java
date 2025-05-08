@@ -2,7 +2,6 @@ package conductance.runtimepack.server.recipe;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import conductance.api.CAPI;
-import conductance.api.NCMachines;
 import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTaggedSets;
 import conductance.api.NCMaterialTraits;
@@ -122,49 +121,6 @@ final class MaterialRecipes {
 			matRecipe(output, builderFactory, "16x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_16X, b -> b.processTime(pair.processTime() * 4));
 			shapeless(output, "1x_%s_wire_from_16x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 16),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_16X, material));
-			if (!trait.isSuperconductor()) {
-				//TODO coating
-				//				matRecipe(output, builderFactory, "1x_%s_cable", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.CABLE_1X, b -> b.processTime(pair.processTime()));
-				shapeless(output, "2x_%s_cable_from_1x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_2X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_1X, material), 2);
-				shapeless(output, "4x_%s_cable_from_1x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_4X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_1X, material), 4);
-				shapeless(output, "8x_%s_cable_from_1x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_8X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_1X, material), 8);
-				//				matRecipe(output, builderFactory, "2x_%s_cable", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.CABLE_2X, b -> b.processTime(pair.processTime()));
-				shapeless(output, "1x_%s_cable_from_2x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_1X, material, 2),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_2X, material));
-				shapeless(output, "4x_%s_cable_from_2x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_4X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_2X, material), 2);
-				shapeless(output, "8x_%s_cable_from_2x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_8X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_2X, material), 4);
-				shapeless(output, "12x_%s_cable_from_2x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_12X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_2X, material), 6);
-				shapeless(output, "16x_%s_cable_from_2x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_16X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_2X, material), 8);
-				//				matRecipe(output, builderFactory, "4x_%s_cable", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.CABLE_4X, b -> b.processTime(pair.processTime() * 2));
-				shapeless(output, "1x_%s_cable_from_4x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_1X, material, 4),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_4X, material));
-				shapeless(output, "8x_%s_cable_from_4x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_8X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_4X, material), 2);
-				shapeless(output, "12x_%s_cable_from_4x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_12X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_4X, material), 3);
-				shapeless(output, "16x_%s_cable_from_4x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_16X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_4X, material), 4);
-				//				matRecipe(output, builderFactory, "8x_%s_cable", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.CABLE_8X, b -> b.processTime(pair.processTime() * 2));
-				shapeless(output, "1x_%s_cable_from_8x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_1X, material, 8),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_8X, material));
-				shapeless(output, "16x_%s_cable_from_8x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_16X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_8X, material), 2);
-				//				matRecipe(output, builderFactory, "12x_%s_cable", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.CABLE_12X, b -> b.processTime(pair.processTime() * 4));
-				shapeless(output, "1x_%s_cable_from_12x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_1X, material, 12),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_12X, material));
-				shapeless(output, "12x_%s_cable_from_8x_cable_and_4x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_12X, material, 1),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_8X, material), MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_4X, material));
-				//				matRecipe(output, builderFactory, "16x_%s_cable", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.CABLE_16X, b -> b.processTime(pair.processTime() * 4));
-				shapeless(output, "1x_%s_cable_from_16x_cable".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.CABLE_1X, material, 16),
-						MiscUtils.getItemTag(NCMaterialTaggedSets.CABLE_16X, material));
-			}
 		});
 	}
 

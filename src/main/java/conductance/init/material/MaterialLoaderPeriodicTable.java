@@ -253,7 +253,7 @@ public final class MaterialLoaderPeriodicTable {
 				.color(0x80c8f0)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.ALUMINIUM)
-				.cable(NCTiers.LV, 1, 1) //TODO EV
+				.cable(NCTiers.EV, 1)
 				.build();
 
 		SILICON = register.register("silicon")
@@ -498,6 +498,7 @@ public final class MaterialLoaderPeriodicTable {
 				.ingot()
 				.liquid(1235)
 				.ore()
+				.cable(NCTiers.LV, 1)
 				.color(220, 220, 255).textureSet(SHINY)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
 				.periodicElement(NCPeriodicElements.SILVER)
@@ -520,6 +521,7 @@ public final class MaterialLoaderPeriodicTable {
 				.ingot()
 				.liquid(505)
 				.ore()
+				.cable(NCTiers.LV, 1)
 				.color(220, 220, 220)
 				.addFlagAndPreset(METAL_ALL, GENERATE_ROTOR, GENERATE_FINE_WIRE, CAN_MORTAR)
 				.periodicElement(NCPeriodicElements.TIN)

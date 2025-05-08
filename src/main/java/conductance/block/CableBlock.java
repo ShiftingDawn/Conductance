@@ -66,7 +66,7 @@ public final class CableBlock extends PipeBlock<ICableNode, CableData, LevelEner
 	public CableData getBaseProps() {
 		final MaterialTraitCable trait = this.material.getTrait(NCMaterialTraits.CABLE);
 		assert trait != null;
-		return new CableData(trait.getTier().getVoltage(), trait.getAmperage(), trait.getCableLoss(), trait.isSuperconductor());
+		return new CableData(trait.getTier().getVoltage(), trait.getAmperage());
 	}
 
 	public CableData getRealProps() {
@@ -98,9 +98,6 @@ public final class CableBlock extends PipeBlock<ICableNode, CableData, LevelEner
 	}
 
 	public int getColorTint(final BlockState state, @Nullable final BlockAndTintGetter level, @Nullable final BlockPos pos, final int index) {
-		if (this.cableType.isCable() && index == 0) {
-			return 0x404040;
-		}
 		return index == 0 || index == 1 ? this.material.getMaterialColorRGB() : -1;
 	}
 
@@ -108,12 +105,8 @@ public final class CableBlock extends PipeBlock<ICableNode, CableData, LevelEner
 	public void appendHoverText(final ItemStack stack, final Item.TooltipContext context, final List<Component> tooltip, final TooltipFlag tooltipFlag) {
 		super.appendHoverText(stack, context, tooltip, tooltipFlag);
 		final CableData cableData = this.getRealProps();
-		if (cableData.superconductor()) {
-			tooltip.add(Conductance.tooltip("cable.superconductor", cableData.getTier().getLocalizedName()));
-		}
 		tooltip.add(Conductance.tooltip("cable.voltage", cableData.voltage(), TextHelper.ENERGY_FORMAT, cableData.getTier().getLocalizedName()));
 		tooltip.add(Conductance.tooltip("cable.amperage", cableData.amperage()));
-		tooltip.add(Conductance.tooltip("cable.cable_loss", cableData.cableLoss(), TextHelper.ENERGY_FORMAT));
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -33,9 +33,6 @@ public class EnergyNetHandler implements IEnergyHandler {
 		for (final NetworkPath<ICableNode, CableData> path : paths) {
 			final EnergyPathData data = (EnergyPathData) path.getData();
 			assert data != null;
-			if (data.totalLoss() >= volts) {
-				continue;
-			}
 			if (Objects.equals(this.cable.getBlockPos(), path.getDest()) && receivingSide == path.getSide()) {
 				continue;
 			}
@@ -44,7 +41,7 @@ public class EnergyNetHandler implements IEnergyHandler {
 			if (destination == null || !destination.canReceiveEnergy(destinationSide) || destination.getEnergySpace() <= 0) {
 				continue;
 			}
-			long energyLeftOver = volts - data.totalLoss();
+			long energyLeftOver = volts;
 			if (energyLeftOver <= 0) {
 				continue;
 			}
@@ -63,14 +60,9 @@ public class EnergyNetHandler implements IEnergyHandler {
 				continue;
 			}
 			ampsUsed += ampsAccepted;
-			long voltageTraveled = volts;
 			for (final ICableNode pathNode : path.getPath()) {
 				final CableData pathNodeData = pathNode.getData();
-				voltageTraveled -= pathNodeData.cableLoss();
-				if (voltageTraveled <= 0) {
-					break;
-				}
-				pathNode.handleEnergyTransferred(ampsAccepted, voltageTraveled);
+				pathNode.handleEnergyTransferred(ampsAccepted, volts);
 				if (pathNode.getAmpsTransferred() > pathNodeData.amperage()) {
 					burnedCables.add(pathNode.getBlockPos());
 				}

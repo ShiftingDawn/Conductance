@@ -13,12 +13,10 @@ public class MaterialTraitCable implements IMaterialTrait<MaterialTraitCable> {
 
 	private final Tier tier;
 	private final int amperage;
-	private final int cableLoss;
 
-	public MaterialTraitCable(final Tier tier, final int amperage, final int cableLoss) {
+	public MaterialTraitCable(final Tier tier, final int amperage) {
 		this.tier = tier;
 		this.amperage = amperage;
-		this.cableLoss = cableLoss;
 	}
 
 	@Override
@@ -26,13 +24,9 @@ public class MaterialTraitCable implements IMaterialTrait<MaterialTraitCable> {
 		traitMap.set(NCMaterialTraits.DUST, new MaterialTraitDust());
 	}
 
-	public boolean isSuperconductor() {
-		return this.cableLoss == 0;
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.tier.getIndex(), this.amperage, this.cableLoss);
+		return Objects.hash(this.tier.getIndex(), this.amperage);
 	}
 
 	@Override
@@ -44,6 +38,6 @@ public class MaterialTraitCable implements IMaterialTrait<MaterialTraitCable> {
 			return false;
 		}
 		final MaterialTraitCable that = (MaterialTraitCable) o;
-		return this.amperage == that.amperage && this.cableLoss == that.cableLoss && this.tier.getIndex() == that.tier.getIndex();
+		return this.amperage == that.amperage && this.tier.getIndex() == that.tier.getIndex();
 	}
 }

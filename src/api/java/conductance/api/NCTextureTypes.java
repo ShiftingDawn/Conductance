@@ -45,13 +45,7 @@ public final class NCTextureTypes {
 	public static MaterialTextureType FRAME_BOX;
 
 	public static MaterialTextureType WIRE_BASE;
-	public static MaterialTextureType WIRE_INSULATION;
-	public static MaterialTextureType WIRE_INSULATION_0;
-	public static MaterialTextureType WIRE_INSULATION_1;
-	public static MaterialTextureType WIRE_INSULATION_2;
-	public static MaterialTextureType WIRE_INSULATION_3;
-	public static MaterialTextureType WIRE_INSULATION_4;
-	public static MaterialTextureType WIRE_INSULATION_5;
+	public static MaterialTextureType WIRE_SIDE;
 
 	private NCTextureTypes() {
 	}
