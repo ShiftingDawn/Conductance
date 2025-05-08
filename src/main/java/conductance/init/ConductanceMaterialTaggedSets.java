@@ -115,7 +115,7 @@ public final class ConductanceMaterialTaggedSets {
 				.generatorPredicate(PREDICATE_HAS_GEM)
 				.build();
 		GEM_EXQUISITE = register.register("exquisite_gem", "exquisite_%s")
-				.addTag("exquisite_gems/%s", "")
+				.addTag("exquisite_gems/%s", "Exquisite %s")
 				.addTagUnformatted("exquisite_gems", "Exquisite Gems")
 				.unitValue(CAPI.UNIT * 4)
 				.hasItems(true)

@@ -246,7 +246,7 @@ public final class NCMaterials {
 	public static Material FLINT;
 	public static Material CLAY;
 	public static Material GARNET_SAND;
-	public static Material LAPIS;
+	public static Material LAPIS_LAZULI;
 	public static Material COBALT_BRASS;
 	public static Material BLAZE;
 	public static Material ENDER_EYE;

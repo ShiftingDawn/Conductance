@@ -59,7 +59,7 @@ import static conductance.api.NCMaterials.GLASS;
 import static conductance.api.NCMaterials.GOLD;
 import static conductance.api.NCMaterials.ICE;
 import static conductance.api.NCMaterials.IRON;
-import static conductance.api.NCMaterials.LAPIS;
+import static conductance.api.NCMaterials.LAPIS_LAZULI;
 import static conductance.api.NCMaterials.NETHER_QUARTZ;
 import static conductance.api.NCMaterials.NETHER_STAR;
 import static conductance.api.NCMaterials.OBSIDIAN;
@@ -149,7 +149,7 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, DIAMOND, Blocks.DIAMOND_BLOCK);
 		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, EMERALD, Blocks.EMERALD_BLOCK);
 		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, COAL, Blocks.COAL_BLOCK);
-		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, LAPIS, Blocks.LAPIS_BLOCK);
+		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, LAPIS_LAZULI, Blocks.LAPIS_BLOCK);
 		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, CALCITE, Blocks.CALCITE);
 		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, GLASS, Blocks.GLASS);
 		overrides.add(NCMaterialTaggedSets.STORAGE_BLOCK, AMETHYST, Blocks.AMETHYST_BLOCK);
@@ -164,7 +164,7 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 		overrides.gemOnly(FLINT, Items.FLINT);
 		overrides.gemOnly(COAL, Items.COAL);
 		overrides.gemOnly(CHARCOAL, Items.CHARCOAL);
-		overrides.gemOnly(LAPIS, Items.LAPIS_LAZULI);
+		overrides.gemOnly(LAPIS_LAZULI, Items.LAPIS_LAZULI);
 		overrides.gemOnly(ENDER_PEARL, Items.ENDER_PEARL);
 		overrides.gemOnly(ENDER_EYE, Items.ENDER_EYE);
 		overrides.gemOnly(AMETHYST, Items.AMETHYST_SHARD);
@@ -181,7 +181,7 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 		overrides.add(NCMaterialTaggedSets.ORE_STONE, IRON, Blocks.IRON_ORE);
 		overrides.add(NCMaterialTaggedSets.ORE_STONE, GOLD, Blocks.GOLD_ORE);
 		overrides.add(NCMaterialTaggedSets.ORE_STONE, COPPER, Blocks.COPPER_ORE);
-		overrides.add(NCMaterialTaggedSets.ORE_STONE, LAPIS, Blocks.LAPIS_ORE);
+		overrides.add(NCMaterialTaggedSets.ORE_STONE, LAPIS_LAZULI, Blocks.LAPIS_ORE);
 		overrides.add(NCMaterialTaggedSets.ORE_STONE, REDSTONE, Blocks.REDSTONE_ORE);
 		overrides.add(NCMaterialTaggedSets.ORE_STONE, EMERALD, Blocks.EMERALD_ORE);
 		overrides.add(NCMaterialTaggedSets.ORE_STONE, DIAMOND, Blocks.DIAMOND_ORE);
@@ -189,7 +189,7 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 		overrides.add(NCMaterialTaggedSets.ORE_DEEPSLATE, IRON, Blocks.DEEPSLATE_IRON_ORE);
 		overrides.add(NCMaterialTaggedSets.ORE_DEEPSLATE, GOLD, Blocks.DEEPSLATE_GOLD_ORE);
 		overrides.add(NCMaterialTaggedSets.ORE_DEEPSLATE, COPPER, Blocks.DEEPSLATE_COPPER_ORE);
-		overrides.add(NCMaterialTaggedSets.ORE_DEEPSLATE, LAPIS, Blocks.DEEPSLATE_LAPIS_ORE);
+		overrides.add(NCMaterialTaggedSets.ORE_DEEPSLATE, LAPIS_LAZULI, Blocks.DEEPSLATE_LAPIS_ORE);
 		overrides.add(NCMaterialTaggedSets.ORE_DEEPSLATE, REDSTONE, Blocks.DEEPSLATE_REDSTONE_ORE);
 		overrides.add(NCMaterialTaggedSets.ORE_DEEPSLATE, EMERALD, Blocks.DEEPSLATE_EMERALD_ORE);
 		overrides.add(NCMaterialTaggedSets.ORE_DEEPSLATE, DIAMOND, Blocks.DEEPSLATE_DIAMOND_ORE);

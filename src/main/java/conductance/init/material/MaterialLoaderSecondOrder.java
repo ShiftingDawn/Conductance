@@ -34,7 +34,7 @@ import static conductance.api.NCMaterials.FLINT;
 import static conductance.api.NCMaterials.GARNET_SAND;
 import static conductance.api.NCMaterials.GROSSULAR;
 import static conductance.api.NCMaterials.IRON;
-import static conductance.api.NCMaterials.LAPIS;
+import static conductance.api.NCMaterials.LAPIS_LAZULI;
 import static conductance.api.NCMaterials.LAZURITE;
 import static conductance.api.NCMaterials.LITHIUM;
 import static conductance.api.NCMaterials.OXYGEN;
@@ -99,7 +99,7 @@ public final class MaterialLoaderSecondOrder {
 				.components(ALMANDINE, ANDRADITE, GROSSULAR, PYROPE, SPESSARTINE, UVAROVITE)
 				.build();
 
-		LAPIS = register.register("lapis")
+		LAPIS_LAZULI = register.register("lapis_lazuli")
 				.gem()
 				.ore(6, 4)
 				.color(70, 70, 220).textureSet(NCTextureSets.LAPIS)
