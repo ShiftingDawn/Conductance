@@ -89,9 +89,9 @@ public final class CAPI {
 
 	public static final class Tags {
 
-		public static final TagKey<Item> TAG_WRENCH = TagHelper.itemTagForMod("wrenches");
-		public static final TagKey<Item> TAG_HAMMER = TagHelper.itemTagForMod("hammers");
-		public static final TagKey<Item> TAG_WIRE_CUTTERS = TagHelper.itemTagForMod("wire_cutters");
+		public static final TagKey<Item> TAG_WRENCH = TagHelper.itemTagForCommon("wrenches");
+		public static final TagKey<Item> TAG_HAMMER = TagHelper.itemTagForCommon("hammers");
+		public static final TagKey<Item> TAG_WIRE_CUTTERS = TagHelper.itemTagForCommon("wire_cutters");
 	}
 
 	public static final Map<DyeColor, Integer> COLORS = Collections.unmodifiableMap(Util.make(new EnumMap<>(DyeColor.class), map -> {

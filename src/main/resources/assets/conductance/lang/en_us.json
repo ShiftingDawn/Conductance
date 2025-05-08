@@ -7,6 +7,9 @@
 	"itemGroup.conductance.pipelike": "Cables and Pipes (Conductance)",
 	"itemGroup.conductance.decoration": "Decoration (Conductance)",
 
+	"tag.item.c.wire_cutters": "Wire Cutters",
+	"tag.item.c.hammers": "Hammers",
+
 	"material.conductance.uranium": "Uranium-238",
 	"material.conductance.uranium_235": "Uranium-235",
 	"material.conductance.plutonium": "Plutonium-239",
