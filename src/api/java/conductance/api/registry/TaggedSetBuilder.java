@@ -1,6 +1,7 @@
 package conductance.api.registry;
 
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -14,19 +15,31 @@ import org.jetbrains.annotations.Nullable;
 public interface TaggedSetBuilder<TYPE, SET extends TaggedSet<TYPE>, BUILDER extends TaggedSetBuilder<TYPE, SET, BUILDER>> {
 
 	// region Tags
-	BUILDER addTag(String tagPathFactory);
+	BUILDER addTag(String tagPathFactory, Function<TYPE, String> translationFactory);
 
-	BUILDER addTagMod(String tagPathFactory);
+	default BUILDER addTag(final String tagPathFactory, final String translationFactory) {
+		return this.addTag(tagPathFactory, ignored -> translationFactory);
+	}
 
-	BUILDER addTagVanilla(String tagPathFactory);
+	BUILDER addTagMod(String tagPathFactory, Function<TYPE, String> translationFactory);
+
+	default BUILDER addTagMod(final String tagPathFactory, final String translationFactory) {
+		return this.addTagMod(tagPathFactory, ignored -> translationFactory);
+	}
+
+	BUILDER addTagVanilla(String tagPathFactory, Function<TYPE, String> translationFactory);
+
+	default BUILDER addTagVanilla(final String tagPathFactory, final String translationFactory) {
+		return this.addTagVanilla(tagPathFactory, ignored -> translationFactory);
+	}
 	// endregion
 
 	// region Unformatted Tags
-	BUILDER addTagUnformatted(String tagPathFactory);
+	BUILDER addTagUnformatted(String tagPathFactory, String translation);
 
-	BUILDER addTagModUnformatted(String tagPathFactory);
+	BUILDER addTagModUnformatted(String tagPathFactory, String translation);
 
-	BUILDER addTagVanillaUnformatted(String tagPathFactory);
+	BUILDER addTagVanillaUnformatted(String tagPathFactory, String translation);
 	// endregion
 
 	// region Generation

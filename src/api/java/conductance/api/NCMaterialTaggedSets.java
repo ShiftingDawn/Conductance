@@ -67,12 +67,6 @@ public final class NCMaterialTaggedSets {
 	public static TaggedMaterialSet WIRE_8X;
 	public static TaggedMaterialSet WIRE_12X;
 	public static TaggedMaterialSet WIRE_16X;
-	public static TaggedMaterialSet CABLE_1X;
-	public static TaggedMaterialSet CABLE_2X;
-	public static TaggedMaterialSet CABLE_4X;
-	public static TaggedMaterialSet CABLE_8X;
-	public static TaggedMaterialSet CABLE_12X;
-	public static TaggedMaterialSet CABLE_16X;
 
 	// region Predicates
 	public static final Predicate<Material> PREDICATE_HAS_DUST = NCMaterialTaggedSets.hasTrait(NCMaterialTraits.DUST);

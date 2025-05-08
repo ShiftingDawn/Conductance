@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.registry.TaggedSet;
 import conductance.api.registry.TaggedSetBuilder;
-import conductance.api.util.TextHelper;
 
 @SuppressWarnings("unchecked")
 @Accessors(fluent = true)
@@ -70,56 +69,48 @@ abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER e
 	@Getter
 	private long unitValue = -1;
 
-	public TaggedSetBuilderImpl(final String registryKey, final Function<TYPE, String> objectSerializer, final Function<TYPE, String> unlocalizedNameFactory) {
+	TaggedSetBuilderImpl(final String registryKey, final Function<TYPE, String> objectSerializer, final Function<TYPE, String> unlocalizedNameFactory) {
 		this.registryKey = registryKey;
 		this.objectSerializer = objectSerializer;
 		this.unlocalizedNameFactory = unlocalizedNameFactory;
 	}
 
-	public TaggedSetBuilderImpl(final String name, final Function<TYPE, String> objectSerializer, final String unlocalizedNameFactory) {
-		this(name, objectSerializer, ignored -> unlocalizedNameFactory);
-	}
-
-	public TaggedSetBuilderImpl(final String name, final Function<TYPE, String> objectSerializer) {
-		this(name, objectSerializer, "%s_" + TextHelper.toLowerCaseUnderscore(name));
-	}
-
 	// region Formatted Tags
 	@Override
-	public BUILDER addTag(final String tagPathFactory) {
-		this.tags.add(new TagHandler<>("c", tagPathFactory, this.objectSerializer, false));
+	public BUILDER addTag(final String tagPathFactory, final Function<TYPE, String> translationFactory) {
+		this.tags.add(new TagHandler<>("c", tagPathFactory, this.objectSerializer, translationFactory, false));
 		return (BUILDER) this;
 	}
 
 	@Override
-	public BUILDER addTagMod(final String tagPathFactory) {
-		this.tags.add(new TagHandler<>(CAPI.MOD_ID, tagPathFactory, this.objectSerializer, false));
+	public BUILDER addTagMod(final String tagPathFactory, final Function<TYPE, String> translationFactory) {
+		this.tags.add(new TagHandler<>(CAPI.MOD_ID, tagPathFactory, this.objectSerializer, translationFactory, false));
 		return (BUILDER) this;
 	}
 
 	@Override
-	public BUILDER addTagVanilla(final String tagPathFactory) {
-		this.tags.add(new TagHandler<>(ResourceLocation.DEFAULT_NAMESPACE, tagPathFactory, this.objectSerializer, false));
+	public BUILDER addTagVanilla(final String tagPathFactory, final Function<TYPE, String> translationFactory) {
+		this.tags.add(new TagHandler<>(ResourceLocation.DEFAULT_NAMESPACE, tagPathFactory, this.objectSerializer, translationFactory, false));
 		return (BUILDER) this;
 	}
 	// endregion
 
 	// region Unformatted Tags
 	@Override
-	public BUILDER addTagUnformatted(final String tagPathFactory) {
-		this.tags.add(new TagHandler<>("c", tagPathFactory, ignored -> tagPathFactory, true));
+	public BUILDER addTagUnformatted(final String tagPathFactory, final String translation) {
+		this.tags.add(new TagHandler<>("c", tagPathFactory, ignored -> tagPathFactory, ignored -> translation, true));
 		return (BUILDER) this;
 	}
 
 	@Override
-	public BUILDER addTagModUnformatted(final String tagPathFactory) {
-		this.tags.add(new TagHandler<>(CAPI.MOD_ID, tagPathFactory, ignored -> tagPathFactory, true));
+	public BUILDER addTagModUnformatted(final String tagPathFactory, final String translation) {
+		this.tags.add(new TagHandler<>(CAPI.MOD_ID, tagPathFactory, ignored -> tagPathFactory, ignored -> translation, true));
 		return (BUILDER) this;
 	}
 
 	@Override
-	public BUILDER addTagVanillaUnformatted(final String tagPathFactory) {
-		this.tags.add(new TagHandler<>(ResourceLocation.DEFAULT_NAMESPACE, tagPathFactory, ignored -> tagPathFactory, true));
+	public BUILDER addTagVanillaUnformatted(final String tagPathFactory, final String translation) {
+		this.tags.add(new TagHandler<>(ResourceLocation.DEFAULT_NAMESPACE, tagPathFactory, ignored -> tagPathFactory, ignored -> translation, true));
 		return (BUILDER) this;
 	}
 	// endregion
@@ -200,12 +191,14 @@ abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER e
 		private final String namespace;
 		private final String tagPathFactory;
 		private final Function<T, String> objectSerializer;
+		private final Function<T, String> tagTranslator;
 		private final boolean isGlobalTag;
 
-		TagHandler(@Nullable final String namespace, final String tagPathFactory, final Function<T, String> objectSerializer, final boolean isGlobalTag) {
+		TagHandler(@Nullable final String namespace, final String tagPathFactory, final Function<T, String> objectSerializer, final Function<T, String> tagTranslator, final boolean isGlobalTag) {
 			this.namespace = namespace != null ? namespace : tagPathFactory.contains(":") ? tagPathFactory.split(":", 2)[0] : CAPI.MOD_ID;
 			this.tagPathFactory = tagPathFactory.contains(":") ? tagPathFactory.split(":", 2)[1] : tagPathFactory;
 			this.objectSerializer = objectSerializer;
+			this.tagTranslator = tagTranslator;
 			this.isGlobalTag = isGlobalTag;
 		}
 

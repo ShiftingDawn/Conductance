@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -116,48 +117,51 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 	}
 
 	@Override
-	public <TAGTYPE> Stream<TagKey<TAGTYPE>> streamTags(final Registry<TAGTYPE> registry, final TYPE object, final boolean includeGlobalTags) {
-		return this.tags.stream().filter(handler -> includeGlobalTags || !handler.isGlobalTag()).map(handler -> handler.make(object)).map(tagPath -> TagKey.create(registry.key(), tagPath));
+	public <TAGTYPE> Stream<Tuple<TagKey<TAGTYPE>, Function<TYPE, String>>> streamTagData(final Registry<TAGTYPE> registry, final TYPE object, final boolean includeGlobalTags) {
+		return this.tags.stream()
+				.filter(handler -> includeGlobalTags || !handler.isGlobalTag())
+				.map(handler -> new Tuple<>(handler.make(object), handler.tagTranslator()))
+				.map(tuple -> new Tuple<>(TagKey.create(registry.key(), tuple.getA()), tuple.getB()));
 	}
 
 	@Override
-	public <TAGTYPE> Stream<TagKey<TAGTYPE>> streamTags(final Registry<TAGTYPE> registry, final TYPE object) {
-		return this.streamTags(registry, object, false);
+	public <TAGTYPE> Stream<Tuple<TagKey<TAGTYPE>, Function<TYPE, String>>> streamTagData(final Registry<TAGTYPE> registry, final TYPE object) {
+		return this.streamTagData(registry, object, false);
 	}
 
 	@Override
-	public Stream<TagKey<Item>> streamItemTags(final TYPE object) {
-		return this.streamTags(BuiltInRegistries.ITEM, object);
+	public Stream<Tuple<TagKey<Item>, Function<TYPE, String>>> streamItemTagData(final TYPE object) {
+		return this.streamTagData(BuiltInRegistries.ITEM, object);
 	}
 
 	@Override
-	public Stream<TagKey<Block>> streamBlockTags(final TYPE object) {
-		return this.streamTags(BuiltInRegistries.BLOCK, object);
+	public Stream<Tuple<TagKey<Block>, Function<TYPE, String>>> streamBlockTagData(final TYPE object) {
+		return this.streamTagData(BuiltInRegistries.BLOCK, object);
 	}
 
 	@Override
-	public Stream<TagKey<Fluid>> streamFluidTags(final TYPE object) {
-		return this.streamTags(BuiltInRegistries.FLUID, object);
+	public Stream<Tuple<TagKey<Fluid>, Function<TYPE, String>>> streamFluidTagData(final TYPE object) {
+		return this.streamTagData(BuiltInRegistries.FLUID, object);
 	}
 
 	@Override
-	public <TAGTYPE> Stream<TagKey<TAGTYPE>> streamAllTags(final Registry<TAGTYPE> registry, final TYPE object) {
-		return this.streamTags(registry, object, true);
+	public <TAGTYPE> Stream<Tuple<TagKey<TAGTYPE>, Function<TYPE, String>>> streamAllTagData(final Registry<TAGTYPE> registry, final TYPE object) {
+		return this.streamTagData(registry, object, true);
 	}
 
 	@Override
-	public Stream<TagKey<Item>> streamAllItemTags(final TYPE object) {
-		return this.streamAllTags(BuiltInRegistries.ITEM, object);
+	public Stream<Tuple<TagKey<Item>, Function<TYPE, String>>> streamAllItemTagData(final TYPE object) {
+		return this.streamAllTagData(BuiltInRegistries.ITEM, object);
 	}
 
 	@Override
-	public Stream<TagKey<Block>> streamAllBlockTags(final TYPE object) {
-		return this.streamAllTags(BuiltInRegistries.BLOCK, object);
+	public Stream<Tuple<TagKey<Block>, Function<TYPE, String>>> streamAllBlockTagData(final TYPE object) {
+		return this.streamAllTagData(BuiltInRegistries.BLOCK, object);
 	}
 
 	@Override
-	public Stream<TagKey<Fluid>> streamAllFluidTags(final TYPE object) {
-		return this.streamAllTags(BuiltInRegistries.FLUID, object);
+	public Stream<Tuple<TagKey<Fluid>, Function<TYPE, String>>> streamAllFluidTagData(final TYPE object) {
+		return this.streamAllTagData(BuiltInRegistries.FLUID, object);
 	}
 
 	@Override

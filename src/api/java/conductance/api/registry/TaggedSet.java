@@ -4,29 +4,67 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
 public interface TaggedSet<TYPE> extends IRegistryObject<String> {
 
-	<TAGTYPE> Stream<TagKey<TAGTYPE>> streamTags(Registry<TAGTYPE> registry, TYPE object, boolean includeGlobalTags);
+	<TAGTYPE> Stream<Tuple<TagKey<TAGTYPE>, Function<TYPE, String>>> streamTagData(Registry<TAGTYPE> registry, TYPE object, boolean includeGlobalTags);
 
-	<TAGTYPE> Stream<TagKey<TAGTYPE>> streamTags(Registry<TAGTYPE> registry, TYPE object);
+	<TAGTYPE> Stream<Tuple<TagKey<TAGTYPE>, Function<TYPE, String>>> streamTagData(Registry<TAGTYPE> registry, TYPE object);
 
-	Stream<TagKey<Item>> streamItemTags(TYPE object);
+	Stream<Tuple<TagKey<Item>, Function<TYPE, String>>> streamItemTagData(TYPE object);
 
-	Stream<TagKey<Block>> streamBlockTags(TYPE object);
+	Stream<Tuple<TagKey<Block>, Function<TYPE, String>>> streamBlockTagData(TYPE object);
 
-	Stream<TagKey<Fluid>> streamFluidTags(TYPE object);
+	Stream<Tuple<TagKey<Fluid>, Function<TYPE, String>>> streamFluidTagData(TYPE object);
 
-	<TAGTYPE> Stream<TagKey<TAGTYPE>> streamAllTags(Registry<TAGTYPE> registry, TYPE object);
+	<TAGTYPE> Stream<Tuple<TagKey<TAGTYPE>, Function<TYPE, String>>> streamAllTagData(Registry<TAGTYPE> registry, TYPE object);
 
-	Stream<TagKey<Item>> streamAllItemTags(TYPE object);
+	Stream<Tuple<TagKey<Item>, Function<TYPE, String>>> streamAllItemTagData(TYPE object);
 
-	Stream<TagKey<Block>> streamAllBlockTags(TYPE object);
+	Stream<Tuple<TagKey<Block>, Function<TYPE, String>>> streamAllBlockTagData(TYPE object);
 
-	Stream<TagKey<Fluid>> streamAllFluidTags(TYPE object);
+	Stream<Tuple<TagKey<Fluid>, Function<TYPE, String>>> streamAllFluidTagData(TYPE object);
+
+	//
+	default <TAGTYPE> Stream<TagKey<TAGTYPE>> streamTags(final Registry<TAGTYPE> registry, final TYPE object, final boolean includeGlobalTags) {
+		return this.streamTagData(registry, object, includeGlobalTags).map(Tuple::getA);
+	}
+
+	default <TAGTYPE> Stream<TagKey<TAGTYPE>> streamTags(final Registry<TAGTYPE> registry, final TYPE object) {
+		return this.streamTagData(registry, object).map(Tuple::getA);
+	}
+
+	default Stream<TagKey<Item>> streamItemTags(final TYPE object) {
+		return this.streamItemTagData(object).map(Tuple::getA);
+	}
+
+	default Stream<TagKey<Block>> streamBlockTags(final TYPE object) {
+		return this.streamBlockTagData(object).map(Tuple::getA);
+	}
+
+	default Stream<TagKey<Fluid>> streamFluidTags(final TYPE object) {
+		return this.streamFluidTagData(object).map(Tuple::getA);
+	}
+
+	default <TAGTYPE> Stream<TagKey<TAGTYPE>> streamAllTags(final Registry<TAGTYPE> registry, final TYPE object) {
+		return this.streamAllTagData(registry, object).map(Tuple::getA);
+	}
+
+	default Stream<TagKey<Item>> streamAllItemTags(final TYPE object) {
+		return this.streamAllItemTagData(object).map(Tuple::getA);
+	}
+
+	default Stream<TagKey<Block>> streamAllBlockTags(final TYPE object) {
+		return this.streamAllBlockTagData(object).map(Tuple::getA);
+	}
+
+	default Stream<TagKey<Fluid>> streamAllFluidTags(final TYPE object) {
+		return this.streamAllFluidTagData(object).map(Tuple::getA);
+	}
 
 	Function<TYPE, String> getObjectSerializer();
 
