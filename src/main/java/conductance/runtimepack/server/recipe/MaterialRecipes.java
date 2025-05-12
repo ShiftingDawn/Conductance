@@ -131,7 +131,7 @@ final class MaterialRecipes {
 					"###", "#W#", "###", '#', MiscUtils.getItemTag(NCMaterialTaggedSets.ROD, material));
 		});
 
-		material.executeIf(NCMaterialTraits.CABLE, trait -> {
+		material.executeIf(NCMaterialTraits.WIRE, trait -> {
 			shapeless(output, "2x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_2X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 2);
 			shapeless(output, "4x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_4X, material, 1),
@@ -184,7 +184,7 @@ final class MaterialRecipes {
 		material.executeIf(NCMaterialFlags.GENERATE_ROD, () -> {
 			matRecipe(output, builderFactory, "%s_rod", material, NCRecipeTypes.LATHE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.ROD, null);
 		});
-		material.executeIf(NCMaterialTraits.CABLE, trait -> {
+		material.executeIf(NCMaterialTraits.WIRE, trait -> {
 			final AutoRecipeData pair = CAPI.recipeHelper().calculateRecipeData(material, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_1X, (int) material.getMass(), NCTiers.LV.getRecipeVoltage());
 			matRecipe(output, builderFactory, "1x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_1X, b -> b.processTime(pair.processTime()));
 			matRecipe(output, builderFactory, "2x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_2X, b -> b.processTime(pair.processTime()));

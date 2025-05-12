@@ -161,7 +161,7 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 
 	@Override
 	public int getPaintColorDefault() {
-		if (this.getBlockState().getBlock() instanceof final CableBlock materialPipeBlock) {
+		if (this.getBlockState().getBlock() instanceof final WireBlock materialPipeBlock) {
 			return materialPipeBlock.getMaterial().getMaterialColorRGB();
 		} else {
 			return 0xFFFFFF;

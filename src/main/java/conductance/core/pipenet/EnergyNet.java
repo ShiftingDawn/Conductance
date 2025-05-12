@@ -9,16 +9,16 @@ import org.jgrapht.graph.DefaultEdge;
 import conductance.api.capability.CapabilityHelper;
 import conductance.Conductance;
 
-public class EnergyNet extends PipeNetwork<ICableNode, CableData> {
+public class EnergyNet extends PipeNetwork<IWireNode, WireData> {
 
 	public static final ResourceLocation TYPE = Conductance.id("energynet");
 
-	public EnergyNet(final LevelPipeNetwork<ICableNode, CableData> levelNet) {
+	public EnergyNet(final LevelPipeNetwork<IWireNode, WireData> levelNet) {
 		super(levelNet, EnergyNet.TYPE);
 	}
 
 	@Override
-	protected NetworkPath<ICableNode, CableData> createNetworkPath(final BlockPos startPos, final BlockPos endPos, final Direction endSide, final GraphPath<BlockPos, DefaultEdge> path) {
+	protected NetworkPath<IWireNode, WireData> createNetworkPath(final BlockPos startPos, final BlockPos endPos, final Direction endSide, final GraphPath<BlockPos, DefaultEdge> path) {
 		return new NetworkPath<>(endPos, endSide, path.getVertexList().stream().map(this::getActualNode).toList(), new EnergyPathData());
 	}
 

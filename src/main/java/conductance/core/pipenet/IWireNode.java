@@ -1,6 +1,6 @@
 package conductance.core.pipenet;
 
-public interface ICableNode extends INetworkNode<ICableNode, CableData> {
+public interface IWireNode extends INetworkNode<IWireNode, WireData> {
 
 	void handleEnergyTransferred(long amps, long volts);
 

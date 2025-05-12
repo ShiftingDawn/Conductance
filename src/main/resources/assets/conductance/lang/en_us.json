@@ -4,7 +4,7 @@
 	"itemGroup.conductance.material_items": "Material Items (Conductance)",
 	"itemGroup.conductance.material_blocks": "Material Blocks (Conductance)",
 	"itemGroup.conductance.material_fluids": "Material Fluids (Conductance)",
-	"itemGroup.conductance.pipelike": "Cables and Pipes (Conductance)",
+	"itemGroup.conductance.pipelike": "Wires and Pipes (Conductance)",
 	"itemGroup.conductance.decoration": "Decoration (Conductance)",
 
 	"tag.item.c.wire_cutters": "Wire Cutters",
@@ -44,7 +44,7 @@
 	"tooltip.conductance.recipe.tooltip_per_tick_input": "§aConsumed Per Tick§r",
 	"tooltip.conductance.recipe.tooltip_per_tick_output": "§Produced Per Tick§r",
 
-	"tooltip.conductance.cable.voltage": "Max Voltage: §a%d%s §a(%s§a)",
-	"tooltip.conductance.cable.amperage": "Max Amperage: §e%d",
+	"tooltip.conductance.wire.voltage": "Max Voltage: §a%d%s §a(%s§a)",
+	"tooltip.conductance.wire.amperage": "Max Amperage: §e%d",
 	"tooltip.conductance.boiler.explode_on_water_fill": "§cWill explode when water is added to a heated empty boiler§r"
 }

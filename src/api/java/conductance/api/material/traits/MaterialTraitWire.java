@@ -9,12 +9,12 @@ import conductance.api.material.MaterialTraitMap;
 import conductance.api.util.tier.Tier;
 
 @Getter
-public class MaterialTraitCable implements IMaterialTrait<MaterialTraitCable> {
+public class MaterialTraitWire implements IMaterialTrait<MaterialTraitWire> {
 
 	private final Tier tier;
 	private final int amperage;
 
-	public MaterialTraitCable(final Tier tier, final int amperage) {
+	public MaterialTraitWire(final Tier tier, final int amperage) {
 		this.tier = tier;
 		this.amperage = amperage;
 	}
@@ -37,7 +37,7 @@ public class MaterialTraitCable implements IMaterialTrait<MaterialTraitCable> {
 		if (o == null || this.getClass() != o.getClass()) {
 			return false;
 		}
-		final MaterialTraitCable that = (MaterialTraitCable) o;
+		final MaterialTraitWire that = (MaterialTraitWire) o;
 		return this.amperage == that.amperage && this.tier.getIndex() == that.tier.getIndex();
 	}
 }

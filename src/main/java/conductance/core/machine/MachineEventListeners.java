@@ -7,7 +7,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import conductance.api.machine.IMachineBlock;
 import conductance.Conductance;
-import conductance.block.CableBlock;
+import conductance.block.WireBlock;
 
 @EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
 public final class MachineEventListeners {
@@ -17,8 +17,8 @@ public final class MachineEventListeners {
 		BuiltInRegistries.BLOCK.forEach(block -> {
 			if (block instanceof final IMachineBlock<?> machineBlock) {
 				machineBlock.attachCapabilities(event);
-			} else if (block instanceof final CableBlock cableBlock) {
-				cableBlock.attachCapabilities(event);
+			} else if (block instanceof final WireBlock wireBlock) {
+				wireBlock.attachCapabilities(event);
 			}
 		});
 	}

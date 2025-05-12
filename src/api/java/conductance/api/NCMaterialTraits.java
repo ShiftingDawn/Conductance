@@ -1,12 +1,12 @@
 package conductance.api;
 
 import conductance.api.material.MaterialTraitKey;
-import conductance.api.material.traits.MaterialTraitCable;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
 import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.material.traits.MaterialTraitOre;
+import conductance.api.material.traits.MaterialTraitWire;
 import conductance.api.material.traits.MaterialTraitWood;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
@@ -22,7 +22,7 @@ public final class NCMaterialTraits {
 	public static MaterialTraitKey<MaterialTraitFluid.Gas> GAS;
 	public static MaterialTraitKey<MaterialTraitFluid.Plasma> PLASMA;
 
-	public static MaterialTraitKey<MaterialTraitCable> CABLE;
+	public static MaterialTraitKey<MaterialTraitWire> WIRE;
 
 	private NCMaterialTraits() {
 	}

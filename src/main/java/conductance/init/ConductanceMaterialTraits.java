@@ -1,6 +1,6 @@
 package conductance.init;
 
-import conductance.api.material.traits.MaterialTraitCable;
+import conductance.api.material.traits.MaterialTraitWire;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
@@ -8,7 +8,7 @@ import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.material.traits.MaterialTraitOre;
 import conductance.api.material.traits.MaterialTraitWood;
 import conductance.api.plugin.MaterialTraitRegister;
-import static conductance.api.NCMaterialTraits.CABLE;
+import static conductance.api.NCMaterialTraits.WIRE;
 import static conductance.api.NCMaterialTraits.DUST;
 import static conductance.api.NCMaterialTraits.GAS;
 import static conductance.api.NCMaterialTraits.GEM;
@@ -31,7 +31,7 @@ public final class ConductanceMaterialTraits {
 		GAS = register.register("gas", MaterialTraitFluid.Gas.class);
 		PLASMA = register.register("plasma", MaterialTraitFluid.Plasma.class);
 
-		CABLE = register.register("cable", MaterialTraitCable.class);
+		WIRE = register.register("wire", MaterialTraitWire.class);
 	}
 
 	private ConductanceMaterialTraits() {

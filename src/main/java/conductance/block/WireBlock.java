@@ -22,34 +22,34 @@ import conductance.api.NCMaterialTraits;
 import conductance.api.capability.CapabilityHelper;
 import conductance.api.machine.IPaintable;
 import conductance.api.material.Material;
-import conductance.api.material.traits.MaterialTraitCable;
+import conductance.api.material.traits.MaterialTraitWire;
 import conductance.api.util.TextHelper;
 import conductance.Conductance;
-import conductance.core.pipenet.CableData;
-import conductance.core.pipenet.CableType;
+import conductance.core.pipenet.WireData;
+import conductance.core.pipenet.WireType;
 import conductance.core.pipenet.EnergyNet;
-import conductance.core.pipenet.ICableNode;
+import conductance.core.pipenet.IWireNode;
 import conductance.core.pipenet.LevelEnergyNet;
 import conductance.core.pipenet.PipeBlockRenderer;
 import conductance.core.pipenet.PipeModel;
 import conductance.init.ConductanceBlockEntities;
 
-public final class CableBlock extends PipeBlock<ICableNode, CableData, LevelEnergyNet> {
+public final class WireBlock extends PipeBlock<IWireNode, WireData, LevelEnergyNet> {
 
 	@Getter
 	private final Material material;
 	@Getter
-	private final CableType cableType;
+	private final WireType wireType;
 	private final Lazy<PipeModel> pipeModel;
 	private final PipeBlockRenderer pipeRenderer;
 	private final String unlocalizedName;
 
-	public CableBlock(final Properties properties, final CableType cableType, final Material material) {
+	public WireBlock(final Properties properties, final WireType wireType, final Material material) {
 		super(properties, EnergyNet.TYPE);
-		this.cableType = cableType;
+		this.wireType = wireType;
 		this.material = material;
-		this.unlocalizedName = "block.%s.%s".formatted(material.getRegistryKey().getNamespace(), cableType.getMaterialTaggedSet().getUnlocalizedName(material));
-		this.pipeModel = Lazy.of(() -> cableType.createPipeModel(material));
+		this.unlocalizedName = "block.%s.%s".formatted(material.getRegistryKey().getNamespace(), wireType.getMaterialTaggedSet().getUnlocalizedName(material));
+		this.pipeModel = Lazy.of(() -> wireType.createPipeModel(material));
 		this.pipeRenderer = new PipeBlockRenderer(this.pipeModel, this);
 	}
 
@@ -60,22 +60,22 @@ public final class CableBlock extends PipeBlock<ICableNode, CableData, LevelEner
 
 	@Override
 	public MutableComponent getName() {
-		return CAPI.translations().makeLocalizedName(this.getDescriptionId(), this.cableType.getMaterialTaggedSet(), this.material);
+		return CAPI.translations().makeLocalizedName(this.getDescriptionId(), this.wireType.getMaterialTaggedSet(), this.material);
 	}
 
-	public CableData getBaseProps() {
-		final MaterialTraitCable trait = this.material.getTrait(NCMaterialTraits.CABLE);
+	public WireData getBaseProps() {
+		final MaterialTraitWire trait = this.material.getTrait(NCMaterialTraits.WIRE);
 		assert trait != null;
-		return new CableData(trait.getTier().getVoltage(), trait.getAmperage());
+		return new WireData(trait.getTier().getVoltage(), trait.getAmperage());
 	}
 
-	public CableData getRealProps() {
-		return this.cableType.getPhysicalProperties(this.getBaseProps());
+	public WireData getRealProps() {
+		return this.wireType.getPhysicalProperties(this.getBaseProps());
 	}
 
 	@Override
-	public BlockEntityType<? extends PipeBlockEntity<ICableNode, CableData, LevelEnergyNet>> getBlockEntityType() {
-		return ConductanceBlockEntities.CABLE.get();
+	public BlockEntityType<? extends PipeBlockEntity<IWireNode, WireData, LevelEnergyNet>> getBlockEntityType() {
+		return ConductanceBlockEntities.WIRE.get();
 	}
 
 	@Override
@@ -90,8 +90,8 @@ public final class CableBlock extends PipeBlock<ICableNode, CableData, LevelEner
 
 	public void attachCapabilities(final RegisterCapabilitiesEvent event) {
 		event.registerBlock(CapabilityHelper.ENERGY_HANDLER_BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
-			if (blockEntity instanceof final CableBlockEntity cableBlockEntity) {
-				return cableBlockEntity.getEnergyHandler(direction);
+			if (blockEntity instanceof final WireBlockEntity wireBlockEntity) {
+				return wireBlockEntity.getEnergyHandler(direction);
 			}
 			return null;
 		}, this);
@@ -104,15 +104,15 @@ public final class CableBlock extends PipeBlock<ICableNode, CableData, LevelEner
 	@Override
 	public void appendHoverText(final ItemStack stack, final Item.TooltipContext context, final List<Component> tooltip, final TooltipFlag tooltipFlag) {
 		super.appendHoverText(stack, context, tooltip, tooltipFlag);
-		final CableData cableData = this.getRealProps();
-		tooltip.add(Conductance.tooltip("cable.voltage", cableData.voltage(), TextHelper.ENERGY_FORMAT, cableData.getTier().getLocalizedName()));
-		tooltip.add(Conductance.tooltip("cable.amperage", cableData.amperage()));
+		final WireData wireData = this.getRealProps();
+		tooltip.add(Conductance.tooltip("wire.voltage", wireData.voltage(), TextHelper.ENERGY_FORMAT, wireData.getTier().getLocalizedName()));
+		tooltip.add(Conductance.tooltip("wire.amperage", wireData.amperage()));
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static BlockColor handleColorTint() {
 		return (blockState, level, blockPos, index) -> {
-			if (blockState.getBlock() instanceof final CableBlock block) {
+			if (blockState.getBlock() instanceof final WireBlock block) {
 				if (blockPos != null && level.getBlockEntity(blockPos) instanceof final IPaintable paintable && paintable.isPainted()) {
 					return paintable.getRealColor();
 				}

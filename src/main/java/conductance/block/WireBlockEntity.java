@@ -11,19 +11,19 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.capability.CapabilityHelper;
 import conductance.api.capability.energy.IEnergyHandler;
 import conductance.api.util.InteractType;
-import conductance.core.pipenet.CableData;
+import conductance.core.pipenet.WireData;
 import conductance.core.pipenet.EnergyNet;
 import conductance.core.pipenet.EnergyNetHandler;
-import conductance.core.pipenet.ICableNode;
+import conductance.core.pipenet.IWireNode;
 import conductance.core.pipenet.LevelEnergyNet;
 import conductance.core.pipenet.PerTickLongHandler;
 import conductance.core.pipenet.PipeNetHelper;
 
-public class CableBlockEntity extends PipeBlockEntity<ICableNode, CableData, LevelEnergyNet> implements ICableNode {
+public class WireBlockEntity extends PipeBlockEntity<IWireNode, WireData, LevelEnergyNet> implements IWireNode {
 
 	private final PerTickLongHandler counter = new PerTickLongHandler(0L);
 
-	public CableBlockEntity(final BlockEntityType<?> type, final BlockPos pos, final BlockState state) {
+	public WireBlockEntity(final BlockEntityType<?> type, final BlockPos pos, final BlockState state) {
 		super(type, pos, state);
 	}
 
@@ -38,8 +38,8 @@ public class CableBlockEntity extends PipeBlockEntity<ICableNode, CableData, Lev
 	}
 
 	@Override
-	public CableData getData() {
-		return ((CableBlock) this.getPipeBlock()).getRealProps();
+	public WireData getData() {
+		return ((WireBlock) this.getPipeBlock()).getRealProps();
 	}
 
 	@Override

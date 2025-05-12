@@ -12,8 +12,8 @@ import conductance.api.CAPI;
 import conductance.api.NCBlocks;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.MaterialOreType;
-import conductance.block.CableBlock;
-import conductance.block.CableBlockItem;
+import conductance.block.WireBlock;
+import conductance.block.WireBlockItem;
 import conductance.block.MaterialBlock;
 import conductance.block.MaterialBlockItem;
 import conductance.block.MaterialOreBlock;
@@ -23,8 +23,8 @@ import conductance.block.SimpleDynamicBlock;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.MaterialOreTypeImpl;
 import conductance.core.apiimpl.TaggedMaterialSetImpl;
-import conductance.core.pipenet.CableRegistry;
-import conductance.core.pipenet.CableType;
+import conductance.core.pipenet.WireRegistry;
+import conductance.core.pipenet.WireType;
 import conductance.item.RenderedBlockItem;
 
 @SuppressWarnings("removal")
@@ -71,7 +71,7 @@ public final class ConductanceBlocks {
 					CAPI.materials().register(set, material, blockBuilder.register());
 				})
 		);
-		ConductanceBlocks.generateCables();
+		ConductanceBlocks.generateWires();
 	}
 
 	private static BlockEntry<SimpleDynamicBlock> machineCasingBlock(final String name) {
@@ -83,22 +83,22 @@ public final class ConductanceBlocks {
 				.register();
 	}
 
-	private static void generateCables() {
-		CAPI.regs().materials().values().stream().filter(mat -> mat.hasTrait(NCMaterialTraits.CABLE)).forEach(material -> {
-			for (final CableType cableType : CableType.values()) {
-				final String name = cableType.getMaterialTaggedSet().getUnlocalizedName(material);
-				final BlockEntry<CableBlock> block = ApiBridge.getRegistrate().block(name, props -> new CableBlock(props, cableType, material))
+	private static void generateWires() {
+		CAPI.regs().materials().values().stream().filter(mat -> mat.hasTrait(NCMaterialTraits.WIRE)).forEach(material -> {
+			for (final WireType wireType : WireType.values()) {
+				final String name = wireType.getMaterialTaggedSet().getUnlocalizedName(material);
+				final BlockEntry<WireBlock> block = ApiBridge.getRegistrate().block(name, props -> new WireBlock(props, wireType, material))
 						.initialProperties(() -> Blocks.IRON_BLOCK)
 						.properties(props -> props.dynamicShape().noOcclusion())
 						.addLayer(() -> RenderType::cutoutMipped)
-						.color(() -> CableBlock::handleColorTint)
-						.item(CableBlockItem::new)
+						.color(() -> WireBlock::handleColorTint)
+						.item(WireBlockItem::new)
 						.model(NonNullBiConsumer.noop())
-						.color(() -> CableBlockItem::handleColorTint)
+						.color(() -> WireBlockItem::handleColorTint)
 						.build()
 						.register();
-				CAPI.materials().register(cableType.getMaterialTaggedSet(), material, block);
-				CableRegistry.register(cableType, material, block);
+				CAPI.materials().register(wireType.getMaterialTaggedSet(), material, block);
+				WireRegistry.register(wireType, material, block);
 			}
 		});
 	}

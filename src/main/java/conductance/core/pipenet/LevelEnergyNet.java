@@ -3,14 +3,14 @@ package conductance.core.pipenet;
 import net.minecraft.server.level.ServerLevel;
 import conductance.api.CAPI;
 
-public final class LevelEnergyNet extends LevelPipeNetwork<ICableNode, CableData> {
+public final class LevelEnergyNet extends LevelPipeNetwork<IWireNode, WireData> {
 
 	public LevelEnergyNet(final ServerLevel level) {
 		super(level);
 	}
 
 	@Override
-	protected PipeNetwork<ICableNode, CableData> createNetwork() {
+	protected PipeNetwork<IWireNode, WireData> createNetwork() {
 		return new EnergyNet(this);
 	}
 

@@ -21,7 +21,7 @@ import conductance.api.material.MaterialStack;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
-import conductance.api.material.traits.MaterialTraitCable;
+import conductance.api.material.traits.MaterialTraitWire;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
@@ -292,9 +292,9 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder cable(final Tier tier, final int amperage) {
+	public MaterialBuilder wire(final Tier tier, final int amperage) {
 		this.dust();
-		this.traits.set(NCMaterialTraits.CABLE, new MaterialTraitCable(tier, amperage));
+		this.traits.set(NCMaterialTraits.WIRE, new MaterialTraitWire(tier, amperage));
 		return this;
 	}
 

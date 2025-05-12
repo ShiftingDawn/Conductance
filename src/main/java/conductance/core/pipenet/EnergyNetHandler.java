@@ -15,25 +15,25 @@ import conductance.Conductance;
 public class EnergyNetHandler implements IEnergyHandler {
 
 	private final ServerLevel level;
-	private final ICableNode cable;
+	private final IWireNode wire;
 
-	public EnergyNetHandler(final ServerLevel serverLevel, final ICableNode cable) {
+	public EnergyNetHandler(final ServerLevel serverLevel, final IWireNode wire) {
 		this.level = serverLevel;
-		this.cable = cable;
+		this.wire = wire;
 	}
 
 	@Override
 	public long receiveEnergy(@Nullable final Direction receivingSide, final long volts, final long amps) {
 		long ampsUsed = 0L;
-		final Set<BlockPos> burnedCables = new HashSet<>();
-		final Set<NetworkPath<ICableNode, CableData>> paths = this.cable.getNetwork(this.level).getPaths(this.cable);
+		final Set<BlockPos> burnedWires = new HashSet<>();
+		final Set<NetworkPath<IWireNode, WireData>> paths = this.wire.getNetwork(this.level).getPaths(this.wire);
 		if (paths == null || paths.isEmpty()) {
 			return ampsUsed;
 		}
-		for (final NetworkPath<ICableNode, CableData> path : paths) {
+		for (final NetworkPath<IWireNode, WireData> path : paths) {
 			final EnergyPathData data = (EnergyPathData) path.getData();
 			assert data != null;
-			if (Objects.equals(this.cable.getBlockPos(), path.getDest()) && receivingSide == path.getSide()) {
+			if (Objects.equals(this.wire.getBlockPos(), path.getDest()) && receivingSide == path.getSide()) {
 				continue;
 			}
 			final IEnergyHandler destination = CapabilityHelper.getEnergyHandler(this.level, path.getDest().relative(path.getSide()), path.getSide().getOpposite());
@@ -45,14 +45,14 @@ public class EnergyNetHandler implements IEnergyHandler {
 			if (energyLeftOver <= 0) {
 				continue;
 			}
-			for (final ICableNode pathNode : path.getPath()) {
-				final CableData pathNodeData = pathNode.getData();
+			for (final IWireNode pathNode : path.getPath()) {
+				final WireData pathNodeData = pathNode.getData();
 				if (pathNodeData.voltage() < volts) {
-					burnedCables.add(pathNode.getBlockPos());
+					burnedWires.add(pathNode.getBlockPos());
 					energyLeftOver = Math.min(pathNodeData.voltage(), energyLeftOver);
 				}
 			}
-			if (!burnedCables.isEmpty()) {
+			if (!burnedWires.isEmpty()) {
 				break;
 			}
 			final long ampsAccepted = destination.receiveEnergy(destinationSide, energyLeftOver, amps - ampsUsed);
@@ -60,18 +60,18 @@ public class EnergyNetHandler implements IEnergyHandler {
 				continue;
 			}
 			ampsUsed += ampsAccepted;
-			for (final ICableNode pathNode : path.getPath()) {
-				final CableData pathNodeData = pathNode.getData();
+			for (final IWireNode pathNode : path.getPath()) {
+				final WireData pathNodeData = pathNode.getData();
 				pathNode.handleEnergyTransferred(ampsAccepted, volts);
 				if (pathNode.getAmpsTransferred() > pathNodeData.amperage()) {
-					burnedCables.add(pathNode.getBlockPos());
+					burnedWires.add(pathNode.getBlockPos());
 				}
 			}
-			if (!burnedCables.isEmpty() || amps == ampsUsed) {
+			if (!burnedWires.isEmpty() || amps == ampsUsed) {
 				break;
 			}
 		}
-		for (final BlockPos pos : burnedCables) {
+		for (final BlockPos pos : burnedWires) {
 			this.level.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
 		}
 		return ampsUsed;
@@ -79,12 +79,12 @@ public class EnergyNetHandler implements IEnergyHandler {
 
 	@Override
 	public long getInputAmperage() {
-		return this.cable.getData().amperage();
+		return this.wire.getData().amperage();
 	}
 
 	@Override
 	public long getInputVoltage() {
-		return this.cable.getData().voltage();
+		return this.wire.getData().voltage();
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class EnergyNetHandler implements IEnergyHandler {
 	@Override
 	@Deprecated
 	public long modifyEnergy(final long differenceAmount) {
-		Conductance.LOGGER.warn("Do not use modifyEnergy() for cables! Use receiveEnergy()");
+		Conductance.LOGGER.warn("Do not use modifyEnergy() for wires! Use receiveEnergy()");
 		return this.receiveEnergy(null, differenceAmount / this.getInputAmperage(), differenceAmount / this.getInputVoltage()) * this.getInputVoltage();
 	}
 

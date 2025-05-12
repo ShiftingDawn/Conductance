@@ -6,7 +6,7 @@ import conductance.api.NCTextureTypes;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 
-public enum CableType {
+public enum WireType {
 
 	WIRE_1X(NCMaterialTaggedSets.WIRE_1X, .25f, 1),
 	WIRE_2X(NCMaterialTaggedSets.WIRE_2X, .375f, 2),
@@ -21,7 +21,7 @@ public enum CableType {
 	@Getter
 	private final int amperage;
 
-	CableType(final TaggedMaterialSet taggedSet, final float thickness, final int amperage) {
+	WireType(final TaggedMaterialSet taggedSet, final float thickness, final int amperage) {
 		this.materialTaggedSet = taggedSet;
 		this.thickness = thickness;
 		this.amperage = amperage;
@@ -34,7 +34,7 @@ public enum CableType {
 				null, null);
 	}
 
-	public CableData getPhysicalProperties(final CableData baseProps) {
-		return new CableData(baseProps.voltage(), baseProps.amperage() * this.amperage);
+	public WireData getPhysicalProperties(final WireData baseProps) {
+		return new WireData(baseProps.voltage(), baseProps.amperage() * this.amperage);
 	}
 }
