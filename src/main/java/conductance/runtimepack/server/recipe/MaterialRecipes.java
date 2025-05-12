@@ -30,6 +30,7 @@ final class MaterialRecipes {
 
 	public static void add(final RecipeOutput output, final RecipeBuilderFactory builderFactory) {
 		CAPI.regs().materials().forEach(material -> {
+			MaterialRecipes.addAllRecipes(output, builderFactory, material);
 			material.executeIf(NCMaterialTraits.ORE, trait -> MaterialRecipes.addOreRecipes(output, builderFactory, material, trait));
 			material.executeIf(NCMaterialTraits.INGOT, () -> MaterialRecipes.addIngotRecipes(output, builderFactory, material));
 			material.executeIf(NCMaterialTraits.GEM, () -> MaterialRecipes.addGemRecipes(output, builderFactory, material));
@@ -106,21 +107,7 @@ final class MaterialRecipes {
 		).map(ResourceLocation::withDefaultNamespace).forEach(remover);
 	}
 
-	private static void addIngotRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
-		material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> {
-			shapeless(output, "%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE, material, 1),
-					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.INGOT, material), 2);
-			shapeless(output, "double_%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE_DOUBLE, material, 1),
-					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material), 2);
-			matRecipe(output, builderFactory, "%s_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE, b -> b.program(1));
-			matRecipe(output, builderFactory, "%s_double_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
-			matRecipe(output, builderFactory, "%s_dense_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
-			matRecipe(output, builderFactory, "%s_double_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
-			matRecipe(output, builderFactory, "%s_dense_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
-		});
-		material.executeIf(NCMaterialFlags.GENERATE_ROD, () -> {
-			matRecipe(output, builderFactory, "%s_rod", material, NCRecipeTypes.LATHE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.ROD, null);
-		});
+	private static void addAllRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
 		material.executeIf(NCMaterialFlags.GENERATE_BOLT_AND_SCREW, () -> {
 			material.executeIf(NCMaterialFlags.GENERATE_ROD, () -> {
 				matRecipe(output, builderFactory, "%s_bolt", material, NCRecipeTypes.CUTTING_MACHINE, NCMaterialTaggedSets.ROD, NCMaterialTaggedSets.BOLT, null);
@@ -143,16 +130,14 @@ final class MaterialRecipes {
 			shaped(output, "%s_frame_box".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.FRAME_BOX, material, 2),
 					"###", "#W#", "###", '#', MiscUtils.getItemTag(NCMaterialTaggedSets.ROD, material));
 		});
+
 		material.executeIf(NCMaterialTraits.CABLE, trait -> {
-			final AutoRecipeData pair = CAPI.recipeHelper().calculateRecipeData(material, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_1X, (int) material.getMass(), NCTiers.LV.getRecipeVoltage());
-			matRecipe(output, builderFactory, "1x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_1X, b -> b.processTime(pair.processTime()));
 			shapeless(output, "2x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_2X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 2);
 			shapeless(output, "4x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_4X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 4);
 			shapeless(output, "8x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_8X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 8);
-			matRecipe(output, builderFactory, "2x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_2X, b -> b.processTime(pair.processTime()));
 			shapeless(output, "1x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 2),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material));
 			shapeless(output, "4x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_4X, material, 1),
@@ -163,7 +148,6 @@ final class MaterialRecipes {
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 6);
 			shapeless(output, "16x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 8);
-			matRecipe(output, builderFactory, "4x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_4X, b -> b.processTime(pair.processTime() * 2));
 			shapeless(output, "1x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 4),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material));
 			shapeless(output, "8x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_8X, material, 1),
@@ -172,23 +156,54 @@ final class MaterialRecipes {
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material), 3);
 			shapeless(output, "16x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material), 4);
-			matRecipe(output, builderFactory, "8x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_8X, b -> b.processTime(pair.processTime() * 2));
 			shapeless(output, "1x_%s_wire_from_8x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 8),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_8X, material));
 			shapeless(output, "16x_%s_wire_from_8x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_8X, material), 2);
-			matRecipe(output, builderFactory, "12x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_12X, b -> b.processTime(pair.processTime() * 4));
 			shapeless(output, "1x_%s_wire_from_12x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 12),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_12X, material));
 			shapeless(output, "12x_%s_wire_from_8x_wire_and_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_12X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_8X, material), MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material));
-			matRecipe(output, builderFactory, "16x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_16X, b -> b.processTime(pair.processTime() * 4));
 			shapeless(output, "1x_%s_wire_from_16x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 16),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_16X, material));
 		});
 	}
 
+	private static void addIngotRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
+		material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> {
+			shapeless(output, "%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE, material, 1),
+					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.INGOT, material), 2);
+			shapeless(output, "double_%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE_DOUBLE, material, 1),
+					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material), 2);
+			matRecipe(output, builderFactory, "%s_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE, b -> b.program(1));
+			matRecipe(output, builderFactory, "%s_double_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(output, builderFactory, "%s_dense_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+			matRecipe(output, builderFactory, "%s_double_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(output, builderFactory, "%s_dense_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+		});
+		material.executeIf(NCMaterialFlags.GENERATE_ROD, () -> {
+			matRecipe(output, builderFactory, "%s_rod", material, NCRecipeTypes.LATHE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.ROD, null);
+		});
+		material.executeIf(NCMaterialTraits.CABLE, trait -> {
+			final AutoRecipeData pair = CAPI.recipeHelper().calculateRecipeData(material, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_1X, (int) material.getMass(), NCTiers.LV.getRecipeVoltage());
+			matRecipe(output, builderFactory, "1x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_1X, b -> b.processTime(pair.processTime()));
+			matRecipe(output, builderFactory, "2x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_2X, b -> b.processTime(pair.processTime()));
+			matRecipe(output, builderFactory, "4x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_4X, b -> b.processTime(pair.processTime() * 2));
+			matRecipe(output, builderFactory, "8x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_8X, b -> b.processTime(pair.processTime() * 2));
+			matRecipe(output, builderFactory, "12x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_12X, b -> b.processTime(pair.processTime() * 4));
+			matRecipe(output, builderFactory, "16x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_16X, b -> b.processTime(pair.processTime() * 4));
+		});
+	}
+
 	private static void addGemRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
+		material.executeIf(NCMaterialFlags.GENERATE_ROD, () -> {
+			matRecipe(output, builderFactory, "%s_rod", material, NCRecipeTypes.LATHE, NCMaterialTaggedSets.GEM, NCMaterialTaggedSets.ROD, null);
+		});
+		material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> {
+			matRecipe(output, builderFactory, "%s_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE, b -> b.program(1));
+			matRecipe(output, builderFactory, "%s_double_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(output, builderFactory, "%s_dense_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+		});
 	}
 
 	private static void addWoodRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
