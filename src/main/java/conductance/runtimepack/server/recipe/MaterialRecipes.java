@@ -65,11 +65,11 @@ final class MaterialRecipes {
 		final BiConsumer<TaggedMaterialSet, Integer> smeltMaker = (set, multiplier) ->
 				smelting(output, "%s_from_%s".formatted(smeltType.getUnlocalizedName(smeltMaterial), set.getUnlocalizedName(material)),
 						CAPI.materials().getItem(smeltType, smeltMaterial, multiplier), Ingredient.of(CAPI.materials().getItem(set, material, 1)),
-						builder -> builder.experience(0.3f * multiplier));
+						builder -> builder.setExperience(0.3f * multiplier));
 		final BiConsumer<TaggedMaterialSet, Integer> blastMaker = (set, multiplier) ->
 				blasting(output, "%s_from_%s".formatted(smeltType.getUnlocalizedName(smeltMaterial), set.getUnlocalizedName(material)),
 						CAPI.materials().getItem(smeltType, smeltMaterial, multiplier), Ingredient.of(CAPI.materials().getItem(set, material, 1)),
-						builder -> builder.experience(0.3f * multiplier));
+						builder -> builder.setExperience(0.3f * multiplier));
 		CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.getOreType() != null).forEach(set -> {
 			final int multiplier = (set.getOreType().hasDoubleOutput() ? 2 : 1) * trait.getDropMultiplier();
 			pulverizeMaker.accept(set, multiplier);

@@ -1,8 +1,6 @@
 package conductance.core.apiimpl;
 
 import java.util.function.ToLongFunction;
-import javax.annotation.Nullable;
-import net.minecraft.Util;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -10,8 +8,7 @@ import net.minecraft.world.level.block.Block;
 import com.google.common.collect.ImmutableList;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.NCTextureSets;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialDataMap;
@@ -27,16 +24,26 @@ final class MaterialDataMapImpl implements MaterialDataMap {
 	private int blockLightLevel;
 
 	private int color;
-	private MaterialTextureSet textureSet;
+	private final MaterialTextureSet textureSet;
 
 	@Getter(AccessLevel.PACKAGE)
-	private ImmutableList<MaterialStack> components;
-	@Nullable
+	private final ImmutableList<MaterialStack> components;
 	@Getter(AccessLevel.PACKAGE)
-	private PeriodicElement periodicElement;
+	@Nullable
+	private final PeriodicElement periodicElement;
 	private long protons = -1;
 	private long neutrons = -1;
 	private long mass = -1;
+
+	private MaterialDataMapImpl(final Builder builder, final ImmutableList<MaterialStack> components) {
+		this.burnTime = builder.burnTime;
+		this.blockRequiredToolTag = builder.requiredToolTag;
+		this.blockLightLevel = builder.lightLevel;
+		this.color = builder.color;
+		this.textureSet = builder.textureSet;
+		this.components = components;
+		this.periodicElement = builder.periodicElement;
+	}
 
 	void verify(final boolean doCalculateColor) {
 		if (this.burnTime <= 0) {
@@ -50,8 +57,8 @@ final class MaterialDataMapImpl implements MaterialDataMap {
 				long calculatedColor = 0;
 				int componentCount = 0;
 				for (final MaterialStack component : this.components) {
-					calculatedColor += component.material().getMaterialColorRGB();
-					componentCount += component.count();
+					calculatedColor += component.getMaterial().getMaterialColorRGB();
+					componentCount += (int) component.getCount();
 				}
 				this.color = (int) (calculatedColor / componentCount);
 			}
@@ -101,15 +108,13 @@ final class MaterialDataMapImpl implements MaterialDataMap {
 			long total = 0;
 			long amount = 0;
 			for (final MaterialStack material : this.components) {
-				total += material.count() * provider.applyAsLong(material.material());
-				amount += material.count();
+				total += material.getCount() * provider.applyAsLong(material.getMaterial());
+				amount += material.getCount();
 			}
 			return total / amount;
 		}
 	}
 
-	@Setter
-	@Accessors(fluent = true)
 	static class Builder {
 
 		private int burnTime = 0;
@@ -117,18 +122,41 @@ final class MaterialDataMapImpl implements MaterialDataMap {
 		private int lightLevel = 0;
 		private int color = -1;
 		private MaterialTextureSet textureSet = NCTextureSets.DULL;
+		@Nullable
 		private PeriodicElement periodicElement;
 
+		public Builder setBurnTime(final int burnTime) {
+			this.burnTime = burnTime;
+			return this;
+		}
+
+		public Builder setRequiredToolTag(final TagKey<Block> requiredToolTag) {
+			this.requiredToolTag = requiredToolTag;
+			return this;
+		}
+
+		public Builder setLightLevel(final int lightLevel) {
+			this.lightLevel = lightLevel;
+			return this;
+		}
+
+		public Builder setColor(final int color) {
+			this.color = color;
+			return this;
+		}
+
+		public Builder setTextureSet(final MaterialTextureSet textureSet) {
+			this.textureSet = textureSet;
+			return this;
+		}
+
+		public Builder setPeriodicElement(final PeriodicElement periodicElement) {
+			this.periodicElement = periodicElement;
+			return this;
+		}
+
 		public MaterialDataMapImpl build(final ImmutableList<MaterialStack> components) {
-			return Util.make(new MaterialDataMapImpl(), result -> {
-				result.burnTime = this.burnTime;
-				result.blockRequiredToolTag = this.requiredToolTag;
-				result.blockLightLevel = this.lightLevel;
-				result.color = this.color;
-				result.textureSet = this.textureSet;
-				result.periodicElement = this.periodicElement;
-				result.components = components;
-			});
+			return new MaterialDataMapImpl(this, components);
 		}
 	}
 }

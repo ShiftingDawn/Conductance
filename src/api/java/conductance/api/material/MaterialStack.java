@@ -2,13 +2,11 @@ package conductance.api.material;
 
 import java.util.Objects;
 import lombok.Getter;
-import lombok.experimental.Accessors;
 
-@Accessors(fluent = true)
 @Getter
 public final class MaterialStack {
 
-	public static final MaterialStack EMPTY = new MaterialStack(null);
+	public static final MaterialStack EMPTY = new MaterialStack();
 	private final Material material;
 	private final long count;
 
@@ -17,7 +15,8 @@ public final class MaterialStack {
 		this.count = count;
 	}
 
-	private MaterialStack(final Void dummy) {
+	@SuppressWarnings("DataFlowIssue")
+	private MaterialStack() {
 		this.material = null;
 		this.count = 0;
 	}
@@ -30,6 +29,7 @@ public final class MaterialStack {
 		return this.copy(this.count);
 	}
 
+	@SuppressWarnings("ConstantValue")
 	public boolean isEmpty() {
 		return this == MaterialStack.EMPTY || this.material == null || this.count < 1;
 	}
@@ -48,5 +48,10 @@ public final class MaterialStack {
 			return stack.isEmpty();
 		}
 		return !stack.isEmpty() && this.material == stack.material && this.count == stack.count;
+	}
+
+	@Override
+	public String toString() {
+		return "%dx%s".formatted(this.count, this.isEmpty() ? "empty" : this.getMaterial().getUnlocalizedName());
 	}
 }

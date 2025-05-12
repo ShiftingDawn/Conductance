@@ -4,8 +4,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import conductance.api.capability.cover.CoverType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.recipe.IRecipeElementType;
@@ -18,14 +16,13 @@ import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.TaggedMaterialSet;
+import conductance.api.registry.ConductanceRegistry;
 import conductance.api.registry.IRegistryObject;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.util.tier.Tier;
 import conductance.Conductance;
 import conductance.core.recipe.RecipeSerializerImpl;
 
-@Getter
-@Accessors(fluent = true)
 public final class RegistryProviderImpl implements RegistryProvider {
 
 	private final ConductanceRegistryImpl<ResourceLocation, PeriodicElement> periodicElements = RegistryProviderImpl.makeResourceKeyed("periodic_element");
@@ -74,5 +71,70 @@ public final class RegistryProviderImpl implements RegistryProvider {
 
 	private static <VALUE extends IRegistryObject<ResourceLocation>> ConductanceDataPackRegistry<VALUE> makeDataPack(final String registryName) {
 		return new ConductanceDataPackRegistry<>(Conductance.id(registryName));
+	}
+
+	@Override
+	public ConductanceRegistry<ResourceLocation, PeriodicElement> periodicElements() {
+		return this.periodicElements;
+	}
+
+	@Override
+	public ConductanceRegistry<ResourceLocation, MaterialTextureType> materialTextureTypes() {
+		return this.materialTextureTypes;
+	}
+
+	@Override
+	public ConductanceRegistry<String, MaterialTextureSet> materialTextureSets() {
+		return this.materialTextureSets;
+	}
+
+	@Override
+	public ConductanceRegistry<ResourceLocation, MaterialTraitKey<?>> materialTraits() {
+		return this.materialTraits;
+	}
+
+	@Override
+	public ConductanceRegistry<ResourceLocation, MaterialFlag> materialFlags() {
+		return this.materialFlags;
+	}
+
+	@Override
+	public ConductanceRegistry<ResourceLocation, MaterialOreType> materialOreTypes() {
+		return this.materialOreTypes;
+	}
+
+	@Override
+	public ConductanceRegistry<String, TaggedMaterialSet> materialTaggedSets() {
+		return this.materialTaggedSets;
+	}
+
+	@Override
+	public ConductanceRegistry<ResourceLocation, Material> materials() {
+		return this.materials;
+	}
+
+	@Override
+	public ConductanceRegistry<ResourceLocation, IRecipeElementType<?>> recipeElementTypes() {
+		return this.recipeElementTypes;
+	}
+
+	@Override
+	public ConductanceRegistry<ResourceLocation, NCRecipeType> recipeTypes() {
+		return this.recipeTypes;
+	}
+
+	@Override
+	public ConductanceRegistry<String, Tier> tiers() {
+		return this.tiers;
+	}
+
+	@Override
+	public ConductanceRegistry<String, MachineType<?>> machines() {
+		return this.machines;
+	}
+
+	@Override
+	public ConductanceRegistry<ResourceLocation, CoverType<?>> covers() {
+		return this.covers;
 	}
 }

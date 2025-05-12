@@ -21,12 +21,12 @@ import conductance.api.material.MaterialStack;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
-import conductance.api.material.traits.MaterialTraitWire;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
 import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.material.traits.MaterialTraitOre;
+import conductance.api.material.traits.MaterialTraitWire;
 import conductance.api.material.traits.MaterialTraitWood;
 import conductance.api.plugin.MaterialBuilder;
 import conductance.api.util.tier.Tier;
@@ -42,7 +42,7 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	private MaterialTraitKey<? extends MaterialTraitFluid<?>> defaultFluid;
 	private boolean calculateColor = false;
 
-	public MaterialBuilderImpl(final ResourceLocation registryName) {
+	MaterialBuilderImpl(final ResourceLocation registryName) {
 		this.registryName = registryName;
 		this.data = new MaterialDataMapImpl.Builder();
 		this.traits = new MaterialTraitMapImpl();
@@ -181,25 +181,25 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder requiredTool(final TagKey<Block> requiredToolTag) {
-		this.data.requiredToolTag(Objects.requireNonNull(requiredToolTag));
+		this.data.setRequiredToolTag(Objects.requireNonNull(requiredToolTag));
 		return this;
 	}
 
 	@Override
 	public MaterialBuilder burnTime(final int burnTime) {
-		this.data.burnTime(burnTime);
+		this.data.setBurnTime(burnTime);
 		return this;
 	}
 
 	@Override
 	public MaterialBuilder lightLevel(final int lightLevel) {
-		this.data.lightLevel(lightLevel);
+		this.data.setLightLevel(lightLevel);
 		return this;
 	}
 
 	@Override
 	public MaterialBuilder color(final int color) {
-		this.data.color(color);
+		this.data.setColor(color);
 		return this;
 	}
 
@@ -216,7 +216,7 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder textureSet(final MaterialTextureSet set) {
-		this.data.textureSet(Objects.requireNonNull(set));
+		this.data.setTextureSet(Objects.requireNonNull(set));
 		return this;
 	}
 
@@ -269,7 +269,7 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Override
 	public MaterialBuilder periodicElement(final PeriodicElement periodicElement) {
-		this.data.periodicElement(periodicElement);
+		this.data.setPeriodicElement(periodicElement);
 		return this;
 	}
 

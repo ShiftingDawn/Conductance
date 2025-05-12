@@ -15,14 +15,12 @@ import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.registry.TaggedSet;
 import conductance.api.registry.TaggedSetBuilder;
 
 @SuppressWarnings("unchecked")
-@Accessors(fluent = true)
 abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER extends TaggedSetBuilder<TYPE, SET, BUILDER>> implements TaggedSetBuilder<TYPE, SET, BUILDER> {
 
 	@Getter(AccessLevel.PACKAGE)

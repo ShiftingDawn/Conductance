@@ -57,28 +57,28 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 	private final long unitValue;
 
 	public TaggedSetImpl(final TaggedSetBuilderImpl<TYPE, ?, ?> builder) {
-		super(builder.registryKey());
-		this.objectSerializer = builder.objectSerializer();
-		this.unlocalizedNameFactory = builder.unlocalizedNameFactory();
+		super(builder.getRegistryKey());
+		this.objectSerializer = builder.getObjectSerializer();
+		this.unlocalizedNameFactory = builder.getUnlocalizedNameFactory();
 
 		// TODO Let plugins/mods modify the taglist before finalizing
-		this.tags = ImmutableList.copyOf(builder.tags());
-		this.miningTags = ImmutableList.copyOf(builder.miningTools());
+		this.tags = ImmutableList.copyOf(builder.getTags());
+		this.miningTags = ImmutableList.copyOf(builder.getMiningTools());
 
-		this.hasItems = builder.hasItems();
-		this.autoGenerateItems = builder.autoGenerateItems();
-		this.itemGeneratorCallback = builder.itemGeneratorCallback();
-		this.hasBlocks = builder.hasBlocks();
-		this.autoGenerateBlocks = builder.autoGenerateBlocks();
-		this.blockGeneratorCallback = builder.blockGeneratorCallback();
-		this.shouldOccludeBlocks = builder.occludeBlocks();
-		this.hasFluids = builder.hasFluids();
-		this.autoGenerateFluids = builder.autoGenerateFluids();
-		this.fluidGeneratorCallback = builder.fluidGeneratorCallback();
-		this.generatorPredicate = builder.generatorPredicate();
+		this.hasItems = builder.isHasItems();
+		this.autoGenerateItems = builder.isAutoGenerateItems();
+		this.itemGeneratorCallback = builder.getItemGeneratorCallback();
+		this.hasBlocks = builder.isHasBlocks();
+		this.autoGenerateBlocks = builder.isAutoGenerateBlocks();
+		this.blockGeneratorCallback = builder.getBlockGeneratorCallback();
+		this.shouldOccludeBlocks = builder.isOccludeBlocks();
+		this.hasFluids = builder.isHasFluids();
+		this.autoGenerateFluids = builder.isAutoGenerateFluids();
+		this.fluidGeneratorCallback = builder.getFluidGeneratorCallback();
+		this.generatorPredicate = builder.getGeneratorPredicate();
 
-		this.maxStackSize = builder.maxStackSize();
-		this.unitValue = builder.unitValue();
+		this.maxStackSize = builder.getMaxStackSize();
+		this.unitValue = builder.getUnitValue();
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 	public <TAGTYPE> Stream<Tuple<TagKey<TAGTYPE>, Function<TYPE, String>>> streamTagData(final Registry<TAGTYPE> registry, final TYPE object, final boolean includeGlobalTags) {
 		return this.tags.stream()
 				.filter(handler -> includeGlobalTags || !handler.isGlobalTag())
-				.map(handler -> new Tuple<>(handler.make(object), handler.tagTranslator()))
+				.map(handler -> new Tuple<>(handler.make(object), handler.getTagTranslator()))
 				.map(tuple -> new Tuple<>(TagKey.create(registry.key(), tuple.getA()), tuple.getB()));
 	}
 

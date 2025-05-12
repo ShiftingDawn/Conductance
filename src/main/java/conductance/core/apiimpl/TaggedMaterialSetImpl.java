@@ -19,8 +19,8 @@ public final class TaggedMaterialSetImpl extends TaggedSetImpl<Material> impleme
 
 	public TaggedMaterialSetImpl(final MaterialTaggedSetBuilder builder) {
 		super(builder);
-		this.textureType = builder.textureType();
-		this.oreType = builder.oreType();
+		this.textureType = builder.getTextureType();
+		this.oreType = builder.getOreType();
 	}
 
 	@Override

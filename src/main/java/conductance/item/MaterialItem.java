@@ -9,16 +9,14 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import lombok.Getter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.runtimepack.client.MaterialItemModelHandler;
 import conductance.init.ConductanceCreativeTabs;
+import conductance.runtimepack.client.MaterialItemModelHandler;
 
 @Getter
-@Accessors(fluent = true)
 public class MaterialItem extends ConductanceItem {
 
 	private final Material material;

@@ -21,7 +21,6 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.ItemLike;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 abstract class VanillaRecipeBuilders {
 
@@ -124,7 +123,6 @@ abstract class VanillaRecipeBuilders {
 		}
 	}
 
-	@Accessors(chain = true, fluent = true)
 	public static class Smelting extends VanillaRecipeBuilders {
 
 		private final Ingredient input;
@@ -150,7 +148,6 @@ abstract class VanillaRecipeBuilders {
 		}
 	}
 
-	@Accessors(chain = true, fluent = true)
 	public static class Blasting extends VanillaRecipeBuilders {
 
 		private final Ingredient input;

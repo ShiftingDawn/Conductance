@@ -3,7 +3,6 @@ package conductance.core.apiimpl;
 import java.util.function.Function;
 import net.minecraft.Util;
 import lombok.Getter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.NCTextureTypes;
@@ -13,7 +12,6 @@ import conductance.api.material.MaterialTextureType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.material.TaggedMaterialSetBuilder;
 
-@Accessors(fluent = true)
 final class MaterialTaggedSetBuilder extends TaggedSetBuilderImpl<Material, TaggedMaterialSet, TaggedMaterialSetBuilder> implements TaggedMaterialSetBuilder {
 
 	@Getter
