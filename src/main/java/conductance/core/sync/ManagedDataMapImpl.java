@@ -1,0 +1,217 @@
+package conductance.core.sync;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import net.minecraft.Util;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.sync.IManaged;
+import conductance.api.machine.sync.ManagedDataMap;
+import conductance.api.machine.sync.Operation;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.Reference;
+import conductance.api.machine.sync.ReferenceKey;
+import conductance.api.machine.sync.Synchronized;
+import conductance.Conductance;
+import conductance.core.sync.ref.ReferenceImpl;
+import conductance.core.sync.ref.ReferenceKeyImpl;
+import conductance.core.sync.ref.ReflectionHolder;
+
+public class ManagedDataMapImpl implements ManagedDataMap {
+
+	private final IManaged managed;
+	private final ReferenceKeyImpl[] fields;
+	private final Map<ReferenceKey, ReferenceImpl> references;
+
+	@Getter
+	private final Object2IntMap<ReferenceKey> persistenceFields;
+	private final Map<String, ReferenceKey> persistenceMapping;
+	private final BitSet dirtyPersistenceFields;
+
+	@Getter
+	private final Object2IntMap<ReferenceKey> syncFields;
+	private final Map<String, ReferenceKey> syncMapper;
+	private final BitSet dirtySyncFields;
+
+	public ManagedDataMapImpl(final IManaged managed) {
+		this.managed = managed;
+		this.fields = ManagedDataMapImpl.collectFields(managed.getClass());
+
+		final Map<ReferenceKey, ReferenceImpl> referenceMap = new HashMap<>();
+		final ArrayList<ReferenceKey> persistenceFieldList = new ArrayList<>();
+		final ArrayList<ReferenceKey> syncFieldList = new ArrayList<>();
+		for (final ReferenceKeyImpl field : this.fields) {
+			final ReflectionHolder holder = ReflectionHolder.of(field.getRawField(), managed);
+			final ReferenceImpl reference = ReferenceImpl.of(field, holder);
+			referenceMap.put(field, reference);
+			if (field.isPersisted()) {
+				persistenceFieldList.add(field);
+			}
+			if (field.isSynchronized()) {
+				syncFieldList.add(field);
+			}
+		}
+		this.references = Collections.unmodifiableMap(referenceMap);
+
+		final Object2IntMap<ReferenceKey> persistenceFields = new Object2IntArrayMap<>();
+		for (int i = 0; i < persistenceFieldList.size(); ++i) {
+			final ReferenceKey refKey = persistenceFieldList.get(i);
+			final Reference ref = this.references.get(refKey);
+			final int finalI = i;
+			ref.setPersistenceStateCallback(dirty -> this.onFieldPersistenceDirty(ref, finalI, dirty));
+			persistenceFields.put(refKey, i);
+		}
+		this.persistenceFields = Object2IntMaps.unmodifiable(persistenceFields);
+		final Object2IntMap<ReferenceKey> syncFields = new Object2IntArrayMap<>();
+		for (int i = 0; i < syncFieldList.size(); ++i) {
+			final ReferenceKey refKey = syncFieldList.get(i);
+			final Reference ref = this.references.get(refKey);
+			final int finalI = i;
+			ref.setSyncStateCallback(dirty -> this.onFieldSyncDirty(ref, finalI, dirty));
+			syncFields.put(refKey, i);
+		}
+		this.syncFields = Object2IntMaps.unmodifiable(syncFields);
+
+		this.persistenceMapping = Collections.unmodifiableMap(Util.make(new Object2ObjectArrayMap<>(), map -> this.persistenceFields.keySet().forEach(field -> {
+			if (map.containsKey(field.getPersistenceKey())) {
+				throw new RuntimeException("Duplicate field with persistence key %s (%s, %s)".formatted(field.getPersistenceKey(), map.get(field.getPersistenceKey()).getRawField(), field.getRawField()));
+			}
+			map.put(field.getPersistenceKey(), field);
+		})));
+		this.dirtyPersistenceFields = new BitSet(this.persistenceFields.size());
+
+		this.syncMapper = Collections.unmodifiableMap(Util.make(new Object2ObjectArrayMap<>(), map -> this.syncFields.keySet().forEach(field -> {
+			if (map.containsKey(field.getSyncKey())) {
+				throw new RuntimeException("Duplicate field with synchronization key %s (%s, %s)".formatted(field.getSyncKey(), map.get(field.getSyncKey()).getRawField(), field.getRawField()));
+			}
+			map.put(field.getSyncKey(), field);
+		})));
+		this.dirtySyncFields = new BitSet(this.syncFields.size());
+	}
+
+	private void onFieldPersistenceDirty(final Reference reference, final int index, final boolean isDirty) {
+		this.dirtyPersistenceFields.set(index, isDirty);
+	}
+
+	private void onFieldSyncDirty(final Reference reference, final int index, final boolean isDirty) {
+		this.dirtySyncFields.set(index, isDirty);
+	}
+
+	public void init() {
+		this.tick();
+	}
+
+	public void tick() {
+		this.references.values().forEach(ReferenceImpl::tick);
+		if (this.hasDirtySyncFields()) {
+			//TODO SYNC
+		}
+	}
+
+	@Nullable
+	public ReferenceImpl getReference(final ReferenceKey field) {
+		return this.references.get(field);
+	}
+
+	public boolean hasDirtyPersistentFields() {
+		return !this.dirtyPersistenceFields.isEmpty();
+	}
+
+	public boolean hasDirtySyncFields() {
+		return !this.dirtySyncFields.isEmpty();
+	}
+
+	@Override
+	public CompoundTag serialize(final Operation operation) {
+		final CompoundTag result = new CompoundTag();
+		this.persistenceMapping.entrySet().stream().filter(entry -> switch (operation) {
+			case FULL -> true;
+			case PARTIAL -> this.dirtyPersistenceFields.get(this.persistenceFields.getInt(entry.getValue()));
+		}).forEach(entry -> {
+			final ReferenceImpl ref = this.getReference(entry.getValue());
+			final Tag serializedRef = XDataSerializationUtils.writeRefToAdapter(operation, ref);
+			if (serializedRef != null) {
+				result.put(entry.getKey(), serializedRef);
+			}
+			ref.clearPersistenceMark();
+		});
+		return result;
+	}
+
+	@Override
+	public void deserialize(final Operation operation, final CompoundTag nbt) {
+		for (final String tagKey : nbt.getAllKeys()) {
+			final ReferenceKey field = this.persistenceMapping.get(tagKey);
+			if (field == null) {
+				Conductance.LOGGER.warn("Cannot deserialize data for key {} since it has no mapping.", tagKey);
+			} else {
+				final ReferenceImpl ref = this.getReference(field);
+				XDataSerializationUtils.readRefFromAdapter(operation, ref, nbt.get(tagKey));
+				ref.clearPersistenceMark();
+			}
+		}
+	}
+
+	@Override
+	public void toNetwork(final Operation operation, final RegistryFriendlyByteBuf buf) {
+		buf.writeVarInt(switch (operation) {
+			case FULL -> this.syncMapper.size();
+			case PARTIAL -> this.dirtySyncFields.cardinality();
+		});
+		this.syncMapper.entrySet().stream().filter(entry -> switch (operation) {
+			case FULL -> true;
+			case PARTIAL -> this.dirtyPersistenceFields.get(this.syncFields.getInt(entry.getValue()));
+		}).forEach(entry -> {
+			buf.writeUtf(entry.getKey());
+			final ReferenceImpl ref = this.getReference(entry.getValue());
+			XDataSerializationUtils.writeRefToNetwork(operation, buf, ref);
+			ref.clearSyncMark();
+		});
+	}
+
+	@Override
+	public void fromNetwork(final Operation operation, final RegistryFriendlyByteBuf buf) {
+		final int iterationCount = buf.readVarInt();
+		for (int i = 0; i < iterationCount; ++i) {
+			final String syncKey = buf.readUtf();
+			final ReferenceKey field = this.syncMapper.get(syncKey);
+			if (field == null) {
+				Conductance.LOGGER.warn("Cannot deserialize data for key {} since it has no mapping.", syncKey);
+			} else {
+				final ReferenceImpl ref = this.getReference(field);
+				XDataSerializationUtils.readRefFromNetwork(operation, buf, ref);
+				ref.clearSyncMark();
+			}
+		}
+	}
+
+	private static ReferenceKeyImpl[] collectFields(final Class<?> clazz) {
+		final List<ReferenceKeyImpl> resultList = new ArrayList<>();
+		for (final Field field : clazz.getDeclaredFields()) {
+			if (!Modifier.isStatic(field.getModifiers())) {
+				final boolean persist = field.isAnnotationPresent(Persisted.class);
+				final boolean synced = field.isAnnotationPresent(Synchronized.class);
+				if (persist || synced) {
+					if (!SyncFieldSerializerRegisterImpl.INSTANCE.canHandleType(field.getGenericType())) {
+						throw new IllegalStateException("Field " + field + " is marked for managing but is not supported.");
+					}
+					resultList.add(ReferenceKeyImpl.of(field));
+				}
+			}
+		}
+		return resultList.toArray(new ReferenceKeyImpl[0]);
+	}
+}

@@ -30,11 +30,10 @@ public final class CommonProxy {
 		UIFactory.register(MachineUIFactory.INSTANCE);
 
 		PluginManager.init();
-
 		ConductanceCreativeTabs.init();
 
+		PluginManager.dispatchSyncFieldSerializers();
 		PluginManager.dispatchTiers();
-
 		PluginManager.dispatchMaterialOreTypes();
 		PluginManager.dispatchPeriodicElements();
 		PluginManager.dispatchMaterialTextureTypes();
@@ -45,11 +44,10 @@ public final class CommonProxy {
 		PluginManager.dispatchMaterials();
 		PluginManager.dispatchMaterialOverrides();
 		PluginManager.dispatchMaterialUnitOverrides();
-
 		PluginManager.dispatchRecipeElementTypes();
 		PluginManager.dispatchRecipeTypes();
-
 		PluginManager.dispatchRegisterCovers();
+
 		ConductanceItems.init();
 		ConductanceBlocks.init();
 		ConductanceFluids.init();

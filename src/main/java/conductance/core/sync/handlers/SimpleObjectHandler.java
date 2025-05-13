@@ -1,0 +1,37 @@
+package conductance.core.sync.handlers;
+
+import java.util.function.Supplier;
+import net.minecraft.Util;
+import conductance.api.machine.sync.Operation;
+import conductance.api.machine.sync.Reference;
+import conductance.api.machine.sync.ReferenceHandler;
+import conductance.api.machine.sync.Serializer;
+
+public class SimpleObjectHandler implements ReferenceHandler {
+
+	private final Class<?> typeClass;
+	private final boolean shallowEqualityCheck;
+	private final Supplier<? extends Serializer<?>> serializerFactory;
+
+	public SimpleObjectHandler(final Class<?> typeClass, final boolean shallowEqualityCheck, final Supplier<? extends Serializer<?>> serializerFactory) {
+		this.typeClass = typeClass;
+		this.shallowEqualityCheck = shallowEqualityCheck;
+		this.serializerFactory = serializerFactory;
+	}
+
+	@Override
+	public boolean canHandle(final Class<?> clazz) {
+		return this.shallowEqualityCheck ? clazz.equals(this.typeClass) : this.typeClass.isAssignableFrom(clazz);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public Serializer<?> readFromReference(final Operation operation, final Reference ref) {
+		return Util.make(this.serializerFactory.get(), serializer -> ((Serializer) serializer).setData(ref.getValueHolder().get()));
+	}
+
+	@Override
+	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> serializer) {
+		ref.getValueHolder().set(serializer.getData());
+	}
+}

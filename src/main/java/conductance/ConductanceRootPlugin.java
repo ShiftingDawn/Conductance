@@ -24,6 +24,7 @@ import conductance.api.plugin.PeriodicElementBuilder;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.api.plugin.RecipeTypeRegister;
+import conductance.api.plugin.SyncFieldSerializerRegister;
 import conductance.api.plugin.TagRegister;
 import conductance.api.plugin.TierRegister;
 import conductance.init.ConductanceCovers;
@@ -39,6 +40,7 @@ import conductance.init.ConductanceMaterials;
 import conductance.init.ConductancePeriodicElements;
 import conductance.init.ConductanceRecipeElementTypes;
 import conductance.init.ConductanceRecipeTypes;
+import conductance.init.ConductanceSyncFieldSerializers;
 import conductance.init.ConductanceTiers;
 import conductance.runtimepack.server.recipe.RecipeLoader;
 import static conductance.api.CAPI.UNIT;
@@ -233,5 +235,10 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 	@Override
 	public void removeRecipes(final Consumer<ResourceLocation> remover) {
 		RecipeLoader.initRemoval(remover);
+	}
+
+	@Override
+	public void registerSyncFieldSerializers(final SyncFieldSerializerRegister register) {
+		ConductanceSyncFieldSerializers.init(register);
 	}
 }

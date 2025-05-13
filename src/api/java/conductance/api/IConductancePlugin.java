@@ -18,6 +18,7 @@ import conductance.api.plugin.PeriodicElementBuilder;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.api.plugin.RecipeTypeRegister;
+import conductance.api.plugin.SyncFieldSerializerRegister;
 import conductance.api.plugin.TagRegister;
 import conductance.api.plugin.TierRegister;
 
@@ -75,5 +76,8 @@ public interface IConductancePlugin {
 	}
 
 	default void removeRecipes(final Consumer<ResourceLocation> remover) {
+	}
+
+	default void registerSyncFieldSerializers(final SyncFieldSerializerRegister register) {
 	}
 }

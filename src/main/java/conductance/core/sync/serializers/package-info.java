@@ -1,4 +1,4 @@
 @NCNonNull
-package conductance.compat.ldlib;
+package conductance.core.sync.serializers;
 
 import conductance.api.util.NCNonNull;

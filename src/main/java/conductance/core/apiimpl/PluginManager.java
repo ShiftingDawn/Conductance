@@ -42,6 +42,7 @@ import conductance.core.recipe.RecipeElementTypeSerializer;
 import conductance.core.recipe.RecipeTypeBuilderImpl;
 import conductance.core.register.MaterialOverrideRegister;
 import conductance.core.register.MaterialUnitOverrideRegister;
+import conductance.core.sync.SyncFieldSerializerRegisterImpl;
 
 //TODO add KubeJS event dispatches to plugin dispatches
 public final class PluginManager {
@@ -187,6 +188,10 @@ public final class PluginManager {
 
 	public static void dispatchRemoveRecipes(final Consumer<ResourceLocation> remover) {
 		PluginManager.execute((plugin, modid) -> plugin.removeRecipes(remover));
+	}
+
+	public static void dispatchSyncFieldSerializers() {
+		PluginManager.execute((plugin, modid) -> plugin.registerSyncFieldSerializers(SyncFieldSerializerRegisterImpl.INSTANCE));
 	}
 
 	private static void execute(final BiConsumer<IConductancePlugin, String> executor) {

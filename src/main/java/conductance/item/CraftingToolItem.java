@@ -9,6 +9,7 @@ public final class CraftingToolItem extends ConductanceItem {
 		super(props.stacksTo(1));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean hasCraftingRemainingItem() {
 		return true;

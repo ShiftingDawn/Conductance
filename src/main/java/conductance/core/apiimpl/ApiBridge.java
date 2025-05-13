@@ -15,6 +15,7 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.recipe.RecipeHelper;
+import conductance.api.machine.sync.SyncHelper;
 import conductance.api.material.ResourceFinder;
 import conductance.api.registry.MaterialRegistry;
 import conductance.api.registry.RegistryProvider;
@@ -25,6 +26,8 @@ import conductance.core.pipenet.WireRegistry;
 import conductance.core.recipe.RecipeHelperImpl;
 import conductance.core.register.ConductanceRegistrate;
 import conductance.core.register.MaterialRegistryImpl;
+import conductance.core.sync.SyncFieldSerializerRegisterImpl;
+import conductance.core.sync.SyncHelperImpl;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 @EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
@@ -49,6 +52,7 @@ public final class ApiBridge {
 		ApiBridge.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
 		ApiBridge.setApiValue(TierRegistry.class, TierRegistryImpl.INSTANCE);
 		ApiBridge.setApiValue(RecipeHelper.class, RecipeHelperImpl.INSTANCE);
+		ApiBridge.setApiValue(SyncHelper.class, SyncHelperImpl.INSTANCE);
 	}
 
 	private static <T> void setApiValue(final Class<T> variableType, final T value) {
@@ -82,6 +86,7 @@ public final class ApiBridge {
 		MaterialRegistryImpl.INSTANCE.freeze();
 		TierRegistryImpl.freeze();
 		WireRegistry.freeze();
+		SyncFieldSerializerRegisterImpl.INSTANCE.freeze();
 	}
 
 	public static void handleDataPackRegistryStage(final DataPackRegistryLoadStage stage) {
