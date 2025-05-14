@@ -1,12 +1,16 @@
 package conductance.api.machine.sync;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import org.jetbrains.annotations.Nullable;
 
 public interface ReferenceKey {
 
-	@Nullable String getPersistenceKey();
+	@Nullable
+	String getPersistenceKey();
 
-	@Nullable String getSyncKey();
+	@Nullable
+	String getSyncKey();
 
 	String getName();
 
@@ -14,7 +18,7 @@ public interface ReferenceKey {
 
 	boolean isSynchronized();
 
-	java.lang.reflect.Field getRawField();
+	Field getRawField();
 
-	java.lang.reflect.Type getRawType();
+	Type getRawType();
 }

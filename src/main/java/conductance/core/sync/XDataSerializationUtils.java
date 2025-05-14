@@ -44,14 +44,22 @@ public final class XDataSerializationUtils {
 		serializer.toNetwork(ref, buf);
 	}
 
-	public static void readRefFromNetwork(final Operation operation, final RegistryFriendlyByteBuf buf, final ReferenceImpl ref) {
+	public static void readRefFromNetwork(final ManagedDataMapImpl map, final Operation operation, final RegistryFriendlyByteBuf buf, final ReferenceImpl ref) {
 		final ReferenceHandler handler = CAPI.syncHelper().getHandlerByType(ref.getKey().getRawType());
 		if (handler == null) {
 			Conductance.LOGGER.warn("Cannot deserialize field {} because no matching {} was registered", ref.getKey().getRawField(), ReferenceHandler.class.getName());
 			return;
 		}
-		final Serializer<?> serializer = handler.readFromReference(operation, ref);
-		serializer.fromNetwork(ref, buf);
+		if (map.hasSyncClientUpdateListeners(ref.getKey())) {
+			final Object oldValue = ref.getValueHolder().get();
+			final Serializer<?> serializer = handler.readFromReference(operation, ref);
+			serializer.fromNetwork(ref, buf);
+			final Object newValue = ref.getValueHolder().get();
+			map.notifySyncClientUpdateListeners(ref, oldValue, newValue);
+		} else {
+			final Serializer<?> serializer = handler.readFromReference(operation, ref);
+			serializer.fromNetwork(ref, buf);
+		}
 	}
 
 	private XDataSerializationUtils() {

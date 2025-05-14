@@ -1,13 +1,17 @@
 package conductance.core.sync;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -16,14 +20,17 @@ import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.sync.IManaged;
 import conductance.api.machine.sync.ManagedDataMap;
+import conductance.api.machine.sync.OnSynchronized;
 import conductance.api.machine.sync.Operation;
 import conductance.api.machine.sync.Persisted;
 import conductance.api.machine.sync.Reference;
 import conductance.api.machine.sync.ReferenceKey;
+import conductance.api.machine.sync.ReferenceSynchronizedListener;
 import conductance.api.machine.sync.Synchronized;
 import conductance.Conductance;
 import conductance.core.sync.ref.ReferenceImpl;
@@ -32,6 +39,7 @@ import conductance.core.sync.ref.ReflectionHolder;
 
 public class ManagedDataMapImpl implements ManagedDataMap {
 
+	private static final BiFunction<Field, Class<?>, Method> SYNC_LISTENER_CACHE;
 	private final IManaged managed;
 	private final ReferenceKeyImpl[] fields;
 	private final Map<ReferenceKey, ReferenceImpl> references;
@@ -45,6 +53,8 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 	private final Object2IntMap<ReferenceKey> syncFields;
 	private final Map<String, ReferenceKey> syncMapper;
 	private final BitSet dirtySyncFields;
+	@Getter(AccessLevel.PACKAGE)
+	private final Map<ReferenceKey, List<ReferenceSynchronizedListener<?>>> syncClientUpdateListeners;
 
 	public ManagedDataMapImpl(final IManaged managed) {
 		this.managed = managed;
@@ -65,25 +75,25 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 			}
 		}
 		this.references = Collections.unmodifiableMap(referenceMap);
+		this.persistenceFields = Object2IntMaps.unmodifiable(Util.make(new Object2IntArrayMap<>(), map -> {
+			for (int i = 0; i < persistenceFieldList.size(); ++i) {
+				final ReferenceKey refKey = persistenceFieldList.get(i);
+				final Reference ref = this.references.get(refKey);
+				final int finalI = i;
+				ref.setPersistenceStateCallback(dirty -> this.onFieldPersistenceDirty(ref, finalI, dirty));
+				map.put(refKey, i);
+			}
+		}));
 
-		final Object2IntMap<ReferenceKey> persistenceFields = new Object2IntArrayMap<>();
-		for (int i = 0; i < persistenceFieldList.size(); ++i) {
-			final ReferenceKey refKey = persistenceFieldList.get(i);
-			final Reference ref = this.references.get(refKey);
-			final int finalI = i;
-			ref.setPersistenceStateCallback(dirty -> this.onFieldPersistenceDirty(ref, finalI, dirty));
-			persistenceFields.put(refKey, i);
-		}
-		this.persistenceFields = Object2IntMaps.unmodifiable(persistenceFields);
-		final Object2IntMap<ReferenceKey> syncFields = new Object2IntArrayMap<>();
-		for (int i = 0; i < syncFieldList.size(); ++i) {
-			final ReferenceKey refKey = syncFieldList.get(i);
-			final Reference ref = this.references.get(refKey);
-			final int finalI = i;
-			ref.setSyncStateCallback(dirty -> this.onFieldSyncDirty(ref, finalI, dirty));
-			syncFields.put(refKey, i);
-		}
-		this.syncFields = Object2IntMaps.unmodifiable(syncFields);
+		this.syncFields = Object2IntMaps.unmodifiable(Util.make(new Object2IntArrayMap<>(), map -> {
+			for (int i = 0; i < syncFieldList.size(); ++i) {
+				final ReferenceKey refKey = syncFieldList.get(i);
+				final Reference ref = this.references.get(refKey);
+				final int finalI = i;
+				ref.setSyncStateCallback(dirty -> this.onFieldSyncDirty(ref, finalI, dirty));
+				map.put(refKey, i);
+			}
+		}));
 
 		this.persistenceMapping = Collections.unmodifiableMap(Util.make(new Object2ObjectArrayMap<>(), map -> this.persistenceFields.keySet().forEach(field -> {
 			if (map.containsKey(field.getPersistenceKey())) {
@@ -100,6 +110,24 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 			map.put(field.getSyncKey(), field);
 		})));
 		this.dirtySyncFields = new BitSet(this.syncFields.size());
+		this.syncClientUpdateListeners = Collections.unmodifiableMap(Util.make(new IdentityHashMap<>(), map -> {
+			for (final ReferenceKey key : this.syncFields.keySet()) {
+				final ArrayList<ReferenceSynchronizedListener<?>> listeners = new ArrayList<>();
+				map.put(key, listeners);
+				if (key.getRawField().isAnnotationPresent(OnSynchronized.class)) {
+					final Method method = ManagedDataMapImpl.SYNC_LISTENER_CACHE.apply(key.getRawField(), managed.getClass());
+					if (method != null) {
+						listeners.add((oldValue, newValue) -> {
+							try {
+								method.invoke(managed, oldValue, newValue);
+							} catch (final IllegalAccessException | InvocationTargetException e) {
+								throw new RuntimeException(e);
+							}
+						});
+					}
+				}
+			}
+		}));
 	}
 
 	private void onFieldPersistenceDirty(final Reference reference, final int index, final boolean isDirty) {
@@ -116,9 +144,6 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 
 	public void tick() {
 		this.references.values().forEach(ReferenceImpl::tick);
-		if (this.hasDirtySyncFields()) {
-			//TODO SYNC
-		}
 	}
 
 	@Nullable
@@ -132,6 +157,31 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 
 	public boolean hasDirtySyncFields() {
 		return !this.dirtySyncFields.isEmpty();
+	}
+
+	@Override
+	public void markDirty() {
+		this.syncFields.keySet().stream().map(this.references::get).forEach(ReferenceImpl::markDirty);
+	}
+
+	final boolean hasSyncClientUpdateListeners(final ReferenceKey key) {
+		final List<ReferenceSynchronizedListener<?>> listeners = this.getSyncClientUpdateListeners().get(key);
+		return listeners != null && !listeners.isEmpty();
+	}
+
+	@SuppressWarnings("unchecked")
+	final <T> void notifySyncClientUpdateListeners(final Reference ref, @Nullable final T oldValue, @Nullable final T newValue) {
+		final List<ReferenceSynchronizedListener<?>> listeners = this.getSyncClientUpdateListeners().get(ref.getKey());
+		if (listeners != null) {
+			listeners.forEach(l -> {
+				final ReferenceSynchronizedListener<T> listener = (ReferenceSynchronizedListener<T>) l;
+				try {
+					listener.onReferenceSynchronized(oldValue, newValue);
+				} catch (final Throwable t) {
+					Conductance.LOGGER.error("An error occurred while notifying client field sync listeners", t);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -192,7 +242,7 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 				Conductance.LOGGER.warn("Cannot deserialize data for key {} since it has no mapping.", syncKey);
 			} else {
 				final ReferenceImpl ref = this.getReference(field);
-				XDataSerializationUtils.readRefFromNetwork(operation, buf, ref);
+				XDataSerializationUtils.readRefFromNetwork(this, operation, buf, ref);
 				ref.clearSyncMark();
 			}
 		}
@@ -213,5 +263,26 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 			}
 		}
 		return resultList.toArray(new ReferenceKeyImpl[0]);
+	}
+
+	static {
+		SYNC_LISTENER_CACHE = Util.memoize((field, clazz) -> {
+			final Class<?> clazz2 = clazz;
+			assert clazz2 != null;
+			final String methodName = field.getAnnotation(OnSynchronized.class).method();
+			Method method = null;
+			while (clazz != null && method == null) {
+				try {
+					method = clazz.getDeclaredMethod(methodName, field.getType(), field.getType());
+					method.setAccessible(true);
+				} catch (final NoSuchMethodException ignored) {
+				}
+				clazz = clazz.getSuperclass();
+			}
+			if (method == null) {
+				Conductance.LOGGER.error("Could not find the listener method {} for field {}#{}", methodName, clazz2.getName(), field.getName());
+			}
+			return method;
+		});
 	}
 }

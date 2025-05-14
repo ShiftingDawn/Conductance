@@ -10,7 +10,8 @@ public class ArrayReference extends ReferenceImpl {
 
 	@Override
 	public void tick() {
-		//TODO check array contents
+		throw new IllegalStateException("This should not be called, I think");
+		//check array contents maybe
 	}
 
 	public static ArrayReference of(final ReferenceKey key, final Object array, final int index, final Class<?> arrayType) {

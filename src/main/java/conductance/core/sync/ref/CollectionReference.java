@@ -11,7 +11,8 @@ public class CollectionReference extends ReferenceImpl {
 
 	@Override
 	public void tick() {
-		//TODO check array contents
+		throw new IllegalStateException("This should not be called, I think");
+		//check collection contents maybe
 	}
 
 	public static CollectionReference of(final ReferenceKey key, final Collection<?> collection, final int index) {

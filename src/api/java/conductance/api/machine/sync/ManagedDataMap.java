@@ -12,4 +12,6 @@ public interface ManagedDataMap {
 	void toNetwork(Operation operation, RegistryFriendlyByteBuf buf);
 
 	void fromNetwork(Operation operation, RegistryFriendlyByteBuf buf);
+
+	void markDirty();
 }

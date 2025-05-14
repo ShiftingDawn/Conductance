@@ -1,5 +1,7 @@
 package conductance.api.machine.sync;
 
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+
 public interface Reference {
 
 	void markDirty();
@@ -8,9 +10,9 @@ public interface Reference {
 
 	void markSyncDirty();
 
-	void setPersistenceStateCallback(it.unimi.dsi.fastutil.booleans.BooleanConsumer persistenceStateCallback);
+	void setPersistenceStateCallback(BooleanConsumer persistenceStateCallback);
 
-	void setSyncStateCallback(it.unimi.dsi.fastutil.booleans.BooleanConsumer syncStateCallback);
+	void setSyncStateCallback(BooleanConsumer syncStateCallback);
 
 	ReferenceKey getKey();
 
