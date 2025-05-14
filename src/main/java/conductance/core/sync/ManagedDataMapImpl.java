@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -58,7 +59,7 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 
 	public ManagedDataMapImpl(final IManaged managed) {
 		this.managed = managed;
-		this.fields = ManagedDataMapImpl.collectFields(managed.getClass());
+		this.fields = Util.make(new ArrayList<ReferenceKeyImpl>(), list -> ManagedDataMapImpl.collectFields(managed.getClass(), list)).toArray(ReferenceKeyImpl[]::new);
 
 		final Map<ReferenceKey, ReferenceImpl> referenceMap = new HashMap<>();
 		final ArrayList<ReferenceKey> persistenceFieldList = new ArrayList<>();
@@ -185,14 +186,14 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 	}
 
 	@Override
-	public CompoundTag serialize(final Operation operation) {
+	public CompoundTag serialize(final Operation operation, final HolderLookup.Provider registries) {
 		final CompoundTag result = new CompoundTag();
 		this.persistenceMapping.entrySet().stream().filter(entry -> switch (operation) {
 			case FULL -> true;
 			case PARTIAL -> this.dirtyPersistenceFields.get(this.persistenceFields.getInt(entry.getValue()));
 		}).forEach(entry -> {
 			final ReferenceImpl ref = this.getReference(entry.getValue());
-			final Tag serializedRef = XDataSerializationUtils.writeRefToAdapter(operation, ref);
+			final Tag serializedRef = XDataSerializationUtils.writeRefToNbt(operation, ref, registries);
 			if (serializedRef != null) {
 				result.put(entry.getKey(), serializedRef);
 			}
@@ -202,21 +203,21 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 	}
 
 	@Override
-	public void deserialize(final Operation operation, final CompoundTag nbt) {
+	public void deserialize(final Operation operation, final CompoundTag nbt, final HolderLookup.Provider registries) {
 		for (final String tagKey : nbt.getAllKeys()) {
 			final ReferenceKey field = this.persistenceMapping.get(tagKey);
 			if (field == null) {
 				Conductance.LOGGER.warn("Cannot deserialize data for key {} since it has no mapping.", tagKey);
 			} else {
 				final ReferenceImpl ref = this.getReference(field);
-				XDataSerializationUtils.readRefFromAdapter(operation, ref, nbt.get(tagKey));
+				XDataSerializationUtils.readRefFromNbt(operation, ref, nbt.get(tagKey), registries);
 				ref.clearPersistenceMark();
 			}
 		}
 	}
 
 	@Override
-	public void toNetwork(final Operation operation, final RegistryFriendlyByteBuf buf) {
+	public void toNetwork(final Operation operation, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
 		buf.writeVarInt(switch (operation) {
 			case FULL -> this.syncMapper.size();
 			case PARTIAL -> this.dirtySyncFields.cardinality();
@@ -227,13 +228,13 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 		}).forEach(entry -> {
 			buf.writeUtf(entry.getKey());
 			final ReferenceImpl ref = this.getReference(entry.getValue());
-			XDataSerializationUtils.writeRefToNetwork(operation, buf, ref);
+			XDataSerializationUtils.writeRefToNetwork(operation, buf, ref, registries);
 			ref.clearSyncMark();
 		});
 	}
 
 	@Override
-	public void fromNetwork(final Operation operation, final RegistryFriendlyByteBuf buf) {
+	public void fromNetwork(final Operation operation, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
 		final int iterationCount = buf.readVarInt();
 		for (int i = 0; i < iterationCount; ++i) {
 			final String syncKey = buf.readUtf();
@@ -242,14 +243,13 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 				Conductance.LOGGER.warn("Cannot deserialize data for key {} since it has no mapping.", syncKey);
 			} else {
 				final ReferenceImpl ref = this.getReference(field);
-				XDataSerializationUtils.readRefFromNetwork(this, operation, buf, ref);
+				XDataSerializationUtils.readRefFromNetwork(this, operation, buf, ref, registries);
 				ref.clearSyncMark();
 			}
 		}
 	}
 
-	private static ReferenceKeyImpl[] collectFields(final Class<?> clazz) {
-		final List<ReferenceKeyImpl> resultList = new ArrayList<>();
+	private static void collectFields(final Class<?> clazz, final List<ReferenceKeyImpl> list) {
 		for (final Field field : clazz.getDeclaredFields()) {
 			if (!Modifier.isStatic(field.getModifiers())) {
 				final boolean persist = field.isAnnotationPresent(Persisted.class);
@@ -258,11 +258,13 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 					if (!SyncFieldSerializerRegisterImpl.INSTANCE.canHandleType(field.getGenericType())) {
 						throw new IllegalStateException("Field " + field + " is marked for managing but is not supported.");
 					}
-					resultList.add(ReferenceKeyImpl.of(field));
+					list.add(ReferenceKeyImpl.of(field));
 				}
 			}
 		}
-		return resultList.toArray(new ReferenceKeyImpl[0]);
+		if (clazz.getSuperclass() != Object.class) {
+			ManagedDataMapImpl.collectFields(clazz.getSuperclass(), list);
+		}
 	}
 
 	static {

@@ -2,12 +2,14 @@ package conductance.core.sync.serializers;
 
 import java.util.Collection;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.machine.sync.Operation;
 import conductance.api.machine.sync.Reference;
 import conductance.api.machine.sync.Serializer;
 import conductance.core.sync.SyncFieldSerializerRegisterImpl;
@@ -18,7 +20,7 @@ import conductance.core.sync.ref.ReferenceImpl;
 public class ArraySerializer extends Serializer<Serializer<?>[]> {
 
 	@Override
-	public @Nullable Tag serialize(final Reference ref) {
+	public @Nullable Tag serialize(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
 		final ListTag list = new ListTag();
 		final ReferenceImpl[] arrayRefs = ArraySerializer.makeRefs(ref, this.getData().length);
 		for (int i = 0; i < this.getData().length; ++i) {
@@ -26,7 +28,7 @@ public class ArraySerializer extends Serializer<Serializer<?>[]> {
 			final CompoundTag entry = new CompoundTag();
 			entry.putInt("i", i);
 			entry.putInt("sid", serializer.getSid());
-			final Tag dataTag = serializer.serialize(arrayRefs[i]);
+			final Tag dataTag = serializer.serialize(operation, arrayRefs[i], registries);
 			if (dataTag != null) {
 				entry.put("dat", dataTag);
 			}
@@ -35,7 +37,7 @@ public class ArraySerializer extends Serializer<Serializer<?>[]> {
 	}
 
 	@Override
-	public void deserialize(final Reference ref, final Tag tag) {
+	public void deserialize(final Operation operation, final Reference ref, final Tag tag, final HolderLookup.Provider registries) {
 		final ListTag array = this.testTag(tag, ListTag.class);
 		final Serializer<?>[] arr = new Serializer[array.size()];
 		final ReferenceImpl[] arrayRefs = ArraySerializer.makeRefs(ref, arr.length);
@@ -48,25 +50,25 @@ public class ArraySerializer extends Serializer<Serializer<?>[]> {
 			}
 			final Tag dataTag = entry.get("dat");
 			if (dataTag != null) {
-				arr[i].deserialize(arrayRefs[i], dataTag);
+				arr[i].deserialize(operation, arrayRefs[i], dataTag, registries);
 			}
 		}
 		this.setData(arr);
 	}
 
 	@Override
-	public void toNetwork(final Reference ref, final RegistryFriendlyByteBuf buf) {
+	public void toNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
 		final ReferenceImpl[] arrayRefs = ArraySerializer.makeRefs(ref, this.getData().length);
 		buf.writeVarInt(this.getData().length);
 		for (int i = 0; i < this.getData().length; ++i) {
 			final Serializer<?> serializer = this.getData()[i];
 			buf.writeVarInt(serializer.getSid());
-			serializer.toNetwork(arrayRefs[i], buf);
+			serializer.toNetwork(operation, arrayRefs[i], buf, registries);
 		}
 	}
 
 	@Override
-	public void fromNetwork(final Reference ref, final RegistryFriendlyByteBuf buf) {
+	public void fromNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
 		final Serializer<?>[] arr = new Serializer[buf.readVarInt()];
 		final ReferenceImpl[] arrayRefs = ArraySerializer.makeRefs(ref, arr.length);
 		for (int i = 0; i < arr.length; ++i) {
@@ -75,7 +77,7 @@ public class ArraySerializer extends Serializer<Serializer<?>[]> {
 			if (arr[i] == null) {
 				throw new IllegalStateException("Could not create %s with id %s".formatted(Serializer.class.getName(), sid));
 			}
-			arr[i].fromNetwork(arrayRefs[i], buf);
+			arr[i].fromNetwork(operation, arrayRefs[i], buf, registries);
 		}
 		this.setData(arr);
 	}

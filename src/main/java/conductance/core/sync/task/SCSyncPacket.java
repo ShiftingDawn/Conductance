@@ -2,6 +2,7 @@ package conductance.core.sync.task;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -34,7 +35,8 @@ public final class SCSyncPacket implements CustomPacketPayload {
 	public void serialize(final RegistryFriendlyByteBuf buf) {
 		buf.writeBlockPos(this.blockPos);
 		buf.writeBoolean(this.forceSync);
-		this.managed.getDataMap().toNetwork(this.forceSync ? Operation.FULL : Operation.PARTIAL, this.buffer);
+		final HolderLookup.Provider registries = ((BlockEntity) this.managed).getLevel().registryAccess();
+		this.managed.getDataMap().toNetwork(this.forceSync ? Operation.FULL : Operation.PARTIAL, this.buffer, registries);
 	}
 
 	public static SCSyncPacket deserialize(final RegistryFriendlyByteBuf buf) {
@@ -47,7 +49,8 @@ public final class SCSyncPacket implements CustomPacketPayload {
 	public static void handle(final SCSyncPacket packet, final IPayloadContext ctx) {
 		final Level level = Minecraft.getInstance().level;
 		if (level != null && level.getBlockEntity(packet.blockPos) instanceof final IManaged managed) {
-			managed.getDataMap().fromNetwork(packet.forceSync ? Operation.FULL : Operation.PARTIAL, packet.buffer);
+			final HolderLookup.Provider registries = ((BlockEntity) managed).getLevel().registryAccess();
+			managed.getDataMap().fromNetwork(packet.forceSync ? Operation.FULL : Operation.PARTIAL, packet.buffer, registries);
 		}
 	}
 

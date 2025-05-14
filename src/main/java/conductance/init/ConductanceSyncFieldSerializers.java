@@ -13,11 +13,15 @@ import conductance.core.sync.handlers.EnumHandler;
 import conductance.core.sync.handlers.FloatHandler;
 import conductance.core.sync.handlers.IntHandler;
 import conductance.core.sync.handlers.LongHandler;
+import conductance.core.sync.handlers.ManagedHandler;
+import conductance.core.sync.handlers.NBTSerializableHandler;
 import conductance.core.sync.handlers.ShortHandler;
 import conductance.core.sync.serializers.ArraySerializer;
+import conductance.core.sync.serializers.ManagedSerializer;
 import conductance.core.sync.serializers.PrimitiveCodecSerializer;
 import conductance.core.sync.serializers.RecipeSerializer;
 import conductance.core.sync.serializers.RecipeTypeSerializer;
+import conductance.core.sync.serializers.TagSerializer;
 import conductance.core.sync.serializers.TierSerializer;
 import conductance.core.sync.serializers.UUIDSerializer;
 
@@ -36,6 +40,9 @@ public final class ConductanceSyncFieldSerializers {
 		register.register(ArraySerializer.class, ArraySerializer::new);
 		register.register(UUIDSerializer.class, UUIDSerializer::new, UUID.class, true);
 		register.register(PrimitiveCodecSerializer.StringSerializer.class, PrimitiveCodecSerializer.StringSerializer::new, new EnumHandler());
+
+		register.register(ManagedSerializer.class, ManagedSerializer::new, new ManagedHandler());
+		register.register(TagSerializer.class, TagSerializer::new, new NBTSerializableHandler());
 
 		register.register(TierSerializer.class, TierSerializer::new, Tier.class, false);
 		register.register(RecipeTypeSerializer.class, RecipeTypeSerializer::new, NCRecipeType.class, false);

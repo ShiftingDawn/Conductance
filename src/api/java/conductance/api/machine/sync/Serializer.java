@@ -1,5 +1,6 @@
 package conductance.api.machine.sync;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import lombok.Getter;
@@ -14,13 +15,13 @@ public abstract class Serializer<T> {
 	private T data;
 
 	@Nullable
-	public abstract Tag serialize(Reference ref);
+	public abstract Tag serialize(Operation operation, Reference ref, HolderLookup.Provider registries);
 
-	public abstract void deserialize(Reference ref, Tag tag);
+	public abstract void deserialize(Operation operation, Reference ref, Tag tag, HolderLookup.Provider registries);
 
-	public abstract void toNetwork(Reference ref, RegistryFriendlyByteBuf buf);
+	public abstract void toNetwork(Operation operation, Reference ref, RegistryFriendlyByteBuf buf, HolderLookup.Provider registries);
 
-	public abstract void fromNetwork(Reference ref, RegistryFriendlyByteBuf buf);
+	public abstract void fromNetwork(Operation operation, Reference ref, RegistryFriendlyByteBuf buf, HolderLookup.Provider registries);
 
 	protected <A extends Tag> A testTag(final Tag tag, final Class<A> expectedType) {
 		if (expectedType.isAssignableFrom(tag.getClass())) {

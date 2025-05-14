@@ -2,6 +2,7 @@ package conductance.core.sync.handlers;
 
 import java.util.function.Supplier;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import conductance.api.machine.sync.Operation;
 import conductance.api.machine.sync.Reference;
 import conductance.api.machine.sync.ReferenceHandler;
@@ -26,12 +27,12 @@ public class SimpleObjectHandler implements ReferenceHandler {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Serializer<?> readFromReference(final Operation operation, final Reference ref) {
+	public Serializer<?> readFromReference(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
 		return Util.make(this.serializerFactory.get(), serializer -> ((Serializer) serializer).setData(ref.getValueHolder().get()));
 	}
 
 	@Override
-	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> serializer) {
+	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> serializer, final HolderLookup.Provider registries) {
 		ref.getValueHolder().set(serializer.getData());
 	}
 }

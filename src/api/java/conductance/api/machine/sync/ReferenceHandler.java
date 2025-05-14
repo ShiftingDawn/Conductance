@@ -1,12 +1,14 @@
 package conductance.api.machine.sync;
 
+import net.minecraft.core.HolderLookup;
+
 public interface ReferenceHandler {
 
 	boolean canHandle(Class<?> clazz);
 
-	Serializer<?> readFromReference(Operation operation, Reference ref);
+	Serializer<?> readFromReference(Operation operation, Reference ref, HolderLookup.Provider registries);
 
-	void writeToReference(Operation operation, Reference ref, Serializer<?> serializer);
+	void writeToReference(Operation operation, Reference ref, Serializer<?> serializer, HolderLookup.Provider registries);
 
 	default <T extends Serializer<?>> T testSerializer(final Serializer<?> serializer, final Class<T> expectedType) {
 		if (expectedType.isAssignableFrom(serializer.getClass())) {
