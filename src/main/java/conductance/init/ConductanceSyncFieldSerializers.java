@@ -2,22 +2,27 @@ package conductance.init;
 
 import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.plugin.SyncFieldSerializerRegister;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.plugin.RegisterFieldSerializerEvent;
 import conductance.api.util.tier.Tier;
+import conductance.Conductance;
 import conductance.sync.NBTSerializableHandler;
 import conductance.sync.RecipeSerializer;
 import conductance.sync.RecipeTypeSerializer;
 import conductance.sync.TagSerializer;
 import conductance.sync.TierSerializer;
 
+@ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceSyncFieldSerializers {
 
-	public static void init(final SyncFieldSerializerRegister register) {
-		register.register(TagSerializer.class, TagSerializer::new, new NBTSerializableHandler());
+	@EventListener
+	private static void init(final RegisterFieldSerializerEvent event) {
+		event.register(TagSerializer.class, TagSerializer::new, new NBTSerializableHandler());
 
-		register.register(TierSerializer.class, TierSerializer::new, Tier.class, false);
-		register.register(RecipeTypeSerializer.class, RecipeTypeSerializer::new, NCRecipeType.class, false);
-		register.register(RecipeSerializer.class, RecipeSerializer::new, IRecipe.class, false);
+		event.register(TierSerializer.class, TierSerializer::new, Tier.class, false);
+		event.register(RecipeTypeSerializer.class, RecipeTypeSerializer::new, NCRecipeType.class, false);
+		event.register(RecipeSerializer.class, RecipeSerializer::new, IRecipe.class, false);
 	}
 
 	private ConductanceSyncFieldSerializers() {

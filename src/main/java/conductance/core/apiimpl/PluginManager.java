@@ -37,6 +37,7 @@ import conductance.api.plugin.CoverRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
+import conductance.api.plugin.RegisterFieldSerializerEvent;
 import conductance.api.plugin.RegisterMaterialTextureSetEvent;
 import conductance.api.plugin.RegisterMaterialTextureTypeEvent;
 import conductance.api.plugin.RegisterPeriodicElementEvent;
@@ -222,7 +223,7 @@ public final class PluginManager {
 	}
 
 	public static void dispatchSyncFieldSerializers() {
-		PluginManager.execute((plugin, modid) -> plugin.registerSyncFieldSerializers(SyncFieldSerializerRegisterImpl.INSTANCE));
+		PluginEventBus.post(RegisterFieldSerializerEvent.class, modid -> PluginEventBus.instantiateEvent(RegisterFieldSerializerEvent.class, SyncFieldSerializerRegisterImpl.INSTANCE));
 	}
 
 	private static void execute(final BiConsumer<IConductancePlugin, String> executor) {

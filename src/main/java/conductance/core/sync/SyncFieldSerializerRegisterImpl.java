@@ -22,9 +22,9 @@ import conductance.api.machine.sync.Checker;
 import conductance.api.machine.sync.Copier;
 import conductance.api.machine.sync.ReferenceHandler;
 import conductance.api.machine.sync.Serializer;
-import conductance.api.plugin.SyncFieldSerializerRegister;
+import conductance.api.plugin.RegisterFieldSerializerEvent;
 
-public final class SyncFieldSerializerRegisterImpl implements SyncFieldSerializerRegister {
+public final class SyncFieldSerializerRegisterImpl implements RegisterFieldSerializerEvent.SyncFieldSerializerRegister {
 
 	private static final AtomicBoolean INITIALIZED = new AtomicBoolean(false);
 	public static final SyncFieldSerializerRegisterImpl INSTANCE = new SyncFieldSerializerRegisterImpl();
@@ -102,6 +102,14 @@ public final class SyncFieldSerializerRegisterImpl implements SyncFieldSerialize
 			throw new IllegalStateException("Cannot register %s %s after initialization!".formatted(Checker.class.getName(), checker.getClass().getName()));
 		}
 		this.checkers.add(checker);
+	}
+
+	private <T extends Serializer<?>> void register(final Class<T> serializerType, final Supplier<T> factory, final ReferenceHandler handler) {
+		this.register(serializerType, factory, handler, RegisterFieldSerializerEvent.DEFAULT_PRIORITY);
+	}
+
+	private <T, S extends Serializer<T>> void register(final Class<S> serializerType, final Supplier<S> factory, final Class<T> valueType, final boolean shallowEqualityCheck) {
+		this.register(serializerType, factory, valueType, shallowEqualityCheck, RegisterFieldSerializerEvent.DEFAULT_PRIORITY);
 	}
 
 	public void freeze() {
