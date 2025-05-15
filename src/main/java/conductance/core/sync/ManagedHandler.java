@@ -18,7 +18,6 @@ final class ManagedHandler implements ReferenceHandler {
 	@Override
 	public Serializer<?> readFromReference(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
 		final IManaged managed = (IManaged) ref.getValueHolder().get();
-		assert managed != null;
 		return Util.make(new ManagedSerializer(), serializer -> serializer.setData(managed));
 	}
 

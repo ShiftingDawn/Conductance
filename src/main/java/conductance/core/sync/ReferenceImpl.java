@@ -82,6 +82,7 @@ class ReferenceImpl implements Reference {
 
 	static final class PrimitiveReference extends ReferenceImpl {
 
+		@Nullable
 		private Object lastValue;
 
 		PrimitiveReference(final ReferenceKey key, final Holder valueHolder) {

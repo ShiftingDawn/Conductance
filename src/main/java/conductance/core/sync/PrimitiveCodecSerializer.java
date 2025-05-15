@@ -25,77 +25,78 @@ abstract class PrimitiveCodecSerializer<T> extends Serializer<T> {
 	private final StreamCodec<ByteBuf, T> streamCodec;
 
 	@Override
-	public @Nullable Tag serialize(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
-		return this.codec.write(NbtOps.INSTANCE, this.getData());
+	@Nullable
+	public Tag serialize(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
+		return this.serialize(data -> this.codec.write(NbtOps.INSTANCE, data));
 	}
 
 	@Override
-	public void deserialize(final Operation operation, final Reference ref, final Tag tag, final HolderLookup.Provider registries) {
-		this.setData(this.codec.read(NbtOps.INSTANCE, tag).getOrThrow());
+	public void deserialize(final Operation operation, final Reference ref, @Nullable final Tag tag, final HolderLookup.Provider registries) {
+		this.deserialize(tag, Tag.class, data -> this.codec.read(NbtOps.INSTANCE, tag).getOrThrow());
 	}
 
 	@Override
 	public void toNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		this.streamCodec.encode(buf, this.getData());
+		this.write(buf, data -> this.streamCodec.encode(buf, data));
 	}
 
 	@Override
 	public void fromNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		this.setData(this.streamCodec.decode(buf));
+		this.read(buf, () -> this.streamCodec.decode(buf));
 	}
 
 	public static final class BooleanSerializer extends PrimitiveCodecSerializer<Boolean> {
 
-		public BooleanSerializer() {
+		BooleanSerializer() {
 			super(Codec.BOOL, ByteBufCodecs.BOOL);
 		}
 	}
 
 	public static final class ByteSerializer extends PrimitiveCodecSerializer<Byte> {
 
-		public ByteSerializer() {
+		ByteSerializer() {
 			super(Codec.BYTE, ByteBufCodecs.BYTE);
 		}
 	}
 
 	public static final class ShortSerializer extends PrimitiveCodecSerializer<Short> {
 
-		public ShortSerializer() {
+		ShortSerializer() {
 			super(Codec.SHORT, ByteBufCodecs.SHORT);
 		}
 	}
 
 	public static final class IntSerializer extends PrimitiveCodecSerializer<Integer> {
 
-		public IntSerializer() {
+		IntSerializer() {
 			super(Codec.INT, ByteBufCodecs.VAR_INT);
 		}
 	}
 
 	public static final class LongSerializer extends PrimitiveCodecSerializer<Long> {
 
-		public LongSerializer() {
+		LongSerializer() {
 			super(Codec.LONG, ByteBufCodecs.VAR_LONG);
 		}
 	}
 
 	public static final class FloatSerializer extends PrimitiveCodecSerializer<Float> {
 
-		public FloatSerializer() {
+		FloatSerializer() {
 			super(Codec.FLOAT, ByteBufCodecs.FLOAT);
 		}
 	}
 
 	public static final class DoubleSerializer extends PrimitiveCodecSerializer<Double> {
 
-		public DoubleSerializer() {
+		DoubleSerializer() {
 			super(Codec.DOUBLE, ByteBufCodecs.DOUBLE);
 		}
 	}
 
 	public static final class CharSerializer extends PrimitiveCodecSerializer<Character> {
 
-		public CharSerializer() {
+		CharSerializer() {
 			super(CharSerializer.CODEC, ByteBufCodecs.VAR_INT.map(i -> (char) i.intValue(), c -> (int) c));
 		}
 
@@ -120,7 +121,7 @@ abstract class PrimitiveCodecSerializer<T> extends Serializer<T> {
 
 	public static final class StringSerializer extends PrimitiveCodecSerializer<String> {
 
-		public StringSerializer() {
+		StringSerializer() {
 			super(Codec.STRING, ByteBufCodecs.STRING_UTF8);
 		}
 	}

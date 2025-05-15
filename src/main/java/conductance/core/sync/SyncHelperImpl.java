@@ -2,9 +2,12 @@ package conductance.core.sync;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
+import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.sync.Checker;
@@ -19,6 +22,7 @@ import conductance.Conductance;
 
 public final class SyncHelperImpl implements SyncHelper {
 
+	private static final CompoundTag NULL_TAG = Util.make(new CompoundTag(), nbt -> nbt.putString("NULL", "NULL"));
 	public static final SyncHelperImpl INSTANCE = new SyncHelperImpl();
 
 	private SyncHelperImpl() {
@@ -70,18 +74,27 @@ public final class SyncHelperImpl implements SyncHelper {
 		return SyncFieldSerializerRegisterImpl.INSTANCE.getSerializerByHandler(handler);
 	}
 
-	@Nullable
 	public static Tag writeRefToNbt(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
 		final ReferenceHandler handler = CAPI.syncHelper().getHandlerByType(ref.getKey().getRawType());
 		if (handler == null) {
 			Conductance.LOGGER.warn("Cannot serialize field {} because no matching {} was registered", ref.getKey().getRawField(), ReferenceHandler.class.getName());
-			return null;
+			return SyncHelperImpl.NULL_TAG;
+		}
+		if (ref.getKey().hasSpecialHandling()) {
+			final Object currentValue = ref.getValueHolder().get();
+			if (currentValue == null) {
+				return SyncHelperImpl.NULL_TAG;
+			}
+			final CompoundTag serializedField = ((ReferenceKeyImpl) ref.getKey()).specialSerialize(currentValue);
+			return Util.make(new CompoundTag(), nbt -> {
+				nbt.put("k", serializedField);
+				final Serializer<?> serializer = handler.readFromReference(operation, ref, registries);
+				final Tag tag = serializer.serialize(operation, ref, registries);
+				nbt.put("v", Objects.requireNonNullElse(tag, SyncHelperImpl.NULL_TAG));
+			});
 		}
 		final Serializer<?> serializer = handler.readFromReference(operation, ref, registries);
-		if (serializer.getData() == null) {
-			return null;
-		}
-		return serializer.serialize(operation, ref, registries);
+		return Objects.requireNonNullElse(serializer.serialize(operation, ref, registries), SyncHelperImpl.NULL_TAG);
 	}
 
 	public static void readRefFromNbt(final Operation operation, final Reference ref, final Tag tag, final HolderLookup.Provider registries) {
@@ -90,8 +103,24 @@ public final class SyncHelperImpl implements SyncHelper {
 			Conductance.LOGGER.warn("Cannot deserialize field {} because no matching {} was registered", ref.getKey().getRawField(), ReferenceHandler.class.getName());
 			return;
 		}
+		if (ref.getKey().hasSpecialHandling()) {
+			if (SyncHelperImpl.NULL_TAG.equals(tag)) {
+				ref.getValueHolder().set(null);
+				return;
+			}
+			final CompoundTag serializedField = ((CompoundTag) tag).getCompound("k");
+			Object currentValue = ref.getValueHolder().get();
+			if (currentValue == null || !Objects.equals(serializedField, ((ReferenceKeyImpl) ref.getKey()).specialSerialize(currentValue))) {
+				currentValue = ((ReferenceKeyImpl) ref.getKey()).specialDeserialize(serializedField);
+				ref.getValueHolder().set(currentValue);
+			}
+			final Serializer<?> serializer = CAPI.syncHelper().getSerializerByHandler(handler);
+			serializer.deserialize(operation, ref, ((CompoundTag) tag).getCompound("v"), registries);
+			handler.writeToReference(operation, ref, serializer, registries);
+			return;
+		}
 		final Serializer<?> serializer = CAPI.syncHelper().getSerializerByHandler(handler);
-		serializer.deserialize(operation, ref, tag, registries);
+		serializer.deserialize(operation, ref, SyncHelperImpl.NULL_TAG.equals(tag) ? null : tag, registries);
 		handler.writeToReference(operation, ref, serializer, registries);
 	}
 
@@ -101,10 +130,19 @@ public final class SyncHelperImpl implements SyncHelper {
 			Conductance.LOGGER.warn("Cannot serialize field {} because no matching {} was registered", ref.getKey().getRawField(), ReferenceHandler.class.getName());
 			return;
 		}
-		final Serializer<?> serializer = handler.readFromReference(operation, ref, registries);
-		if (serializer.getData() == null) {
+		if (ref.getKey().hasSpecialHandling()) {
+			final Object currentValue = ref.getValueHolder().get();
+			if (currentValue == null) {
+				buf.writeBoolean(false);
+				return;
+			}
+			buf.writeBoolean(true);
+			buf.writeNbt(((ReferenceKeyImpl) ref.getKey()).specialSerialize(currentValue));
+			final Serializer<?> serializer = handler.readFromReference(operation, ref, registries);
+			serializer.toNetwork(operation, ref, buf, registries);
 			return;
 		}
+		final Serializer<?> serializer = handler.readFromReference(operation, ref, registries);
 		serializer.toNetwork(operation, ref, buf, registries);
 	}
 
@@ -114,15 +152,42 @@ public final class SyncHelperImpl implements SyncHelper {
 			Conductance.LOGGER.warn("Cannot deserialize field {} because no matching {} was registered", ref.getKey().getRawField(), ReferenceHandler.class.getName());
 			return;
 		}
+		if (ref.getKey().hasSpecialHandling()) {
+			if (!buf.readBoolean()) {
+				if (map.hasSyncClientUpdateListeners(ref.getKey())) {
+					final Object oldValue = ref.getValueHolder().get();
+					ref.getValueHolder().set(null);
+					map.notifySyncClientUpdateListeners(ref, oldValue, null);
+				} else {
+					ref.getValueHolder().set(null);
+				}
+				return;
+			}
+			final CompoundTag serializedField = buf.readNbt();
+			final Object oldValue = ref.getValueHolder().get();
+			Object currentValue = oldValue;
+			if (currentValue == null || !Objects.equals(serializedField, ((ReferenceKeyImpl) ref.getKey()).specialSerialize(currentValue))) {
+				currentValue = ((ReferenceKeyImpl) ref.getKey()).specialDeserialize(serializedField);
+				ref.getValueHolder().set(currentValue);
+			}
+			final Serializer<?> serializer = CAPI.syncHelper().getSerializerByHandler(handler);
+			serializer.fromNetwork(operation, ref, buf, registries);
+			handler.writeToReference(operation, ref, serializer, registries);
+			final Object newValue = ref.getValueHolder().get();
+			map.notifySyncClientUpdateListeners(ref, oldValue, newValue);
+			return;
+		}
 		if (map.hasSyncClientUpdateListeners(ref.getKey())) {
 			final Object oldValue = ref.getValueHolder().get();
-			final Serializer<?> serializer = handler.readFromReference(operation, ref, registries);
+			final Serializer<?> serializer = CAPI.syncHelper().getSerializerByHandler(handler);
 			serializer.fromNetwork(operation, ref, buf, registries);
+			handler.writeToReference(operation, ref, serializer, registries);
 			final Object newValue = ref.getValueHolder().get();
 			map.notifySyncClientUpdateListeners(ref, oldValue, newValue);
 		} else {
-			final Serializer<?> serializer = handler.readFromReference(operation, ref, registries);
+			final Serializer<?> serializer = CAPI.syncHelper().getSerializerByHandler(handler);
 			serializer.fromNetwork(operation, ref, buf, registries);
+			handler.writeToReference(operation, ref, serializer, registries);
 		}
 	}
 }

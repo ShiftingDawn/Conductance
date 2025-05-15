@@ -5,6 +5,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.sync.Operation;
 import conductance.api.machine.sync.Reference;
 import conductance.api.machine.sync.Serializer;
@@ -12,23 +13,23 @@ import conductance.api.machine.sync.Serializer;
 final class UUIDSerializer extends Serializer<UUID> {
 
 	@Override
+	@Nullable
 	public Tag serialize(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
-		return StringTag.valueOf(this.getData().toString());
+		return this.serialize(data -> StringTag.valueOf(data.toString()));
 	}
 
 	@Override
-	public void deserialize(final Operation operation, final Reference ref, final Tag tag, final HolderLookup.Provider registries) {
-		final StringTag stringTag = this.testTag(tag, StringTag.class);
-		this.setData(UUID.fromString(stringTag.getAsString()));
+	public void deserialize(final Operation operation, final Reference ref, @Nullable final Tag tag, final HolderLookup.Provider registries) {
+		this.deserialize(tag, StringTag.class, t -> UUID.fromString(t.getAsString()));
 	}
 
 	@Override
 	public void toNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		buf.writeUUID(this.getData());
+		this.write(buf, buf::writeUUID);
 	}
 
 	@Override
 	public void fromNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		this.setData(buf.readUUID());
+		this.read(buf, buf::readUUID);
 	}
 }

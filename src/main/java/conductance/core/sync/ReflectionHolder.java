@@ -21,7 +21,8 @@ abstract class ReflectionHolder implements Holder {
 	public abstract void set(Object instance, Object data) throws IllegalAccessException;
 
 	@Override
-	public @Nullable Object get() {
+	@Nullable
+	public Object get() {
 		try {
 			return this.get(this.instance);
 		} catch (final IllegalAccessException e) {

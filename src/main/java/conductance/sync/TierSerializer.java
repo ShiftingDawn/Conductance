@@ -16,22 +16,21 @@ public class TierSerializer extends Serializer<Tier> {
 	@Override
 	@Nullable
 	public Tag serialize(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
-		return StringTag.valueOf(this.getData().getRegistryKey());
+		return this.serialize(data -> StringTag.valueOf(data.getRegistryKey()));
 	}
 
 	@Override
 	public void deserialize(final Operation operation, final Reference ref, final Tag tag, final HolderLookup.Provider registries) {
-		final StringTag stringTag = this.testTag(tag, StringTag.class);
-		this.setData(CAPI.regs().tiers().get(stringTag.getAsString()));
+		this.deserialize(tag, StringTag.class, t -> CAPI.regs().tiers().get(t.getAsString()));
 	}
 
 	@Override
 	public void toNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		buf.writeUtf(this.getData().getRegistryKey());
+		this.write(buf, data -> buf.writeUtf(data.getRegistryKey()));
 	}
 
 	@Override
 	public void fromNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		this.setData(CAPI.regs().tiers().get(buf.readUtf()));
+		this.read(buf, () -> CAPI.regs().tiers().get(buf.readUtf()));
 	}
 }

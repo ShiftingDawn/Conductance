@@ -26,8 +26,8 @@ import conductance.api.plugin.SyncFieldSerializerRegister;
 
 public final class SyncFieldSerializerRegisterImpl implements SyncFieldSerializerRegister {
 
-	public static final SyncFieldSerializerRegisterImpl INSTANCE = new SyncFieldSerializerRegisterImpl();
 	private static final AtomicBoolean INITIALIZED = new AtomicBoolean(false);
+	public static final SyncFieldSerializerRegisterImpl INSTANCE = new SyncFieldSerializerRegisterImpl();
 
 	private final Object2IntMap<Class<?>> serializerRegistry = new Object2IntArrayMap<>();
 	private final Int2ObjectMap<Supplier<? extends Serializer<?>>> serializerFactories = new Int2ObjectArrayMap<>();

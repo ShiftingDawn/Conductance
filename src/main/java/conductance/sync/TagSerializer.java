@@ -17,17 +17,17 @@ public class TagSerializer extends Serializer<Tag> {
 	}
 
 	@Override
-	public void deserialize(final Operation operation, final Reference ref, final Tag tag, final HolderLookup.Provider registries) {
+	public void deserialize(final Operation operation, final Reference ref, @Nullable final Tag tag, final HolderLookup.Provider registries) {
 		this.setData(tag);
 	}
 
 	@Override
 	public void toNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		buf.writeNbt(this.getData());
+		this.write(buf, buf::writeNbt);
 	}
 
 	@Override
 	public void fromNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		this.setData(buf.readNbt());
+		this.read(buf, buf::readNbt);
 	}
 }

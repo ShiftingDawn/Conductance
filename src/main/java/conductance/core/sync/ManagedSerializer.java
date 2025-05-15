@@ -15,38 +15,21 @@ class ManagedSerializer extends Serializer<IManaged> {
 	@Override
 	@Nullable
 	public Tag serialize(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
-		if (ref.getValueHolder().get() instanceof final IManaged managed) {
-			return managed.getDataMap().serialize(operation, registries);
-		} else {
-			throw new IllegalArgumentException("Field %s is not an instance of %s!".formatted(ref.getKey().getRawField(), IManaged.class.getName()));
-		}
+		return this.serializeRaw(ref, IManaged.class, managed -> managed.getDataMap().serialize(operation, registries));
 	}
 
 	@Override
-	public void deserialize(final Operation operation, final Reference ref, final Tag tag, final HolderLookup.Provider registries) {
-		final CompoundTag compoundTag = this.testTag(tag, CompoundTag.class);
-		if (ref.getValueHolder().get() instanceof final IManaged managed) {
-			managed.getDataMap().deserialize(operation, compoundTag, registries);
-		} else {
-			throw new IllegalArgumentException("Field %s is not an instance of %s!".formatted(ref.getKey().getRawField(), IManaged.class.getName()));
-		}
+	public void deserialize(final Operation operation, final Reference ref, @Nullable final Tag tag, final HolderLookup.Provider registries) {
+		this.deserializeRaw(ref, IManaged.class, tag, CompoundTag.class, (managed, t) -> managed.getDataMap().deserialize(operation, t, registries));
 	}
 
 	@Override
 	public void toNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		if (ref.getValueHolder().get() instanceof final IManaged managed) {
-			managed.getDataMap().toNetwork(operation, buf, registries);
-		} else {
-			throw new IllegalArgumentException("Field %s is not an instance of %s!".formatted(ref.getKey().getRawField(), IManaged.class.getName()));
-		}
+		this.writeRaw(ref, IManaged.class, buf, managed -> managed.getDataMap().toNetwork(operation, buf, registries));
 	}
 
 	@Override
 	public void fromNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		if (ref.getValueHolder().get() instanceof final IManaged managed) {
-			managed.getDataMap().fromNetwork(operation, buf, registries);
-		} else {
-			throw new IllegalArgumentException("Field %s is not an instance of %s!".formatted(ref.getKey().getRawField(), IManaged.class.getName()));
-		}
+		this.readRaw(ref, IManaged.class, buf, managed -> managed.getDataMap().fromNetwork(operation, buf, registries));
 	}
 }

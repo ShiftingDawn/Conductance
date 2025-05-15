@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -55,7 +56,9 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 
 	public ManagedDataMapImpl(final IManaged managed) {
 		this.managed = managed;
-		this.fields = Util.make(new ArrayList<ReferenceKeyImpl>(), list -> ManagedDataMapImpl.collectFields(managed.getClass(), list)).toArray(ReferenceKeyImpl[]::new);
+		this.fields = Util.make(new ArrayList<ReferenceKeyImpl>(), list ->
+				ManagedDataMapImpl.collectFields(managed.getClass(), managed, list)
+		).toArray(ReferenceKeyImpl[]::new);
 
 		final Map<ReferenceKey, Reference> referenceMap = new HashMap<>();
 		final ArrayList<ReferenceKey> persistenceFieldList = new ArrayList<>();
@@ -142,17 +145,8 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 		this.references.forEach((key, reference) -> {
 			if (!key.hasSpecialHandling()) {
 				reference.tick();
-			} else {
-				try {
-					final Method method = ((ReferenceKeyImpl) key).getSpecialHandlerTestDirtyMethod();
-					assert method != null;
-					final boolean dirty = (boolean) method.invoke(this.managed, reference.getValueHolder().get());
-					if (dirty) {
-						reference.markDirty();
-					}
-				} catch (final Throwable e) {
-					Conductance.LOGGER.error("An error occurred while calling field dirty test method", e);
-				}
+			} else if (((ReferenceKeyImpl) key).specialTestDirty(reference.getValueHolder().get())) {
+				reference.markDirty();
 			}
 		});
 	}
@@ -209,11 +203,8 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 		}).forEach(entry -> {
 			try {
 				final Reference ref = this.getReference(entry.getValue());
-				//TODO handle special handling here
 				final Tag serializedRef = SyncHelperImpl.writeRefToNbt(operation, ref, registries);
-				if (serializedRef != null) {
-					result.put(entry.getKey(), serializedRef);
-				}
+				result.put(entry.getKey(), serializedRef);
 				ref.clearPersistenceMark();
 			} catch (final Throwable e) {
 				Conductance.LOGGER.error("An error occurred while serializing field {}", entry.getValue().getRawField(), e);
@@ -231,8 +222,7 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 			} else {
 				try {
 					final Reference ref = this.getReference(field);
-					//TODO handle special handling here
-					SyncHelperImpl.readRefFromNbt(operation, ref, nbt.get(tagKey), registries);
+					SyncHelperImpl.readRefFromNbt(operation, ref, Objects.requireNonNull(nbt.get(tagKey)), registries);
 					ref.clearPersistenceMark();
 				} catch (final Throwable e) {
 					Conductance.LOGGER.error("An error occurred while deserializing field {}", field.getRawField(), e);
@@ -254,7 +244,6 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 			try {
 				buf.writeUtf(entry.getKey());
 				final Reference ref = this.getReference(entry.getValue());
-				//TODO handle special handling here
 				SyncHelperImpl.writeRefToNetwork(operation, buf, ref, registries);
 				ref.clearSyncMark();
 			} catch (final Throwable e) {
@@ -274,7 +263,6 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 			} else {
 				try {
 					final Reference ref = this.getReference(field);
-					//TODO handle special handling here
 					SyncHelperImpl.readRefFromNetwork(this, operation, buf, ref, registries);
 					ref.clearSyncMark();
 				} catch (final Throwable e) {
@@ -284,7 +272,7 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 		}
 	}
 
-	private static void collectFields(final Class<?> clazz, final List<ReferenceKeyImpl> list) {
+	private static void collectFields(final Class<?> clazz, final Object containingInstance, final List<ReferenceKeyImpl> list) {
 		for (final Field field : clazz.getDeclaredFields()) {
 			if (!Modifier.isStatic(field.getModifiers())) {
 				final boolean persist = field.isAnnotationPresent(Persisted.class);
@@ -293,7 +281,7 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 					if (!SyncFieldSerializerRegisterImpl.INSTANCE.canHandleType(field.getGenericType())) {
 						throw new IllegalStateException("Field " + field + " is marked for managing but is not supported.");
 					}
-					list.add(Util.make(ReferenceKeyImpl.of(field), key -> {
+					list.add(Util.make(ReferenceKeyImpl.of(field, containingInstance), key -> {
 						if (key.hasSpecialHandling()) {
 							final Method[] methods = ManagedDataMapImpl.findSpecialHandlerMethods(key.getRawField(), clazz);
 							key.setSpecialHandlerTestDirtyMethod(methods[0]);
@@ -305,7 +293,7 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 			}
 		}
 		if (clazz.getSuperclass() != Object.class) {
-			ManagedDataMapImpl.collectFields(clazz.getSuperclass(), list);
+			ManagedDataMapImpl.collectFields(clazz.getSuperclass(), containingInstance, list);
 		}
 	}
 

@@ -46,6 +46,10 @@ final class ArrayHandler implements ReferenceHandler {
 			throw new IllegalStateException("Field is not an array");
 		}
 		final ArraySerializer serializer = this.testSerializer(rawSerializer, ArraySerializer.class);
+		if (serializer.getData() == null) {
+			ref.getValueHolder().set(null);
+			return;
+		}
 		if (currentData == null || Array.getLength(currentData) != serializer.getData().length) {
 			currentData = Array.newInstance(this.contentType, serializer.getData().length);
 			ref.getValueHolder().set(currentData);

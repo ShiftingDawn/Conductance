@@ -17,22 +17,21 @@ public class RecipeTypeSerializer extends Serializer<NCRecipeType> {
 	@Override
 	@Nullable
 	public Tag serialize(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
-		return StringTag.valueOf(this.getData().getRegistryKey().toString());
+		return this.serialize(data -> StringTag.valueOf(data.getRegistryKey().toString()));
 	}
 
 	@Override
-	public void deserialize(final Operation operation, final Reference ref, final Tag tag, final HolderLookup.Provider registries) {
-		final StringTag stringTag = this.testTag(tag, StringTag.class);
-		this.setData(CAPI.regs().recipeTypes().get(ResourceLocation.parse(stringTag.getAsString())));
+	public void deserialize(final Operation operation, final Reference ref, @Nullable final Tag tag, final HolderLookup.Provider registries) {
+		this.deserialize(tag, StringTag.class, t -> CAPI.regs().recipeTypes().get(ResourceLocation.parse(t.getAsString())));
 	}
 
 	@Override
 	public void toNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		buf.writeResourceLocation(this.getData().getRegistryKey());
+		this.write(buf, data -> buf.writeResourceLocation(data.getRegistryKey()));
 	}
 
 	@Override
 	public void fromNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		this.setData(CAPI.regs().recipeTypes().get(buf.readResourceLocation()));
+		this.read(buf, () -> CAPI.regs().recipeTypes().get(buf.readResourceLocation()));
 	}
 }

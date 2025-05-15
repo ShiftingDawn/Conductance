@@ -38,7 +38,7 @@ abstract class PrimitiveHandler<T> implements ReferenceHandler {
 
 	public static final class BooleanHandler extends PrimitiveHandler<Boolean> {
 
-		public BooleanHandler() {
+		BooleanHandler() {
 			super(boolean.class, Boolean.class, PrimitiveCodecSerializer.BooleanSerializer.class,
 					val -> Util.make(new PrimitiveCodecSerializer.BooleanSerializer(), s -> s.setData((boolean) val)));
 		}
@@ -46,7 +46,7 @@ abstract class PrimitiveHandler<T> implements ReferenceHandler {
 
 	public static final class ByteHandler extends PrimitiveHandler<Byte> {
 
-		public ByteHandler() {
+		ByteHandler() {
 			super(byte.class, Byte.class, PrimitiveCodecSerializer.ByteSerializer.class,
 					val -> Util.make(new PrimitiveCodecSerializer.ByteSerializer(), s -> s.setData((byte) val)));
 		}
@@ -54,7 +54,7 @@ abstract class PrimitiveHandler<T> implements ReferenceHandler {
 
 	public static final class ShortHandler extends PrimitiveHandler<Short> {
 
-		public ShortHandler() {
+		ShortHandler() {
 			super(short.class, Short.class, PrimitiveCodecSerializer.ShortSerializer.class,
 					val -> Util.make(new PrimitiveCodecSerializer.ShortSerializer(), s -> s.setData((short) val)));
 		}
@@ -62,7 +62,7 @@ abstract class PrimitiveHandler<T> implements ReferenceHandler {
 
 	public static final class IntHandler extends PrimitiveHandler<Integer> {
 
-		public IntHandler() {
+		IntHandler() {
 			super(int.class, Integer.class, PrimitiveCodecSerializer.IntSerializer.class,
 					val -> Util.make(new PrimitiveCodecSerializer.IntSerializer(), s -> s.setData((int) val)));
 		}
@@ -70,7 +70,7 @@ abstract class PrimitiveHandler<T> implements ReferenceHandler {
 
 	public static final class LongHandler extends PrimitiveHandler<Long> {
 
-		public LongHandler() {
+		LongHandler() {
 			super(long.class, Long.class, PrimitiveCodecSerializer.LongSerializer.class,
 					val -> Util.make(new PrimitiveCodecSerializer.LongSerializer(), s -> s.setData((long) val)));
 		}
@@ -78,7 +78,7 @@ abstract class PrimitiveHandler<T> implements ReferenceHandler {
 
 	public static final class FloatHandler extends PrimitiveHandler<Float> {
 
-		public FloatHandler() {
+		FloatHandler() {
 			super(float.class, Float.class, PrimitiveCodecSerializer.FloatSerializer.class,
 					val -> Util.make(new PrimitiveCodecSerializer.FloatSerializer(), s -> s.setData((float) val)));
 		}
@@ -86,7 +86,7 @@ abstract class PrimitiveHandler<T> implements ReferenceHandler {
 
 	public static final class DoubleHandler extends PrimitiveHandler<Double> {
 
-		public DoubleHandler() {
+		DoubleHandler() {
 			super(double.class, Double.class, PrimitiveCodecSerializer.DoubleSerializer.class,
 					val -> Util.make(new PrimitiveCodecSerializer.DoubleSerializer(), s -> s.setData((double) val)));
 		}
@@ -94,7 +94,7 @@ abstract class PrimitiveHandler<T> implements ReferenceHandler {
 
 	public static final class CharHandler extends PrimitiveHandler<Character> {
 
-		public CharHandler() {
+		CharHandler() {
 			super(char.class, Character.class, PrimitiveCodecSerializer.CharSerializer.class,
 					val -> Util.make(new PrimitiveCodecSerializer.CharSerializer(), s -> s.setData((char) val)));
 		}
@@ -102,7 +102,7 @@ abstract class PrimitiveHandler<T> implements ReferenceHandler {
 
 	public static final class StringHandler extends PrimitiveHandler<String> {
 
-		public StringHandler() {
+		StringHandler() {
 			super(String.class, null, PrimitiveCodecSerializer.StringSerializer.class,
 					val -> Util.make(new PrimitiveCodecSerializer.StringSerializer(), s -> s.setData((String) val)));
 		}

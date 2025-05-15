@@ -49,6 +49,9 @@ final class CollectionHandler implements ReferenceHandler {
 			throw new IllegalStateException("Field is not a collection");
 		}
 		final ArraySerializer serializer = this.testSerializer(rawSerializer, ArraySerializer.class);
+		if (serializer.getData() == null) {
+			ref.getValueHolder().set(null);
+		}
 		collection.clear();
 		for (final Serializer<?> item : serializer.getData()) {
 			final Holder itemHolder = new SimpleHolder();

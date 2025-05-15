@@ -8,6 +8,7 @@ import conductance.api.machine.sync.Operation;
 import conductance.api.machine.sync.Reference;
 import conductance.api.machine.sync.ReferenceHandler;
 import conductance.api.machine.sync.Serializer;
+import conductance.Conductance;
 
 public class NBTSerializableHandler implements ReferenceHandler {
 
@@ -19,16 +20,24 @@ public class NBTSerializableHandler implements ReferenceHandler {
 	@Override
 	public Serializer<?> readFromReference(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
 		final INBTSerializable<?> serializable = (INBTSerializable<?>) ref.getValueHolder().get();
-		assert serializable != null;
-		return Util.make(new TagSerializer(), serializer -> serializer.setData(serializable.serializeNBT(registries)));
+		return Util.make(new TagSerializer(), serializer -> {
+			if (serializable != null) {
+				serializer.setData(serializable.serializeNBT(registries));
+			}
+		});
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void writeToReference(final Operation operation, final Reference ref, final Serializer<?> rawSerializer, final HolderLookup.Provider registries) {
 		final TagSerializer serializer = this.testSerializer(rawSerializer, TagSerializer.class);
+		if (serializer.getData() == null) {
+			Conductance.LOGGER.warn("Encountered should not happen ", new Exception());
+			return;
+		}
 		final INBTSerializable<Tag> serializable = (INBTSerializable<Tag>) ref.getValueHolder().get();
-		assert serializable != null;
-		serializable.deserializeNBT(registries, serializer.getData());
+		if (serializable != null) {
+			serializable.deserializeNBT(registries, serializer.getData());
+		}
 	}
 }
