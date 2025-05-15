@@ -13,10 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.level.Level;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
@@ -32,8 +34,10 @@ import conductance.api.machine.sync.Persisted;
 import conductance.api.machine.sync.Reference;
 import conductance.api.machine.sync.ReferenceKey;
 import conductance.api.machine.sync.ReferenceSynchronizedListener;
+import conductance.api.machine.sync.RequireRenderUpdate;
 import conductance.api.machine.sync.SpecialHandled;
 import conductance.api.machine.sync.Synchronized;
+import conductance.api.util.MiscUtils;
 import conductance.Conductance;
 
 public class ManagedDataMapImpl implements ManagedDataMap {
@@ -123,6 +127,11 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 							throw new RuntimeException(e);
 						}
 					});
+				}
+				if (key.getRawField().isAnnotationPresent(RequireRenderUpdate.class)) {
+					listeners.add((oldValue, newValue) -> MiscUtils.requestRenderUpdate(
+							SyncHelperImpl.tryGetLevel(managed), SyncHelperImpl.tryGetBlockPos(managed), SyncHelperImpl.tryGetBlockState(managed)
+					));
 				}
 			}
 		}));

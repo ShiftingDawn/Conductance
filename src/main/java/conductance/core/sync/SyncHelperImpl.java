@@ -3,11 +3,14 @@ package conductance.core.sync;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.sync.Checker;
@@ -74,7 +77,7 @@ public final class SyncHelperImpl implements SyncHelper {
 		return SyncFieldSerializerRegisterImpl.INSTANCE.getSerializerByHandler(handler);
 	}
 
-	public static Tag writeRefToNbt(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
+	static Tag writeRefToNbt(final Operation operation, final Reference ref, final HolderLookup.Provider registries) {
 		final ReferenceHandler handler = CAPI.syncHelper().getHandlerByType(ref.getKey().getRawType());
 		if (handler == null) {
 			Conductance.LOGGER.warn("Cannot serialize field {} because no matching {} was registered", ref.getKey().getRawField(), ReferenceHandler.class.getName());
@@ -97,7 +100,7 @@ public final class SyncHelperImpl implements SyncHelper {
 		return Objects.requireNonNullElse(serializer.serialize(operation, ref, registries), SyncHelperImpl.NULL_TAG);
 	}
 
-	public static void readRefFromNbt(final Operation operation, final Reference ref, final Tag tag, final HolderLookup.Provider registries) {
+	static void readRefFromNbt(final Operation operation, final Reference ref, final Tag tag, final HolderLookup.Provider registries) {
 		final ReferenceHandler handler = CAPI.syncHelper().getHandlerByType(ref.getKey().getRawType());
 		if (handler == null) {
 			Conductance.LOGGER.warn("Cannot deserialize field {} because no matching {} was registered", ref.getKey().getRawField(), ReferenceHandler.class.getName());
@@ -124,7 +127,7 @@ public final class SyncHelperImpl implements SyncHelper {
 		handler.writeToReference(operation, ref, serializer, registries);
 	}
 
-	public static void writeRefToNetwork(final Operation operation, final RegistryFriendlyByteBuf buf, final Reference ref, final HolderLookup.Provider registries) {
+	static void writeRefToNetwork(final Operation operation, final RegistryFriendlyByteBuf buf, final Reference ref, final HolderLookup.Provider registries) {
 		final ReferenceHandler handler = CAPI.syncHelper().getHandlerByType(ref.getKey().getRawType());
 		if (handler == null) {
 			Conductance.LOGGER.warn("Cannot serialize field {} because no matching {} was registered", ref.getKey().getRawField(), ReferenceHandler.class.getName());
@@ -146,7 +149,7 @@ public final class SyncHelperImpl implements SyncHelper {
 		serializer.toNetwork(operation, ref, buf, registries);
 	}
 
-	public static void readRefFromNetwork(final ManagedDataMapImpl map, final Operation operation, final RegistryFriendlyByteBuf buf, final Reference ref, final HolderLookup.Provider registries) {
+	static void readRefFromNetwork(final ManagedDataMapImpl map, final Operation operation, final RegistryFriendlyByteBuf buf, final Reference ref, final HolderLookup.Provider registries) {
 		final ReferenceHandler handler = CAPI.syncHelper().getHandlerByType(ref.getKey().getRawType());
 		if (handler == null) {
 			Conductance.LOGGER.warn("Cannot deserialize field {} because no matching {} was registered", ref.getKey().getRawField(), ReferenceHandler.class.getName());
@@ -189,5 +192,27 @@ public final class SyncHelperImpl implements SyncHelper {
 			serializer.fromNetwork(operation, ref, buf, registries);
 			handler.writeToReference(operation, ref, serializer, registries);
 		}
+	}
+
+	@Nullable
+	static Level tryGetLevel(final IManaged managed) {
+		if (managed instanceof final BlockEntity blockEntity) {
+			return blockEntity.getLevel();
+		}
+		throw new IllegalStateException("Cannot get level");
+	}
+
+	static BlockPos tryGetBlockPos(final IManaged managed) {
+		if (managed instanceof final BlockEntity blockEntity) {
+			return blockEntity.getBlockPos();
+		}
+		throw new IllegalStateException("Cannot get block pos");
+	}
+
+	static BlockState tryGetBlockState(final IManaged managed) {
+		if (managed instanceof final BlockEntity blockEntity) {
+			return blockEntity.getBlockState();
+		}
+		throw new IllegalStateException("Cannot get block state");
 	}
 }

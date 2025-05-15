@@ -2,6 +2,7 @@ package conductance.api.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import net.minecraft.Util;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import conductance.api.CAPI;
 import conductance.api.machine.MachineBlockEntity;
@@ -78,6 +80,18 @@ public final class MiscUtils {
 			}
 		}
 		return fallback;
+	}
+
+	public static void requestRenderUpdate(@Nullable final Level level, final BlockPos pos, @Nullable final BlockState state) {
+		if (level == null) {
+			return;
+		}
+		final BlockState state2 = Objects.requireNonNullElseGet(state, () -> level.getBlockState(pos));
+		if (level.isClientSide) {
+			level.sendBlockUpdated(pos, state2, state2, 1 << 3);
+		} else {
+			level.blockEvent(pos, state2.getBlock(), 1, 0);
+		}
 	}
 
 	private MiscUtils() {
