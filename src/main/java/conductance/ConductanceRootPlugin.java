@@ -20,7 +20,6 @@ import conductance.api.plugin.MaterialTextureSetRegister;
 import conductance.api.plugin.MaterialTextureTypeRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.MaterialUnitOverrideMap;
-import conductance.api.plugin.PeriodicElementBuilder;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.api.plugin.RecipeTypeRegister;
@@ -37,7 +36,6 @@ import conductance.init.ConductanceMaterialTextureSets;
 import conductance.init.ConductanceMaterialTextureTypes;
 import conductance.init.ConductanceMaterialTraits;
 import conductance.init.ConductanceMaterials;
-import conductance.init.ConductancePeriodicElements;
 import conductance.init.ConductanceRecipeElementTypes;
 import conductance.init.ConductanceRecipeTypes;
 import conductance.init.ConductanceSyncFieldSerializers;
@@ -72,11 +70,6 @@ import static conductance.api.NCMaterials.WOOD;
 
 @ConductancePlugin(modid = CAPI.MOD_ID)
 public final class ConductanceRootPlugin implements IConductancePlugin {
-
-	@Override
-	public void registerPeriodicElements(final PeriodicElementBuilder builder) {
-		ConductancePeriodicElements.init(builder);
-	}
 
 	@Override
 	public void registerMaterialTextureTypes(final MaterialTextureTypeRegister register) {

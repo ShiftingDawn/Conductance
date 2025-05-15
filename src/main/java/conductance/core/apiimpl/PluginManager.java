@@ -15,6 +15,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.serialization.Codec;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
 import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
@@ -31,10 +32,12 @@ import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
+import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.CoverRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
+import conductance.api.plugin.RegisterPeriodicElementsEvent;
 import conductance.Conductance;
 import conductance.core.cover.CoverTypeImpl;
 import conductance.core.machine.MachineBuilderImpl;
@@ -47,6 +50,7 @@ import conductance.core.sync.SyncFieldSerializerRegisterImpl;
 //TODO add KubeJS event dispatches to plugin dispatches
 public final class PluginManager {
 
+	private static final Type ANNOTATION_TYPE = Type.getType(ConductancePluginListener.class);
 	private static final HashMap<IConductancePlugin, String> PLUGINS = new HashMap<>();
 	@SuppressWarnings("NotNullFieldNotInitialized")
 	private static IConductancePlugin rootPlugin;
@@ -66,6 +70,20 @@ public final class PluginManager {
 	}
 
 	private static void findPlugins() {
+		for (final ModFileScanData scanData : ModList.get().getAllScanData()) {
+			for (final ModFileScanData.AnnotationData annotationData : scanData.getAnnotations()) {
+				if (Objects.equals(PluginManager.ANNOTATION_TYPE, annotationData.annotationType())) {
+					try {
+						final Class<?> cls = Class.forName(annotationData.memberName());
+						final ConductancePluginListener annotation = cls.getAnnotation(ConductancePluginListener.class);
+						PluginEventBus.registerClass(cls, annotation);
+						Conductance.LOGGER.debug("Registered PluginListener {}", annotationData.memberName());
+					} catch (final ClassNotFoundException e) {
+						Conductance.LOGGER.error("Could not register PluginListener {}", annotationData.memberName(), e);
+					}
+				}
+			}
+		}
 		final HashSet<String> pluginClasses = new HashSet<>();
 		ModList.get().getAllScanData().forEach(scanData -> scanData.getAnnotations().stream().filter(annotationData -> Objects.equals(annotationData.annotationType(), Type.getType(ConductancePlugin.class)))
 				.forEach(annotationData -> pluginClasses.add(annotationData.memberName())));
@@ -83,10 +101,13 @@ public final class PluginManager {
 	}
 
 	public static void dispatchPeriodicElements() {
-		PluginManager.execute((plugin, modid) -> plugin.registerPeriodicElements((protons, neutrons, registryName, name, symbol, parent) -> Util.make(
-				new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null), result -> {
-					CAPI.regs().periodicElements().register(result.getRegistryKey(), result);
-				})));
+		PluginEventBus.post(RegisterPeriodicElementsEvent.class, modid -> {
+			final RegisterPeriodicElementsEvent.PeriodicElementRegister register = (protons, neutrons, registryName, name, symbol, parent) -> Util.make(
+					new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null),
+					result -> CAPI.regs().periodicElements().register(result.getRegistryKey(), result)
+			);
+			return PluginEventBus.instantiateEvent(RegisterPeriodicElementsEvent.class, register);
+		});
 	}
 
 	public static void dispatchMaterialTextureTypes() {
@@ -164,7 +185,8 @@ public final class PluginManager {
 		PluginManager.execute((plugin, modid) -> plugin.registerCovers(new CoverRegister() {
 
 			@Override
-			public <COVER extends CoverEntity<COVER>> CoverType<COVER> register(final String registryName, final Function<CoverType<COVER>, CoverRenderer> coverRenderer, final CoverEntityConstructor<COVER> constructor) {
+			public <COVER extends CoverEntity<COVER>> CoverType<COVER> register(final String registryName, final Function<CoverType<COVER>, CoverRenderer> coverRenderer,
+					final CoverEntityConstructor<COVER> constructor) {
 				return new CoverTypeImpl<>(ResourceLocation.fromNamespaceAndPath(modid, registryName), coverRenderer, constructor);
 			}
 		}));

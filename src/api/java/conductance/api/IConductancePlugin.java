@@ -14,7 +14,6 @@ import conductance.api.plugin.MaterialTextureSetRegister;
 import conductance.api.plugin.MaterialTextureTypeRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.MaterialUnitOverrideMap;
-import conductance.api.plugin.PeriodicElementBuilder;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.api.plugin.RecipeTypeRegister;
@@ -23,9 +22,6 @@ import conductance.api.plugin.TagRegister;
 import conductance.api.plugin.TierRegister;
 
 public interface IConductancePlugin {
-
-	default void registerPeriodicElements(final PeriodicElementBuilder builder) {
-	}
 
 	default void registerMaterialTextureTypes(final MaterialTextureTypeRegister register) {
 	}
