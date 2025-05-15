@@ -14,6 +14,8 @@ public interface ReferenceKey {
 
 	String getName();
 
+	boolean hasSpecialHandling();
+
 	boolean isPersisted();
 
 	boolean isSynchronized();

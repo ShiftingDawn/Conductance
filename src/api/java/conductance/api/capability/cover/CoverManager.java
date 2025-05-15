@@ -195,7 +195,8 @@ public class CoverManager implements IEnhancedManaged, EnvironmentProvider, Runn
 		}
 	}
 
-	private boolean onCoverDirty(@Nullable final CoverEntity<?> coverEntity) {
+	@SuppressWarnings("unused") //Used by CoverEntities as special handler
+	private boolean testCoverDirty(@Nullable final CoverEntity<?> coverEntity) {
 		if (coverEntity != null) {
 			for (final IRef ref : coverEntity.getSyncStorage().getNonLazyFields()) {
 				ref.update();
@@ -205,6 +206,7 @@ public class CoverManager implements IEnhancedManaged, EnvironmentProvider, Runn
 		return false;
 	}
 
+	@SuppressWarnings("unused") //Used by CoverEntities as special handler
 	private CompoundTag serializeCover(final CoverEntity<?> cover) {
 		return Util.make(new CompoundTag(), nbt -> {
 			nbt.putInt("side", cover.getSide().ordinal());
@@ -212,6 +214,7 @@ public class CoverManager implements IEnhancedManaged, EnvironmentProvider, Runn
 		});
 	}
 
+	@SuppressWarnings("unused") //Used by CoverEntities as special handler
 	private CoverEntity<?> deserializeCover(final CompoundTag nbt) {
 		final ResourceLocation coverId = ResourceLocation.parse(nbt.getString("cover_id"));
 		final Direction side = Direction.values()[nbt.getInt("side")];

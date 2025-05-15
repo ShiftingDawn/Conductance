@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -22,10 +23,6 @@ import conductance.api.machine.sync.Copier;
 import conductance.api.machine.sync.ReferenceHandler;
 import conductance.api.machine.sync.Serializer;
 import conductance.api.plugin.SyncFieldSerializerRegister;
-import conductance.core.sync.handlers.ArrayHandler;
-import conductance.core.sync.handlers.CollectionHandler;
-import conductance.core.sync.handlers.SimpleObjectHandler;
-import conductance.core.sync.serializers.ArraySerializer;
 
 public final class SyncFieldSerializerRegisterImpl implements SyncFieldSerializerRegister {
 
@@ -47,6 +44,19 @@ public final class SyncFieldSerializerRegisterImpl implements SyncFieldSerialize
 	private final Object2ObjectMap<Class<?>, Checker<?>> checkerTypeCache = new Object2ObjectArrayMap<>();
 
 	private SyncFieldSerializerRegisterImpl() {
+		this.register(PrimitiveCodecSerializer.BooleanSerializer.class, PrimitiveCodecSerializer.BooleanSerializer::new, new PrimitiveHandler.BooleanHandler());
+		this.register(PrimitiveCodecSerializer.ByteSerializer.class, PrimitiveCodecSerializer.ByteSerializer::new, new PrimitiveHandler.ByteHandler());
+		this.register(PrimitiveCodecSerializer.ShortSerializer.class, PrimitiveCodecSerializer.ShortSerializer::new, new PrimitiveHandler.ShortHandler());
+		this.register(PrimitiveCodecSerializer.IntSerializer.class, PrimitiveCodecSerializer.IntSerializer::new, new PrimitiveHandler.IntHandler());
+		this.register(PrimitiveCodecSerializer.LongSerializer.class, PrimitiveCodecSerializer.LongSerializer::new, new PrimitiveHandler.LongHandler());
+		this.register(PrimitiveCodecSerializer.FloatSerializer.class, PrimitiveCodecSerializer.FloatSerializer::new, new PrimitiveHandler.FloatHandler());
+		this.register(PrimitiveCodecSerializer.DoubleSerializer.class, PrimitiveCodecSerializer.DoubleSerializer::new, new PrimitiveHandler.DoubleHandler());
+		this.register(PrimitiveCodecSerializer.CharSerializer.class, PrimitiveCodecSerializer.CharSerializer::new, new PrimitiveHandler.CharHandler());
+		this.register(PrimitiveCodecSerializer.StringSerializer.class, PrimitiveCodecSerializer.StringSerializer::new, new PrimitiveHandler.StringHandler());
+		this.register(ArraySerializer.class, ArraySerializer::new);
+		this.register(UUIDSerializer.class, UUIDSerializer::new, UUID.class, true);
+		this.register(PrimitiveCodecSerializer.StringSerializer.class, PrimitiveCodecSerializer.StringSerializer::new, new EnumHandler());
+		this.register(ManagedSerializer.class, ManagedSerializer::new, new ManagedHandler());
 	}
 
 	@Override

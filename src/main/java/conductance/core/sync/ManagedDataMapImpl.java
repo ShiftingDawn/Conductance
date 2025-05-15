@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -32,18 +31,15 @@ import conductance.api.machine.sync.Persisted;
 import conductance.api.machine.sync.Reference;
 import conductance.api.machine.sync.ReferenceKey;
 import conductance.api.machine.sync.ReferenceSynchronizedListener;
+import conductance.api.machine.sync.SpecialHandled;
 import conductance.api.machine.sync.Synchronized;
 import conductance.Conductance;
-import conductance.core.sync.ref.ReferenceImpl;
-import conductance.core.sync.ref.ReferenceKeyImpl;
-import conductance.core.sync.ref.ReflectionHolder;
 
 public class ManagedDataMapImpl implements ManagedDataMap {
 
-	private static final BiFunction<Field, Class<?>, Method> SYNC_LISTENER_CACHE;
 	private final IManaged managed;
-	private final ReferenceKeyImpl[] fields;
-	private final Map<ReferenceKey, ReferenceImpl> references;
+	private final ReferenceKey[] fields;
+	private final Map<ReferenceKey, Reference> references;
 
 	@Getter
 	private final Object2IntMap<ReferenceKey> persistenceFields;
@@ -61,12 +57,12 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 		this.managed = managed;
 		this.fields = Util.make(new ArrayList<ReferenceKeyImpl>(), list -> ManagedDataMapImpl.collectFields(managed.getClass(), list)).toArray(ReferenceKeyImpl[]::new);
 
-		final Map<ReferenceKey, ReferenceImpl> referenceMap = new HashMap<>();
+		final Map<ReferenceKey, Reference> referenceMap = new HashMap<>();
 		final ArrayList<ReferenceKey> persistenceFieldList = new ArrayList<>();
 		final ArrayList<ReferenceKey> syncFieldList = new ArrayList<>();
-		for (final ReferenceKeyImpl field : this.fields) {
+		for (final ReferenceKey field : this.fields) {
 			final ReflectionHolder holder = ReflectionHolder.of(field.getRawField(), managed);
-			final ReferenceImpl reference = ReferenceImpl.of(field, holder);
+			final Reference reference = ReferenceHelper.of(field, holder);
 			referenceMap.put(field, reference);
 			if (field.isPersisted()) {
 				persistenceFieldList.add(field);
@@ -116,16 +112,14 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 				final ArrayList<ReferenceSynchronizedListener<?>> listeners = new ArrayList<>();
 				map.put(key, listeners);
 				if (key.getRawField().isAnnotationPresent(OnSynchronized.class)) {
-					final Method method = ManagedDataMapImpl.SYNC_LISTENER_CACHE.apply(key.getRawField(), managed.getClass());
-					if (method != null) {
-						listeners.add((oldValue, newValue) -> {
-							try {
-								method.invoke(managed, oldValue, newValue);
-							} catch (final IllegalAccessException | InvocationTargetException e) {
-								throw new RuntimeException(e);
-							}
-						});
-					}
+					final Method method = ManagedDataMapImpl.findSyncListenerMethod(key.getRawField(), managed.getClass());
+					listeners.add((oldValue, newValue) -> {
+						try {
+							method.invoke(managed, oldValue, newValue);
+						} catch (final IllegalAccessException | InvocationTargetException e) {
+							throw new RuntimeException(e);
+						}
+					});
 				}
 			}
 		}));
@@ -143,12 +137,28 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 		this.tick();
 	}
 
+	@Override
 	public void tick() {
-		this.references.values().forEach(ReferenceImpl::tick);
+		this.references.forEach((key, reference) -> {
+			if (!key.hasSpecialHandling()) {
+				reference.tick();
+			} else {
+				try {
+					final Method method = ((ReferenceKeyImpl) key).getSpecialHandlerTestDirtyMethod();
+					assert method != null;
+					final boolean dirty = (boolean) method.invoke(this.managed, reference.getValueHolder().get());
+					if (dirty) {
+						reference.markDirty();
+					}
+				} catch (final Throwable e) {
+					Conductance.LOGGER.error("An error occurred while calling field dirty test method", e);
+				}
+			}
+		});
 	}
 
 	@Nullable
-	public ReferenceImpl getReference(final ReferenceKey field) {
+	public Reference getReference(final ReferenceKey field) {
 		return this.references.get(field);
 	}
 
@@ -161,8 +171,13 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 	}
 
 	@Override
+	public boolean isDirty() {
+		return this.hasDirtyPersistentFields() || this.hasDirtySyncFields();
+	}
+
+	@Override
 	public void markDirty() {
-		this.syncFields.keySet().stream().map(this.references::get).forEach(ReferenceImpl::markDirty);
+		this.syncFields.keySet().stream().map(this.references::get).forEach(Reference::markDirty);
 	}
 
 	final boolean hasSyncClientUpdateListeners(final ReferenceKey key) {
@@ -178,8 +193,8 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 				final ReferenceSynchronizedListener<T> listener = (ReferenceSynchronizedListener<T>) l;
 				try {
 					listener.onReferenceSynchronized(oldValue, newValue);
-				} catch (final Throwable t) {
-					Conductance.LOGGER.error("An error occurred while notifying client field sync listeners", t);
+				} catch (final Throwable e) {
+					Conductance.LOGGER.error("An error occurred while notifying client field sync listeners", e);
 				}
 			});
 		}
@@ -192,12 +207,17 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 			case FULL -> true;
 			case PARTIAL -> this.dirtyPersistenceFields.get(this.persistenceFields.getInt(entry.getValue()));
 		}).forEach(entry -> {
-			final ReferenceImpl ref = this.getReference(entry.getValue());
-			final Tag serializedRef = XDataSerializationUtils.writeRefToNbt(operation, ref, registries);
-			if (serializedRef != null) {
-				result.put(entry.getKey(), serializedRef);
+			try {
+				final Reference ref = this.getReference(entry.getValue());
+				//TODO handle special handling here
+				final Tag serializedRef = SyncHelperImpl.writeRefToNbt(operation, ref, registries);
+				if (serializedRef != null) {
+					result.put(entry.getKey(), serializedRef);
+				}
+				ref.clearPersistenceMark();
+			} catch (final Throwable e) {
+				Conductance.LOGGER.error("An error occurred while serializing field {}", entry.getValue().getRawField(), e);
 			}
-			ref.clearPersistenceMark();
 		});
 		return result;
 	}
@@ -209,9 +229,14 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 			if (field == null) {
 				Conductance.LOGGER.warn("Cannot deserialize data for key {} since it has no mapping.", tagKey);
 			} else {
-				final ReferenceImpl ref = this.getReference(field);
-				XDataSerializationUtils.readRefFromNbt(operation, ref, nbt.get(tagKey), registries);
-				ref.clearPersistenceMark();
+				try {
+					final Reference ref = this.getReference(field);
+					//TODO handle special handling here
+					SyncHelperImpl.readRefFromNbt(operation, ref, nbt.get(tagKey), registries);
+					ref.clearPersistenceMark();
+				} catch (final Throwable e) {
+					Conductance.LOGGER.error("An error occurred while deserializing field {}", field.getRawField(), e);
+				}
 			}
 		}
 	}
@@ -226,10 +251,15 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 			case FULL -> true;
 			case PARTIAL -> this.dirtyPersistenceFields.get(this.syncFields.getInt(entry.getValue()));
 		}).forEach(entry -> {
-			buf.writeUtf(entry.getKey());
-			final ReferenceImpl ref = this.getReference(entry.getValue());
-			XDataSerializationUtils.writeRefToNetwork(operation, buf, ref, registries);
-			ref.clearSyncMark();
+			try {
+				buf.writeUtf(entry.getKey());
+				final Reference ref = this.getReference(entry.getValue());
+				//TODO handle special handling here
+				SyncHelperImpl.writeRefToNetwork(operation, buf, ref, registries);
+				ref.clearSyncMark();
+			} catch (final Throwable e) {
+				Conductance.LOGGER.error("An error occurred while encoding field {}", entry.getValue().getRawField(), e);
+			}
 		});
 	}
 
@@ -242,9 +272,14 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 			if (field == null) {
 				Conductance.LOGGER.warn("Cannot deserialize data for key {} since it has no mapping.", syncKey);
 			} else {
-				final ReferenceImpl ref = this.getReference(field);
-				XDataSerializationUtils.readRefFromNetwork(this, operation, buf, ref, registries);
-				ref.clearSyncMark();
+				try {
+					final Reference ref = this.getReference(field);
+					//TODO handle special handling here
+					SyncHelperImpl.readRefFromNetwork(this, operation, buf, ref, registries);
+					ref.clearSyncMark();
+				} catch (final Throwable e) {
+					Conductance.LOGGER.error("An error occurred while decoding field {}", field.getRawField(), e);
+				}
 			}
 		}
 	}
@@ -258,7 +293,14 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 					if (!SyncFieldSerializerRegisterImpl.INSTANCE.canHandleType(field.getGenericType())) {
 						throw new IllegalStateException("Field " + field + " is marked for managing but is not supported.");
 					}
-					list.add(ReferenceKeyImpl.of(field));
+					list.add(Util.make(ReferenceKeyImpl.of(field), key -> {
+						if (key.hasSpecialHandling()) {
+							final Method[] methods = ManagedDataMapImpl.findSpecialHandlerMethods(key.getRawField(), clazz);
+							key.setSpecialHandlerTestDirtyMethod(methods[0]);
+							key.setSpecialHandlerSerializeMethod(methods[1]);
+							key.setSpecialHandlerDeserializeMethod(methods[2]);
+						}
+					}));
 				}
 			}
 		}
@@ -267,24 +309,73 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 		}
 	}
 
-	static {
-		SYNC_LISTENER_CACHE = Util.memoize((field, clazz) -> {
-			final Class<?> clazz2 = clazz;
-			assert clazz2 != null;
-			final String methodName = field.getAnnotation(OnSynchronized.class).method();
-			Method method = null;
-			while (clazz != null && method == null) {
+	private static Method findSyncListenerMethod(final Field field, final Class<?> clazz) {
+		Class<?> clazz2 = clazz;
+		final String methodName = field.getAnnotation(OnSynchronized.class).method();
+		Method method = null;
+		while (clazz2 != null && method == null) {
+			try {
+				method = clazz2.getDeclaredMethod(methodName, field.getType(), field.getType());
+				method.setAccessible(true);
+				if (!Void.TYPE.equals(method.getReturnType())) {
+					throw new IllegalArgumentException("Listener method %s for field %s#%s can only return void".formatted(methodName, clazz.getName(), field.getName()));
+				}
+			} catch (final NoSuchMethodException ignored) {
+			}
+			clazz2 = clazz2.getSuperclass();
+		}
+		if (method == null) {
+			throw new IllegalArgumentException("Could not find the listener method %s for field %s#%s".formatted(methodName, clazz.getName(), field.getName()));
+		}
+		return method;
+	}
+
+	private static Method[] findSpecialHandlerMethods(final Field field, final Class<?> clazz) {
+		Class<?> clazz2 = clazz;
+		final Method[] methods = new Method[3];
+		final SpecialHandled annotation = field.getAnnotation(SpecialHandled.class);
+		while (clazz2 != null && (methods[0] == null || methods[1] == null || methods[2] == null)) {
+			if (methods[0] == null) {
 				try {
-					method = clazz.getDeclaredMethod(methodName, field.getType(), field.getType());
-					method.setAccessible(true);
+					methods[0] = clazz2.getDeclaredMethod(annotation.testDirtyMethod(), field.getType());
+					methods[0].setAccessible(true);
+					if (!Boolean.TYPE.equals(methods[0].getReturnType())) {
+						throw new IllegalArgumentException("Special handler dirty test method %s must return a boolean".formatted(methods[0]));
+					}
 				} catch (final NoSuchMethodException ignored) {
 				}
-				clazz = clazz.getSuperclass();
 			}
-			if (method == null) {
-				Conductance.LOGGER.error("Could not find the listener method {} for field {}#{}", methodName, clazz2.getName(), field.getName());
+			if (methods[1] == null) {
+				try {
+					methods[1] = clazz2.getDeclaredMethod(annotation.serializeMethod(), field.getType());
+					methods[1].setAccessible(true);
+					if (!CompoundTag.class.equals(methods[1].getReturnType())) {
+						throw new IllegalArgumentException("Special handler serialize method %s must return a %s".formatted(methods[1], CompoundTag.class.getName()));
+					}
+				} catch (final NoSuchMethodException ignored) {
+				}
 			}
-			return method;
-		});
+			if (methods[2] == null) {
+				try {
+					methods[2] = clazz2.getDeclaredMethod(annotation.deserializeMethod(), CompoundTag.class);
+					methods[2].setAccessible(true);
+					if (!field.getType().isAssignableFrom(methods[2].getReturnType())) {
+						throw new IllegalArgumentException("Special handler deserialize method %s must return a %s".formatted(methods[1], field.getType().getName()));
+					}
+				} catch (final NoSuchMethodException ignored) {
+				}
+			}
+			clazz2 = clazz2.getSuperclass();
+		}
+		if (methods[0] == null) {
+			throw new IllegalArgumentException("Could not find the dirty test method %s for field %s#%s".formatted(annotation.testDirtyMethod(), clazz.getName(), field.getName()));
+		}
+		if (methods[1] == null) {
+			throw new IllegalArgumentException("Could not find the serialize method %s for field %s#%s".formatted(annotation.serializeMethod(), clazz.getName(), field.getName()));
+		}
+		if (methods[2] == null) {
+			throw new IllegalArgumentException("Could not find the deserialize method %s for field %s#%s".formatted(annotation.deserializeMethod(), clazz.getName(), field.getName()));
+		}
+		return methods;
 	}
 }

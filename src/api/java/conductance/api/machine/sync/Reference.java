@@ -4,6 +4,8 @@ import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 
 public interface Reference {
 
+	void tick();
+
 	void markDirty();
 
 	void markPersistenceDirty();
@@ -17,4 +19,8 @@ public interface Reference {
 	ReferenceKey getKey();
 
 	Holder getValueHolder();
+
+	void clearPersistenceMark();
+
+	void clearSyncMark();
 }

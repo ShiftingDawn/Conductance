@@ -14,5 +14,9 @@ public interface ManagedDataMap {
 
 	void fromNetwork(Operation operation, RegistryFriendlyByteBuf buf, HolderLookup.Provider registries);
 
+	void tick();
+
 	void markDirty();
+
+	boolean isDirty();
 }
