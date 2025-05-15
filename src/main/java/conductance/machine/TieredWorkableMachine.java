@@ -11,9 +11,6 @@ import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import conductance.api.NCRecipeElementTypes;
@@ -29,40 +26,41 @@ import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeCapabilityHolder;
 import conductance.api.machine.recipe.RecipeProcessor;
 import conductance.api.machine.recipe.WorkableMachineRecipeProviderConfigAdapter;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
 import conductance.api.util.tier.Tier;
 import conductance.api.util.tier.TierHolder;
 
 public class TieredWorkableMachine<T extends TieredWorkableMachine<T>> extends MachineBlockEntity<T> implements WorkableMachineRecipeProviderConfigAdapter, RecipeCapabilityHolder, TierHolder, IOverclockable {
 
-	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TieredWorkableMachine.class, MachineBlockEntity.MANAGED_FIELD_HOLDER);
 	@Getter
 	private final Tier tier;
 	@Persisted
-	@DescSynced
+	@Synchronized
 	private Tier overclockTier;
 	@Persisted
-	@DescSynced
+	@Synchronized
 	@Getter
 	private final MachineRecipeCapabilityItems inputInventory;
 	@Persisted
-	@DescSynced
+	@Synchronized
 	@Getter
 	private final MachineRecipeCapabilityItems outputInventory;
 	@Persisted
-	@DescSynced
+	@Synchronized
 	@Getter
 	private final MachineRecipeCapabilityFluids inputTank;
 	@Persisted
-	@DescSynced
+	@Synchronized
 	@Getter
 	private final MachineRecipeCapabilityFluids outputTank;
 	@Persisted
-	@DescSynced
+	@Synchronized
 	@Getter
 	private final MachineRecipeCapabilityEnergy energy;
 	@Persisted
-	@DescSynced
+	@Synchronized
 	@Getter
 	private final RecipeProcessor recipeProcessor;
 	@Getter
@@ -110,11 +108,6 @@ public class TieredWorkableMachine<T extends TieredWorkableMachine<T>> extends M
 		} else {
 			return MachineRecipeCapabilityEnergy.createInput(this, this.tier.getVoltage() * 64, this.tier.getVoltage(), this.getMaxEnergyAmperage());
 		}
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return TieredWorkableMachine.MANAGED_FIELD_HOLDER;
 	}
 
 	@Override

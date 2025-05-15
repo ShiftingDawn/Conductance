@@ -14,15 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.syncdata.managed.IRef;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.EnvironmentProvider;
@@ -30,18 +21,23 @@ import conductance.api.machine.IAppearance;
 import conductance.api.machine.IBlockEntity;
 import conductance.api.machine.MachineRunnable;
 import conductance.api.machine.RunnableContainer;
+import conductance.api.machine.sync.IManaged;
+import conductance.api.machine.sync.ManagedDataMap;
+import conductance.api.machine.sync.OnSynchronized;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.SpecialHandled;
+import conductance.api.machine.sync.Synchronized;
 
-public class CoverManager implements IEnhancedManaged, EnvironmentProvider, RunnableContainer, IAppearance {
+public class CoverManager implements IManaged, EnvironmentProvider, RunnableContainer, IAppearance {
 
-	public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverManager.class);
-	private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+	private final ManagedDataMap dataMap = CAPI.syncHelper().requestDataMap(this);
 	private final IBlockEntity blockEntity;
 
 	@Nullable
-	@DescSynced
+	@Synchronized
 	@Persisted
-	@UpdateListener(methodName = "onCoverChanged")
-	@ReadOnlyManaged(onDirtyMethod = "onCoverDirty", serializeMethod = "serializeCover", deserializeMethod = "deserializeCover")
+	@OnSynchronized(method = "onCoverChanged")
+	@SpecialHandled(testDirtyMethod = "testCoverDirty", serializeMethod = "serializeCover", deserializeMethod = "deserializeCover")
 	private CoverEntity<?> coverUp, coverDown, coverNorth, coverSouth, coverEast, coverWest;
 
 	public CoverManager(final IBlockEntity blockEntity) {
@@ -114,7 +110,7 @@ public class CoverManager implements IEnhancedManaged, EnvironmentProvider, Runn
 			case EAST -> this.coverEast = coverEntity;
 		}
 		if (coverEntity != null) {
-			coverEntity.getSyncStorage().markAllDirty();
+			coverEntity.getDataMap().markDirty();
 		}
 	}
 
@@ -134,13 +130,8 @@ public class CoverManager implements IEnhancedManaged, EnvironmentProvider, Runn
 	}
 
 	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return CoverManager.MANAGED_FIELD_HOLDER;
-	}
-
-	@Override
-	public IManagedStorage getSyncStorage() {
-		return this.syncStorage;
+	public ManagedDataMap getDataMap() {
+		return this.dataMap;
 	}
 
 	private List<? extends CoverEntity<?>> getCovers() {
@@ -160,13 +151,13 @@ public class CoverManager implements IEnhancedManaged, EnvironmentProvider, Runn
 		this.getCovers().forEach(cover -> cover.onNeighborChanged(neighborPos, neighborState, neighborSide));
 	}
 
-	@Override
-	public void onChanged() {
-		final var level = this.blockEntity.getLevel();
-		if (level != null && !level.isClientSide && level.getServer() != null) {
-			level.getServer().execute(this::setChanged);
-		}
-	}
+	//	@Override
+	//	public void onChanged() {
+	//		final var level = this.blockEntity.getLevel();
+	//		if (level != null && !level.isClientSide && level.getServer() != null) {
+	//			level.getServer().execute(this::setChanged);
+	//		}
+	//	}
 
 	@Override
 	public void setChanged() {
@@ -189,6 +180,7 @@ public class CoverManager implements IEnhancedManaged, EnvironmentProvider, Runn
 		return this.getBlockEntity().addTick(runnable);
 	}
 
+	@SuppressWarnings("unused") //Used by CoverEntities as sync listener
 	private void onCoverChanged(@Nullable final CoverEntity<?> newCover, @Nullable final CoverEntity<?> oldCover) {
 		if (newCover != oldCover && (newCover == null || oldCover == null)) {
 			this.scheduleRenderUpdate();
@@ -198,10 +190,8 @@ public class CoverManager implements IEnhancedManaged, EnvironmentProvider, Runn
 	@SuppressWarnings("unused") //Used by CoverEntities as special handler
 	private boolean testCoverDirty(@Nullable final CoverEntity<?> coverEntity) {
 		if (coverEntity != null) {
-			for (final IRef ref : coverEntity.getSyncStorage().getNonLazyFields()) {
-				ref.update();
-			}
-			return coverEntity.getSyncStorage().hasDirtySyncFields() || coverEntity.getSyncStorage().hasDirtyPersistedFields();
+			coverEntity.getDataMap().tick();
+			return coverEntity.getDataMap().isDirty();
 		}
 		return false;
 	}

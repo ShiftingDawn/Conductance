@@ -8,4 +8,16 @@ public interface ContentChangeListener {
 
 	@Nullable
 	Runnable getContentChangeListener();
+
+	default void addContentChangeListener(final Runnable listener) {
+		final Runnable current = this.getContentChangeListener();
+		if (current == null) {
+			this.setContentChangeListener(listener);
+		} else {
+			this.setContentChangeListener(() -> {
+				current.run();
+				listener.run();
+			});
+		}
+	}
 }

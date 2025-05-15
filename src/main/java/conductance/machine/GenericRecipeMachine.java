@@ -5,10 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiHolder;
 import conductance.api.machine.gui.MachineGuiSupplier;
@@ -19,19 +15,8 @@ import conductance.client.MachineUIFactory;
 
 public class GenericRecipeMachine extends TieredWorkableMachine<GenericRecipeMachine> implements MachineGuiHolder {
 
-	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GenericRecipeMachine.class, TieredWorkableMachine.MANAGED_FIELD_HOLDER);
-	@Getter
-	@Setter
-	@Persisted
-	private int activeRecipeType;
-
 	public GenericRecipeMachine(final MachineType<GenericRecipeMachine> type, final BlockPos pos, final BlockState blockState, final Tier tier) {
 		super(type, pos, blockState, tier);
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return GenericRecipeMachine.MANAGED_FIELD_HOLDER;
 	}
 
 	@Override

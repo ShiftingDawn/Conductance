@@ -4,21 +4,18 @@ import java.util.List;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineRunnable;
 import conductance.api.machine.capability.MachineCapability;
+import conductance.api.machine.sync.OnSynchronized;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
 
 public class RecipeProcessor extends MachineCapability {
-
-	public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeProcessor.class, MachineCapability.MANAGED_FIELD_HOLDER);
 
 	public enum State {
 		IDLE, WORKING, WAITING, PAUSED
@@ -28,8 +25,8 @@ public class RecipeProcessor extends MachineCapability {
 	private final RecipeCapabilityHolder capabilityHolder;
 	@Getter
 	@Persisted
-	@DescSynced
-	@UpdateListener(methodName = "onStateChanged")
+	@Synchronized
+	@OnSynchronized(method = "onStateChanged")
 	private State state = State.IDLE;
 	@Nullable
 	@Getter
@@ -68,11 +65,6 @@ public class RecipeProcessor extends MachineCapability {
 		super(machine);
 		this.config = config;
 		this.capabilityHolder = capabilityHolder;
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return RecipeProcessor.MANAGED_FIELD_HOLDER;
 	}
 
 	@OnlyIn(Dist.CLIENT)

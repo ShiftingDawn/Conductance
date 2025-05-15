@@ -7,22 +7,19 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
 import conductance.api.capability.cover.CoverManager;
 import conductance.api.capability.cover.ICoverable;
 import conductance.api.machine.BaseBlockEntity;
 import conductance.api.machine.IPaintable;
+import conductance.api.machine.sync.IManaged;
+import conductance.api.machine.sync.ManagedDataMap;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.RequireRenderUpdate;
+import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IExtendedInteractable;
 import conductance.api.util.InteractType;
 import conductance.core.pipenet.INetworkNode;
@@ -30,26 +27,23 @@ import conductance.core.pipenet.LevelPipeNetwork;
 import conductance.core.pipenet.PipeNetHelper;
 
 public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DATA, LEVELNET extends LevelPipeNetwork<NODE, DATA>> extends BaseBlockEntity
-		implements INetworkNode<NODE, DATA>, IEnhancedManaged, IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, ICoverable, IExtendedInteractable, IPaintable {
+		implements INetworkNode<NODE, DATA>, IManaged, ICoverable, IExtendedInteractable, IPaintable {
 
-	public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PipeBlockEntity.class);
-	@Getter
-	private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
-
-	@DescSynced
+	private final ManagedDataMap dataMap = CAPI.syncHelper().requestDataMap(this);
+	@Synchronized
 	@Persisted(key = "covers")
 	private final CoverManager coverManager = new CoverManager(this);
 	@Getter
 	@Setter
-	@DescSynced
+	@Synchronized
 	@Persisted
-	@RequireRerender
+	@RequireRenderUpdate
 	private int connections = 0;
 	@Getter
 	@Setter
-	@DescSynced
+	@Synchronized
 	@Persisted
-	@RequireRerender
+	@RequireRenderUpdate
 	private int paintColor = -1;
 
 	public PipeBlockEntity(final BlockEntityType<?> type, final BlockPos pos, final BlockState state) {
@@ -98,13 +92,8 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 	}
 
 	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return PipeBlockEntity.MANAGED_FIELD_HOLDER;
-	}
-
-	@Override
-	public IManagedStorage getRootStorage() {
-		return this.syncStorage;
+	public ManagedDataMap getDataMap() {
+		return this.dataMap;
 	}
 
 	@Override
@@ -115,11 +104,6 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 	@Override
 	public void scheduleRenderUpdate() {
 		super.scheduleRenderUpdate();
-	}
-
-	@Override
-	public void onChanged() {
-		this.setChanged();
 	}
 
 	@Override

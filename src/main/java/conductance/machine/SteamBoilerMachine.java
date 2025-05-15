@@ -20,9 +20,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
@@ -34,6 +31,8 @@ import conductance.api.machine.capability.MachineRecipeCapabilityFluids;
 import conductance.api.machine.gui.GuiTextures;
 import conductance.api.machine.gui.GuiTheme;
 import conductance.api.machine.gui.MachineGuiHolder;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
 import conductance.api.util.MiscUtils;
 import conductance.client.MachineUIFactory;
@@ -44,12 +43,11 @@ public abstract class SteamBoilerMachine<T extends SteamBoilerMachine<T>> extend
 	private static final int TICKRATE_INCREASE_TEMPERATURE = 12;
 	private static final int TICKRATE_MAIN_LOOP = 10;
 
-	public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamBoilerMachine.class, SteamWorkableMachine.MANAGED_FIELD_HOLDER);
 	@Persisted
-	@DescSynced
+	@Synchronized
 	protected final MachineRecipeCapabilityFluids waterTank;
 	@Persisted
-	@DescSynced
+	@Synchronized
 	protected int currentTemperature;
 	@Persisted
 	protected int timeBeforeCoolingDown;
@@ -64,11 +62,6 @@ public abstract class SteamBoilerMachine<T extends SteamBoilerMachine<T>> extend
 		super(machineType, pos, blockState);
 		this.waterTank = new MachineRecipeCapabilityFluids(this, 1, 16 * FluidHelper.getBucket(), IOMode.INPUT);
 		this.waterTank.setFilter(fluid -> fluid.getFluid() == Fluids.WATER);
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return SteamBoilerMachine.MANAGED_FIELD_HOLDER;
 	}
 
 	@Override

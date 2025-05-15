@@ -2,21 +2,19 @@ package conductance.api.machine.capability;
 
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.ICapabilityHandler;
 import conductance.api.machine.ItemStackTransfer;
 import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
 
 public class MachineCapabilityInventory extends MachineCapability implements ICapabilityHandler, IItemHandlerModifiable {
 
-	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineCapabilityInventory.class, MachineCapability.MANAGED_FIELD_HOLDER);
 	@Persisted
-	@DescSynced
+	@Synchronized
 	public final ItemStackTransfer inventory;
 	@Nullable
 	private Boolean isEmpty;
@@ -24,12 +22,7 @@ public class MachineCapabilityInventory extends MachineCapability implements ICa
 	public MachineCapabilityInventory(final MachineBlockEntity<?> machineBlockEntity, final int slots) {
 		super(machineBlockEntity);
 		this.inventory = new ItemStackTransfer(slots);
-		this.inventory.setOnContentsChanged(this::onContentsChanged);
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return MachineCapabilityInventory.MANAGED_FIELD_HOLDER;
+		this.inventory.setContentChangeListener(this::onContentsChanged);
 	}
 
 	public void onContentsChanged() {
@@ -47,7 +40,6 @@ public class MachineCapabilityInventory extends MachineCapability implements ICa
 	public void setStackInSlot(final int index, final ItemStack stack) {
 		this.inventory.setStackInSlot(index, stack);
 	}
-
 
 	@NotNull
 	@Override

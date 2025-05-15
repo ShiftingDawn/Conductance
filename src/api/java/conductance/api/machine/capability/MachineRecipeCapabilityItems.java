@@ -9,9 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCRecipeElementTypes;
@@ -19,13 +16,14 @@ import conductance.api.machine.ICapabilityHandler;
 import conductance.api.machine.ItemStackTransfer;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.recipe.IRecipe;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
 
 public class MachineRecipeCapabilityItems extends MachineRecipeCapability<SizedIngredient> implements ICapabilityHandler, IItemHandlerModifiable {
 
-	public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineRecipeCapabilityItems.class, MachineRecipeCapability.MANAGED_FIELD_HOLDER);
 	@Persisted
-	@DescSynced
+	@Synchronized
 	public final ItemStackTransfer inventory;
 	@Nullable
 	private Boolean isEmpty;
@@ -33,7 +31,7 @@ public class MachineRecipeCapabilityItems extends MachineRecipeCapability<SizedI
 	public MachineRecipeCapabilityItems(final MachineBlockEntity<?> machine, final int slots, final IOMode capabilityIoMode, final IOMode handlerIoMode, final Function<Integer, ItemStackTransfer> inventoryFactory) {
 		super(machine, NCRecipeElementTypes.ITEM, capabilityIoMode, handlerIoMode);
 		this.inventory = inventoryFactory.apply(slots);
-		this.inventory.setOnContentsChanged(this::onContentsChanged);
+		this.inventory.setContentChangeListener(this::onContentsChanged);
 	}
 
 	public MachineRecipeCapabilityItems(final MachineBlockEntity<?> machine, final int slots, final IOMode capabilityIoMode, final IOMode handlerIoMode) {
@@ -42,11 +40,6 @@ public class MachineRecipeCapabilityItems extends MachineRecipeCapability<SizedI
 
 	public MachineRecipeCapabilityItems(final MachineBlockEntity<?> machine, final int slots, final IOMode ioMode) {
 		this(machine, slots, ioMode, ioMode);
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return MachineRecipeCapabilityItems.MANAGED_FIELD_HOLDER;
 	}
 
 	public MachineRecipeCapabilityItems setFilter(final Predicate<ItemStack> filter) {

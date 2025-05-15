@@ -10,9 +10,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import conductance.api.machine.MachineType;
@@ -22,13 +19,14 @@ import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeCapabilityHolder;
 import conductance.api.machine.recipe.RecipeProcessor;
 import conductance.api.machine.recipe.WorkableMachineRecipeProviderConfigAdapter;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
 
 public abstract class SteamWorkableMachine<T extends SteamWorkableMachine<T>> extends SteamMachine<T> implements WorkableMachineRecipeProviderConfigAdapter, RecipeCapabilityHolder {
 
-	public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamWorkableMachine.class, SteamMachine.MANAGED_FIELD_HOLDER);
 	@Persisted
-	@DescSynced
+	@Synchronized
 	@Getter
 	private final RecipeProcessor recipeProcessor;
 	@Getter
@@ -44,11 +42,6 @@ public abstract class SteamWorkableMachine<T extends SteamWorkableMachine<T>> ex
 		this.recipeCapabilities = Tables.newCustomTable(new EnumMap<>(IOMode.class), HashMap::new);
 		this.recipeActionSubscriptions = new ArrayList<>();
 		this.recipeProcessor = new RecipeProcessor(this, this, this);
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return SteamWorkableMachine.MANAGED_FIELD_HOLDER;
 	}
 
 	@Override

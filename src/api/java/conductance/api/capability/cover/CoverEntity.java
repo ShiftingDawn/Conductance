@@ -5,21 +5,20 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import conductance.api.CAPI;
 import conductance.api.machine.EnvironmentProvider;
 import conductance.api.machine.IBlockEntity;
+import conductance.api.machine.sync.IManaged;
+import conductance.api.machine.sync.ManagedDataMap;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.Synchronized;
 
-public class CoverEntity<COVER extends CoverEntity<COVER>> implements IEnhancedManaged, EnvironmentProvider {
+public class CoverEntity<COVER extends CoverEntity<COVER>> implements IManaged, EnvironmentProvider {
 
-	public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverEntity.class);
-	private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+	private final ManagedDataMap dataMap = CAPI.syncHelper().requestDataMap(this);
 	@Getter
 	private final CoverManager manager;
 	@Getter
@@ -29,7 +28,7 @@ public class CoverEntity<COVER extends CoverEntity<COVER>> implements IEnhancedM
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	@Persisted
-	@DescSynced
+	@Synchronized
 	private ItemStack attachItem = ItemStack.EMPTY;
 
 	public CoverEntity(final CoverManager manager, final CoverType<COVER> coverType, final Direction side) {
@@ -75,22 +74,12 @@ public class CoverEntity<COVER extends CoverEntity<COVER>> implements IEnhancedM
 	}
 
 	@Override
-	public void onChanged() {
-		this.manager.onChanged();
-	}
-
-	@Override
 	public void scheduleRenderUpdate() {
 		this.manager.scheduleRenderUpdate();
 	}
 
 	@Override
-	public FieldManagedStorage getSyncStorage() {
-		return this.syncStorage;
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return CoverEntity.MANAGED_FIELD_HOLDER;
+	public ManagedDataMap getDataMap() {
+		return this.dataMap;
 	}
 }

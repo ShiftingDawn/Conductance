@@ -12,8 +12,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -22,12 +20,12 @@ import conductance.api.machine.FluidStackTransfer;
 import conductance.api.machine.ICapabilityHandler;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.recipe.IRecipe;
+import conductance.api.machine.sync.Persisted;
 import conductance.api.util.IOMode;
 
 public class MachineRecipeCapabilityFluids extends MachineRecipeCapability<SizedFluidIngredient> implements ICapabilityHandler, IFluidHandlerModifiable {
 
-	public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineRecipeCapabilityFluids.class, MachineRecipeCapability.MANAGED_FIELD_HOLDER);
-	@Persisted(subPersisted = true)
+	@Persisted
 	@Getter
 	private final FluidStackTransfer[] fluidTanks;
 	@Setter
@@ -40,7 +38,7 @@ public class MachineRecipeCapabilityFluids extends MachineRecipeCapability<Sized
 		this.fluidTanks = new FluidStackTransfer[slots];
 		for (int i = 0; i < slots; ++i) {
 			this.fluidTanks[i] = tankFactory.apply(i);
-			this.fluidTanks[i].setOnContentsChanged(this::onContentsChanged);
+			this.fluidTanks[i].setContentChangeListener(this::onContentsChanged);
 		}
 		if (this.getCapabilityIoMode().isInput()) {
 			this.allowFluidOverflow = true;
@@ -53,11 +51,6 @@ public class MachineRecipeCapabilityFluids extends MachineRecipeCapability<Sized
 
 	public MachineRecipeCapabilityFluids(final MachineBlockEntity<?> machine, final int slots, final int capacity, final IOMode ioMode) {
 		this(machine, slots, capacity, ioMode, ioMode);
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return MachineRecipeCapabilityFluids.MANAGED_FIELD_HOLDER;
 	}
 
 	public MachineRecipeCapabilityFluids setFilter(final Predicate<FluidStack> filter) {

@@ -34,15 +34,7 @@ class ReferenceImpl implements Reference {
 	@Override
 	public void init() {
 		if (this.getValueHolder().get() instanceof final ContentChangeListener contentChangeListener) {
-			final Runnable listener = contentChangeListener.getContentChangeListener();
-			if (listener == null) {
-				contentChangeListener.setContentChangeListener(this::markDirty);
-			} else {
-				contentChangeListener.setContentChangeListener(() -> {
-					this.markDirty();
-					listener.run();
-				});
-			}
+			contentChangeListener.addContentChangeListener(this::markDirty);
 		}
 	}
 
