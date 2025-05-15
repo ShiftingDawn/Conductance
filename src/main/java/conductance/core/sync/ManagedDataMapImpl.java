@@ -13,12 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.level.Level;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
@@ -146,6 +144,7 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 	}
 
 	public void init() {
+		this.references.values().forEach(Reference::init);
 		this.tick();
 	}
 

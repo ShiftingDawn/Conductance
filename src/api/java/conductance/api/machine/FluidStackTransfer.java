@@ -7,16 +7,17 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.sync.ContentChangeListener;
 
-public class FluidStackTransfer extends FluidTank implements IContentChangeAware, INBTSerializable<CompoundTag>, IFluidHandlerModifiable {
+public class FluidStackTransfer extends FluidTank implements ContentChangeListener, INBTSerializable<CompoundTag>, IFluidHandlerModifiable {
 
 	@Getter
 	@Setter
-	protected Runnable onContentsChanged = () -> {
-	};
+	@Nullable
+	private Runnable contentChangeListener = null;
 
 	public FluidStackTransfer(final int capacity) {
 		this(capacity, e -> true);
@@ -33,7 +34,7 @@ public class FluidStackTransfer extends FluidTank implements IContentChangeAware
 
 	@Override
 	protected void onContentsChanged() {
-		this.onContentsChanged.run();
+		this.contentChangeListener.run();
 	}
 
 	@Override

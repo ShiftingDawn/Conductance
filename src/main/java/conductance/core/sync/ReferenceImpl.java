@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.sync.ContentChangeListener;
 import conductance.api.machine.sync.Holder;
 import conductance.api.machine.sync.Reference;
 import conductance.api.machine.sync.ReferenceKey;
@@ -28,6 +29,21 @@ class ReferenceImpl implements Reference {
 	ReferenceImpl(final ReferenceKey key, final Holder valueHolder) {
 		this.key = key;
 		this.valueHolder = valueHolder;
+	}
+
+	@Override
+	public void init() {
+		if (this.getValueHolder().get() instanceof final ContentChangeListener contentChangeListener) {
+			final Runnable listener = contentChangeListener.getContentChangeListener();
+			if (listener == null) {
+				contentChangeListener.setContentChangeListener(this::markDirty);
+			} else {
+				contentChangeListener.setContentChangeListener(() -> {
+					this.markDirty();
+					listener.run();
+				});
+			}
+		}
 	}
 
 	@Override

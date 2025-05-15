@@ -4,16 +4,17 @@ import java.util.function.Predicate;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.sync.ContentChangeListener;
 
-public class ItemStackTransfer extends ItemStackHandler implements IContentChangeAware {
+public class ItemStackTransfer extends ItemStackHandler implements ContentChangeListener {
 
 	@Getter
 	@Setter
-	private Runnable onContentsChanged = () -> {
-	};
+	@Nullable
+	private Runnable contentChangeListener = null;
 	@Getter
 	@Setter
 	private Predicate<ItemStack> filter = stack -> true;
@@ -36,7 +37,7 @@ public class ItemStackTransfer extends ItemStackHandler implements IContentChang
 
 	@Override
 	public void onContentsChanged(final int slot) {
-		this.onContentsChanged.run();
+		this.contentChangeListener.run();
 	}
 
 	public ItemStackTransfer copy() {
