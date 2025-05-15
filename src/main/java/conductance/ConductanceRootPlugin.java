@@ -16,8 +16,6 @@ import conductance.api.plugin.MaterialOreTypeRegister;
 import conductance.api.plugin.MaterialOverrideMap;
 import conductance.api.plugin.MaterialRegister;
 import conductance.api.plugin.MaterialTaggedSetRegister;
-import conductance.api.plugin.MaterialTextureSetRegister;
-import conductance.api.plugin.MaterialTextureTypeRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.MaterialUnitOverrideMap;
 import conductance.api.plugin.RecipeBuilderFactory;
@@ -32,8 +30,6 @@ import conductance.init.ConductanceMachines;
 import conductance.init.ConductanceMaterialFlags;
 import conductance.init.ConductanceMaterialOreTypes;
 import conductance.init.ConductanceMaterialTaggedSets;
-import conductance.init.ConductanceMaterialTextureSets;
-import conductance.init.ConductanceMaterialTextureTypes;
 import conductance.init.ConductanceMaterialTraits;
 import conductance.init.ConductanceMaterials;
 import conductance.init.ConductanceRecipeElementTypes;
@@ -70,16 +66,6 @@ import static conductance.api.NCMaterials.WOOD;
 
 @ConductancePlugin(modid = CAPI.MOD_ID)
 public final class ConductanceRootPlugin implements IConductancePlugin {
-
-	@Override
-	public void registerMaterialTextureTypes(final MaterialTextureTypeRegister register) {
-		ConductanceMaterialTextureTypes.init(register);
-	}
-
-	@Override
-	public void registerMaterialTextureSets(final MaterialTextureSetRegister register) {
-		ConductanceMaterialTextureSets.init(register);
-	}
 
 	@Override
 	public void registerMaterialTraits(final MaterialTraitRegister register) {

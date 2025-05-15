@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,7 +48,7 @@ final class PluginEventBus {
 		}
 	}
 
-	static void post(final Class<?> eventClass, final Function<String, IConductancePluginEvent> eventFactory) {
+	static <T extends IConductancePluginEvent> void post(final Class<T> eventClass, final Function<String, T> eventFactory) {
 		for (final EventPriority priority : EventPriority.values()) {
 			final List<EventMethod> listeners = PluginEventBus.LISTENERS.get(priority);
 			if (listeners != null) {

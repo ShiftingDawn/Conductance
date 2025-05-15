@@ -10,8 +10,6 @@ import conductance.api.plugin.MaterialOreTypeRegister;
 import conductance.api.plugin.MaterialOverrideMap;
 import conductance.api.plugin.MaterialRegister;
 import conductance.api.plugin.MaterialTaggedSetRegister;
-import conductance.api.plugin.MaterialTextureSetRegister;
-import conductance.api.plugin.MaterialTextureTypeRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.MaterialUnitOverrideMap;
 import conductance.api.plugin.RecipeBuilderFactory;
@@ -22,12 +20,6 @@ import conductance.api.plugin.TagRegister;
 import conductance.api.plugin.TierRegister;
 
 public interface IConductancePlugin {
-
-	default void registerMaterialTextureTypes(final MaterialTextureTypeRegister register) {
-	}
-
-	default void registerMaterialTextureSets(final MaterialTextureSetRegister register) {
-	}
 
 	default void registerMaterialTraits(final MaterialTraitRegister register) {
 	}

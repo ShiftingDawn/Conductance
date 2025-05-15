@@ -4,14 +4,14 @@ import net.neoforged.bus.api.EventPriority;
 import conductance.api.NCPeriodicElements;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterPeriodicElementsEvent;
+import conductance.api.plugin.RegisterPeriodicElementEvent;
 import conductance.Conductance;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductancePeriodicElements {
 
 	@EventListener(priority = EventPriority.HIGH)
-	private static void init(final RegisterPeriodicElementsEvent event) {
+	private static void init(final RegisterPeriodicElementEvent event) {
 		NCPeriodicElements.HYDROGEN = event.create(1, 0, "Hydrogen", "H", null);
 		NCPeriodicElements.DEUTERIUM = event.create(1, 1, "Deuterium", "D", NCPeriodicElements.HYDROGEN);
 		NCPeriodicElements.TRITIUM = event.create(1, 2, "Tritium", "T", NCPeriodicElements.HYDROGEN);

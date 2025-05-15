@@ -7,7 +7,7 @@ import conductance.api.material.PeriodicElement;
 import conductance.api.util.TextHelper;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RegisterPeriodicElementsEvent implements IConductancePluginEvent {
+public final class RegisterPeriodicElementEvent implements IConductancePluginEvent {
 
 	public interface PeriodicElementRegister {
 

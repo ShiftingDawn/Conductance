@@ -37,7 +37,9 @@ import conductance.api.plugin.CoverRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
-import conductance.api.plugin.RegisterPeriodicElementsEvent;
+import conductance.api.plugin.RegisterMaterialTextureSetEvent;
+import conductance.api.plugin.RegisterMaterialTextureTypeEvent;
+import conductance.api.plugin.RegisterPeriodicElementEvent;
 import conductance.Conductance;
 import conductance.core.cover.CoverTypeImpl;
 import conductance.core.machine.MachineBuilderImpl;
@@ -101,25 +103,32 @@ public final class PluginManager {
 	}
 
 	public static void dispatchPeriodicElements() {
-		PluginEventBus.post(RegisterPeriodicElementsEvent.class, modid -> {
-			final RegisterPeriodicElementsEvent.PeriodicElementRegister register = (protons, neutrons, registryName, name, symbol, parent) -> Util.make(
+		PluginEventBus.post(RegisterPeriodicElementEvent.class, modid -> {
+			final RegisterPeriodicElementEvent.PeriodicElementRegister register = (protons, neutrons, registryName, name, symbol, parent) -> Util.make(
 					new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null),
 					result -> CAPI.regs().periodicElements().register(result.getRegistryKey(), result)
 			);
-			return PluginEventBus.instantiateEvent(RegisterPeriodicElementsEvent.class, register);
+			return PluginEventBus.instantiateEvent(RegisterPeriodicElementEvent.class, register);
 		});
 	}
 
 	public static void dispatchMaterialTextureTypes() {
-		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTextureTypes(registryName -> Util.make(new MaterialTextureType(ResourceLocation.fromNamespaceAndPath(modid, registryName)), result -> {
-			CAPI.regs().materialTextureTypes().register(result.getRegistryKey(), result);
-		})));
+		PluginEventBus.post(RegisterMaterialTextureTypeEvent.class, modid -> {
+			final Function<String, MaterialTextureType> register = registryName -> Util.make(
+					new MaterialTextureType(ResourceLocation.fromNamespaceAndPath(modid, registryName)),
+					result -> CAPI.regs().materialTextureTypes().register(result.getRegistryKey(), result));
+			return PluginEventBus.instantiateEvent(RegisterMaterialTextureTypeEvent.class, register);
+		});
 	}
 
 	public static void dispatchMaterialTextureSets() {
-		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTextureSets((registryName, parentSetName) -> Util.make(new MaterialTextureSet(registryName, parentSetName), result -> {
-			CAPI.regs().materialTextureSets().register(result.getRegistryKey(), result);
-		})));
+		PluginEventBus.post(RegisterMaterialTextureSetEvent.class, modid -> {
+			final RegisterMaterialTextureSetEvent.MaterialTextureSetRegister register = (registryName, parentSetName) -> Util.make(
+					new MaterialTextureSet(registryName, parentSetName),
+					result -> CAPI.regs().materialTextureSets().register(result.getRegistryKey(), result)
+			);
+			return PluginEventBus.instantiateEvent(RegisterMaterialTextureSetEvent.class, register);
+		});
 	}
 
 	public static void dispatchMaterialTraits() {

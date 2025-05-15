@@ -1,9 +1,13 @@
 package conductance.init;
 
 import net.minecraft.Util;
+import net.neoforged.bus.api.EventPriority;
 import conductance.api.CAPI;
 import conductance.api.material.MaterialTextureSet;
-import conductance.api.plugin.MaterialTextureSetRegister;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.plugin.RegisterMaterialTextureSetEvent;
+import conductance.Conductance;
 import static conductance.api.NCTextureSets.AMETHYST;
 import static conductance.api.NCTextureSets.BRIGHT;
 import static conductance.api.NCTextureSets.DIAMOND;
@@ -23,29 +27,31 @@ import static conductance.api.NCTextureSets.SAND;
 import static conductance.api.NCTextureSets.SHINY;
 import static conductance.api.NCTextureSets.WOOD;
 
+@ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceMaterialTextureSets {
 
-	public static void init(final MaterialTextureSetRegister register) {
+	@EventListener(priority = EventPriority.HIGH)
+	private static void init(final RegisterMaterialTextureSetEvent event) {
 		DULL = Util.make(new MaterialTextureSet("dull", null), set -> CAPI.regs().materialTextureSets().register(set.getRegistryKey(), set));
-		METALLIC = register.register("metallic");
-		MAGNETIC = register.register("magnetic", METALLIC);
-		SHINY = register.register("shiny", METALLIC);
-		BRIGHT = register.register("bright", SHINY);
+		METALLIC = event.register("metallic");
+		MAGNETIC = event.register("magnetic", METALLIC);
+		SHINY = event.register("shiny", METALLIC);
+		BRIGHT = event.register("bright", SHINY);
 
-		DIAMOND = register.register("diamond", SHINY);
-		EMERALD = register.register("emerald", DIAMOND);
-		GEM_HORIZONTAL = register.register("gem_horizontal", EMERALD);
-		AMETHYST = register.register("ruby", EMERALD);
-		NETHER_STAR = register.register("nether_star", AMETHYST);
+		DIAMOND = event.register("diamond", SHINY);
+		EMERALD = event.register("emerald", DIAMOND);
+		GEM_HORIZONTAL = event.register("gem_horizontal", EMERALD);
+		AMETHYST = event.register("ruby", EMERALD);
+		NETHER_STAR = event.register("nether_star", AMETHYST);
 
-		FINE = register.register("fine");
-		WOOD = register.register("wood", FINE);
-		SAND = register.register("sand", FINE);
-		ROUGH = register.register("rough", FINE);
-		QUARTZ = register.register("quartz", ROUGH);
-		LAPIS = register.register("lapis", QUARTZ);
-		FLINT = register.register("flint", ROUGH);
-		LIGNITE = register.register("lignite", ROUGH);
+		FINE = event.register("fine");
+		WOOD = event.register("wood", FINE);
+		SAND = event.register("sand", FINE);
+		ROUGH = event.register("rough", FINE);
+		QUARTZ = event.register("quartz", ROUGH);
+		LAPIS = event.register("lapis", QUARTZ);
+		FLINT = event.register("flint", ROUGH);
+		LIGNITE = event.register("lignite", ROUGH);
 	}
 
 	private ConductanceMaterialTextureSets() {
