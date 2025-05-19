@@ -10,15 +10,19 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import conductance.api.util.IInteractable;
+import conductance.api.util.tier.Tier;
 import conductance.client.MachineUIFactory;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.PluginManager;
+import conductance.core.apiimpl.TierImpl;
+import conductance.core.sync.SyncFieldSerializerRegisterImpl;
 import conductance.init.ConductanceBlockEntities;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
 import conductance.init.ConductanceDecoration;
 import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
+import conductance.loader.PluginEventDispatcher;
 
 public final class CommonProxy {
 
@@ -32,21 +36,21 @@ public final class CommonProxy {
 		PluginManager.init();
 		ConductanceCreativeTabs.init();
 
-		PluginManager.dispatchSyncFieldSerializers();
-		PluginManager.dispatchTiers();
-		PluginManager.dispatchMaterialOreTypes();
-		PluginManager.dispatchPeriodicElements();
+		PluginEventDispatcher.dispatchRegisterSyncFieldSerializers(SyncFieldSerializerRegisterImpl.INSTANCE);
+		PluginEventDispatcher.dispatchRegisterTiers(TierImpl.Builder::new);
+		PluginEventDispatcher.dispatchRegisterMaterialOreTypes();
+		PluginEventDispatcher.dispatchRegisterPeriodicElements();
 		PluginManager.dispatchMaterialTextureTypes();
 		PluginManager.dispatchMaterialTextureSets();
 		PluginManager.dispatchMaterialTraits();
 		PluginManager.dispatchMaterialFlags();
 		PluginManager.dispatchMaterialTaggedSets();
 		PluginManager.dispatchMaterials();
-		PluginManager.dispatchMaterialOverrides();
-		PluginManager.dispatchMaterialUnitOverrides();
-		PluginManager.dispatchRecipeElementTypes();
-		PluginManager.dispatchRecipeTypes();
-		PluginManager.dispatchRegisterCovers();
+		PluginEventDispatcher.dispatchRegisterMaterialOverrides();
+		PluginEventDispatcher.dispatchRegisterMaterialUnitOverrides();
+		PluginEventDispatcher.dispatchRegisterRecipeElementTypes();
+		PluginEventDispatcher.dispatchRegisterRecipeTypes();
+		PluginEventDispatcher.dispatchRegisterCovers();
 
 		ConductanceItems.init();
 		ConductanceBlocks.init();

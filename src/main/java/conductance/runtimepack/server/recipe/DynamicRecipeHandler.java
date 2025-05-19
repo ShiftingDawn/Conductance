@@ -15,6 +15,7 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.Nullable;
 import conductance.core.apiimpl.PluginManager;
 import conductance.core.recipe.RecipeBuilderImpl;
+import conductance.loader.PluginEventDispatcher;
 import conductance.runtimepack.server.RuntimeDataPack;
 
 public final class DynamicRecipeHandler {
@@ -34,11 +35,11 @@ public final class DynamicRecipeHandler {
 						: Optional.of(() -> new Tuple<>(Advancement.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), advancementHolder.value()).getOrThrow(), advancementHolder.id())));
 			}
 		};
-		PluginManager.dispatchRegisterRecipes(output, RecipeBuilderImpl::new);
+		PluginEventDispatcher.dispatchRegisterRecipes(output, RecipeBuilderImpl::new);
 	}
 
 	public static void removeRecipes(final Consumer<ResourceLocation> remover) {
-		PluginManager.dispatchRemoveRecipes(remover);
+		PluginEventDispatcher.dispatchRemoveRecipes(remover);
 	}
 
 	private DynamicRecipeHandler() {

@@ -17,7 +17,6 @@ import conductance.api.material.TaggedMaterialSet;
 import conductance.api.material.traits.MaterialTraitOre;
 import conductance.api.plugin.RegisterRecipeEvent;
 import conductance.api.util.MiscUtils;
-import conductance.core.register.MaterialOverrideRegister;
 import static conductance.runtimepack.server.recipe.RecipeLoader.blasting;
 import static conductance.runtimepack.server.recipe.RecipeLoader.matRecipe;
 import static conductance.runtimepack.server.recipe.RecipeLoader.shaped;
@@ -45,11 +44,11 @@ final class MaterialRecipes {
 	}
 
 	private static void addOreRecipes(final RegisterRecipeEvent event, final Material material, final MaterialTraitOre trait) {
-		if (!MaterialOverrideRegister.has(NCMaterialTaggedSets.RAW_ORE_BLOCK, material)) {
+		if (!CAPI.materials().hasOverride(NCMaterialTaggedSets.RAW_ORE_BLOCK, material)) {
 			shapeless(event, "raw_%s_ore_block".formatted(material.getName()), CAPI.materials().getBlock(NCMaterialTaggedSets.RAW_ORE_BLOCK, material, 1),
 					CAPI.materials().getItem(NCMaterialTaggedSets.RAW_ORE, material, 9));
 		}
-		if (!MaterialOverrideRegister.has(NCMaterialTaggedSets.RAW_ORE, material)) {
+		if (!CAPI.materials().hasOverride(NCMaterialTaggedSets.RAW_ORE, material)) {
 			shapeless(event, "raw_%s_ore".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.RAW_ORE, material, 9),
 					CAPI.materials().getBlock(NCMaterialTaggedSets.RAW_ORE_BLOCK, material, 1));
 		}

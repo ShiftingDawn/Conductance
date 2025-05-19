@@ -17,7 +17,7 @@ import conductance.api.plugin.EventListener;
 import conductance.api.plugin.IConductancePluginEvent;
 
 @SuppressWarnings("unchecked")
-final class PluginEventBus {
+public final class PluginEventBus {
 
 	private static final Map<EventPriority, List<EventMethod>> LISTENERS = new ConcurrentHashMap<>(EventPriority.values().length);
 
@@ -48,7 +48,7 @@ final class PluginEventBus {
 		}
 	}
 
-	static <T extends IConductancePluginEvent> void post(final Class<T> eventClass, final Function<String, T> eventFactory) {
+	public static <T extends IConductancePluginEvent> void post(final Class<T> eventClass, final Function<String, T> eventFactory) {
 		for (final EventPriority priority : EventPriority.values()) {
 			final List<EventMethod> listeners = PluginEventBus.LISTENERS.get(priority);
 			if (listeners != null) {
@@ -59,6 +59,10 @@ final class PluginEventBus {
 				}
 			}
 		}
+	}
+
+	public static <T extends IConductancePluginEvent> void postAll(final Class<T> eventClass, final T event) {
+		PluginEventBus.post(eventClass, modid -> event);
 	}
 
 	static <T extends IConductancePluginEvent> T instantiateEvent(final Class<T> clazz, final Object... args) {

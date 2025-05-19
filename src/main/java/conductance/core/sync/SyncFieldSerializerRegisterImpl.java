@@ -24,7 +24,7 @@ import conductance.api.machine.sync.ReferenceHandler;
 import conductance.api.machine.sync.Serializer;
 import conductance.api.plugin.RegisterFieldSerializerEvent;
 
-public final class SyncFieldSerializerRegisterImpl implements RegisterFieldSerializerEvent.SyncFieldSerializerRegister {
+public final class SyncFieldSerializerRegisterImpl implements SyncFieldSerializerRegister {
 
 	private static final AtomicBoolean INITIALIZED = new AtomicBoolean(false);
 	public static final SyncFieldSerializerRegisterImpl INSTANCE = new SyncFieldSerializerRegisterImpl();

@@ -1,4 +1,4 @@
-package conductance.api.plugin;
+package conductance.runtimepack.server;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -7,7 +7,7 @@ import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.util.Marker;
 
-public interface RegisterTagEvent extends IConductancePluginEvent {
+public interface TagRegister {
 
 	void item(TagKey<Item> tag, ItemLike value, ItemLike... moreValues);
 

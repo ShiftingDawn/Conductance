@@ -15,9 +15,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import conductance.block.IConductanceBlock;
 import conductance.core.apiimpl.ApiBridge;
-import conductance.core.apiimpl.PluginManager;
 import conductance.core.apiimpl.TaggedSetImpl;
 import conductance.core.register.MaterialRegistryImpl;
+import conductance.loader.PluginEventDispatcher;
 
 public final class TagGenerationHandler {
 
@@ -32,7 +32,7 @@ public final class TagGenerationHandler {
 	public static void addEntriesToTagMap(final Registry<?> registry, final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
 		if (registry == BuiltInRegistries.ITEM) {
 			TagGenerationHandler.CUSTOM_ITEM_TAGS.clear();
-			PluginManager.dispatchTagRegister();
+			PluginEventDispatcher.dispatchRegisterTags(TagRegisterImpl.INSTANCE);
 			TagGenerationHandler.addItemEntriesToTagMap(tagMap);
 		} else if (registry == BuiltInRegistries.BLOCK) {
 			TagGenerationHandler.addBlockEntriesToTagMap(tagMap);
