@@ -1,6 +1,5 @@
 package conductance.init;
 
-import net.neoforged.bus.api.EventPriority;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterTierEvent;
@@ -18,7 +17,7 @@ import static conductance.api.NCTiers.MV;
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceTiers {
 
-	@EventListener(priority = EventPriority.LOW)
+	@EventListener(priority = -100)
 	private static void init(final RegisterTierEvent event) {
 		LV = event.register("lv", DARK_BLUE + "LV", 0x004fff, TierRegistryImpl.EMPTY);
 		MV = event.register("mv", GOLD + "MV", 0xbf6a40);

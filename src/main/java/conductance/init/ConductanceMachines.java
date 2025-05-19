@@ -11,9 +11,9 @@ import conductance.api.plugin.MachineRegister;
 import conductance.api.util.TextHelper;
 import conductance.api.util.tier.Tier;
 import conductance.Conductance;
-import conductance.machine.GenericGeneratorMachine;
-import conductance.machine.GenericRecipeMachine;
-import conductance.machine.SteamSolidBoilerMachine;
+import conductance.init.machine.GenericGeneratorMachine;
+import conductance.init.machine.GenericRecipeMachine;
+import conductance.init.machine.SteamSolidBoilerMachine;
 import static conductance.Conductance.tooltip;
 
 public final class ConductanceMachines {

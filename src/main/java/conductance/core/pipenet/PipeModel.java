@@ -33,7 +33,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.render.BakedModelItemDefaults;
 import conductance.api.util.SafeOptional;
-import conductance.block.PipeBlock;
+import conductance.init.block.PipeBlock;
 
 public class PipeModel {
 

@@ -7,11 +7,11 @@ import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterFieldSerializerEvent;
 import conductance.api.util.tier.Tier;
 import conductance.Conductance;
-import conductance.sync.NBTSerializableHandler;
-import conductance.sync.RecipeSerializer;
-import conductance.sync.RecipeTypeSerializer;
-import conductance.sync.TagSerializer;
-import conductance.sync.TierSerializer;
+import conductance.init.sync.NBTSerializableHandler;
+import conductance.init.sync.RecipeSerializer;
+import conductance.init.sync.RecipeTypeSerializer;
+import conductance.init.sync.TagSerializer;
+import conductance.init.sync.TierSerializer;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceSyncFieldSerializers {

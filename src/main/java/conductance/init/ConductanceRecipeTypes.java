@@ -1,6 +1,5 @@
 package conductance.init;
 
-import net.neoforged.bus.api.EventPriority;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterRecipeTypeEvent;
@@ -17,7 +16,7 @@ import static conductance.api.NCRecipeTypes.WIREMILL;
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceRecipeTypes {
 
-	@EventListener(priority = EventPriority.LOW)
+	@EventListener(priority = -100)
 	private static void init(final RegisterRecipeTypeEvent event) {
 		STEAM_BOILER = event.register("steam_boiler", builder -> builder.setIO(1, 1, 0, 1).setHidden());
 

@@ -8,10 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import net.neoforged.bus.api.EventPriority;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.plugin.IConductancePluginEvent;
@@ -19,7 +18,7 @@ import conductance.api.plugin.IConductancePluginEvent;
 @SuppressWarnings("unchecked")
 public final class PluginEventBus {
 
-	private static final Map<EventPriority, List<EventMethod>> LISTENERS = new ConcurrentHashMap<>(EventPriority.values().length);
+	private static final Map<Integer, List<EventMethod>> LISTENERS = Collections.synchronizedSortedMap(new TreeMap<>());
 
 	private record EventMethod(String modid, Class<IConductancePluginEvent> eventType, Consumer<IConductancePluginEvent> listener) {
 
@@ -49,16 +48,13 @@ public final class PluginEventBus {
 	}
 
 	public static <T extends IConductancePluginEvent> void post(final Class<T> eventClass, final Function<String, T> eventFactory) {
-		for (final EventPriority priority : EventPriority.values()) {
-			final List<EventMethod> listeners = PluginEventBus.LISTENERS.get(priority);
-			if (listeners != null) {
-				for (final EventMethod listener : listeners) {
-					if (listener.eventType.isAssignableFrom(eventClass)) {
-						listener.listener.accept(eventFactory.apply(listener.modid));
-					}
+		PluginEventBus.LISTENERS.values().forEach(listeners -> {
+			for (final EventMethod listener : listeners) {
+				if (listener.eventType.isAssignableFrom(eventClass)) {
+					listener.listener.accept(eventFactory.apply(listener.modid));
 				}
 			}
-		}
+		});
 	}
 
 	public static <T extends IConductancePluginEvent> void postAll(final Class<T> eventClass, final T event) {

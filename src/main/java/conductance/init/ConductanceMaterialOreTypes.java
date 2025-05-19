@@ -3,7 +3,6 @@ package conductance.init;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
-import net.neoforged.bus.api.EventPriority;
 import conductance.api.material.MaterialOreType;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
@@ -26,7 +25,7 @@ import static conductance.api.NCMaterialOreTypes.ORE_TYPE_TUFF;
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceMaterialOreTypes {
 
-	@EventListener(priority = EventPriority.LOW)
+	@EventListener(priority = -100)
 	public static void init(final RegisterMaterialOreTypeEvent event) {
 		ORE_TYPE_STONE = event.register("stone", ConductanceMaterialOreTypes.vanillaBlock("stone"), MapColor.STONE, SoundType.STONE);
 		ORE_TYPE_GRANITE = event.register("granite", ConductanceMaterialOreTypes.vanillaBlock("granite"), MapColor.STONE, SoundType.STONE);

@@ -1,7 +1,6 @@
 package conductance.init;
 
 import net.minecraft.Util;
-import net.neoforged.bus.api.EventPriority;
 import conductance.api.CAPI;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.plugin.ConductancePluginListener;
@@ -30,7 +29,7 @@ import static conductance.api.NCTextureSets.WOOD;
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceMaterialTextureSets {
 
-	@EventListener(priority = EventPriority.HIGH)
+	@EventListener(priority = -100)
 	private static void init(final RegisterMaterialTextureSetEvent event) {
 		DULL = Util.make(new MaterialTextureSet("dull", null), set -> CAPI.regs().materialTextureSets().register(set.getRegistryKey(), set));
 		METALLIC = event.register("metallic");

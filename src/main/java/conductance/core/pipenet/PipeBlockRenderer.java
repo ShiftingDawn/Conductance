@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.capability.cover.ICoverable;
 import conductance.api.machine.render.ICoverRenderer;
-import conductance.block.PipeBlock;
+import conductance.init.block.PipeBlock;
 
 public class PipeBlockRenderer implements IRenderer, ICoverRenderer {
 

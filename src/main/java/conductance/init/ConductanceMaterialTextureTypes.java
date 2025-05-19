@@ -1,6 +1,5 @@
 package conductance.init;
 
-import net.neoforged.bus.api.EventPriority;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterMaterialTextureTypeEvent;
@@ -39,7 +38,7 @@ import static conductance.api.NCTextureTypes.WIRE_SIDE;
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceMaterialTextureTypes {
 
-	@EventListener(priority = EventPriority.HIGH)
+	@EventListener(priority = -100)
 	private static void init(final RegisterMaterialTextureTypeEvent event) {
 		DUST = event.register("dust");
 

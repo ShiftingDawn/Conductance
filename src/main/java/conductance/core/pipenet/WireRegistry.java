@@ -5,7 +5,7 @@ import com.google.common.collect.Table;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import conductance.api.material.Material;
 import conductance.Conductance;
-import conductance.block.WireBlock;
+import conductance.init.block.WireBlock;
 
 public final class WireRegistry {
 

@@ -10,7 +10,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import conductance.api.util.IInteractable;
-import conductance.api.util.tier.Tier;
 import conductance.client.MachineUIFactory;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.PluginManager;

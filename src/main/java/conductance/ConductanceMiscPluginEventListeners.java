@@ -2,7 +2,6 @@ package conductance;
 
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.bus.api.EventPriority;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialTaggedSets;
 import conductance.api.plugin.ConductancePluginListener;
@@ -41,7 +40,7 @@ import static conductance.api.NCMaterials.WOOD;
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceMiscPluginEventListeners {
 
-	@EventListener(priority = EventPriority.LOW)
+	@EventListener(priority = -100)
 	private static void onRegisterMaterialOverrides(final RegisterMaterialOverrideEvent event) {
 		event.add(NCMaterialTaggedSets.STORAGE_BLOCK, IRON, Blocks.IRON_BLOCK);
 		event.add(NCMaterialTaggedSets.STORAGE_BLOCK, GOLD, Blocks.GOLD_BLOCK);
@@ -110,7 +109,7 @@ public final class ConductanceMiscPluginEventListeners {
 		event.add(NCMaterialTaggedSets.RAW_ORE_BLOCK, COPPER, Blocks.RAW_COPPER_BLOCK);
 	}
 
-	@EventListener(priority = EventPriority.LOW)
+	@EventListener(priority = -100)
 	private static void onRegisterMaterialUnitOverrides(final RegisterMaterialUnitOverrideEvent event) {
 		event.add(NCMaterialTaggedSets.STORAGE_BLOCK, CLAY, UNIT * 4);
 		event.add(NCMaterialTaggedSets.STORAGE_BLOCK, BRICK, UNIT * 4);
@@ -123,7 +122,7 @@ public final class ConductanceMiscPluginEventListeners {
 		event.add(NCMaterialTaggedSets.ROD, BONE, UNIT * 5);
 	}
 
-	@EventListener(priority = EventPriority.LOW)
+	@EventListener(priority = -100)
 	private static void onRegisterTags(final RegisterTagEvent event) {
 		event.item(CAPI.Tags.TAG_WRENCH, ConductanceItems.CRAFTING_TOOL_WRENCH);
 		event.item(CAPI.Tags.TAG_HAMMER, ConductanceItems.CRAFTING_TOOL_HAMMER);

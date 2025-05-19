@@ -13,7 +13,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import conductance.block.IConductanceBlock;
+import conductance.init.block.IConductanceBlock;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.TaggedSetImpl;
 import conductance.core.register.MaterialRegistryImpl;

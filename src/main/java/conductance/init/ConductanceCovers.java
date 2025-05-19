@@ -9,7 +9,7 @@ import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterCoverEvent;
 import conductance.Conductance;
-import conductance.cover.ConveyorCoverEntity;
+import conductance.init.cover.ConveyorCoverEntity;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceCovers {
