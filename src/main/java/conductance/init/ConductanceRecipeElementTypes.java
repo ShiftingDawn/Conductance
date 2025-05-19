@@ -4,21 +4,27 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.Ingredient;
 import com.mojang.serialization.Codec;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import conductance.api.machine.recipe.RecipeModifier;
-import conductance.api.plugin.RecipeElementTypeRegister;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.plugin.RegisterRecipeElementTypeEvent;
+import conductance.Conductance;
 import static conductance.api.NCRecipeElementTypes.ENERGY;
 import static conductance.api.NCRecipeElementTypes.FLUID;
 import static conductance.api.NCRecipeElementTypes.ITEM;
 
+@ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceRecipeElementTypes {
 
-	public static void init(final RecipeElementTypeRegister register) {
-		ITEM = register.register("item", SizedIngredient.FLAT_CODEC, SizedIngredient.STREAM_CODEC, ConductanceRecipeElementTypes::copyItem);
-		FLUID = register.register("fluid", SizedFluidIngredient.FLAT_CODEC, SizedFluidIngredient.STREAM_CODEC, ConductanceRecipeElementTypes::copyFluid);
-		ENERGY = register.register("energy", Codec.LONG, StreamCodec.of(FriendlyByteBuf::writeVarLong, FriendlyByteBuf::readVarLong), ConductanceRecipeElementTypes::copyEnergy);
+	@EventListener(priority = EventPriority.LOW)
+	private static void init(final RegisterRecipeElementTypeEvent event) {
+		ITEM = event.register("item", SizedIngredient.FLAT_CODEC, SizedIngredient.STREAM_CODEC, ConductanceRecipeElementTypes::copyItem);
+		FLUID = event.register("fluid", SizedFluidIngredient.FLAT_CODEC, SizedFluidIngredient.STREAM_CODEC, ConductanceRecipeElementTypes::copyFluid);
+		ENERGY = event.register("energy", Codec.LONG, StreamCodec.of(FriendlyByteBuf::writeVarLong, FriendlyByteBuf::readVarLong), ConductanceRecipeElementTypes::copyEnergy);
 	}
 
 	private static SizedIngredient copyItem(final SizedIngredient obj, final RecipeModifier mod) {

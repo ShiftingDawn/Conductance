@@ -12,6 +12,11 @@ import conductance.api.machine.recipe.RecipeBuilder;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RegisterRecipeEvent implements IConductancePluginEvent {
 
+	public interface RecipeBuilderFactory {
+
+		RecipeBuilder build(NCRecipeType recipeType, ResourceLocation recipeId);
+	}
+
 	private final String modid;
 	@Getter
 	private final RecipeOutput output;

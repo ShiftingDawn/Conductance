@@ -1,20 +1,11 @@
 package conductance.api;
 
-import net.minecraft.data.recipes.RecipeOutput;
-import conductance.api.plugin.CoverRegister;
 import conductance.api.plugin.MachineRegister;
 import conductance.api.plugin.MaterialFlagRegister;
 import conductance.api.plugin.MaterialOreTypeRegister;
-import conductance.api.plugin.MaterialOverrideMap;
 import conductance.api.plugin.MaterialRegister;
 import conductance.api.plugin.MaterialTaggedSetRegister;
 import conductance.api.plugin.MaterialTraitRegister;
-import conductance.api.plugin.MaterialUnitOverrideMap;
-import conductance.api.plugin.RecipeBuilderFactory;
-import conductance.api.plugin.RecipeElementTypeRegister;
-import conductance.api.plugin.RecipeTypeRegister;
-import conductance.api.plugin.TagRegister;
-import conductance.api.plugin.TierRegister;
 
 public interface IConductancePlugin {
 
@@ -33,30 +24,6 @@ public interface IConductancePlugin {
 	default void registerMaterials(final MaterialRegister register) {
 	}
 
-	default void registerTiers(final TierRegister register) {
-	}
-
-	default void registerRecipeElementTypes(final RecipeElementTypeRegister register) {
-	}
-
-	default void registerRecipeTypes(final RecipeTypeRegister register) {
-	}
-
 	default void registerMachines(final MachineRegister register) {
-	}
-
-	default void registerCovers(final CoverRegister register) {
-	}
-
-	default void registerMaterialOverrides(final MaterialOverrideMap overrides) {
-	}
-
-	default void registerMaterialUnitOverrides(final MaterialUnitOverrideMap overrides) {
-	}
-
-	default void registerTags(final TagRegister tags) {
-	}
-
-	default void registerRecipes(final RecipeOutput recipeOutput, final RecipeBuilderFactory builderFactory) {
 	}
 }

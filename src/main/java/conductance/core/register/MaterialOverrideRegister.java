@@ -5,9 +5,9 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.plugin.MaterialOverrideMap;
+import conductance.api.plugin.RegisterMaterialOverrideEvent;
 
-public final class MaterialOverrideRegister implements MaterialOverrideMap {
+public final class MaterialOverrideRegister implements RegisterMaterialOverrideEvent.MaterialOverrideMap {
 
 	private static final Table<TaggedMaterialSet, Material, ItemLike[]> OVERRIDES = HashBasedTable.create();
 

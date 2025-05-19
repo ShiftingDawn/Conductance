@@ -6,12 +6,12 @@ import net.minecraft.world.level.ItemLike;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.plugin.TagRegister;
+import conductance.api.plugin.RegisterTagEvent;
 import conductance.api.util.Marker;
 import conductance.api.util.MiscUtils;
 import conductance.runtimepack.server.TagGenerationHandler;
 
-final class TagRegisterImpl implements TagRegister {
+final class TagRegisterImpl implements RegisterTagEvent.TagRegister {
 
 	public static final TagRegisterImpl INSTANCE = new TagRegisterImpl();
 

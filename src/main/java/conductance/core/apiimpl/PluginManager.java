@@ -26,6 +26,7 @@ import conductance.api.capability.cover.CoverRenderer;
 import conductance.api.capability.cover.CoverType;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.RecipeElementCloner;
+import conductance.api.machine.recipe.RecipeTypeBuilder;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialTextureSet;
@@ -33,16 +34,21 @@ import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.plugin.ConductancePluginListener;
-import conductance.api.plugin.CoverRegister;
 import conductance.api.plugin.MaterialTraitRegister;
-import conductance.api.plugin.RecipeBuilderFactory;
-import conductance.api.plugin.RecipeElementTypeRegister;
+import conductance.api.plugin.RegisterCoverEvent;
 import conductance.api.plugin.RegisterFieldSerializerEvent;
+import conductance.api.plugin.RegisterMaterialOverrideEvent;
 import conductance.api.plugin.RegisterMaterialTextureSetEvent;
 import conductance.api.plugin.RegisterMaterialTextureTypeEvent;
+import conductance.api.plugin.RegisterMaterialUnitOverrideEvent;
 import conductance.api.plugin.RegisterPeriodicElementEvent;
+import conductance.api.plugin.RegisterRecipeElementTypeEvent;
 import conductance.api.plugin.RegisterRecipeEvent;
+import conductance.api.plugin.RegisterRecipeTypeEvent;
+import conductance.api.plugin.RegisterTagEvent;
+import conductance.api.plugin.RegisterTierEvent;
 import conductance.api.plugin.RemoveRecipeEvent;
+import conductance.api.util.tier.Tier;
 import conductance.Conductance;
 import conductance.core.cover.CoverTypeImpl;
 import conductance.core.machine.MachineBuilderImpl;
@@ -170,15 +176,28 @@ public final class PluginManager {
 	}
 
 	public static void dispatchTiers() {
-		PluginManager.execute((plugin, modid) -> plugin.registerTiers(TierImpl.Builder::new));
+		//TODO clean this up
+		final RegisterTierEvent event = PluginEventBus.instantiateEvent(RegisterTierEvent.class, new RegisterTierEvent.TierRegister() {
+
+			@Override
+			public Tier register(final String registryName, final String displayName, final int tierColor, final Tier previousTier) {
+				return new TierImpl.Builder(registryName, displayName, tierColor).previous(previousTier).build();
+			}
+
+			@Override
+			public Tier register(final String registryName, final String displayName, final int tierColor) {
+				return new TierImpl.Builder(registryName, displayName, tierColor).build();
+			}
+		});
+		PluginEventBus.post(RegisterTierEvent.class, modid -> event);
 	}
 
 	public static void dispatchRecipeElementTypes() {
-		PluginManager.execute((plugin, modid) -> plugin.registerRecipeElementTypes(new RecipeElementTypeRegister() {
+		PluginEventBus.post(RegisterRecipeElementTypeEvent.class, modid -> PluginEventBus.instantiateEvent(RegisterRecipeElementTypeEvent.class, modid, new RegisterRecipeElementTypeEvent.RecipeElementTypeRegister() {
 
 			@Override
-			public <T> IRecipeElementType<T> register(final String name, final Codec<T> dataCodec, final StreamCodec<RegistryFriendlyByteBuf, T> dataStreamCodec, final RecipeElementCloner<T> cloner) {
-				return Util.make(new RecipeElementTypeSerializer<>(ResourceLocation.fromNamespaceAndPath(modid, name), dataCodec, dataStreamCodec, cloner), result -> {
+			public <T> IRecipeElementType<T> register(final ResourceLocation registryKey, final Codec<T> dataCodec, final StreamCodec<RegistryFriendlyByteBuf, T> dataStreamCodec, final RecipeElementCloner<T> cloner) {
+				return Util.make(new RecipeElementTypeSerializer<>(registryKey, dataCodec, dataStreamCodec, cloner), result -> {
 					CAPI.regs().recipeElementTypes().register(result.getRegistryKey(), result);
 				});
 			}
@@ -186,7 +205,8 @@ public final class PluginManager {
 	}
 
 	public static void dispatchRecipeTypes() {
-		PluginManager.execute((plugin, modid) -> plugin.registerRecipeTypes(registryKey -> new RecipeTypeBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryKey))));
+		PluginEventBus.post(RegisterRecipeTypeEvent.class, modid -> PluginEventBus.instantiateEvent(RegisterRecipeTypeEvent.class, modid,
+				(Function<ResourceLocation, RecipeTypeBuilder>) RecipeTypeBuilderImpl::new));
 	}
 
 	public static void dispatchRegisterMachines() {
@@ -194,29 +214,25 @@ public final class PluginManager {
 	}
 
 	public static void dispatchRegisterCovers() {
-		PluginManager.execute((plugin, modid) -> plugin.registerCovers(new CoverRegister() {
-
-			@Override
-			public <COVER extends CoverEntity<COVER>> CoverType<COVER> register(final String registryName, final Function<CoverType<COVER>, CoverRenderer> coverRenderer,
-					final CoverEntityConstructor<COVER> constructor) {
-				return new CoverTypeImpl<>(ResourceLocation.fromNamespaceAndPath(modid, registryName), coverRenderer, constructor);
-			}
-		}));
+		PluginEventBus.post(RegisterCoverEvent.class, modid -> PluginEventBus.instantiateEvent(RegisterCoverEvent.class, modid, (RegisterCoverEvent.CoverRegister) CoverTypeImpl::new));
 	}
 
 	public static void dispatchMaterialOverrides() {
-		PluginManager.execute((plugin, modid) -> plugin.registerMaterialOverrides(new MaterialOverrideRegister()));
+		final RegisterMaterialOverrideEvent event = PluginEventBus.instantiateEvent(RegisterMaterialOverrideEvent.class, new MaterialOverrideRegister());
+		PluginEventBus.post(RegisterMaterialOverrideEvent.class, modid -> event);
 	}
 
 	public static void dispatchMaterialUnitOverrides() {
-		PluginManager.execute((plugin, modid) -> plugin.registerMaterialUnitOverrides(new MaterialUnitOverrideRegister()));
+		final RegisterMaterialUnitOverrideEvent event = PluginEventBus.instantiateEvent(RegisterMaterialUnitOverrideEvent.class, new MaterialUnitOverrideRegister());
+		PluginEventBus.post(RegisterMaterialUnitOverrideEvent.class, modid -> event);
 	}
 
 	public static void dispatchTagRegister() {
-		PluginManager.execute((plugin, modid) -> plugin.registerTags(TagRegisterImpl.INSTANCE));
+		final RegisterTagEvent event = PluginEventBus.instantiateEvent(RegisterTagEvent.class, TagRegisterImpl.INSTANCE);
+		PluginEventBus.post(RegisterTagEvent.class, modid -> event);
 	}
 
-	public static void dispatchRegisterRecipes(final RecipeOutput recipeOutput, final RecipeBuilderFactory builderFactory) {
+	public static void dispatchRegisterRecipes(final RecipeOutput recipeOutput, final RegisterRecipeEvent.RecipeBuilderFactory builderFactory) {
 		PluginEventBus.post(RegisterRecipeEvent.class, modid -> PluginEventBus.instantiateEvent(RegisterRecipeEvent.class, modid, recipeOutput, builderFactory));
 	}
 
