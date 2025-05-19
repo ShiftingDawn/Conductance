@@ -108,12 +108,12 @@ public final class PluginEventDispatcher {
 
 			@Override
 			public Tier register(final String registryName, final String displayName, final int tierColor, final Tier previousTier) {
-				return factory.apply(displayName, displayName, tierColor).previous(previousTier).build();
+				return factory.apply(registryName, displayName, tierColor).previous(previousTier).build();
 			}
 
 			@Override
 			public Tier register(final String registryName, final String displayName, final int tierColor) {
-				return factory.apply(displayName, displayName, tierColor).build();
+				return factory.apply(registryName, displayName, tierColor).build();
 			}
 		}));
 	}
