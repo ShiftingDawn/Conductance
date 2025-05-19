@@ -1,8 +1,6 @@
 package conductance.api;
 
-import java.util.function.Consumer;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
 import conductance.api.plugin.CoverRegister;
 import conductance.api.plugin.MachineRegister;
 import conductance.api.plugin.MaterialFlagRegister;
@@ -60,8 +58,5 @@ public interface IConductancePlugin {
 	}
 
 	default void registerRecipes(final RecipeOutput recipeOutput, final RecipeBuilderFactory builderFactory) {
-	}
-
-	default void removeRecipes(final Consumer<ResourceLocation> remover) {
 	}
 }

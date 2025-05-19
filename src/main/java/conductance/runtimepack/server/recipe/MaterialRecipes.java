@@ -3,7 +3,6 @@ package conductance.runtimepack.server.recipe;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import conductance.api.CAPI;
@@ -16,10 +15,9 @@ import conductance.api.machine.recipe.AutoRecipeData;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.material.traits.MaterialTraitOre;
-import conductance.api.plugin.RecipeBuilderFactory;
+import conductance.api.plugin.RegisterRecipeEvent;
 import conductance.api.util.MiscUtils;
 import conductance.core.register.MaterialOverrideRegister;
-import static conductance.Conductance.id;
 import static conductance.runtimepack.server.recipe.RecipeLoader.blasting;
 import static conductance.runtimepack.server.recipe.RecipeLoader.matRecipe;
 import static conductance.runtimepack.server.recipe.RecipeLoader.shaped;
@@ -28,16 +26,16 @@ import static conductance.runtimepack.server.recipe.RecipeLoader.smelting;
 
 final class MaterialRecipes {
 
-	public static void add(final RecipeOutput output, final RecipeBuilderFactory builderFactory) {
+	public static void add(final RegisterRecipeEvent event) {
 		CAPI.regs().materials().forEach(material -> {
-			MaterialRecipes.addAllRecipes(output, builderFactory, material);
-			material.executeIf(NCMaterialTraits.ORE, trait -> MaterialRecipes.addOreRecipes(output, builderFactory, material, trait));
-			material.executeIf(NCMaterialTraits.INGOT, () -> MaterialRecipes.addIngotRecipes(output, builderFactory, material));
-			material.executeIf(NCMaterialTraits.GEM, () -> MaterialRecipes.addGemRecipes(output, builderFactory, material));
-			material.executeIf(NCMaterialTraits.WOOD, () -> MaterialRecipes.addWoodRecipes(output, builderFactory, material));
+			MaterialRecipes.addAllRecipes(event, material);
+			material.executeIf(NCMaterialTraits.ORE, trait -> MaterialRecipes.addOreRecipes(event, material, trait));
+			material.executeIf(NCMaterialTraits.INGOT, () -> MaterialRecipes.addIngotRecipes(event, material));
+			material.executeIf(NCMaterialTraits.GEM, () -> MaterialRecipes.addGemRecipes(event, material));
+			material.executeIf(NCMaterialTraits.WOOD, () -> MaterialRecipes.addWoodRecipes(event, material));
 
 			if (material.hasTrait(NCMaterialTraits.DUST) && !material.hasTrait(NCMaterialTraits.INGOT) && !material.hasTrait(NCMaterialTraits.GEM)) {
-				MaterialRecipes.addDustRecipes(output, builderFactory, material);
+				MaterialRecipes.addDustRecipes(event, material);
 			}
 		});
 	}
@@ -46,28 +44,27 @@ final class MaterialRecipes {
 		MaterialRecipes.removeOreRecipes(remover);
 	}
 
-	private static void addOreRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material, final MaterialTraitOre trait) {
+	private static void addOreRecipes(final RegisterRecipeEvent event, final Material material, final MaterialTraitOre trait) {
 		if (!MaterialOverrideRegister.has(NCMaterialTaggedSets.RAW_ORE_BLOCK, material)) {
-			shapeless(output, "raw_%s_ore_block".formatted(material.getName()), CAPI.materials().getBlock(NCMaterialTaggedSets.RAW_ORE_BLOCK, material, 1),
+			shapeless(event, "raw_%s_ore_block".formatted(material.getName()), CAPI.materials().getBlock(NCMaterialTaggedSets.RAW_ORE_BLOCK, material, 1),
 					CAPI.materials().getItem(NCMaterialTaggedSets.RAW_ORE, material, 9));
 		}
 		if (!MaterialOverrideRegister.has(NCMaterialTaggedSets.RAW_ORE, material)) {
-			shapeless(output, "raw_%s_ore".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.RAW_ORE, material, 9),
+			shapeless(event, "raw_%s_ore".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.RAW_ORE, material, 9),
 					CAPI.materials().getBlock(NCMaterialTaggedSets.RAW_ORE_BLOCK, material, 1));
 		}
 		final Material pulverizeMaterial = trait.getPulverizeResult() != null ? trait.getPulverizeResult().get() : material;
 		final Material smeltMaterial = trait.getSmeltResult() != null ? trait.getSmeltResult().get() : material;
 		final TaggedMaterialSet smeltType = material.hasTrait(NCMaterialTraits.INGOT) ? NCMaterialTaggedSets.INGOT : material.hasTrait(NCMaterialTraits.GEM) ? NCMaterialTaggedSets.GEM : NCMaterialTaggedSets.DUST;
-		final BiConsumer<TaggedMaterialSet, Integer> pulverizeMaker = (set, multiplier) ->
-				builderFactory.build(NCRecipeTypes.PULVERIZER, id("%s_from_%s".formatted(NCMaterialTaggedSets.DUST.getUnlocalizedName(pulverizeMaterial), set.getUnlocalizedName(material))))
-						.in(CAPI.materials().getItem(set, material, 1)).out(NCMaterialTaggedSets.DUST, pulverizeMaterial, 2 * multiplier).inEnergy(4).processTime(100)
-						.save(output);
+		final BiConsumer<TaggedMaterialSet, Integer> pulverizeMaker = (set, multiplier) -> event.create(
+				NCRecipeTypes.PULVERIZER, "%s_from_%s".formatted(NCMaterialTaggedSets.DUST.getUnlocalizedName(pulverizeMaterial), set.getUnlocalizedName(material)),
+				builder -> builder.in(CAPI.materials().getItem(set, material, 1)).out(NCMaterialTaggedSets.DUST, pulverizeMaterial, 2 * multiplier).inEnergy(4).processTime(100));
 		final BiConsumer<TaggedMaterialSet, Integer> smeltMaker = (set, multiplier) ->
-				smelting(output, "%s_from_%s".formatted(smeltType.getUnlocalizedName(smeltMaterial), set.getUnlocalizedName(material)),
+				smelting(event, "%s_from_%s".formatted(smeltType.getUnlocalizedName(smeltMaterial), set.getUnlocalizedName(material)),
 						CAPI.materials().getItem(smeltType, smeltMaterial, multiplier), Ingredient.of(CAPI.materials().getItem(set, material, 1)),
 						builder -> builder.setExperience(0.3f * multiplier));
 		final BiConsumer<TaggedMaterialSet, Integer> blastMaker = (set, multiplier) ->
-				blasting(output, "%s_from_%s".formatted(smeltType.getUnlocalizedName(smeltMaterial), set.getUnlocalizedName(material)),
+				blasting(event, "%s_from_%s".formatted(smeltType.getUnlocalizedName(smeltMaterial), set.getUnlocalizedName(material)),
 						CAPI.materials().getItem(smeltType, smeltMaterial, multiplier), Ingredient.of(CAPI.materials().getItem(set, material, 1)),
 						builder -> builder.setExperience(0.3f * multiplier));
 		CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.getOreType() != null).forEach(set -> {
@@ -107,120 +104,120 @@ final class MaterialRecipes {
 		).map(ResourceLocation::withDefaultNamespace).forEach(remover);
 	}
 
-	private static void addAllRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
+	private static void addAllRecipes(final RegisterRecipeEvent event, final Material material) {
 		material.executeIf(NCMaterialFlags.GENERATE_BOLT_AND_SCREW, () -> {
 			material.executeIf(NCMaterialFlags.GENERATE_ROD, () -> {
-				matRecipe(output, builderFactory, "%s_bolt", material, NCRecipeTypes.CUTTING_MACHINE, NCMaterialTaggedSets.ROD, NCMaterialTaggedSets.BOLT, null);
+				matRecipe(event, "%s_bolt", material, NCRecipeTypes.CUTTING_MACHINE, NCMaterialTaggedSets.ROD, NCMaterialTaggedSets.BOLT, null);
 			});
-			matRecipe(output, builderFactory, "%s_screw", material, NCRecipeTypes.LATHE, NCMaterialTaggedSets.SCREW, NCMaterialTaggedSets.BOLT, null);
+			matRecipe(event, "%s_screw", material, NCRecipeTypes.LATHE, NCMaterialTaggedSets.SCREW, NCMaterialTaggedSets.BOLT, null);
 		});
 		material.executeIf(NCMaterialFlags.GENERATE_GEAR, () -> {
 			if (material.hasFlag(NCMaterialFlags.GENERATE_PLATE) && material.hasFlag(NCMaterialFlags.GENERATE_ROD)) {
-				shaped(output, "%s_gear".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.GEAR, material, 1),
+				shaped(event, "%s_gear".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.GEAR, material, 1),
 						"#$#", "$W$", "#$#", '#', MiscUtils.getItemTag(NCMaterialTaggedSets.ROD, material), '$', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material));
 			}
 		});
 		material.executeIf(NCMaterialFlags.GENERATE_SMALL_GEAR, () -> {
 			if (material.hasFlag(NCMaterialFlags.GENERATE_PLATE) && material.hasFlag(NCMaterialFlags.GENERATE_ROD)) {
-				shaped(output, "%s_gear".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.GEAR_SMALL, material, 1),
+				shaped(event, "%s_gear".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.GEAR_SMALL, material, 1),
 						" # ", "W$X", " # ", '#', MiscUtils.getItemTag(NCMaterialTaggedSets.ROD, material), '$', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material));
 			}
 		});
 		material.executeIf(NCMaterialFlags.GENERATE_FRAME_BOX, () -> {
-			shaped(output, "%s_frame_box".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.FRAME_BOX, material, 2),
+			shaped(event, "%s_frame_box".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.FRAME_BOX, material, 2),
 					"###", "#W#", "###", '#', MiscUtils.getItemTag(NCMaterialTaggedSets.ROD, material));
 		});
 
 		material.executeIf(NCMaterialTraits.WIRE, trait -> {
-			shapeless(output, "2x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_2X, material, 1),
+			shapeless(event, "2x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_2X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 2);
-			shapeless(output, "4x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_4X, material, 1),
+			shapeless(event, "4x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_4X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 4);
-			shapeless(output, "8x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_8X, material, 1),
+			shapeless(event, "8x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_8X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 8);
-			shapeless(output, "1x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 2),
+			shapeless(event, "1x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 2),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material));
-			shapeless(output, "4x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_4X, material, 1),
+			shapeless(event, "4x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_4X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 2);
-			shapeless(output, "8x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_8X, material, 1),
+			shapeless(event, "8x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_8X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 4);
-			shapeless(output, "12x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_12X, material, 1),
+			shapeless(event, "12x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_12X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 6);
-			shapeless(output, "16x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
+			shapeless(event, "16x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 8);
-			shapeless(output, "1x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 4),
+			shapeless(event, "1x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 4),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material));
-			shapeless(output, "8x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_8X, material, 1),
+			shapeless(event, "8x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_8X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material), 2);
-			shapeless(output, "12x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_12X, material, 1),
+			shapeless(event, "12x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_12X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material), 3);
-			shapeless(output, "16x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
+			shapeless(event, "16x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material), 4);
-			shapeless(output, "1x_%s_wire_from_8x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 8),
+			shapeless(event, "1x_%s_wire_from_8x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 8),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_8X, material));
-			shapeless(output, "16x_%s_wire_from_8x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
+			shapeless(event, "16x_%s_wire_from_8x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_8X, material), 2);
-			shapeless(output, "1x_%s_wire_from_12x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 12),
+			shapeless(event, "1x_%s_wire_from_12x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 12),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_12X, material));
-			shapeless(output, "12x_%s_wire_from_8x_wire_and_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_12X, material, 1),
+			shapeless(event, "12x_%s_wire_from_8x_wire_and_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_12X, material, 1),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_8X, material), MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material));
-			shapeless(output, "1x_%s_wire_from_16x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 16),
+			shapeless(event, "1x_%s_wire_from_16x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 16),
 					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_16X, material));
 		});
 	}
 
-	private static void addIngotRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
+	private static void addIngotRecipes(final RegisterRecipeEvent event, final Material material) {
 		material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> {
-			shapeless(output, "%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE, material, 1),
+			shapeless(event, "%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE, material, 1),
 					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.INGOT, material), 2);
-			shapeless(output, "double_%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE_DOUBLE, material, 1),
+			shapeless(event, "double_%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE_DOUBLE, material, 1),
 					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material), 2);
-			matRecipe(output, builderFactory, "%s_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE, b -> b.program(1));
-			matRecipe(output, builderFactory, "%s_double_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
-			matRecipe(output, builderFactory, "%s_dense_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
-			matRecipe(output, builderFactory, "%s_double_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
-			matRecipe(output, builderFactory, "%s_dense_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+			matRecipe(event, "%s_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE, b -> b.program(1));
+			matRecipe(event, "%s_double_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(event, "%s_dense_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+			matRecipe(event, "%s_double_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(event, "%s_dense_plate_from_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
 		});
 		material.executeIf(NCMaterialFlags.GENERATE_ROD, () -> {
-			matRecipe(output, builderFactory, "%s_rod", material, NCRecipeTypes.LATHE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.ROD, null);
+			matRecipe(event, "%s_rod", material, NCRecipeTypes.LATHE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.ROD, null);
 		});
 		material.executeIf(NCMaterialTraits.WIRE, trait -> {
 			final AutoRecipeData pair = CAPI.recipeHelper().calculateRecipeData(material, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_1X, (int) material.getMass(), NCTiers.LV.getRecipeVoltage());
-			matRecipe(output, builderFactory, "1x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_1X, b -> b.processTime(pair.processTime()));
-			matRecipe(output, builderFactory, "2x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_2X, b -> b.processTime(pair.processTime()));
-			matRecipe(output, builderFactory, "4x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_4X, b -> b.processTime(pair.processTime() * 2));
-			matRecipe(output, builderFactory, "8x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_8X, b -> b.processTime(pair.processTime() * 2));
-			matRecipe(output, builderFactory, "12x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_12X, b -> b.processTime(pair.processTime() * 4));
-			matRecipe(output, builderFactory, "16x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_16X, b -> b.processTime(pair.processTime() * 4));
+			matRecipe(event, "1x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_1X, b -> b.processTime(pair.processTime()));
+			matRecipe(event, "2x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_2X, b -> b.processTime(pair.processTime()));
+			matRecipe(event, "4x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_4X, b -> b.processTime(pair.processTime() * 2));
+			matRecipe(event, "8x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_8X, b -> b.processTime(pair.processTime() * 2));
+			matRecipe(event, "12x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_12X, b -> b.processTime(pair.processTime() * 4));
+			matRecipe(event, "16x_%s_wire", material, NCRecipeTypes.WIREMILL, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.WIRE_16X, b -> b.processTime(pair.processTime() * 4));
 		});
 	}
 
-	private static void addGemRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
+	private static void addGemRecipes(final RegisterRecipeEvent event, final Material material) {
 		material.executeIf(NCMaterialFlags.GENERATE_ROD, () -> {
-			matRecipe(output, builderFactory, "%s_rod", material, NCRecipeTypes.LATHE, NCMaterialTaggedSets.GEM, NCMaterialTaggedSets.ROD, null);
+			matRecipe(event, "%s_rod", material, NCRecipeTypes.LATHE, NCMaterialTaggedSets.GEM, NCMaterialTaggedSets.ROD, null);
 		});
 		material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> {
-			matRecipe(output, builderFactory, "%s_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE, b -> b.program(1));
-			matRecipe(output, builderFactory, "%s_double_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
-			matRecipe(output, builderFactory, "%s_dense_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
-		});
-	}
-
-	private static void addWoodRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
-		material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> {
-			matRecipe(output, builderFactory, "%s_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE, null);
-			matRecipe(output, builderFactory, "%s_double_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
-			matRecipe(output, builderFactory, "%s_dense_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
-			matRecipe(output, builderFactory, "%s_double_plank_from_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
-			matRecipe(output, builderFactory, "%s_dense_plank_from_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+			matRecipe(event, "%s_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE, b -> b.program(1));
+			matRecipe(event, "%s_double_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(event, "%s_dense_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
 		});
 	}
 
-	private static void addDustRecipes(final RecipeOutput output, final RecipeBuilderFactory builderFactory, final Material material) {
+	private static void addWoodRecipes(final RegisterRecipeEvent event, final Material material) {
 		material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> {
-			matRecipe(output, builderFactory, "%s_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE, b -> b.program(1));
-			matRecipe(output, builderFactory, "%s_double_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
-			matRecipe(output, builderFactory, "%s_dense_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+			matRecipe(event, "%s_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE, null);
+			matRecipe(event, "%s_double_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(event, "%s_dense_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+			matRecipe(event, "%s_double_plank_from_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(event, "%s_dense_plank_from_plank", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.PLATE, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
+		});
+	}
+
+	private static void addDustRecipes(final RegisterRecipeEvent event, final Material material) {
+		material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> {
+			matRecipe(event, "%s_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE, b -> b.program(1));
+			matRecipe(event, "%s_double_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
+			matRecipe(event, "%s_dense_plate", material, NCRecipeTypes.COMPRESSOR, NCMaterialTaggedSets.DUST, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));
 		});
 	}
 

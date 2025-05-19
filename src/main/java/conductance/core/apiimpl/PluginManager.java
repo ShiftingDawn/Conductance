@@ -41,6 +41,8 @@ import conductance.api.plugin.RegisterFieldSerializerEvent;
 import conductance.api.plugin.RegisterMaterialTextureSetEvent;
 import conductance.api.plugin.RegisterMaterialTextureTypeEvent;
 import conductance.api.plugin.RegisterPeriodicElementEvent;
+import conductance.api.plugin.RegisterRecipeEvent;
+import conductance.api.plugin.RemoveRecipeEvent;
 import conductance.Conductance;
 import conductance.core.cover.CoverTypeImpl;
 import conductance.core.machine.MachineBuilderImpl;
@@ -215,15 +217,17 @@ public final class PluginManager {
 	}
 
 	public static void dispatchRegisterRecipes(final RecipeOutput recipeOutput, final RecipeBuilderFactory builderFactory) {
-		PluginManager.execute((plugin, modid) -> plugin.registerRecipes(recipeOutput, builderFactory));
+		PluginEventBus.post(RegisterRecipeEvent.class, modid -> PluginEventBus.instantiateEvent(RegisterRecipeEvent.class, modid, recipeOutput, builderFactory));
 	}
 
 	public static void dispatchRemoveRecipes(final Consumer<ResourceLocation> remover) {
-		PluginManager.execute((plugin, modid) -> plugin.removeRecipes(remover));
+		final RemoveRecipeEvent event = PluginEventBus.instantiateEvent(RemoveRecipeEvent.class, remover);
+		PluginEventBus.post(RemoveRecipeEvent.class, modid -> event);
 	}
 
 	public static void dispatchSyncFieldSerializers() {
-		PluginEventBus.post(RegisterFieldSerializerEvent.class, modid -> PluginEventBus.instantiateEvent(RegisterFieldSerializerEvent.class, SyncFieldSerializerRegisterImpl.INSTANCE));
+		final RegisterFieldSerializerEvent event = PluginEventBus.instantiateEvent(RegisterFieldSerializerEvent.class, SyncFieldSerializerRegisterImpl.INSTANCE);
+		PluginEventBus.post(RegisterFieldSerializerEvent.class, modid -> event);
 	}
 
 	private static void execute(final BiConsumer<IConductancePlugin, String> executor) {

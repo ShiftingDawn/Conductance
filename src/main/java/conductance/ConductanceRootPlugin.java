@@ -1,8 +1,5 @@
 package conductance;
 
-import java.util.function.Consumer;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import conductance.api.CAPI;
@@ -18,7 +15,6 @@ import conductance.api.plugin.MaterialRegister;
 import conductance.api.plugin.MaterialTaggedSetRegister;
 import conductance.api.plugin.MaterialTraitRegister;
 import conductance.api.plugin.MaterialUnitOverrideMap;
-import conductance.api.plugin.RecipeBuilderFactory;
 import conductance.api.plugin.RecipeElementTypeRegister;
 import conductance.api.plugin.RecipeTypeRegister;
 import conductance.api.plugin.TagRegister;
@@ -34,7 +30,6 @@ import conductance.init.ConductanceMaterials;
 import conductance.init.ConductanceRecipeElementTypes;
 import conductance.init.ConductanceRecipeTypes;
 import conductance.init.ConductanceTiers;
-import conductance.runtimepack.server.recipe.RecipeLoader;
 import static conductance.api.CAPI.UNIT;
 import static conductance.api.NCMaterials.AMETHYST;
 import static conductance.api.NCMaterials.BLAZE;
@@ -202,15 +197,5 @@ public final class ConductanceRootPlugin implements IConductancePlugin {
 		tags.item(CAPI.Tags.TAG_WRENCH, ConductanceItems.CRAFTING_TOOL_WRENCH);
 		tags.item(CAPI.Tags.TAG_HAMMER, ConductanceItems.CRAFTING_TOOL_HAMMER);
 		tags.item(CAPI.Tags.TAG_WIRE_CUTTERS, ConductanceItems.CRAFTING_TOOL_WIRE_CUTTERS);
-	}
-
-	@Override
-	public void registerRecipes(final RecipeOutput recipeOutput, final RecipeBuilderFactory builderFactory) {
-		RecipeLoader.initAddition(recipeOutput, builderFactory);
-	}
-
-	@Override
-	public void removeRecipes(final Consumer<ResourceLocation> remover) {
-		RecipeLoader.initRemoval(remover);
 	}
 }
