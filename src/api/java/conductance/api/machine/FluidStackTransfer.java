@@ -34,7 +34,9 @@ public class FluidStackTransfer extends FluidTank implements ContentChangeListen
 
 	@Override
 	protected void onContentsChanged() {
-		this.contentChangeListener.run();
+		if (this.contentChangeListener != null) {
+			this.contentChangeListener.run();
+		}
 	}
 
 	@Override

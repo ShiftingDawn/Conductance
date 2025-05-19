@@ -37,7 +37,9 @@ public class ItemStackTransfer extends ItemStackHandler implements ContentChange
 
 	@Override
 	public void onContentsChanged(final int slot) {
-		this.contentChangeListener.run();
+		if (this.contentChangeListener != null) {
+			this.contentChangeListener.run();
+		}
 	}
 
 	public ItemStackTransfer copy() {
