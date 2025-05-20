@@ -36,7 +36,7 @@ import static conductance.api.NCTextureTypes.WIRE_BASE;
 import static conductance.api.NCTextureTypes.WIRE_SIDE;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductanceMaterialTextureTypes {
+final class ConductanceMaterialTextureTypes {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterMaterialTextureTypeEvent event) {

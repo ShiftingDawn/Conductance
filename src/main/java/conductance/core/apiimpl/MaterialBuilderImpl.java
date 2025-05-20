@@ -31,7 +31,8 @@ import conductance.api.material.traits.MaterialTraitWood;
 import conductance.api.plugin.MaterialBuilder;
 import conductance.api.util.tier.Tier;
 
-final class MaterialBuilderImpl implements MaterialBuilder {
+//TODO refactor
+public final class MaterialBuilderImpl implements MaterialBuilder {
 
 	private final ResourceLocation registryName;
 	private final MaterialDataMapImpl.Builder data;
@@ -42,7 +43,7 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	private MaterialTraitKey<? extends MaterialTraitFluid<?>> defaultFluid;
 	private boolean calculateColor = false;
 
-	MaterialBuilderImpl(final ResourceLocation registryName) {
+	public MaterialBuilderImpl(final ResourceLocation registryName) {
 		this.registryName = registryName;
 		this.data = new MaterialDataMapImpl.Builder();
 		this.traits = new MaterialTraitMapImpl();

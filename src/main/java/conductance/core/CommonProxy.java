@@ -39,12 +39,12 @@ public final class CommonProxy {
 		PluginEventDispatcher.dispatchRegisterTiers(TierImpl.Builder::new);
 		PluginEventDispatcher.dispatchRegisterMaterialOreTypes();
 		PluginEventDispatcher.dispatchRegisterPeriodicElements();
-		PluginManager.dispatchMaterialTextureTypes();
-		PluginManager.dispatchMaterialTextureSets();
-		PluginManager.dispatchMaterialTraits();
-		PluginManager.dispatchMaterialFlags();
-		PluginManager.dispatchMaterialTaggedSets();
-		PluginManager.dispatchMaterials();
+		PluginEventDispatcher.dispatchRegisterMaterialTextureTypes();
+		PluginEventDispatcher.dispatchRegisterMaterialTextureSets();
+		PluginEventDispatcher.dispatchRegisterMaterialTraits();
+		PluginEventDispatcher.dispatchRegisterMaterialFlags();
+		PluginEventDispatcher.dispatchRegisterMaterialTaggedSets();
+		PluginEventDispatcher.dispatchRegisterMaterials();
 		PluginEventDispatcher.dispatchRegisterMaterialOverrides();
 		PluginEventDispatcher.dispatchRegisterMaterialUnitOverrides();
 		PluginEventDispatcher.dispatchRegisterRecipeElementTypes();

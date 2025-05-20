@@ -15,7 +15,7 @@ import static conductance.api.NCTiers.LV;
 import static conductance.api.NCTiers.MV;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductanceTiers {
+final class ConductanceTiers {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterTierEvent event) {

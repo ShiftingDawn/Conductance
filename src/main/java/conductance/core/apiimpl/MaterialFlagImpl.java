@@ -12,7 +12,8 @@ import conductance.api.material.MaterialTraitKey;
 import conductance.api.registry.RegistryObject;
 import conductance.Conductance;
 
-final class MaterialFlagImpl extends RegistryObject<ResourceLocation> implements MaterialFlag {
+//TODO refactor
+public final class MaterialFlagImpl extends RegistryObject<ResourceLocation> implements MaterialFlag {
 
 	private final Set<MaterialFlagImpl> requiredFlags;
 	private final Set<MaterialTraitKey<?>> requiredTraits;

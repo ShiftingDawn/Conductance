@@ -12,7 +12,8 @@ import conductance.api.material.MaterialTextureType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.material.TaggedMaterialSetBuilder;
 
-final class MaterialTaggedSetBuilder extends TaggedSetBuilderImpl<Material, TaggedMaterialSet, TaggedMaterialSetBuilder> implements TaggedMaterialSetBuilder {
+//TODO refactor
+public final class MaterialTaggedSetBuilder extends TaggedSetBuilderImpl<Material, TaggedMaterialSet, TaggedMaterialSetBuilder> implements TaggedMaterialSetBuilder {
 
 	@Getter
 	private MaterialTextureType textureType = NCTextureTypes.DUST;
@@ -20,7 +21,7 @@ final class MaterialTaggedSetBuilder extends TaggedSetBuilderImpl<Material, Tagg
 	@Nullable
 	private final MaterialOreType oreType;
 
-	MaterialTaggedSetBuilder(final String registryKey, final Function<Material, String> unlocalizedNameFactory, @Nullable final MaterialOreType oreType) {
+	public MaterialTaggedSetBuilder(final String registryKey, final Function<Material, String> unlocalizedNameFactory, @Nullable final MaterialOreType oreType) {
 		super(registryKey, mat -> mat.getRegistryKey().getPath(), unlocalizedNameFactory);
 		this.oreType = oreType;
 	}

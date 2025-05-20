@@ -12,7 +12,7 @@ import conductance.Conductance;
 import conductance.init.cover.ConveyorCoverEntity;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductanceCovers {
+final class ConductanceCovers {
 
 	@EventListener
 	private static void init(final RegisterCoverEvent event) {

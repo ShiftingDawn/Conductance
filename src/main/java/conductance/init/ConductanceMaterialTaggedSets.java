@@ -7,7 +7,10 @@ import conductance.api.NCMaterialOreTypes;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCTextureTypes;
 import conductance.api.material.Material;
-import conductance.api.plugin.MaterialTaggedSetRegister;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.plugin.RegisterMaterialTaggedSetEvent;
+import conductance.Conductance;
 import static conductance.api.NCMaterialTaggedSets.BOLT;
 import static conductance.api.NCMaterialTaggedSets.DUST;
 import static conductance.api.NCMaterialTaggedSets.FINE_WIRE;
@@ -60,404 +63,358 @@ import static conductance.api.NCMaterialTaggedSets.WIRE_8X;
 import static conductance.api.NCMaterialTaggedSets.hasFlag;
 import static conductance.api.NCMaterialTaggedSets.hasTrait;
 
-public final class ConductanceMaterialTaggedSets {
+@ConductancePluginListener(modid = Conductance.MODID)
+final class ConductanceMaterialTaggedSets {
 
-	//@formatter:off
-	public static void init(final MaterialTaggedSetRegister register) {
-		DUST = register.register("dust", ConductanceMaterialTaggedSets::dustUnlocalizedNameGenerator)
-				.addTag("dusts/%s",  "%s Dusts")
+	@EventListener(priority = -100)
+	private static void init(final RegisterMaterialTaggedSetEvent event) {
+		DUST = event.register("dust", ConductanceMaterialTaggedSets::dustUnlocalizedNameGenerator, builder -> builder
+				.addTag("dusts/%s", "%s Dusts")
 				.addTagUnformatted("dusts", "Dusts")
 				.unitValue(CAPI.UNIT)
 				.hasItems(true)
 				.textureType(NCTextureTypes.DUST)
-				.generatorPredicate(PREDICATE_HAS_DUST)
-				.build();
+				.generatorPredicate(PREDICATE_HAS_DUST));
 
-		INGOT = register.register("ingot", ConductanceMaterialTaggedSets::ingotUnlocalizedNameGenerator)
+		INGOT = event.register("ingot", ConductanceMaterialTaggedSets::ingotUnlocalizedNameGenerator, builder -> builder
 				.addTag("ingots/%s", "%s Ingots")
 				.addTagUnformatted("ingots", "Ingots")
 				.unitValue(CAPI.UNIT)
 				.hasItems(true)
 				.textureType(NCTextureTypes.INGOT)
-				.generatorPredicate(PREDICATE_HAS_INGOT)
-				.build();
-		NUGGET = register.register("nugget")
+				.generatorPredicate(PREDICATE_HAS_INGOT));
+		NUGGET = event.register("nugget", builder -> builder
 				.addTag("nuggets/%s", "%s Nuggets")
 				.addTagUnformatted("nuggets", "Nuggets")
 				.unitValue(CAPI.UNIT / 9)
 				.hasItems(true)
 				.textureType(NCTextureTypes.NUGGET)
-				.generatorPredicate(PREDICATE_HAS_INGOT)
-				.build();
+				.generatorPredicate(PREDICATE_HAS_INGOT));
 
-		GEM = register.register("gem", "%s")
+		GEM = event.register("gem", "%s", builder -> builder
 				.addTag("gems/%s", "%s Gems")
 				.addTagUnformatted("gems", "Gems")
 				.unitValue(CAPI.UNIT)
 				.hasItems(true)
 				.textureType(NCTextureTypes.GEM)
-				.generatorPredicate(PREDICATE_HAS_GEM)
-				.build();
-		GEM_FLAWED = register.register("flawed_gem", "flawed_%s")
+				.generatorPredicate(PREDICATE_HAS_GEM));
+		GEM_FLAWED = event.register("flawed_gem", "flawed_%s", builder -> builder
 				.addTag("flawed_gems/%s", "Flawed %s Gems")
 				.addTagUnformatted("flawed_gems", "Flawed Gems")
 				.unitValue(CAPI.UNIT / 2)
 				.hasItems(true)
 				.textureType(NCTextureTypes.GEM_FLAWED)
-				.generatorPredicate(PREDICATE_HAS_GEM)
-				.build();
-		GEM_FLAWLESS = register.register("flawless_gem", "flawless_%s")
+				.generatorPredicate(PREDICATE_HAS_GEM));
+		GEM_FLAWLESS = event.register("flawless_gem", "flawless_%s", builder -> builder
 				.addTag("flawless_gems/%s", "Flawless %s Gems")
 				.addTagUnformatted("flawless_gems", "Flawless Gems")
 				.unitValue(CAPI.UNIT * 2)
 				.hasItems(true)
 				.textureType(NCTextureTypes.GEM_FLAWLESS)
-				.generatorPredicate(PREDICATE_HAS_GEM)
-				.build();
-		GEM_EXQUISITE = register.register("exquisite_gem", "exquisite_%s")
+				.generatorPredicate(PREDICATE_HAS_GEM));
+		GEM_EXQUISITE = event.register("exquisite_gem", "exquisite_%s", builder -> builder
 				.addTag("exquisite_gems/%s", "Exquisite %s")
 				.addTagUnformatted("exquisite_gems", "Exquisite Gems")
 				.unitValue(CAPI.UNIT * 4)
 				.hasItems(true)
 				.textureType(NCTextureTypes.GEM_EXQUISITE)
-				.generatorPredicate(PREDICATE_HAS_GEM)
-				.build();
+				.generatorPredicate(PREDICATE_HAS_GEM));
 
-		STORAGE_BLOCK = register.register("block", "block_of_%s")
+		STORAGE_BLOCK = event.register("block", "block_of_%s", builder -> builder
 				.addTag("storage_blocks/%s", "%s Storage Blocks")
 				.addTagUnformatted("storage_blocks", "Storage Blocks")
 				.unitValue(CAPI.UNIT * 9)
 				.hasBlocks(true)
 				.textureType(NCTextureTypes.STORAGE_BLOCK)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.INGOT) || mat.hasTrait(NCMaterialTraits.GEM) || mat.hasFlag(NCMaterialFlags.GENERATE_BLOCK))
-				.build();
+				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.INGOT) || mat.hasTrait(NCMaterialTraits.GEM) || mat.hasFlag(NCMaterialFlags.GENERATE_BLOCK)));
 
-		ORE_STONE = register.register("ore", "%s_ore", NCMaterialOreTypes.ORE_TYPE_STONE)
+		ORE_STONE = event.register("ore", "%s_ore", NCMaterialOreTypes.ORE_TYPE_STONE, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/stone", "Stone ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_GRANITE = register.register("granite_ore", "granite_%s_ore", NCMaterialOreTypes.ORE_TYPE_GRANITE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_GRANITE = event.register("granite_ore", "granite_%s_ore", NCMaterialOreTypes.ORE_TYPE_GRANITE, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/granite", "Granite Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_DIORITE = register.register("diorite_ore", "diorite_%s_ore", NCMaterialOreTypes.ORE_TYPE_DIORITE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_DIORITE = event.register("diorite_ore", "diorite_%s_ore", NCMaterialOreTypes.ORE_TYPE_DIORITE, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/diorite", "Diorite Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_ANDESITE = register.register("andesite_ore", "andesite_%s_ore", NCMaterialOreTypes.ORE_TYPE_ANDESITE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_ANDESITE = event.register("andesite_ore", "andesite_%s_ore", NCMaterialOreTypes.ORE_TYPE_ANDESITE, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/andesite", "Andesite Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_TUFF = register.register("tuff_ore", "tuff_%s_ore", NCMaterialOreTypes.ORE_TYPE_TUFF)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_TUFF = event.register("tuff_ore", "tuff_%s_ore", NCMaterialOreTypes.ORE_TYPE_TUFF, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/tuff", "Tuff Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_DEEPSLATE = register.register("deepslate_ore", "deepslate_%s_ore", NCMaterialOreTypes.ORE_TYPE_DEEPSLATE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_DEEPSLATE = event.register("deepslate_ore", "deepslate_%s_ore", NCMaterialOreTypes.ORE_TYPE_DEEPSLATE, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/deepslate", "Deepslate Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_NETHERRACK = register.register("nether_ore", "nether_%s_ore", NCMaterialOreTypes.ORE_TYPE_NETHERRACK)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_NETHERRACK = event.register("nether_ore", "nether_%s_ore", NCMaterialOreTypes.ORE_TYPE_NETHERRACK, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/netherrack", "Netherrack Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_BASALT = register.register("basalt_ore", "basalt_%s_ore", NCMaterialOreTypes.ORE_TYPE_BASALT)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_BASALT = event.register("basalt_ore", "basalt_%s_ore", NCMaterialOreTypes.ORE_TYPE_BASALT, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/basalt", "Basalt Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_BLACKSTONE = register.register("blackstone_ore", "blackstone_%s_ore", NCMaterialOreTypes.ORE_TYPE_BLACKSTONE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_BLACKSTONE = event.register("blackstone_ore", "blackstone_%s_ore", NCMaterialOreTypes.ORE_TYPE_BLACKSTONE, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/blackstone", "Blackstone Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_END_STONE = register.register("end_ore", "end_%s_ore", NCMaterialOreTypes.ORE_TYPE_END_STONE)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_END_STONE = event.register("end_ore", "end_%s_ore", NCMaterialOreTypes.ORE_TYPE_END_STONE, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/end_stone", "End Stone Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_GRAVEL = register.register("gravel_ore", "gravel_%s_ore", NCMaterialOreTypes.ORE_TYPE_GRAVEL)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_GRAVEL = event.register("gravel_ore", "gravel_%s_ore", NCMaterialOreTypes.ORE_TYPE_GRAVEL, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/gravel", "Gravel Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_SHOVEL)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_SAND = register.register("sand_ore", "sand_%s_ore", NCMaterialOreTypes.ORE_TYPE_SAND)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_SAND = event.register("sand_ore", "sand_%s_ore", NCMaterialOreTypes.ORE_TYPE_SAND, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/sand", "Sand Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_SHOVEL)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		ORE_RED_SAND = register.register("red_sand_ore", "red_sand_%s_ore", NCMaterialOreTypes.ORE_TYPE_RED_SAND)
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		ORE_RED_SAND = event.register("red_sand_ore", "red_sand_%s_ore", NCMaterialOreTypes.ORE_TYPE_RED_SAND, builder -> builder
 				.addTag("ores/%s", "%s Ores")
 				.addTagVanilla("%s_ores", "%s Ores")
 				.addTagUnformatted("ores", "Ores")
 				.addTagUnformatted("ores_in_ground/red_sand", "Red Sand Ores")
 				.hasBlocks(true, false)
 				.miningTool(BlockTags.MINEABLE_WITH_SHOVEL)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		RAW_ORE = register.register("raw_ore", "raw_%s")
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		RAW_ORE = event.register("raw_ore", "raw_%s", builder -> builder
 				.addTag("raw_materials/%s", "Raw %s")
 				.addTagUnformatted("raw_materials", "Raw Materials")
 				.hasItems(true)
 				.textureType(NCTextureTypes.RAW_ORE)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
-		RAW_ORE_BLOCK = register.register("raw_ore_block", "raw_%s_block")
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
+		RAW_ORE_BLOCK = event.register("raw_ore_block", "raw_%s_block", builder -> builder
 				.addTag("storage_blocks/raw_%s", "Raw %s Storage Blocks")
 				.addTagUnformatted("storage_blocks", "Storage Blocks")
 				.hasBlocks(true)
 				.textureType(NCTextureTypes.RAW_ORE_BLOCK)
-				.generatorPredicate(hasTrait(NCMaterialTraits.ORE))
-				.build();
+				.generatorPredicate(hasTrait(NCMaterialTraits.ORE)));
 
-		LIQUID = register.register("liquid", ConductanceMaterialTaggedSets::liquidUnlocalizedNameGenerator)
+		LIQUID = event.register("liquid", ConductanceMaterialTaggedSets::liquidUnlocalizedNameGenerator, builder -> builder
 				.addTag("%s", "%s")
 				.hasFluids(true)
 				.textureType(NCTextureTypes.LIQUID)
 				.generatorPredicate(hasTrait(NCMaterialTraits.LIQUID))
-				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
+				.fluidGeneratorCallback((mat, b) -> b.properties(p -> p
 						.density(mat.getTrait(NCMaterialTraits.LIQUID).getDensity())
 						.viscosity(mat.getTrait(NCMaterialTraits.LIQUID).getViscosity())
 						.temperature(mat.getTrait(NCMaterialTraits.LIQUID).getTemperature())
 						.lightLevel(mat.getData().getBlockLightLevel())
-				))
-				.build();
-		GAS = register.register("gas", ConductanceMaterialTaggedSets::gasUnlocalizedNameGenerator)
+				)));
+		GAS = event.register("gas", ConductanceMaterialTaggedSets::gasUnlocalizedNameGenerator, builder -> builder
 				.addTag("gases/%s", "%s Gases")
 				.hasFluids(true)
 				.textureType(NCTextureTypes.GAS)
 				.generatorPredicate(hasTrait(NCMaterialTraits.GAS))
-				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
+				.fluidGeneratorCallback((mat, b) -> b.properties(p -> p
 						.density(mat.getTrait(NCMaterialTraits.GAS).getDensity())
 						.viscosity(mat.getTrait(NCMaterialTraits.GAS).getViscosity())
 						.temperature(mat.getTrait(NCMaterialTraits.GAS).getTemperature())
 						.lightLevel(mat.getData().getBlockLightLevel())
-				))
-				.build();
-		PLASMA = register.register("plasma")
+				)));
+		PLASMA = event.register("plasma", builder -> builder
 				.addTag("plasmas/%s", "%s Plasmas")
 				.hasFluids(true)
 				.textureType(NCTextureTypes.PLASMA)
 				.generatorPredicate(hasTrait(NCMaterialTraits.PLASMA))
-				.fluidGeneratorCallback((mat, builder) -> builder.properties(p -> p
+				.fluidGeneratorCallback((mat, b) -> b.properties(p -> p
 						.density(mat.getTrait(NCMaterialTraits.PLASMA).getDensity())
 						.viscosity(mat.getTrait(NCMaterialTraits.PLASMA).getViscosity())
 						.temperature(mat.getTrait(NCMaterialTraits.PLASMA).getTemperature())
 						.lightLevel(mat.getData().getBlockLightLevel())
-				))
-				.build();
+				)));
 
-		PLATE = register.register("plate", ConductanceMaterialTaggedSets::plateUnlocalizedNameGenerator)
+		PLATE = event.register("plate", ConductanceMaterialTaggedSets::plateUnlocalizedNameGenerator, builder -> builder
 				.addTag("plates/%s", "%s Plates")
 				.addTagUnformatted("plates", "Plates")
 				.unitValue(CAPI.UNIT)
 				.hasItems(true)
 				.textureType(NCTextureTypes.PLATE)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE))
-				.build();
-		PLATE_DOUBLE = register.register("double_plate", ConductanceMaterialTaggedSets::plateDoubleUnlocalizedNameGenerator)
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE)));
+		PLATE_DOUBLE = event.register("double_plate", ConductanceMaterialTaggedSets::plateDoubleUnlocalizedNameGenerator, builder -> builder
 				.addTag("double_plates/%s", "Double %s Plates")
 				.addTagUnformatted("double_plates", "Double Plates")
 				.unitValue(CAPI.UNIT * 2)
 				.hasItems(true)
 				.textureType(NCTextureTypes.PLATE_DOUBLE)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE))
-				.build();
-		PLATE_DENSE = register.register("dense_plate", ConductanceMaterialTaggedSets::plateDenseUnlocalizedNameGenerator)
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE)));
+		PLATE_DENSE = event.register("dense_plate", ConductanceMaterialTaggedSets::plateDenseUnlocalizedNameGenerator, builder -> builder
 				.addTag("dense_plates/%s", "Dense %s Plates")
 				.addTagUnformatted("dense_plates", "Dense Plates")
 				.unitValue(CAPI.UNIT * 9)
 				.hasItems(true)
 				.textureType(NCTextureTypes.PLATE_DENSE)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE))
-				.build();
-		FOIL = register.register("foil", ConductanceMaterialTaggedSets::foilUnlocalizedNameGenerator)
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_PLATE)));
+		FOIL = event.register("foil", ConductanceMaterialTaggedSets::foilUnlocalizedNameGenerator, builder -> builder
 				.addTag("foils/%s", "%s Foils")
 				.addTagUnformatted("foils", "Foils")
 				.unitValue(CAPI.UNIT / 4)
 				.hasItems(true)
 				.textureType(NCTextureTypes.FOIL)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FOIL))
-				.build();
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FOIL)));
 
-		GEAR = register.register("gear")
+		GEAR = event.register("gear", builder -> builder
 				.addTag("gears/%s", "%s Gears")
 				.addTagUnformatted("gears", "Gears")
 				.unitValue(CAPI.UNIT * 4)
 				.hasItems(true)
 				.textureType(NCTextureTypes.GEAR)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_GEAR))
-				.build();
-		GEAR_SMALL = register.register("small_gear", "small_%s_gear")
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_GEAR)));
+		GEAR_SMALL = event.register("small_gear", "small_%s_gear", builder -> builder
 				.addTag("small_gears/%s", "Small %s Gears")
 				.addTagUnformatted("small_gears", "Small Gears")
 				.unitValue(CAPI.UNIT)
 				.hasItems(true)
 				.textureType(NCTextureTypes.GEAR_SMALL)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_SMALL_GEAR))
-				.build();
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_SMALL_GEAR)));
 
-		LENS = register.register("lens")
+		LENS = event.register("lens", builder -> builder
 				.addTag("lenses/%s", "%s Lenses")
 				.addTagUnformatted("lenses", "Lenses")
 				.unitValue(CAPI.UNIT)
 				.hasItems(true)
 				.textureType(NCTextureTypes.LENS)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_LENS))
-				.build();
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_LENS)));
 
-		ROD = register.register("rod")
+		ROD = event.register("rod", builder -> builder
 				.addTag("rods/%s", "%s Rods")
 				.addTagUnformatted("rods", "Rods")
 				.unitValue(CAPI.UNIT / 2)
 				.hasItems(true)
 				.textureType(NCTextureTypes.ROD)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_ROD))
-				.build();
-		BOLT = register.register("bolt")
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_ROD)));
+		BOLT = event.register("bolt", builder -> builder
 				.addTag("bolts/%s", "%s Bolts")
 				.addTagUnformatted("bolts", "Bolts")
 				.unitValue(CAPI.UNIT / 8)
 				.hasItems(true)
 				.textureType(NCTextureTypes.BOLT)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_BOLT_AND_SCREW))
-				.build();
-		SCREW = register.register("screw")
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_BOLT_AND_SCREW)));
+		SCREW = event.register("screw", builder -> builder
 				.addTag("screws/%s", "%s Screws")
 				.addTagUnformatted("screws", "Screws")
 				.unitValue(CAPI.UNIT / 8)
 				.hasItems(true)
 				.textureType(NCTextureTypes.SCREW)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_BOLT_AND_SCREW))
-				.build();
-		RING = register.register("ring")
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_BOLT_AND_SCREW)));
+		RING = event.register("ring", builder -> builder
 				.addTag("rings/%s", "%s Rings")
 				.addTagUnformatted("rings", "Rings")
 				.unitValue(CAPI.UNIT / 4)
 				.hasItems(true)
 				.textureType(NCTextureTypes.RING)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_RING))
-				.build();
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_RING)));
 
-		FINE_WIRE = register.register("fine_wire")
+		FINE_WIRE = event.register("fine_wire", builder -> builder
 				.addTag("fine_wires/%s", "Fine %s Wires")
 				.addTagUnformatted("fine_wires", "Fine Wires")
 				.unitValue(CAPI.UNIT / 8)
 				.hasItems(true)
 				.textureType(NCTextureTypes.FINE_WIRE)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FINE_WIRE))
-				.build();
-		ROTOR = register.register("rotor")
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FINE_WIRE)));
+		ROTOR = event.register("rotor", builder -> builder
 				.addTag("rotors/%s", "%s Rotors")
 				.addTagUnformatted("rotors", "Rotors")
 				.unitValue(CAPI.UNIT * 4)
 				.hasItems(true)
 				.textureType(NCTextureTypes.ROTOR)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_ROTOR))
-				.build();
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_ROTOR)));
 
-		FRAME_BOX = register.register("frame_box")
+		FRAME_BOX = event.register("frame_box", builder -> builder
 				.addTag("frame_boxes/%s", "%s Frame Boxes")
 				.addTagUnformatted("frame_boxes", "Frame Boxes")
 				.unitValue(CAPI.UNIT * 2)
 				.hasBlocks(true, true, false)
 				.textureType(NCTextureTypes.FRAME_BOX)
-				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FRAME_BOX))
-				.build();
+				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_FRAME_BOX)));
 
-		WIRE_1X = register.register("1x_wire", "1x_%s_wire")
+		WIRE_1X = event.register("1x_wire", "1x_%s_wire", builder -> builder
 				.addTag("1x_wires/%s", "1x %s Wires")
 				.addTagUnformatted("1x_wires", "1x Wires")
 				.unitValue(CAPI.UNIT / 2)
-				.hasBlocks(true, false)
-				.build();
-		WIRE_2X = register.register("2x_wire", "2x_%s_wire")
+				.hasBlocks(true, false));
+		WIRE_2X = event.register("2x_wire", "2x_%s_wire", builder -> builder
 				.addTag("2x_wires/%s", "2x %s Wires")
 				.addTagUnformatted("2x_wires", "2x Wires")
 				.unitValue(CAPI.UNIT)
-				.hasBlocks(true, false)
-				.build();
-		WIRE_4X = register.register("4x_wire", "4x_%s_wire")
+				.hasBlocks(true, false));
+		WIRE_4X = event.register("4x_wire", "4x_%s_wire", builder -> builder
 				.addTag("4x_wires/%s", "4x %s Wires")
 				.addTagUnformatted("4x_wires", "4x Wires")
 				.unitValue(CAPI.UNIT * 2)
-				.hasBlocks(true, false)
-				.build();
-		WIRE_8X = register.register("8x_wire", "8x_%s_wire")
+				.hasBlocks(true, false));
+		WIRE_8X = event.register("8x_wire", "8x_%s_wire", builder -> builder
 				.addTag("8x_wires/%s", "8x %s Wires")
 				.addTagUnformatted("8x_wires", "8x Wires")
 				.unitValue(CAPI.UNIT * 4)
-				.hasBlocks(true, false)
-				.build();
-		WIRE_12X = register.register("12x_wire", "12x_%s_wire")
+				.hasBlocks(true, false));
+		WIRE_12X = event.register("12x_wire", "12x_%s_wire", builder -> builder
 				.addTag("12x_wires/%s", "12x %s Wires")
 				.addTagUnformatted("12x_wires", "12x Wires")
 				.unitValue(CAPI.UNIT * 6)
-				.hasBlocks(true, false)
-				.build();
-		WIRE_16X = register.register("16x_wire", "16x_%s_wire")
+				.hasBlocks(true, false));
+		WIRE_16X = event.register("16x_wire", "16x_%s_wire", builder -> builder
 				.addTag("16x_wires/%s", "16x %s Wires")
 				.addTagUnformatted("16x_wires", "16x Wires")
 				.unitValue(CAPI.UNIT * 8)
-				.hasBlocks(true, false)
-				.build();
+				.hasBlocks(true, false));
 	}
-	//@formatter:on
 
 	private static String dustUnlocalizedNameGenerator(final Material material) {
 		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC) || material.hasTrait(NCMaterialTraits.WOOD)) {

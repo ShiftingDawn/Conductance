@@ -27,7 +27,7 @@ import static conductance.api.NCTextureSets.SHINY;
 import static conductance.api.NCTextureSets.WOOD;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductanceMaterialTextureSets {
+final class ConductanceMaterialTextureSets {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterMaterialTextureSetEvent event) {

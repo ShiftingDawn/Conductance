@@ -23,7 +23,7 @@ import static conductance.api.NCMaterialOreTypes.ORE_TYPE_STONE;
 import static conductance.api.NCMaterialOreTypes.ORE_TYPE_TUFF;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductanceMaterialOreTypes {
+final class ConductanceMaterialOreTypes {
 
 	@EventListener(priority = -100)
 	public static void init(final RegisterMaterialOreTypeEvent event) {

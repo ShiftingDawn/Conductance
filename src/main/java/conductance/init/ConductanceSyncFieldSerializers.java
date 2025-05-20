@@ -14,7 +14,7 @@ import conductance.init.sync.TagSerializer;
 import conductance.init.sync.TierSerializer;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductanceSyncFieldSerializers {
+final class ConductanceSyncFieldSerializers {
 
 	@EventListener
 	private static void init(final RegisterFieldSerializerEvent event) {

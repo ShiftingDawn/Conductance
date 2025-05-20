@@ -7,7 +7,7 @@ import conductance.api.plugin.RegisterPeriodicElementEvent;
 import conductance.Conductance;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductancePeriodicElements {
+final class ConductancePeriodicElements {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterPeriodicElementEvent event) {

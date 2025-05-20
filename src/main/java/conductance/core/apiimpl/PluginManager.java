@@ -6,24 +6,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
 import conductance.api.CAPI;
 import conductance.api.ConductancePlugin;
 import conductance.api.IConductancePlugin;
-import conductance.api.material.IMaterialTrait;
-import conductance.api.material.MaterialFlag;
-import conductance.api.material.MaterialTextureSet;
-import conductance.api.material.MaterialTextureType;
-import conductance.api.material.MaterialTraitKey;
 import conductance.api.plugin.ConductancePluginListener;
-import conductance.api.plugin.MaterialTraitRegister;
-import conductance.api.plugin.RegisterMaterialTextureSetEvent;
-import conductance.api.plugin.RegisterMaterialTextureTypeEvent;
 import conductance.Conductance;
 import conductance.core.machine.MachineBuilderImpl;
 
@@ -80,58 +69,11 @@ public final class PluginManager {
 		}
 	}
 
-	public static void dispatchMaterialTextureTypes() {
-		PluginEventBus.post(RegisterMaterialTextureTypeEvent.class, modid -> {
-			final Function<String, MaterialTextureType> register = registryName -> Util.make(
-					new MaterialTextureType(ResourceLocation.fromNamespaceAndPath(modid, registryName)),
-					result -> CAPI.regs().materialTextureTypes().register(result.getRegistryKey(), result));
-			return PluginEventBus.instantiateEvent(RegisterMaterialTextureTypeEvent.class, register);
-		});
-	}
-
-	public static void dispatchMaterialTextureSets() {
-		PluginEventBus.post(RegisterMaterialTextureSetEvent.class, modid -> {
-			final RegisterMaterialTextureSetEvent.MaterialTextureSetRegister register = (registryName, parentSetName) -> Util.make(
-					new MaterialTextureSet(registryName, parentSetName),
-					result -> CAPI.regs().materialTextureSets().register(result.getRegistryKey(), result)
-			);
-			return PluginEventBus.instantiateEvent(RegisterMaterialTextureSetEvent.class, register);
-		});
-	}
-
-	public static void dispatchMaterialTraits() {
-		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTraits(new MaterialTraitRegister() {
-
-			@Override
-			public <T extends IMaterialTrait<T>> MaterialTraitKey<T> register(final String name, final Class<T> typeClass) {
-				return Util.make(new MaterialTraitKey<>(ResourceLocation.fromNamespaceAndPath(modid, name), typeClass), result -> {
-					CAPI.regs().materialTraits().register(result.getRegistryKey(), result);
-				});
-			}
-		}));
-	}
-
-	public static void dispatchMaterialFlags() {
-		PluginManager.execute((plugin, modid) -> plugin.registerMaterialFlags((registryName, reqFlags, reqTraits) -> {
-			final MaterialFlag result = new MaterialFlagImpl.Builder(ResourceLocation.fromNamespaceAndPath(modid, registryName)).requiredFlag(reqFlags).requiredTrait(reqTraits).build();
-			CAPI.regs().materialFlags().register(result.getRegistryKey(), result);
-			return result;
-		}));
-	}
-
-	public static void dispatchMaterialTaggedSets() {
-		PluginManager.execute((plugin, modid) -> plugin.registerMaterialTaggedSets(MaterialTaggedSetBuilder::new));
-	}
-
-	public static void dispatchMaterials() {
-		PluginManager.execute((plugin, modid) -> plugin.registerMaterials(registryName -> new MaterialBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName))));
-	}
-
 	public static void dispatchRegisterMachines() {
 		PluginManager.execute((plugin, modid) -> plugin.registerMachines(MachineBuilderImpl::new));
 	}
 
-	private static void execute(final BiConsumer<IConductancePlugin, String> executor) {
+	public static void execute(final BiConsumer<IConductancePlugin, String> executor) {
 		executor.accept(PluginManager.rootPlugin, Conductance.MODID);
 		PluginManager.PLUGINS.forEach(executor);
 	}

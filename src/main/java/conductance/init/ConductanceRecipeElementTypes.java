@@ -17,7 +17,7 @@ import static conductance.api.NCRecipeElementTypes.FLUID;
 import static conductance.api.NCRecipeElementTypes.ITEM;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductanceRecipeElementTypes {
+final class ConductanceRecipeElementTypes {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterRecipeElementTypeEvent event) {

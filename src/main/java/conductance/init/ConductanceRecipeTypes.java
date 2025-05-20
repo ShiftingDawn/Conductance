@@ -14,7 +14,7 @@ import static conductance.api.NCRecipeTypes.STEAM_TURBINE;
 import static conductance.api.NCRecipeTypes.WIREMILL;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductanceRecipeTypes {
+final class ConductanceRecipeTypes {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterRecipeTypeEvent event) {
