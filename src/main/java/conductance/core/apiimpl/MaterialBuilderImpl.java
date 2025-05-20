@@ -299,7 +299,6 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 		return this;
 	}
 
-	@Override
 	public Material build() {
 		final MaterialDataMapImpl dataFinalized = this.data.build(ImmutableList.copyOf(this.componentList));
 		final MaterialImpl material = new MaterialImpl(this.registryName, dataFinalized, this.traits, this.flags, this.defaultFluid);

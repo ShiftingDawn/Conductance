@@ -22,6 +22,7 @@ import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.plugin.RegisterCoverEvent;
 import conductance.api.plugin.RegisterFieldSerializerEvent;
+import conductance.api.plugin.RegisterMachineEvent;
 import conductance.api.plugin.RegisterMaterialEvent;
 import conductance.api.plugin.RegisterMaterialFlagEvent;
 import conductance.api.plugin.RegisterMaterialOreTypeEvent;
@@ -42,9 +43,8 @@ import conductance.core.apiimpl.MaterialBuilderImpl;
 import conductance.core.apiimpl.MaterialFlagImpl;
 import conductance.core.apiimpl.MaterialOreTypeBuilderImpl;
 import conductance.core.apiimpl.MaterialTaggedSetBuilder;
-import conductance.core.apiimpl.PluginEventBus;
-import conductance.core.apiimpl.PluginManager;
 import conductance.core.cover.CoverTypeImpl;
+import conductance.core.machine.MachineBuilderImpl;
 import conductance.core.recipe.RecipeElementTypeSerializer;
 import conductance.core.recipe.RecipeTypeBuilderImpl;
 import conductance.core.register.MaterialRegistryImpl;
@@ -124,6 +124,10 @@ public final class PluginEventDispatcher {
 	//region Machine
 	public static void dispatchRegisterCovers() {
 		PluginEventBus.post(RegisterCoverEvent.class, modid -> new RegisterCoverEventImpl(modid, CoverTypeImpl::new));
+	}
+
+	public static void dispatchRegisterMachines() {
+		PluginEventBus.postAll(RegisterMachineEvent.class, new RegisterMachineEventImpl(MachineBuilderImpl::new));
 	}
 	//endregion
 
