@@ -113,6 +113,4 @@ public interface MaterialBuilder {
 	MaterialBuilder wood();
 
 	MaterialBuilder wire(Tier tier, int amps);
-
-	Material build();
 }

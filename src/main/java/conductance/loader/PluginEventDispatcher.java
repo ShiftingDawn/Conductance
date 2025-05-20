@@ -22,6 +22,7 @@ import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.plugin.RegisterCoverEvent;
 import conductance.api.plugin.RegisterFieldSerializerEvent;
+import conductance.api.plugin.RegisterMaterialEvent;
 import conductance.api.plugin.RegisterMaterialFlagEvent;
 import conductance.api.plugin.RegisterMaterialOreTypeEvent;
 import conductance.api.plugin.RegisterMaterialOverrideEvent;
@@ -106,7 +107,7 @@ public final class PluginEventDispatcher {
 	}
 
 	public static void dispatchRegisterMaterials() {
-		PluginManager.execute((plugin, modid) -> plugin.registerMaterials(registryName -> new MaterialBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName))));
+		PluginEventBus.post(RegisterMaterialEvent.class, modid -> new RegisterMaterialEventImpl(modid, MaterialBuilderImpl::new));
 	}
 
 	public static void dispatchRegisterMaterialOverrides() {

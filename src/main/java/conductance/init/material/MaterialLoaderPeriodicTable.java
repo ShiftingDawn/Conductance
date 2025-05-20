@@ -4,7 +4,10 @@ import net.minecraft.tags.BlockTags;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCPeriodicElements;
 import conductance.api.NCTiers;
-import conductance.api.plugin.MaterialRegister;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.plugin.RegisterMaterialEvent;
+import conductance.Conductance;
 import static conductance.api.NCMaterialFlags.CAN_MORTAR;
 import static conductance.api.NCMaterialFlags.GENERATE_BOLT_AND_SCREW;
 import static conductance.api.NCMaterialFlags.GENERATE_FINE_WIRE;
@@ -146,867 +149,743 @@ import static conductance.api.NCTextureSets.BRIGHT;
 import static conductance.api.NCTextureSets.METALLIC;
 import static conductance.api.NCTextureSets.SHINY;
 
-public final class MaterialLoaderPeriodicTable {
+@ConductancePluginListener(modid = Conductance.MODID)
+final class MaterialLoaderPeriodicTable {
 
-	//@formatter:off
-	public static void init(final MaterialRegister register) {
-		HYDROGEN = register.register("hydrogen")
+	@EventListener(priority = -100)
+	private static void init(final RegisterMaterialEvent register) {
+		HYDROGEN = register.register("hydrogen", builder -> builder
 				.gas()
 				.color(0, 0, 255)
-				.periodicElement(NCPeriodicElements.HYDROGEN)
-				.build();
-		TRITIUM = register.register("tritium")
+				.periodicElement(NCPeriodicElements.HYDROGEN));
+		TRITIUM = register.register("tritium", builder -> builder
 				.gas()
 				.color(255, 0, 0)
-				.periodicElement(NCPeriodicElements.TRITIUM)
-				.build();
-		DEUTERIUM = register.register("deuterium")
+				.periodicElement(NCPeriodicElements.TRITIUM));
+		DEUTERIUM = register.register("deuterium", builder -> builder
 				.gas()
 				.color(255, 255, 0)
-				.periodicElement(NCPeriodicElements.DEUTERIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.DEUTERIUM));
 
-		HELIUM = register.register("helium")
+		HELIUM = register.register("helium", builder -> builder
 				.liquid().gas().plasma()
 				.color(255, 255, 0)
 				.periodicElement(NCPeriodicElements.HELIUM)
-				.defaultFluid(NCMaterialTraits.GAS)
-				.build();
+				.defaultFluid(NCMaterialTraits.GAS));
 
-		HELIUM_3 = register.register("helium_3")
+		HELIUM_3 = register.register("helium_3", builder -> builder
 				.gas()
 				.color(255, 255, 0)
-				.periodicElement(NCPeriodicElements.HELIUM_3)
-				.build();
+				.periodicElement(NCPeriodicElements.HELIUM_3));
 
-		LITHIUM = register.register("lithium")
+		LITHIUM = register.register("lithium", builder -> builder
 				.dust()
 				.liquid()
 				.ore()
 				.color(225, 220, 255)
-				.periodicElement(NCPeriodicElements.LITHIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.LITHIUM));
 
-		BERYLLIUM = register.register("beryllium")
+		BERYLLIUM = register.register("beryllium", builder -> builder
 				.ingot()
 				.liquid(1560)
 				.ore()
 				.color(100, 180, 100)
-				.periodicElement(NCPeriodicElements.BERYLLIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.BERYLLIUM));
 
-		BORON = register.register("boron")
+		BORON = register.register("boron", builder -> builder
 				.dust()
 				.color(210, 250, 210)
-				.periodicElement(NCPeriodicElements.BORON)
-				.build();
+				.periodicElement(NCPeriodicElements.BORON));
 
-		CARBON = register.register("carbon")
+		CARBON = register.register("carbon", builder -> builder
 				.dust()
 				.liquid(4600)
 				.color(20, 20, 20)
-				.periodicElement(NCPeriodicElements.CARBON)
-				.build();
+				.periodicElement(NCPeriodicElements.CARBON));
 
-		NITROGEN = register.register("nitrogen")
+		NITROGEN = register.register("nitrogen", builder -> builder
 				.gas().plasma()
 				.color(0, 150, 200)
-				.periodicElement(NCPeriodicElements.NITROGEN)
-				.build();
+				.periodicElement(NCPeriodicElements.NITROGEN));
 
-		OXYGEN = register.register("oxygen")
+		OXYGEN = register.register("oxygen", builder -> builder
 				.gas().plasma().liquid(85)
 				.color(0, 100, 200)
 				.periodicElement(NCPeriodicElements.OXYGEN)
-				.defaultFluid(NCMaterialTraits.GAS)
-				.build();
+				.defaultFluid(NCMaterialTraits.GAS));
 
-		FLUORINE = register.register("fluorine")
+		FLUORINE = register.register("fluorine", builder -> builder
 				.gas()
 				.color(255, 255, 255)
-				.periodicElement(NCPeriodicElements.FLUORINE)
-				.build();
+				.periodicElement(NCPeriodicElements.FLUORINE));
 
-		NEON = register.register("neon")
+		NEON = register.register("neon", builder -> builder
 				.gas()
 				.color(0xFAB4B4)
-				.periodicElement(NCPeriodicElements.NEON)
-				.build();
+				.periodicElement(NCPeriodicElements.NEON));
 
-		SODIUM = register.register("sodium")
+		SODIUM = register.register("sodium", builder -> builder
 				.dust()
 				.color(0, 0, 150)
-				.periodicElement(NCPeriodicElements.SODIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.SODIUM));
 
-		MAGNESIUM = register.register("magnesium")
+		MAGNESIUM = register.register("magnesium", builder -> builder
 				.dust()
 				.liquid(923)
 				.color(255, 200, 200)
-				.periodicElement(NCPeriodicElements.MAGNESIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.MAGNESIUM));
 
-		ALUMINIUM = register.register("aluminium")
+		ALUMINIUM = register.register("aluminium", builder -> builder
 				.ingot()
 				.liquid(933)
 				.ore()
 				.color(0x80c8f0)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.ALUMINIUM)
-				.wire(NCTiers.EV, 1)
-				.build();
+				.wire(NCTiers.EV, 1));
 
-		SILICON = register.register("silicon")
+		SILICON = register.register("silicon", builder -> builder
 				.ingot()
 				.liquid()
 				.color(60, 60, 80).textureSet(METALLIC)
 				.flags(GENERATE_FOIL)
-				.periodicElement(NCPeriodicElements.SILICON)
-				.build();
+				.periodicElement(NCPeriodicElements.SILICON));
 
-		PHOSPHORUS = register.register("phosphorus")
+		PHOSPHORUS = register.register("phosphorus", builder -> builder
 				.dust()
 				.color(255, 255, 0)
-				.periodicElement(NCPeriodicElements.PHOSPHORUS)
-				.build();
+				.periodicElement(NCPeriodicElements.PHOSPHORUS));
 
-		SULFUR = register.register("sulfur")
+		SULFUR = register.register("sulfur", builder -> builder
 				.dust()
 				.ore()
 				.color(200, 200, 0)
-				.periodicElement(NCPeriodicElements.SULFUR)
-				.build();
+				.periodicElement(NCPeriodicElements.SULFUR));
 
-		CHLORINE = register.register("chlorine")
+		CHLORINE = register.register("chlorine", builder -> builder
 				.gas()
 				.color(255, 255, 255)
-				.periodicElement(NCPeriodicElements.CHLORINE)
-				.build();
+				.periodicElement(NCPeriodicElements.CHLORINE));
 
-		ARGON = register.register("argon")
+		ARGON = register.register("argon", builder -> builder
 				.gas().plasma()
 				.color(0, 255, 0)
-				.periodicElement(NCPeriodicElements.ARGON)
-				.build();
+				.periodicElement(NCPeriodicElements.ARGON));
 
-		POTASSIUM = register.register("potassium")
+		POTASSIUM = register.register("potassium", builder -> builder
 				.dust()
 				.liquid(337)
 				.color(154, 172, 223).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.POTASSIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.POTASSIUM));
 
-		CALCIUM = register.register("calcium")
+		CALCIUM = register.register("calcium", builder -> builder
 				.dust()
 				.color(255, 245, 245).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.CALCIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.CALCIUM));
 
-		SCANDIUM = register.register("scandium")
+		SCANDIUM = register.register("scandium", builder -> builder
 				.dust()
 				.color(204, 204, 204).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.SCANDIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.SCANDIUM));
 
-		TITANIUM = register.register("titanium")
+		TITANIUM = register.register("titanium", builder -> builder
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL).liquid()
 				.color(220, 160, 240).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL)
-				.periodicElement(NCPeriodicElements.TITANIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.TITANIUM));
 
-		VANADIUM = register.register("vanadium")
+		VANADIUM = register.register("vanadium", builder -> builder
 				.ingot().liquid()
 				.color(50, 50, 50).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.VANADIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.VANADIUM));
 
-		CHROMIUM = register.register("chromium")
+		CHROMIUM = register.register("chromium", builder -> builder
 				.ingot(BlockTags.NEEDS_IRON_TOOL)
 				.liquid(2180)
 				.color(255, 230, 230).textureSet(SHINY)
 				.addFlagAndPreset(METAL_EXTRA)
-				.periodicElement(NCPeriodicElements.CHROMIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.CHROMIUM));
 
-		MANGANESE = register.register("manganese")
+		MANGANESE = register.register("manganese", builder -> builder
 				.ingot()
 				.liquid(1519)
 				.color(250, 250, 250)
 				.addFlagAndPreset(METAL_DEFAULT, GENERATE_FOIL, GENERATE_BOLT_AND_SCREW)
-				.periodicElement(NCPeriodicElements.MANGANESE)
-				.build();
+				.periodicElement(NCPeriodicElements.MANGANESE));
 
-		IRON = register.register("iron")
+		IRON = register.register("iron", builder -> builder
 				.ingot()
 				.liquid(1811).plasma()
 				.ore()
 				.color(200, 200, 200).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL, CAN_MORTAR)
-				.periodicElement(NCPeriodicElements.IRON)
-				.build();
+				.periodicElement(NCPeriodicElements.IRON));
 
-		COBALT = register.register("cobalt")
+		COBALT = register.register("cobalt", builder -> builder
 				.ingot()
 				.liquid(1768)
 				.ore()
 				.color(80, 80, 250).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_EXTRA2, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.COBALT)
-				.build();
+				.periodicElement(NCPeriodicElements.COBALT));
 
-		NICKEL = register.register("nickel")
+		NICKEL = register.register("nickel", builder -> builder
 				.ingot()
 				.liquid(1728).plasma()
 				.ore()
 				.color(200, 200, 250).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_DEFAULT, CAN_MORTAR)
-				.periodicElement(NCPeriodicElements.NICKEL)
-				.build();
+				.periodicElement(NCPeriodicElements.NICKEL));
 
-		COPPER = register.register("copper")
+		COPPER = register.register("copper", builder -> builder
 				.ingot()
 				.liquid(1358)
 				.ore()
 				.color(255, 100, 0).textureSet(SHINY)
 				.addFlagAndPreset(METAL_ALL, CAN_MORTAR, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.COPPER)
-				.build();
+				.periodicElement(NCPeriodicElements.COPPER));
 
-		ZINC = register.register("zinc")
+		ZINC = register.register("zinc", builder -> builder
 				.ingot()
 				.liquid(693)
 				.color(250, 240, 240).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_DEFAULT, GENERATE_FOIL, GENERATE_RING, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.ZINC)
-				.build();
+				.periodicElement(NCPeriodicElements.ZINC));
 
-		GALLIUM = register.register("gallium")
+		GALLIUM = register.register("gallium", builder -> builder
 				.ingot()
 				.liquid(303)
 				.color(220, 220, 255).textureSet(SHINY)
 				.addFlagAndPreset(METAL_DEFAULT, GENERATE_FOIL)
-				.periodicElement(NCPeriodicElements.GALLIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.GALLIUM));
 
-		GERMANIUM = register.register("germanium")
+		GERMANIUM = register.register("germanium", builder -> builder
 				.dust()
 				.color(0x6a6248).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.GERMANIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.GERMANIUM));
 
-		ARSENIC = register.register("arsenic")
+		ARSENIC = register.register("arsenic", builder -> builder
 				.dust()
 				.gas(887)
 				.color(255, 255, 255)
-				.periodicElement(NCPeriodicElements.ARSENIC)
-				.build();
+				.periodicElement(NCPeriodicElements.ARSENIC));
 
-		SELENIUM = register.register("selenium")
+		SELENIUM = register.register("selenium", builder -> builder
 				.dust()
 				.color(0x401b24).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.SELENIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.SELENIUM));
 
-		BROMINE = register.register("bromine")
+		BROMINE = register.register("bromine", builder -> builder
 				.liquid(59)
 				.color(0x080101).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.BROMINE)
-				.build();
+				.periodicElement(NCPeriodicElements.BROMINE));
 
-		KRYPTON = register.register("krypton")
+		KRYPTON = register.register("krypton", builder -> builder
 				.gas()
 				.color(0x80FF80)
-				.periodicElement(NCPeriodicElements.KRYPTON)
-				.build();
+				.periodicElement(NCPeriodicElements.KRYPTON));
 
-		RUBIDIUM = register.register("rubidium")
+		RUBIDIUM = register.register("rubidium", builder -> builder
 				.dust()
 				.color(240, 30, 30).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.RUBIDIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.RUBIDIUM));
 
-		STRONTIUM = register.register("strontium")
+		STRONTIUM = register.register("strontium", builder -> builder
 				.dust()
 				.color(200, 200, 200).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.STRONTIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.STRONTIUM));
 
-		YTTRIUM = register.register("yttrium")
+		YTTRIUM = register.register("yttrium", builder -> builder
 				.ingot()
 				.liquid()
 				.color(220, 250, 220).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.YTTRIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.YTTRIUM));
 
-		ZIRCONIUM = register.register("zirconium")
+		ZIRCONIUM = register.register("zirconium", builder -> builder
 				.dust()
 				.color(0x271813).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.ZIRCONIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.ZIRCONIUM));
 
-		NIOBIUM = register.register("niobium")
+		NIOBIUM = register.register("niobium", builder -> builder
 				.ingot()
 				.liquid()
 				.color(190, 180, 200).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.NIOBIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.NIOBIUM));
 
-		MOLYBDENUM = register.register("molybdenum")
+		MOLYBDENUM = register.register("molybdenum", builder -> builder
 				.ingot()
 				.liquid(2896)
 				.ore()
 				.color(180, 180, 220).textureSet(SHINY)
 				.periodicElement(NCPeriodicElements.MOLYBDENUM)
-				.flags(GENERATE_FOIL, GENERATE_BOLT_AND_SCREW)
-				.build();
+				.flags(GENERATE_FOIL, GENERATE_BOLT_AND_SCREW));
 
-		TECHNETIUM = register.register("technetium")
+		TECHNETIUM = register.register("technetium", builder -> builder
 				.ingot()
 				.dust()
 				.color(0xd7fce2).textureSet(SHINY)
 				.periodicElement(NCPeriodicElements.TECHNETIUM)
-				.addFlagAndPreset(METAL_ALL)
-				.build();
+				.addFlagAndPreset(METAL_ALL));
 
-		RUTHENIUM = register.register("ruthenium")
+		RUTHENIUM = register.register("ruthenium", builder -> builder
 				.ingot()
 				.liquid()
 				.color(0x3c7285).textureSet(SHINY)
 				.flags(GENERATE_FOIL, GENERATE_GEAR)
-				.periodicElement(NCPeriodicElements.RUTHENIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.RUTHENIUM));
 
-		RHODIUM = register.register("rhodium")
+		RHODIUM = register.register("rhodium", builder -> builder
 				.ingot()
 				.liquid()
 				.color(0xDC0C58).textureSet(BRIGHT)
 				.addFlagAndPreset(METAL_ALL)
-				.periodicElement(NCPeriodicElements.RHODIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.RHODIUM));
 
-		PALLADIUM = register.register("palladium")
+		PALLADIUM = register.register("palladium", builder -> builder
 				.ingot()
 				.liquid()
 				.ore()
 				.color(128, 128, 128).textureSet(SHINY)
 				.addFlagAndPreset(METAL_ALL)
-				.periodicElement(NCPeriodicElements.PALLADIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.PALLADIUM));
 
-		SILVER = register.register("silver")
+		SILVER = register.register("silver", builder -> builder
 				.ingot()
 				.liquid(1235)
 				.ore()
 				.wire(NCTiers.LV, 1)
 				.color(220, 220, 255).textureSet(SHINY)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
-				.periodicElement(NCPeriodicElements.SILVER)
-				.build();
+				.periodicElement(NCPeriodicElements.SILVER));
 
-		CADMIUM = register.register("cadmium")
+		CADMIUM = register.register("cadmium", builder -> builder
 				.dust()
 				.color(50, 50, 60).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.CADMIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.CADMIUM));
 
-		INDIUM = register.register("indium")
+		INDIUM = register.register("indium", builder -> builder
 				.ingot()
 				.liquid(430)
 				.color(64, 0, 128).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.INDIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.INDIUM));
 
-		TIN = register.register("tin")
+		TIN = register.register("tin", builder -> builder
 				.ingot()
 				.liquid(505)
 				.ore()
 				.wire(NCTiers.LV, 1)
 				.color(220, 220, 220)
 				.addFlagAndPreset(METAL_ALL, GENERATE_ROTOR, GENERATE_FINE_WIRE, CAN_MORTAR)
-				.periodicElement(NCPeriodicElements.TIN)
-				.build();
+				.periodicElement(NCPeriodicElements.TIN));
 
-		ANTIMONY = register.register("antimony")
+		ANTIMONY = register.register("antimony", builder -> builder
 				.ingot()
 				.liquid(904)
 				.color(220, 220, 240).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.ANTIMONY)
-				.build();
+				.periodicElement(NCPeriodicElements.ANTIMONY));
 
-		TELLURIUM = register.register("tellurium")
+		TELLURIUM = register.register("tellurium", builder -> builder
 				.dust()
 				.color(206, 277, 86).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.TELLURIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.TELLURIUM));
 
-		IODINE = register.register("iodine")
+		IODINE = register.register("iodine", builder -> builder
 				.dust()
 				.color(0x773000).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.IODINE)
-				.build();
+				.periodicElement(NCPeriodicElements.IODINE));
 
-		XENON = register.register("xenon")
+		XENON = register.register("xenon", builder -> builder
 				.gas()
 				.color(0x00FFFF)
-				.periodicElement(NCPeriodicElements.XENON)
-				.build();
+				.periodicElement(NCPeriodicElements.XENON));
 
-		CAESIUM = register.register("caesium")
+		CAESIUM = register.register("caesium", builder -> builder
 				.dust()
 				.color(176, 196, 222).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.CAESIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.CAESIUM));
 
-		BARIUM = register.register("barium")
+		BARIUM = register.register("barium", builder -> builder
 				.dust()
 				.color(255, 255, 255).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.BARIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.BARIUM));
 
-		LANTHANUM = register.register("lanthanum")
+		LANTHANUM = register.register("lanthanum", builder -> builder
 				.dust()
 				.liquid(1193)
 				.color(138, 138, 138).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.LANTHANUM)
-				.build();
+				.periodicElement(NCPeriodicElements.LANTHANUM));
 
-		CERIUM = register.register("cerium")
+		CERIUM = register.register("cerium", builder -> builder
 				.dust()
 				.liquid(1608)
 				.color(123, 212, 144).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.CERIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.CERIUM));
 
-		PRASEODYMIUM = register.register("praseodymium")
+		PRASEODYMIUM = register.register("praseodymium", builder -> builder
 				.ingot()
 				.color(117, 214, 129).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.PRASEODYMIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.PRASEODYMIUM));
 
-		NEODYMIUM = register.register("neodymium")
+		NEODYMIUM = register.register("neodymium", builder -> builder
 				.ingot()
 				.liquid()
 				.ore()
 				.color(100, 100, 100).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_DEFAULT, GENERATE_ROD, GENERATE_BOLT_AND_SCREW)
-				.periodicElement(NCPeriodicElements.NEODYMIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.NEODYMIUM));
 
-		PROMETHIUM = register.register("promethium")
+		PROMETHIUM = register.register("promethium", builder -> builder
 				.dust()
 				.color(36, 181, 53)
 				.textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.PROMETHIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.PROMETHIUM));
 
-		SAMARIUM = register.register("samarium")
+		SAMARIUM = register.register("samarium", builder -> builder
 				.ingot()
 				.liquid(1345)
 				.ore()
 				.color(255, 255, 204).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.SAMARIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.SAMARIUM));
 
-		EUROPIUM = register.register("europium")
+		EUROPIUM = register.register("europium", builder -> builder
 				.ingot()
 				.liquid(1099).plasma()
 				.color(246, 181, 255).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.EUROPIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.EUROPIUM));
 
-		GADOLINIUM = register.register("gadolinium")
+		GADOLINIUM = register.register("gadolinium", builder -> builder
 				.dust()
 				.color(59, 186, 28).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.GADOLINIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.GADOLINIUM));
 
-		TERBIUM = register.register("terbium")
+		TERBIUM = register.register("terbium", builder -> builder
 				.dust()
 				.color(255, 255, 255).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.TERBIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.TERBIUM));
 
-		DYSPROSIUM = register.register("dysprosium")
+		DYSPROSIUM = register.register("dysprosium", builder -> builder
 				.dust()
 				.color(105, 209, 80).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.DYSPROSIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.DYSPROSIUM));
 
-		HOLMIUM = register.register("holmium")
+		HOLMIUM = register.register("holmium", builder -> builder
 				.dust()
 				.color(22, 8, 166).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.HOLMIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.HOLMIUM));
 
-		ERBIUM = register.register("erbium")
+		ERBIUM = register.register("erbium", builder -> builder
 				.dust()
 				.color(176, 152, 81).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.ERBIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.ERBIUM));
 
-		THULIUM = register.register("thulium")
+		THULIUM = register.register("thulium", builder -> builder
 				.dust()
 				.color(89, 107, 194).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.THULIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.THULIUM));
 
-		YTTERBIUM = register.register("ytterbium")
+		YTTERBIUM = register.register("ytterbium", builder -> builder
 				.dust()
 				.color(44, 199, 80).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.YTTERBIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.YTTERBIUM));
 
-		LUTETIUM = register.register("lutetium")
+		LUTETIUM = register.register("lutetium", builder -> builder
 				.dust()
 				.liquid(1925)
 				.color(188, 62, 199).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.LUTETIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.LUTETIUM));
 
-		HAFNIUM = register.register("hafnium")
+		HAFNIUM = register.register("hafnium", builder -> builder
 				.dust()
 				.color(0x2b4a3a).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.HAFNIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.HAFNIUM));
 
-		TANTALUM = register.register("tantalum")
+		TANTALUM = register.register("tantalum", builder -> builder
 				.ingot()
 				.liquid(3290)
 				.color(105, 183, 255).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_DEFAULT, GENERATE_FOIL, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.TANTALUM)
-				.build();
+				.periodicElement(NCPeriodicElements.TANTALUM));
 
-		TUNGSTEN = register.register("tungsten")
+		TUNGSTEN = register.register("tungsten", builder -> builder
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL)
 				.liquid(3695)
 				.color(50, 50, 50).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.TUNGSTEN)
-				.build();
+				.periodicElement(NCPeriodicElements.TUNGSTEN));
 
-		RHENIUM = register.register("thenium")
+		RHENIUM = register.register("thenium", builder -> builder
 				.dust()
 				.color(0x37393d).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.RHENIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.RHENIUM));
 
-		OSMIUM = register.register("osmium")
+		OSMIUM = register.register("osmium", builder -> builder
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL)
 				.liquid(3306)
 				.color(50, 50, 255).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.OSMIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.OSMIUM));
 
-		IRIDIUM = register.register("iridium")
+		IRIDIUM = register.register("iridium", builder -> builder
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL)
 				.liquid(2719)
 				.ore()
 				.color(240, 240, 245).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.IRIDIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.IRIDIUM));
 
-		PLATINUM = register.register("platinum")
+		PLATINUM = register.register("platinum", builder -> builder
 				.ingot()
 				.liquid(2041)
 				.ore()
 				.color(255, 255, 200).textureSet(SHINY)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.PLATINUM)
-				.build();
+				.periodicElement(NCPeriodicElements.PLATINUM));
 
-		GOLD = register.register("gold")
+		GOLD = register.register("gold", builder -> builder
 				.ingot()
 				.liquid(1337)
 				.ore()
 				.color(255, 255, 30).textureSet(SHINY)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
-				.periodicElement(NCPeriodicElements.GOLD)
-				.build();
+				.periodicElement(NCPeriodicElements.GOLD));
 
-		MERCURY = register.register("mercury")
+		MERCURY = register.register("mercury", builder -> builder
 				.liquid()
 				.color(255, 220, 220)
-				.periodicElement(NCPeriodicElements.MERCURY)
-				.build();
+				.periodicElement(NCPeriodicElements.MERCURY));
 
-		THALLIUM = register.register("thallium")
+		THALLIUM = register.register("thallium", builder -> builder
 				.dust()
 				.color(0x1e576a).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.THALLIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.THALLIUM));
 
-		LEAD = register.register("lead")
+		LEAD = register.register("lead", builder -> builder
 				.ingot()
 				.liquid(600)
 				.ore()
 				.color(140, 100, 140)
 				.addFlagAndPreset(METAL_EXTRA2, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.LEAD)
-				.build();
+				.periodicElement(NCPeriodicElements.LEAD));
 
-		BISMUTH = register.register("bismuth")
+		BISMUTH = register.register("bismuth", builder -> builder
 				.ingot()
 				.liquid(545)
 				.color(100, 160, 160).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.BISMUTH)
-				.build();
+				.periodicElement(NCPeriodicElements.BISMUTH));
 
-		POLONIUM = register.register("polonium")
+		POLONIUM = register.register("polonium", builder -> builder
 				.dust()
 				.color(0xC9D47E)
-				.periodicElement(NCPeriodicElements.POLONIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.POLONIUM));
 
-		ASTATINE = register.register("astatine")
+		ASTATINE = register.register("astatine", builder -> builder
 				.dust()
 				.color(0x17212b)
-				.periodicElement(NCPeriodicElements.ASTATINE)
-				.build();
+				.periodicElement(NCPeriodicElements.ASTATINE));
 
-		RADON = register.register("radon")
+		RADON = register.register("radon", builder -> builder
 				.gas()
 				.color(255, 0, 255)
-				.periodicElement(NCPeriodicElements.RADON)
-				.build();
+				.periodicElement(NCPeriodicElements.RADON));
 
-		FRANCIUM = register.register("francium")
+		FRANCIUM = register.register("francium", builder -> builder
 				.dust()
 				.color(0x0000ff).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.FRANCIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.FRANCIUM));
 
-		RADIUM = register.register("radium")
+		RADIUM = register.register("radium", builder -> builder
 				.dust()
 				.color(0x90ff2d).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.RADIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.RADIUM));
 
-		ACTINIUM = register.register("actinium")
+		ACTINIUM = register.register("actinium", builder -> builder
 				.dust()
 				.color(0x353d41).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.ACTINIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.ACTINIUM));
 
-		THORIUM = register.register("thorium")
+		THORIUM = register.register("thorium", builder -> builder
 				.ingot()
 				.liquid(2023).plasma()
 				.ore()
 				.color(0, 30, 0).textureSet(SHINY)
 				.addFlagAndPreset(METAL_DEFAULT, GENERATE_ROD)
-				.periodicElement(NCPeriodicElements.THORIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.THORIUM));
 
-		PROTACTINIUM = register.register("protactinium")
+		PROTACTINIUM = register.register("protactinium", builder -> builder
 				.dust()
 				.color(0xA78B6D).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.PROTACTINIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.PROTACTINIUM));
 
-		URANIUM_238 = register.register("uranium")
+		URANIUM_238 = register.register("uranium", builder -> builder
 				.ingot(BlockTags.NEEDS_IRON_TOOL)
 				.liquid(1405).plasma()
 				.color(50, 240, 50).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_DEFAULT)
-				.periodicElement(NCPeriodicElements.URANIUM_238)
-				.build();
+				.periodicElement(NCPeriodicElements.URANIUM_238));
 
-		URANIUM_235 = register.register("uranium_235")
+		URANIUM_235 = register.register("uranium_235", builder -> builder
 				.ingot(BlockTags.NEEDS_IRON_TOOL)
 				.liquid(1405).plasma()
 				.color(70, 250, 70).textureSet(SHINY)
 				.addFlagAndPreset(METAL_DEFAULT)
-				.periodicElement(NCPeriodicElements.URANIUM_235)
-				.build();
+				.periodicElement(NCPeriodicElements.URANIUM_235));
 
-		NEPTUNIUM = register.register("neptunium")
+		NEPTUNIUM = register.register("neptunium", builder -> builder
 				.dust()
 				.plasma()
 				.color(0x284D7B).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.NEPTUNIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.NEPTUNIUM));
 
-		PLUTONIUM_239 = register.register("plutonium")
+		PLUTONIUM_239 = register.register("plutonium", builder -> builder
 				.ingot(BlockTags.NEEDS_IRON_TOOL)
 				.liquid(913).plasma()
 				.ore(true)
 				.color(240, 50, 50).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.PLUTONIUM_239)
-				.build();
+				.periodicElement(NCPeriodicElements.PLUTONIUM_239));
 
-		PLUTONIUM_241 = register.register("plutonium_241")
+		PLUTONIUM_241 = register.register("plutonium_241", builder -> builder
 				.ingot(BlockTags.NEEDS_IRON_TOOL)
 				.liquid(913).plasma()
 				.color(250, 70, 70).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.PLUTONIUM_241)
-				.build();
+				.periodicElement(NCPeriodicElements.PLUTONIUM_241));
 
-		AMERICIUM = register.register("americium")
+		AMERICIUM = register.register("americium", builder -> builder
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL)
 				.liquid(1449).plasma()
 				.color(200, 200, 200).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_EXTRA, GENERATE_FOIL, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.AMERICIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.AMERICIUM));
 
-		CURIUM = register.register("curium")
+		CURIUM = register.register("curium", builder -> builder
 				.dust()
 				.plasma()
 				.color(0x7B544E).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.CURIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.CURIUM));
 
-		BERKELIUM = register.register("berkelium")
+		BERKELIUM = register.register("berkelium", builder -> builder
 				.dust()
 				.plasma()
 				.color(0x645A88).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.BERKELIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.BERKELIUM));
 
-		CALIFORNIUM = register.register("californium")
+		CALIFORNIUM = register.register("californium", builder -> builder
 				.dust()
 				.plasma()
 				.color(0xA85A12).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.CALIFORNIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.CALIFORNIUM));
 
-		EINSTEINIUM = register.register("einsteinium")
+		EINSTEINIUM = register.register("einsteinium", builder -> builder
 				.dust()
 				.plasma()
 				.color(0xCE9F00).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.EINSTEINIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.EINSTEINIUM));
 
-		FERMIUM = register.register("fermium")
+		FERMIUM = register.register("fermium", builder -> builder
 				.dust()
 				.plasma()
 				.color(0x3e0022).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.FERMIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.FERMIUM));
 
-		MENDELEVIUM = register.register("mendelevium")
+		MENDELEVIUM = register.register("mendelevium", builder -> builder
 				.dust()
 				.plasma()
 				.color(0x1D4ACF).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.MENDELEVIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.MENDELEVIUM));
 
-		NOBELIUM = register.register("nobelium")
+		NOBELIUM = register.register("nobelium", builder -> builder
 				.dust()
 				.color(0x43deff).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.NOBELIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.NOBELIUM));
 
-		LAWRENCIUM = register.register("lawrencium")
+		LAWRENCIUM = register.register("lawrencium", builder -> builder
 				.dust()
 				.color(0x5D7575).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.LAWRENCIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.LAWRENCIUM));
 
-		RUTHERFORDIUM = register.register("rutherfordium")
+		RUTHERFORDIUM = register.register("rutherfordium", builder -> builder
 				.dust()
 				.color(0xFFF6A1).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.RUTHERFORDIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.RUTHERFORDIUM));
 
-		DUBNIUM = register.register("dubnium")
+		DUBNIUM = register.register("dubnium", builder -> builder
 				.dust()
 				.color(0x00f3ff).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.DUBNIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.DUBNIUM));
 
-		SEABORGIUM = register.register("seaborgium")
+		SEABORGIUM = register.register("seaborgium", builder -> builder
 				.dust()
 				.color(0x19C5FF).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.SEABORGIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.SEABORGIUM));
 
-		BOHRIUM = register.register("bohrium")
+		BOHRIUM = register.register("bohrium", builder -> builder
 				.dust()
 				.color(0xDC57FF).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.BOHRIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.BOHRIUM));
 
-		HASSIUM = register.register("hassium")
+		HASSIUM = register.register("hassium", builder -> builder
 				.dust()
 				.color(0xDDDDDD)
-				.periodicElement(NCPeriodicElements.HASSIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.HASSIUM));
 
-		MEITNERIUM = register.register("meitnerium")
+		MEITNERIUM = register.register("meitnerium", builder -> builder
 				.dust()
 				.color(0x6e90ff).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.MEITNERIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.MEITNERIUM));
 
-		DARMSTADTIUM = register.register("darmstadtium")
+		DARMSTADTIUM = register.register("darmstadtium", builder -> builder
 				.ingot()
 				.liquid()
 				.color(0x578062)
 				.addFlagAndPreset(METAL_EXTRA2, GENERATE_GEAR, GENERATE_SMALL_GEAR)
-				.periodicElement(NCPeriodicElements.DARMSTADTIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.DARMSTADTIUM));
 
-		ROENTGENIUM = register.register("roentgenium")
+		ROENTGENIUM = register.register("roentgenium", builder -> builder
 				.dust()
 				.color(0xE3FDEC).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.ROENTGENIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.ROENTGENIUM));
 
-		COPERNICIUM = register.register("copernium")
+		COPERNICIUM = register.register("copernium", builder -> builder
 				.dust()
 				.color(0xFFFEFF)
-				.periodicElement(NCPeriodicElements.COPERNICIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.COPERNICIUM));
 
-		NIHONIUM = register.register("nohinium")
+		NIHONIUM = register.register("nohinium", builder -> builder
 				.dust()
 				.color(0xa68bff).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.NIHONIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.NIHONIUM));
 
-		FLEROVIUM = register.register("flerovium")
+		FLEROVIUM = register.register("flerovium", builder -> builder
 				.dust()
 				.color(0xd2ff00).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.FLEROVIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.FLEROVIUM));
 
-		MOSCOVIUM = register.register("moscovium")
+		MOSCOVIUM = register.register("moscovium", builder -> builder
 				.dust()
 				.color(0xbd91ff).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.MOSCOVIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.MOSCOVIUM));
 
-		LIVERMORIUM = register.register("livermorium")
+		LIVERMORIUM = register.register("livermorium", builder -> builder
 				.dust()
 				.color(0xff8b8b).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.LIVERMORIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.LIVERMORIUM));
 
-		TENNESSINE = register.register("tennessine")
+		TENNESSINE = register.register("tennessine", builder -> builder
 				.dust()
 				.color(0xbca3ff).textureSet(SHINY)
-				.periodicElement(NCPeriodicElements.TENNESSINE)
-				.build();
+				.periodicElement(NCPeriodicElements.TENNESSINE));
 
-		OGANESSON = register.register("oganesson")
+		OGANESSON = register.register("oganesson", builder -> builder
 				.gas()
 				.color(0x142D64).textureSet(METALLIC)
-				.periodicElement(NCPeriodicElements.OGANESSON)
-				.build();
+				.periodicElement(NCPeriodicElements.OGANESSON));
 
-		NEUTRONIUM = register.register("neutronium")
+		NEUTRONIUM = register.register("neutronium", builder -> builder
 				.ingot()
 				.color(250, 250, 250).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL)
-				.periodicElement(NCPeriodicElements.NEUTRONIUM)
-				.build();
+				.periodicElement(NCPeriodicElements.NEUTRONIUM));
 	}
-	//@formatter:on
 
 	private MaterialLoaderPeriodicTable() {
 	}

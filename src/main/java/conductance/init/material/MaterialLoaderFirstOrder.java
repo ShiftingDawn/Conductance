@@ -4,7 +4,10 @@ import net.minecraft.tags.BlockTags;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCTextureSets;
 import conductance.api.NCTiers;
-import conductance.api.plugin.MaterialRegister;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.plugin.RegisterMaterialEvent;
+import conductance.Conductance;
 import static net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL;
 import static net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL;
 import static net.minecraft.tags.BlockTags.NEEDS_STONE_TOOL;
@@ -185,770 +188,666 @@ import static conductance.api.NCTextureSets.ROUGH;
 import static conductance.api.NCTextureSets.SAND;
 import static conductance.api.NCTextureSets.SHINY;
 
-public final class MaterialLoaderFirstOrder {
+@ConductancePluginListener(modid = Conductance.MODID)
+final class MaterialLoaderFirstOrder {
 
-	//@formatter:off
-	public static void init(final MaterialRegister register) {
-		MAGNETIC_IRON = register.register("magnetic_iron")
+	@EventListener(priority = -98)
+	private static void init(final RegisterMaterialEvent register) {
+		MAGNETIC_IRON = register.register("magnetic_iron", builder -> builder
 				.ingot()
 				.color(200, 200, 200).textureSet(MAGNETIC)
 				.addFlagAndPreset(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
-				.components(IRON)
-				.build();
+				.components(IRON));
 		IRON.getTrait(NCMaterialTraits.INGOT).setMagneticForm(MAGNETIC_IRON);
 
-		ALMANDINE = register.register("almandine")
+		ALMANDINE = register.register("almandine", builder -> builder
 				.gem()
 				.ore(3, 1).color(255, 0, 0)
-				.components(IRON, 3, ALUMINIUM, 2, SILICON, 3, OXYGEN, 12)
-				.build();
+				.components(IRON, 3, ALUMINIUM, 2, SILICON, 3, OXYGEN, 12));
 
-		ANDRADITE = register.register("andradite")
+		ANDRADITE = register.register("andradite", builder -> builder
 				.gem()
 				.color(150, 120, 0).textureSet(NCTextureSets.AMETHYST)
-				.components(CALCIUM, 3, IRON, 2, SILICON, 3, OXYGEN, 12)
-				.build();
+				.components(CALCIUM, 3, IRON, 2, SILICON, 3, OXYGEN, 12));
 
-		POTASSIUM_FELDSPAR = register.register("potassium_feldspar")
+		POTASSIUM_FELDSPAR = register.register("potassium_feldspar", builder -> builder
 				.gem()
 				.ore()
 				.color(0xfa8128)
-				.components(POTASSIUM, ALUMINIUM, SILICON, 3, OXYGEN, 8)
-				.build();
+				.components(POTASSIUM, ALUMINIUM, SILICON, 3, OXYGEN, 8));
 
-		ALBITE_FELDSPAR = register.register("albite_feldspar")
+		ALBITE_FELDSPAR = register.register("albite_feldspar", builder -> builder
 				.gem()
 				.ore()
 				.color(0xb56727)
-				.components(SODIUM, ALUMINIUM, SILICON, 3, OXYGEN, 8)
-				.build();
+				.components(SODIUM, ALUMINIUM, SILICON, 3, OXYGEN, 8));
 
-		ANORTHITE_FELDSPAR = register.register("anorthite_feldspar")
+		ANORTHITE_FELDSPAR = register.register("anorthite_feldspar", builder -> builder
 				.gem()
 				.ore()
 				.color(0xfda172)
-				.components(CALCIUM, ALUMINIUM, 2, SILICON, 2, OXYGEN, 8)
-				.build();
+				.components(CALCIUM, ALUMINIUM, 2, SILICON, 2, OXYGEN, 8));
 
-		PYRITE = register.register("pyrite")
+		PYRITE = register.register("pyrite", builder -> builder
 				.dust()
 				.ore(null, () -> IRON)
 				.color(150, 120, 40).textureSet(ROUGH)
-				.components(IRON, SULFUR, 2)
-				.build();
+				.components(IRON, SULFUR, 2));
 
-		BRONZE = register.register("bronze")
+		BRONZE = register.register("bronze", builder -> builder
 				.ingot().liquid(1357)
 				.color(255, 128, 0).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
-				.components(COPPER, 3, TIN)
-				.build();
+				.components(COPPER, 3, TIN));
 
-		STEEL = register.register("steel")
+		STEEL = register.register("steel", builder -> builder
 				.ingot()
 				.liquid(2046)
 				.color(128, 128, 128).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR, NO_DECOMPOSE)
-				.components(IRON)
-				.build();
+				.components(IRON));
 
-		MAGNETIC_STEEL = register.register("magnetic_steel")
+		MAGNETIC_STEEL = register.register("magnetic_steel", builder -> builder
 				.ingot()
 				.color(128, 128, 128).textureSet(MAGNETIC)
 				.addFlagAndPreset(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
-				.components(STEEL)
-				.build();
+				.components(STEEL));
 		STEEL.getTrait(NCMaterialTraits.INGOT).setMagneticForm(MAGNETIC_STEEL);
 
-		WROUGHT_IRON = register.register("wrought_iron")
+		WROUGHT_IRON = register.register("wrought_iron", builder -> builder
 				.ingot()
 				.liquid(2011)
 				.color(200, 180, 180).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR, NO_DECOMPOSE)
-				.components(IRON)
-				.build();
+				.components(IRON));
 
-		STAINLESS_STEEL = register.register("stainless_steel")
+		STAINLESS_STEEL = register.register("stainless_steel", builder -> builder
 				.ingot(NEEDS_IRON_TOOL)
 				.liquid(2011)
 				.color(200, 200, 220).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
-				.components(IRON, 6, NICKEL, MANGANESE, CHROMIUM)
-				.build();
+				.components(IRON, 6, NICKEL, MANGANESE, CHROMIUM));
 
-		WATER = register.register("water")
+		WATER = register.register("water", builder -> builder
 				.liquid(300)
 				.color(0x0000FF)
 				.flags(NO_DECOMPOSE)
-				.components(HYDROGEN, 2, OXYGEN)
-				.build();
+				.components(HYDROGEN, 2, OXYGEN));
 
-		DISTILLED_WATER = register.register("distilled_water")
+		DISTILLED_WATER = register.register("distilled_water", builder -> builder
 				.liquid()
 				.color(0x4A94FF)
 				.flags(NO_DECOMPOSE)
-				.components(HYDROGEN, 2, OXYGEN)
-				.build();
+				.components(HYDROGEN, 2, OXYGEN));
 
-		ICE = register.register("ice")
+		ICE = register.register("ice", builder -> builder
 				.dust()
 				.color(0xd2f5fe)
 				.flags(GENERATE_BLOCK, NO_DECOMPOSE)
-				.components(HYDROGEN, 2, OXYGEN)
-				.build();
+				.components(HYDROGEN, 2, OXYGEN));
 
-		STEAM = register.register("steam")
+		STEAM = register.register("steam", builder -> builder
 				.gas(373)
 				.flags(NO_DECOMPOSE)
-				.components(HYDROGEN, 2, OXYGEN)
-				.build();
+				.components(HYDROGEN, 2, OXYGEN));
 
-		SILICON_DIOXIDE = register.register("silicon_dioxide")
+		SILICON_DIOXIDE = register.register("silicon_dioxide", builder -> builder
 				.dust()
 				.color(0xf2f2f2).textureSet(QUARTZ)
-				.components(SILICON, OXYGEN, 2)
-				.build();
+				.components(SILICON, OXYGEN, 2));
 
-		DIAMOND = register.register("diamond")
+		DIAMOND = register.register("diamond", builder -> builder
 				.gem(BlockTags.NEEDS_DIAMOND_TOOL)
 				.ore()
 				.color(200, 255, 255).textureSet(NCTextureSets.DIAMOND)
 				.flags(GENERATE_ROD, GENERATE_BOLT_AND_SCREW, GENERATE_PLATE, GENERATE_LENS, GENERATE_GEAR, NO_DECOMPOSE)
-				.components(CARBON)
-				.build();
+				.components(CARBON));
 
-		ELECTRUM = register.register("electrum")
+		ELECTRUM = register.register("electrum", builder -> builder
 				.ingot()
 				.liquid(1285)
 				.wire(NCTiers.HV, 1)
 				.color(255, 255, 100).textureSet(SHINY)
 				.addFlagAndPreset(METAL_EXTRA2, CAN_MORTAR, GENERATE_FINE_WIRE, GENERATE_RING)
-				.components(SILVER, GOLD)
-				.build();
+				.components(SILVER, GOLD));
 
-		EMERALD = register.register("emerald")
+		EMERALD = register.register("emerald", builder -> builder
 				.gem()
 				.ore(2, 1)
 				.color(80, 255, 80).textureSet(NCTextureSets.EMERALD)
 				.addFlagAndPreset(METAL_EXTRA2, GENERATE_LENS, NO_SMELTING)
-				.components(BERYLLIUM, 3, ALUMINIUM, 2, SILICON, 6, OXYGEN, 18)
-				.build();
+				.components(BERYLLIUM, 3, ALUMINIUM, 2, SILICON, 6, OXYGEN, 18));
 
-		GALENA = register.register("galena")
+		GALENA = register.register("galena", builder -> builder
 				.dust()
 				.ore().color(100, 60, 100).textureSet(METALLIC)
 				.flags(NO_SMELTING)
-				.components(LEAD, SULFUR)
-				.build();
+				.components(LEAD, SULFUR));
 
-		GARNIERITE = register.register("garnierite")
+		GARNIERITE = register.register("garnierite", builder -> builder
 				.dust()
 				.ore().color(50, 200, 70).textureSet(METALLIC)
-				.components(NICKEL, OXYGEN)
-				.build();
+				.components(NICKEL, OXYGEN));
 
-		GREEN_SAPPHIRE = register.register("green_sapphire")
+		GREEN_SAPPHIRE = register.register("green_sapphire", builder -> builder
 				.gem()
 				.ore()
 				.color(100, 200, 130).textureSet(GEM_HORIZONTAL)
 				.addFlagAndPreset(METAL_EXTRA, NO_SMELTING)
-				.components(ALUMINIUM, 2, OXYGEN, 3)
-				.build();
+				.components(ALUMINIUM, 2, OXYGEN, 3));
 
-		GROSSULAR = register.register("grossular")
+		GROSSULAR = register.register("grossular", builder -> builder
 				.gem().ore(3, 1)
 				.color(200, 100, 0).textureSet(AMETHYST)
-				.components(CALCIUM, 3, ALUMINIUM, 2, SILICON, 3, OXYGEN, 12)
-				.build();
+				.components(CALCIUM, 3, ALUMINIUM, 2, SILICON, 3, OXYGEN, 12));
 
-		ILMENITE = register.register("ilmenite")
+		ILMENITE = register.register("ilmenite", builder -> builder
 				.dust(BlockTags.NEEDS_DIAMOND_TOOL)
 				.ore()
 				.color(70, 55, 50).textureSet(METALLIC)
 				.flags(NO_DECOMPOSE)
-				.components(IRON, TITANIUM, OXYGEN, 3)
-				.build();
+				.components(IRON, TITANIUM, OXYGEN, 3));
 
-		RUTILE = register.register("rutile")
+		RUTILE = register.register("rutile", builder -> builder
 				.dust(BlockTags.NEEDS_DIAMOND_TOOL)
 				.ore()
 				.color(212, 13, 92).textureSet(GEM_HORIZONTAL)
 				.flags(NO_SMELTING)
-				.components(TITANIUM, OXYGEN, 2)
-				.build();
+				.components(TITANIUM, OXYGEN, 2));
 
-		BAUXITE = register.register("bauxite")
+		BAUXITE = register.register("bauxite", builder -> builder
 				.dust()
 				.ore()
 				.color(200, 100, 0)
-				.components(ALUMINIUM, 2, OXYGEN, 3)
-				.build();
+				.components(ALUMINIUM, 2, OXYGEN, 3));
 
-		INVAR = register.register("invar")
+		INVAR = register.register("invar", builder -> builder
 				.ingot()
 				.liquid(1916)
 				.color(0x78b446).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_EXTRA2, CAN_MORTAR, GENERATE_GEAR, GENERATE_FRAME_BOX)
-				.components(IRON, 2, NICKEL)
-				.build();
+				.components(IRON, 2, NICKEL));
 
-		LAZURITE = register.register("lazurite")
+		LAZURITE = register.register("lazurite", builder -> builder
 				.gem()
 				.ore(6, 4)
 				.color(100, 120, 255).textureSet(NCTextureSets.LAPIS)
 				.flags(GENERATE_PLATE, GENERATE_ROD, CAN_CRYSTALLIZE)
-				.components(ALUMINIUM, 6, SILICON, 6, CALCIUM, 8, SODIUM, 8)
-				.build();
+				.components(ALUMINIUM, 6, SILICON, 6, CALCIUM, 8, SODIUM, 8));
 
-		MAGNETITE = register.register("magnetite")
+		MAGNETITE = register.register("magnetite", builder -> builder
 				.dust()
 				.ore()
 				.color(30, 30, 30).textureSet(METALLIC)
-				.components(IRON, 3, OXYGEN, 4)
-				.build();
+				.components(IRON, 3, OXYGEN, 4));
 
-		MAGNESITE = register.register("magnesite")
+		MAGNESITE = register.register("magnesite", builder -> builder
 				.dust()
 				.ore()
 				.color(250, 250, 180).textureSet(ROUGH)
-				.components(MAGNESIUM, CARBON, OXYGEN, 3)
-				.build();
+				.components(MAGNESIUM, CARBON, OXYGEN, 3));
 
-		MOLYBDENITE = register.register("molybdenite")
+		MOLYBDENITE = register.register("molybdenite", builder -> builder
 				.dust()
 				.ore()
 				.color(25, 25, 25).textureSet(METALLIC)
-				.components(MOLYBDENUM, SULFUR, 2)
-				.build();
+				.components(MOLYBDENUM, SULFUR, 2));
 
-		OBSIDIAN = register.register("obsidian")
+		OBSIDIAN = register.register("obsidian", builder -> builder
 				.dust(BlockTags.NEEDS_DIAMOND_TOOL)
 				.color(80, 50, 100).textureSet(SHINY)
 				.flags(GENERATE_PLATE)
 				.flags(NO_DECOMPOSE)
-				.components(MAGNESIUM, IRON, SILICON, 2, OXYGEN, 4)
-				.build();
+				.components(MAGNESIUM, IRON, SILICON, 2, OXYGEN, 4));
 
-		PHOSPHATE = register.register("phosphate")
+		PHOSPHATE = register.register("phosphate", builder -> builder
 				.dust()
 				.color(55, 255, 0)
 				.flags(NO_SMELTING)
-				.components(PHOSPHORUS, OXYGEN, 4)
-				.build();
+				.components(PHOSPHORUS, OXYGEN, 4));
 
-		STERLING_SILVER = register.register("sterling_silver")
+		STERLING_SILVER = register.register("sterling_silver", builder -> builder
 				.ingot()
 				.liquid(1258)
 				.color(250, 220, 225).textureSet(SHINY)
 				.addFlagAndPreset(METAL_EXTRA2)
-				.components(COPPER, SILVER, 4)
-				.build();
+				.components(COPPER, SILVER, 4));
 
-		ROSE_GOLD = register.register("rose_gold")
+		ROSE_GOLD = register.register("rose_gold", builder -> builder
 				.ingot()
 				.liquid(1341)
 				.color(255, 230, 30).textureSet(SHINY)
 				.addFlagAndPreset(METAL_EXTRA2, GENERATE_RING)
-				.components(COPPER, GOLD, 4)
-				.build();
+				.components(COPPER, GOLD, 4));
 
-		BISMUTH_BRONZE = register.register("bismuth_bronze")
+		BISMUTH_BRONZE = register.register("bismuth_bronze", builder -> builder
 				.ingot()
 				.liquid(1036)
 				.color(100, 125, 125).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_EXTRA2)
-				.components(BISMUTH, ZINC, COPPER, 3)
-				.build();
+				.components(BISMUTH, ZINC, COPPER, 3));
 
-		BLACK_BRONZE = register.register("black_bronze")
+		BLACK_BRONZE = register.register("black_bronze", builder -> builder
 				.ingot()
 				.liquid(1328)
 				.color(100, 50, 125).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_EXTRA2, GENERATE_GEAR)
-				.components(GOLD, SILVER, COPPER, 3)
-				.build();
+				.components(GOLD, SILVER, COPPER, 3));
 
-		PYROLUSITE = register.register("pyrolusite")
+		PYROLUSITE = register.register("pyrolusite", builder -> builder
 				.dust()
 				.ore()
 				.color(150, 150, 170)
-				.components(MANGANESE, OXYGEN, 2)
-				.build();
+				.components(MANGANESE, OXYGEN, 2));
 
-		PYROPE = register.register("pyrope")
+		PYROPE = register.register("pyrope", builder -> builder
 				.gem()
 				.ore(3, 1)
 				.color(120, 50, 100).textureSet(AMETHYST)
-				.components(ALUMINIUM, 2, MAGNESIUM, 3, SILICON, 3, OXYGEN, 12)
-				.build();
+				.components(ALUMINIUM, 2, MAGNESIUM, 3, SILICON, 3, OXYGEN, 12));
 
-		ROCK_SALT = register.register("rock_salt")
+		ROCK_SALT = register.register("rock_salt", builder -> builder
 				.gem()
 				.ore(2, 1)
 				.color(240, 200, 200).textureSet(FINE)
-				.components(POTASSIUM, CHLORINE)
-				.build();
+				.components(POTASSIUM, CHLORINE));
 
-		SALT = register.register("salt")
+		SALT = register.register("salt", builder -> builder
 				.gem()
 				.ore(2, 1)
 				.color(250, 250, 250).textureSet(FINE)
-				.components(SODIUM, CHLORINE)
-				.build();
+				.components(SODIUM, CHLORINE));
 
-		RURIDIT = register.register("ruridit")
+		RURIDIT = register.register("ruridit", builder -> builder
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL)
 				.color(140, 140, 140).textureSet(BRIGHT)
 				.flags(GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_FRAME_BOX, GENERATE_BOLT_AND_SCREW)
-				.components(RUTHENIUM, 2, IRIDIUM)
-				.build();
+				.components(RUTHENIUM, 2, IRIDIUM));
 
-		SALTPETER = register.register("saltpeter")
+		SALTPETER = register.register("saltpeter", builder -> builder
 				.gem()
 				.ore(2, 1)
 				.color(230, 230, 230).textureSet(FINE)
-				.components(POTASSIUM, NITROGEN, OXYGEN, 3)
-				.build();
+				.components(POTASSIUM, NITROGEN, OXYGEN, 3));
 
-		SAPPHIRE = register.register("sapphire")
+		SAPPHIRE = register.register("sapphire", builder -> builder
 				.gem()
 				.ore()
 				.color(100, 100, 200).textureSet(NCTextureSets.EMERALD)
 				.addFlagAndPreset(METAL_EXTRA2, NO_SMELTING, GENERATE_LENS)
-				.components(ALUMINIUM, 2, OXYGEN, 3)
-				.build();
+				.components(ALUMINIUM, 2, OXYGEN, 3));
 
-		SODALITE = register.register("sodalite")
+		SODALITE = register.register("sodalite", builder -> builder
 				.gem()
 				.ore(6, 4)
 				.color(20, 20, 255).textureSet(NCTextureSets.LAPIS)
 				.flags(GENERATE_PLATE, GENERATE_ROD, NO_SMELTING, CAN_CRYSTALLIZE)
-				.components(ALUMINIUM, 3, SILICON, 3, SODIUM, 4, CHLORINE)
-				.build();
+				.components(ALUMINIUM, 3, SILICON, 3, SODIUM, 4, CHLORINE));
 
-		SCHEELITE = register.register("scheelite")
+		SCHEELITE = register.register("scheelite", builder -> builder
 				.dust(BlockTags.NEEDS_DIAMOND_TOOL)
 				.ore()
 				.color(200, 140, 20)
 				.flags(NO_DECOMPOSE)
 				.components(CALCIUM, TUNGSTEN, OXYGEN, 4)
-				.formula("Ca(WO3)O")
-				.build();
+				.formula("Ca(WO3)O"));
 
-		TANTALITE = register.register("tantalite")
+		TANTALITE = register.register("tantalite", builder -> builder
 				.dust(NEEDS_IRON_TOOL)
 				.ore()
 				.color(145, 80, 40).textureSet(METALLIC)
-				.components(MANGANESE, TANTALUM, 2, OXYGEN, 6)
-				.build();
+				.components(MANGANESE, TANTALUM, 2, OXYGEN, 6));
 
-		COAL_COKE = register.register("coal_coke")
+		COAL_COKE = register.register("coal_coke", builder -> builder
 				.gem(NEEDS_IRON_TOOL, 3200)
 				.color(0x575e5b).textureSet(NCTextureSets.LIGNITE)
 				.flags(NO_SMELTING, CAN_MORTAR)
-				.components(CARBON)
-				.build();
+				.components(CARBON));
 
-		SOLDERING_ALLOY = register.register("soldering_alloy")
+		SOLDERING_ALLOY = register.register("soldering_alloy", builder -> builder
 				.ingot()
 				.liquid(544)
 				.color(220, 220, 230)
-				.components(TIN, 6, LEAD, 3, ANTIMONY)
-				.build();
+				.components(TIN, 6, LEAD, 3, ANTIMONY));
 
-		SPESSARTINE = register.register("spessartine")
+		SPESSARTINE = register.register("spessartine", builder -> builder
 				.gem()
 				.ore(3, 1)
 				.color(255, 100, 100).textureSet(AMETHYST)
-				.components(ALUMINIUM, 2, MANGANESE, 3, SILICON, 3, OXYGEN, 12)
-				.build();
+				.components(ALUMINIUM, 2, MANGANESE, 3, SILICON, 3, OXYGEN, 12));
 
-		SPHALERITE = register.register("sphalerite")
+		SPHALERITE = register.register("sphalerite", builder -> builder
 				.dust()
 				.ore()
 				.color(255, 255, 255)
-				.components(ZINC, SULFUR)
-				.build();
+				.components(ZINC, SULFUR));
 
-		STIBNITE = register.register("stibnite")
+		STIBNITE = register.register("stibnite", builder -> builder
 				.dust().ore()
 				.color(70, 70, 70).textureSet(METALLIC)
-				.components(ANTIMONY, 2, SULFUR, 3)
-				.build();
+				.components(ANTIMONY, 2, SULFUR, 3));
 
-		TETRAHEDRITE = register.register("tetrahedrite")
+		TETRAHEDRITE = register.register("tetrahedrite", builder -> builder
 				.dust()
 				.ore()
 				.color(200, 32, 0)
-				.components(COPPER, 3, ANTIMONY, SULFUR, 3, IRON)
-				.build();
+				.components(COPPER, 3, ANTIMONY, SULFUR, 3, IRON));
 
-		TOPAZ = register.register("topaz")
+		TOPAZ = register.register("topaz", builder -> builder
 				.gem()
 				.ore()
 				.color(255, 128, 0).textureSet(GEM_HORIZONTAL)
 				.addFlagAndPreset(METAL_EXTRA2, NO_SMELTING)
-				.components(ALUMINIUM, 2, SILICON, FLUORINE, HYDROGEN, 2)
-				.build();
+				.components(ALUMINIUM, 2, SILICON, FLUORINE, HYDROGEN, 2));
 
-		TUNGSTATE = register.register("tungstate")
+		TUNGSTATE = register.register("tungstate", builder -> builder
 				.dust(BlockTags.NEEDS_DIAMOND_TOOL)
 				.ore()
 				.color(55, 50, 35)
 				.flags(NO_DECOMPOSE)
 				.components(TUNGSTEN, LITHIUM, 2, OXYGEN, 4)
-				.formula("Li2(WO3)O")
-				.build();
+				.formula("Li2(WO3)O"));
 
-		URANINITE = register.register("uraninite")
+		URANINITE = register.register("uraninite", builder -> builder
 				.dust(NEEDS_IRON_TOOL)
 				.ore(true)
 				.color(35, 35, 35).textureSet(METALLIC)
 				.components(URANIUM_238, OXYGEN, 2)
-				.formula("UO2")
-				.build();
+				.formula("UO2"));
 
-		WULFENITE = register.register("wulfenite")
+		WULFENITE = register.register("wulfenite", builder -> builder
 				.dust(NEEDS_IRON_TOOL)
 				.ore()
 				.color(255, 128, 0)
-				.components(LEAD, MOLYBDENUM, OXYGEN, 4)
-				.build();
+				.components(LEAD, MOLYBDENUM, OXYGEN, 4));
 
-		NETHER_QUARTZ = register.register("nether_quartz")
+		NETHER_QUARTZ = register.register("nether_quartz", builder -> builder
 				.gem()
 				.ore(2, 1)
 				.color(230, 210, 210).textureSet(QUARTZ)
 				.flags(GENERATE_PLATE, NO_SMELTING, CAN_CRYSTALLIZE)
-				.components(SILICON, OXYGEN, 2)
-				.build();
+				.components(SILICON, OXYGEN, 2));
 
-		CERTUS_QUARTZ = register.register("certus_quartz")
+		CERTUS_QUARTZ = register.register("certus_quartz", builder -> builder
 				.gem()
 				.ore(2, 1)
 				.color(210, 210, 230).textureSet(QUARTZ)
 				.flags(GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_AND_SCREW, NO_SMELTING, CAN_CRYSTALLIZE)
-				.components(SILICON, OXYGEN, 2)
-				.build();
+				.components(SILICON, OXYGEN, 2));
 
-		CHARGED_CERTUS_QUARTZ = register.register("charged_certus_quartz")
+		CHARGED_CERTUS_QUARTZ = register.register("charged_certus_quartz", builder -> builder
 				.gem()
 				.color(184, 184, 255).textureSet(QUARTZ)
 				.flags(GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_AND_SCREW, NO_SMELTING)
-				.components(SILICON, OXYGEN, 2)
-				.build();
+				.components(SILICON, OXYGEN, 2));
 
-		QUARTZITE = register.register("quartzite")
+		QUARTZITE = register.register("quartzite", builder -> builder
 				.gem()
 				.ore(2, 1)
 				.color(210, 230, 210).textureSet(QUARTZ)
 				.flags(GENERATE_PLATE, NO_SMELTING, CAN_CRYSTALLIZE)
-				.components(SILICON, OXYGEN, 2)
-				.build();
+				.components(SILICON, OXYGEN, 2));
 
-		GRAPHITE = register.register("graphite")
+		GRAPHITE = register.register("graphite", builder -> builder
 				.ore()
 				.color(128, 128, 128)
 				.flags(NO_SMELTING, NO_DECOMPOSE)
-				.components(CARBON)
-				.build();
+				.components(CARBON));
 
-		GRAPHENE = register.register("graphene")
+		GRAPHENE = register.register("graphene", builder -> builder
 				.dust()
 				.color(128, 128, 128).textureSet(SHINY)
 				.flags(GENERATE_FOIL, NO_DECOMPOSE)
-				.components(CARBON)
-				.build();
+				.components(CARBON));
 
-		TUNGSTIC_ACID = register.register("tungstic_acid")
+		TUNGSTIC_ACID = register.register("tungstic_acid", builder -> builder
 				.dust()
 				.color(0xfffc03).textureSet(SHINY)
 				.flags(NO_DECOMPOSE)
-				.components(HYDROGEN, 2, TUNGSTEN, OXYGEN, 4)
-				.build();
+				.components(HYDROGEN, 2, TUNGSTEN, OXYGEN, 4));
 
-		OSMIRIDIUM = register.register("osmiridium")
+		OSMIRIDIUM = register.register("osmiridium", builder -> builder
 				.ingot(NEEDS_DIAMOND_TOOL)
 				.liquid(3012)
 				.color(100, 100, 255).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
-				.components(IRIDIUM, 2, OSMIUM)
-				.build();
+				.components(IRIDIUM, 2, OSMIUM));
 
-		CHALCOCITE = register.register("chalcocite")
+		CHALCOCITE = register.register("chalcocite", builder -> builder
 				.dust()
 				.ore()
 				.color(0x657882).textureSet(NCTextureSets.EMERALD)
-				.components(COPPER, 2, SULFUR)
-				.build();
+				.components(COPPER, 2, SULFUR));
 
-		CHALCOPYRITE = register.register("chalcopyrite")
+		CHALCOPYRITE = register.register("chalcopyrite", builder -> builder
 				.dust()
 				.ore(null, () -> COPPER)
 				.color(160, 120, 40)
-				.components(COPPER, IRON, SULFUR, 2)
-				.build();
+				.components(COPPER, IRON, SULFUR, 2));
 
-		CUPRONICKEL = register.register("cupronickel")
+		CUPRONICKEL = register.register("cupronickel", builder -> builder
 				.ingot()
 				.liquid(1542)
 				.color(227, 150, 128).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL)
-				.components(COPPER, NICKEL)
-				.build();
+				.components(COPPER, NICKEL));
 
-		COAL = register.register("coal")
+		COAL = register.register("coal", builder -> builder
 				.gem(NEEDS_STONE_TOOL, 1600)
 				.ore(2, 1)
 				.color(0x393e41).textureSet(LIGNITE)
 				.flags(NO_SMELTING, CAN_MORTAR)
-				.components(CARBON)
-				.build();
+				.components(CARBON));
 
-		CHARCOAL = register.register("charcoal")
+		CHARCOAL = register.register("charcoal", builder -> builder
 				.gem(NEEDS_STONE_TOOL, 1600)
 				.color(0x7d6f58).textureSet(FINE)
 				.flags(NO_SMELTING, CAN_MORTAR)
-				.components(CARBON)
-				.build();
+				.components(CARBON));
 
-		YELLOW_LIMONITE = register.register("yellow_limonite")
+		YELLOW_LIMONITE = register.register("yellow_limonite", builder -> builder
 				.dust()
 				.ore()
 				.color(200, 200, 0).textureSet(METALLIC)
 				.flags(CAN_CENTRIFUGE)
-				.components(IRON, OXYGEN)
-				.build();
+				.components(IRON, OXYGEN));
 
-		BROWN_LIMONITE = register.register("brown_limonite")
+		BROWN_LIMONITE = register.register("brown_limonite", builder -> builder
 				.dust()
 				.ore()
 				.color(200, 100, 0).textureSet(METALLIC)
 				.flags(CAN_CENTRIFUGE)
-				.components(IRON, HYDROGEN, OXYGEN)
-				.build();
+				.components(IRON, HYDROGEN, OXYGEN));
 
-		MICA = register.register("mica")
+		MICA = register.register("mica", builder -> builder
 				.dust()
 				.ore()
 				.color(195, 195, 205).textureSet(FINE)
-				.components(POTASSIUM, ALUMINIUM, 3, SILICON, 3, FLUORINE, 2, OXYGEN, 10)
-				.build();
+				.components(POTASSIUM, ALUMINIUM, 3, SILICON, 3, FLUORINE, 2, OXYGEN, 10));
 
-		KYANITE = register.register("kyanite")
+		KYANITE = register.register("kyanite", builder -> builder
 				.dust()
 				.ore()
 				.color(110, 110, 250).textureSet(FLINT)
-				.components(ALUMINIUM, 2, SILICON, OXYGEN, 5)
-				.build();
+				.components(ALUMINIUM, 2, SILICON, OXYGEN, 5));
 
-		SOAPSTONE = register.register("soapstone")
+		SOAPSTONE = register.register("soapstone", builder -> builder
 				.dust()
 				.ore()
 				.color(95, 145, 95)
-				.components(MAGNESIUM, 3, SILICON, 4, HYDROGEN, 2, OXYGEN, 12)
-				.build();
+				.components(MAGNESIUM, 3, SILICON, 4, HYDROGEN, 2, OXYGEN, 12));
 
-		TALC = register.register("talc")
+		TALC = register.register("talc", builder -> builder
 				.dust()
 				.ore()
 				.color(90, 180, 90)
-				.components(MAGNESIUM, 3, SILICON, 4, HYDROGEN, 2, OXYGEN, 12)
-				.build();
+				.components(MAGNESIUM, 3, SILICON, 4, HYDROGEN, 2, OXYGEN, 12));
 
-		CASSITERITE = register.register("cassiterite")
+		CASSITERITE = register.register("cassiterite", builder -> builder
 				.dust()
 				.ore()
 				.color(220, 220, 220).textureSet(METALLIC)
-				.components(TIN, OXYGEN, 2)
-				.build();
+				.components(TIN, OXYGEN, 2));
 
-		CASSITERITE_SAND = register.register("cassiterite_sand")
+		CASSITERITE_SAND = register.register("cassiterite_sand", builder -> builder
 				.dust()
 				.ore()
 				.color(220, 220, 220).textureSet(SAND)
-				.components(TIN, OXYGEN, 2)
-				.build();
+				.components(TIN, OXYGEN, 2));
 
-		UVAROVITE = register.register("uvarovite")
+		UVAROVITE = register.register("uvarovite", builder -> builder
 				.gem()
 				.color(180, 255, 180).textureSet(NCTextureSets.DIAMOND)
-				.components(CALCIUM, 3, CHROMIUM, 2, SILICON, 3, OXYGEN, 12)
-				.build();
+				.components(CALCIUM, 3, CHROMIUM, 2, SILICON, 3, OXYGEN, 12));
 
-		ASBESTOS = register.register("asbestos")
+		ASBESTOS = register.register("asbestos", builder -> builder
 				.dust()
 				.ore(3, 1)
 				.color(180, 255, 180)
-				.components(MAGNESIUM, 3, SILICON, 2, HYDROGEN, 4, OXYGEN, 9)
-				.build();
+				.components(MAGNESIUM, 3, SILICON, 2, HYDROGEN, 4, OXYGEN, 9));
 
-		HEMATITE = register.register("hematite")
+		HEMATITE = register.register("hematite", builder -> builder
 				.dust()
 				.ore()
 				.color(0x330817)
-				.components(IRON, 2, OXYGEN, 3)
-				.build();
+				.components(IRON, 2, OXYGEN, 3));
 
-		SPODUMENE = register.register("spodumene")
+		SPODUMENE = register.register("spodumene", builder -> builder
 				.dust()
 				.ore()
 				.color(190, 170, 170)
-				.components(LITHIUM, ALUMINIUM, SILICON, 2, OXYGEN, 6)
-				.build();
+				.components(LITHIUM, ALUMINIUM, SILICON, 2, OXYGEN, 6));
 
-		LEPIDOLITE = register.register("lepidolite")
+		LEPIDOLITE = register.register("lepidolite", builder -> builder
 				.dust()
 				.ore()
 				.color(190, 170, 170)
-				.components(POTASSIUM, LITHIUM, 3, ALUMINIUM, 4, FLUORINE, 2, OXYGEN, 10)
-				.build();
+				.components(POTASSIUM, LITHIUM, 3, ALUMINIUM, 4, FLUORINE, 2, OXYGEN, 10));
 
-		CALCITE = register.register("calcite")
+		CALCITE = register.register("calcite", builder -> builder
 				.dust()
 				.ore()
 				.color(250, 230, 220)
 				.flags(GENERATE_BLOCK)
-				.components(CALCIUM, CARBON, OXYGEN, 3)
-				.build();
+				.components(CALCIUM, CARBON, OXYGEN, 3));
 
-		KANTHAL = register.register("kanthal")
+		KANTHAL = register.register("kanthal", builder -> builder
 				.ingot()
 				.liquid(1708)
 				.color(194, 210, 223).textureSet(SHINY)
 				.addFlagAndPreset(METAL_EXTRA)
-				.components(IRON, ALUMINIUM, CHROMIUM)
-				.build();
+				.components(IRON, ALUMINIUM, CHROMIUM));
 
-		BRASS = register.register("brass")
+		BRASS = register.register("brass", builder -> builder
 				.ingot()
 				.liquid(1160)
 				.color(255, 180, 0).textureSet(SHINY)
 				.addFlagAndPreset(METAL_EXTRA2, CAN_MORTAR)
-				.components(ZINC, COPPER, 3)
-				.build();
+				.components(ZINC, COPPER, 3));
 
-		ENDER_PEARL = register.register("ender_pearl")
+		ENDER_PEARL = register.register("ender_pearl", builder -> builder
 				.gem()
 				.color(108, 220, 200).textureSet(SHINY)
 				.flags(NO_SMELTING, GENERATE_PLATE)
-				.components(BERYLLIUM, POTASSIUM, 4, NITROGEN, 5)
-				.build();
+				.components(BERYLLIUM, POTASSIUM, 4, NITROGEN, 5));
 
-		PRECIOUS_METAL = register.register("precious_metal")
+		PRECIOUS_METAL = register.register("precious_metal", builder -> builder
 				.dust()
 				.ore()
 				.color(120, 120, 5).textureSet(SHINY)
 				.flags(NO_DECOMPOSE, NO_SMELTING)
-				.formula("ag?au?")
-				.build();
+				.formula("ag?au?"));
 
-		GOLD_LEACH = register.register("gold_leach")
+		GOLD_LEACH = register.register("gold_leach", builder -> builder
 				.liquid()
-				.color(120, 120, 5).textureSet(METALLIC)
-				.build();
+				.color(120, 120, 5).textureSet(METALLIC));
 
-		PRECIOUS_METAL_RESIDUE = register.register("precious_metal_residue")
+		PRECIOUS_METAL_RESIDUE = register.register("precious_metal_residue", builder -> builder
 				.dust()
 				.color(40, 40, 5).textureSet(ROUGH)
 				.flags(NO_DECOMPOSE)
-				.components(LEAD, COPPER, SILVER, NICKEL)
-				.build();
+				.components(LEAD, COPPER, SILVER, NICKEL));
 
-		MAGNETIC_NEODYMIUM = register.register("magnetic_neodymium")
+		MAGNETIC_NEODYMIUM = register.register("magnetic_neodymium", builder -> builder
 				.ingot()
 				.color(100, 100, 100).textureSet(MAGNETIC)
 				.addFlagAndPreset(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
-				.components(NEODYMIUM)
-				.build();
+				.components(NEODYMIUM));
 		NEODYMIUM.getTrait(NCMaterialTraits.INGOT).setMagneticForm(MAGNETIC_NEODYMIUM);
 
-		MAGNETIC_SAMARIUM = register.register("magnetic_samarium")
+		MAGNETIC_SAMARIUM = register.register("magnetic_samarium", builder -> builder
 				.ingot()
 				.color(255, 255, 204).textureSet(MAGNETIC)
 				.addFlagAndPreset(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
-				.components(SAMARIUM)
-				.build();
+				.components(SAMARIUM));
 		SAMARIUM.getTrait(NCMaterialTraits.INGOT).setMagneticForm(MAGNETIC_SAMARIUM);
 
-		NICHROME = register.register("nichrome")
+		NICHROME = register.register("nichrome", builder -> builder
 				.ingot()
 				.color(205, 206, 246).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_EXTRA2)
-				.components(NICKEL, 5, CHROMIUM)
-				.build();
+				.components(NICKEL, 5, CHROMIUM));
 
-		TPV_ALLOY = register.register("tpv_alloy")
+		TPV_ALLOY = register.register("tpv_alloy", builder -> builder
 				.ingot()
 				.color(250, 170, 250).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_EXTRA2, GENERATE_FRAME_BOX)
-				.components(TITANIUM, 3, PLATINUM, 3, VANADIUM)
-				.build();
+				.components(TITANIUM, 3, PLATINUM, 3, VANADIUM));
 
-		CINNABAR = register.register("cinnabar")
+		CINNABAR = register.register("cinnabar", builder -> builder
 				.gem()
 				.ore()
 				.color(150, 0, 0).textureSet(NCTextureSets.EMERALD)
 				.flags(CAN_CENTRIFUGE, CAN_CRYSTALLIZE)
-				.components(MERCURY, SULFUR)
-				.build();
+				.components(MERCURY, SULFUR));
 
-		PENTLANDITE = register.register("pentlandite")
+		PENTLANDITE = register.register("pentlandite", builder -> builder
 				.dust()
 				.ore()
-				.color(165, 150, 5)
-				.build();
+				.color(165, 150, 5));
 
-		GLAUCONITE = register.register("glauconite")
+		GLAUCONITE = register.register("glauconite", builder -> builder
 				.dust()
 				.ore()
-				.color(130, 180, 60)
-				.build();
+				.color(130, 180, 60));
 
-		LIGNITE_COAL = register.register("lignite_coal")
+		LIGNITE_COAL = register.register("lignite_coal", builder -> builder
 				.gem(NEEDS_STONE_TOOL, 1200)
 				.ore(2, 1)
 				.color(100, 70, 70).textureSet(LIGNITE)
 				.flags(NO_SMELTING, CAN_MORTAR, NO_DECOMPOSE)
-				.components(CARBON)
-				.build();
+				.components(CARBON));
 
-		APATITE = register.register("apatite")
+		APATITE = register.register("apatite", builder -> builder
 				.gem()
 				.ore(4, 2)
 				.color(200, 200, 255).textureSet(NCTextureSets.DIAMOND)
 				.flags(NO_SMELTING, CAN_CRYSTALLIZE, GENERATE_ROD, GENERATE_BOLT_AND_SCREW, NO_DECOMPOSE)
-				.components(CALCIUM, 5, PHOSPHATE, 3, CHLORINE)
-				.build();
+				.components(CALCIUM, 5, PHOSPHATE, 3, CHLORINE));
 
-		TRICALCIUM_PHOSPHATE = register.register("tricalcium_phosphate")
+		TRICALCIUM_PHOSPHATE = register.register("tricalcium_phosphate", builder -> builder
 				.gem()
 				.ore(3, 1)
 				.color(255, 255, 0).textureSet(FLINT)
 				.flags(CAN_CENTRIFUGE, NO_SMELTING)
-				.components(CALCIUM, 3, PHOSPHATE, 2)
-				.build();
+				.components(CALCIUM, 3, PHOSPHATE, 2));
 
-		PYROCHLORE = register.register("pyrochlore")
+		PYROCHLORE = register.register("pyrochlore", builder -> builder
 				.dust()
 				.ore()
 				.color(43, 17, 0).textureSet(METALLIC)
-				.components(CALCIUM, 2, NIOBIUM, 2, OXYGEN, 7)
-				.build();
+				.components(CALCIUM, 2, NIOBIUM, 2, OXYGEN, 7));
 
-		BIOTITE = register.register("biotite")
+		BIOTITE = register.register("biotite", builder -> builder
 				.dust()
 				.color(20, 30, 20).textureSet(METALLIC)
-				.components(POTASSIUM, MAGNESIUM, 3, ALUMINIUM, 3, FLUORINE, 3, SILICON, 4, OXYGEN, 8)
-				.build();
+				.components(POTASSIUM, MAGNESIUM, 3, ALUMINIUM, 3, FLUORINE, 3, SILICON, 4, OXYGEN, 8));
 
-		BONE = register.register("bone")
+		BONE = register.register("bone", builder -> builder
 				.dust()
 				.color(250, 250, 250)
-				.components(CALCIUM)
-				.build();
+				.components(CALCIUM));
 	}
-	//@formatter:on
 
 	private MaterialLoaderFirstOrder() {
 	}

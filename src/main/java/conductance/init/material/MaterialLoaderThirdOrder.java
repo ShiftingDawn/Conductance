@@ -1,6 +1,9 @@
 package conductance.init.material;
 
-import conductance.api.plugin.MaterialRegister;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.plugin.RegisterMaterialEvent;
+import conductance.Conductance;
 import static conductance.api.NCMaterialFlags.CAN_MORTAR;
 import static conductance.api.NCMaterialFlags.GENERATE_FRAME_BOX;
 import static conductance.api.NCMaterialFlags.GENERATE_PLATE;
@@ -25,41 +28,37 @@ import static conductance.api.NCMaterials.VANADIUM;
 import static conductance.api.NCTextureSets.METALLIC;
 import static conductance.api.NCTextureSets.ROUGH;
 
-public final class MaterialLoaderThirdOrder {
+@ConductancePluginListener(modid = Conductance.MODID)
+final class MaterialLoaderThirdOrder {
 
-	//@formatter:off
-	public static void init(final MaterialRegister register) {
-		REDSTONE = register.register("redstone")
+	@EventListener(priority = -94)
+	private static void init(final RegisterMaterialEvent register) {
+		REDSTONE = register.register("redstone", builder -> builder
 				.dust()
 				.ore(5, 1, true)
 				.liquid(500)
 				.color(200, 0, 0).textureSet(ROUGH)
 				.flags(GENERATE_PLATE)
-				.components(SILICON, PYRITE, 5, RUBY, MERCURY)
-				.build();
+				.components(SILICON, PYRITE, 5, RUBY, MERCURY));
 
-		BRICK = register.register("brick")
+		BRICK = register.register("brick", builder -> builder
 				.dust()
 				.color(155, 86, 67).textureSet(ROUGH)
 				.components(CLAY, 1)
-				.flags(CAN_MORTAR, NO_DECOMPOSE)
-				.build();
+				.flags(CAN_MORTAR, NO_DECOMPOSE));
 
-		DIATOMITE = register.register("diatomite")
+		DIATOMITE = register.register("diatomite", builder -> builder
 				.dust()
 				.ore()
 				.color(25, 225, 225)
-				.components(FLINT, 8, HEMATITE, SAPPHIRE)
-				.build();
+				.components(FLINT, 8, HEMATITE, SAPPHIRE));
 
-		HSS_G = register.register("hss_g")
+		HSS_G = register.register("hss_g", builder -> builder
 				.ingot()
 				.color(153, 153, 0).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_EXTRA2, GENERATE_FRAME_BOX)
-				.components(TUNGSTENSTEEL, 5, CHROMIUM, MOLYBDENUM, 2, VANADIUM)
-				.build();
+				.components(TUNGSTENSTEEL, 5, CHROMIUM, MOLYBDENUM, 2, VANADIUM));
 	}
-	//@formatter:on
 
 	private MaterialLoaderThirdOrder() {
 	}
