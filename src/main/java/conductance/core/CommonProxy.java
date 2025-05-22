@@ -12,49 +12,50 @@ import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import conductance.api.util.IInteractable;
 import conductance.client.MachineUIFactory;
 import conductance.core.apiimpl.ApiBridge;
-import conductance.core.apiimpl.PluginManager;
+import conductance.core.apiimpl.TierImpl;
+import conductance.core.sync.SyncFieldSerializerRegisterImpl;
 import conductance.init.ConductanceBlockEntities;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
 import conductance.init.ConductanceDecoration;
 import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
+import conductance.loader.PluginEventBus;
+import conductance.loader.PluginEventDispatcher;
 
 public final class CommonProxy {
 
 	public static void init(final IEventBus modEventBus) {
 		ApiBridge.init(modEventBus);
+		PluginEventBus.initialize();
+
 		NeoForge.EVENT_BUS.addListener(CommonProxy::handleRightClickBlock);
 		NeoForge.EVENT_BUS.addListener(CommonProxy::handleLeftClickBlock);
-
 		UIFactory.register(MachineUIFactory.INSTANCE);
-
-		PluginManager.init();
 
 		ConductanceCreativeTabs.init();
 
-		PluginManager.dispatchTiers();
+		PluginEventDispatcher.dispatchRegisterSyncFieldSerializers(SyncFieldSerializerRegisterImpl.INSTANCE);
+		PluginEventDispatcher.dispatchRegisterTiers(TierImpl.Builder::new);
+		PluginEventDispatcher.dispatchRegisterMaterialOreTypes();
+		PluginEventDispatcher.dispatchRegisterPeriodicElements();
+		PluginEventDispatcher.dispatchRegisterMaterialTextureTypes();
+		PluginEventDispatcher.dispatchRegisterMaterialTextureSets();
+		PluginEventDispatcher.dispatchRegisterMaterialTraits();
+		PluginEventDispatcher.dispatchRegisterMaterialFlags();
+		PluginEventDispatcher.dispatchRegisterMaterialTaggedSets();
+		PluginEventDispatcher.dispatchRegisterMaterials();
+		PluginEventDispatcher.dispatchRegisterMaterialOverrides();
+		PluginEventDispatcher.dispatchRegisterMaterialUnitOverrides();
+		PluginEventDispatcher.dispatchRegisterRecipeElementTypes();
+		PluginEventDispatcher.dispatchRegisterRecipeTypes();
+		PluginEventDispatcher.dispatchRegisterCovers();
 
-		PluginManager.dispatchMaterialOreTypes();
-		PluginManager.dispatchPeriodicElements();
-		PluginManager.dispatchMaterialTextureTypes();
-		PluginManager.dispatchMaterialTextureSets();
-		PluginManager.dispatchMaterialTraits();
-		PluginManager.dispatchMaterialFlags();
-		PluginManager.dispatchMaterialTaggedSets();
-		PluginManager.dispatchMaterials();
-		PluginManager.dispatchMaterialOverrides();
-		PluginManager.dispatchMaterialUnitOverrides();
-
-		PluginManager.dispatchRecipeElementTypes();
-		PluginManager.dispatchRecipeTypes();
-
-		PluginManager.dispatchRegisterCovers();
 		ConductanceItems.init();
 		ConductanceBlocks.init();
 		ConductanceFluids.init();
 		ConductanceBlockEntities.init();
-		PluginManager.dispatchRegisterMachines();
+		PluginEventDispatcher.dispatchRegisterMachines();
 		ConductanceDecoration.init();
 	}
 

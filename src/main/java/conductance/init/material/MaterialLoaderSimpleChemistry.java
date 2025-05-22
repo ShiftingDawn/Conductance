@@ -1,6 +1,9 @@
 package conductance.init.material;
 
-import conductance.api.plugin.MaterialRegister;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.plugin.RegisterMaterialEvent;
+import conductance.Conductance;
 import static conductance.api.NCMaterialFlags.GENERATE_FOIL;
 import static conductance.api.NCMaterialFlags.GENERATE_PLATE;
 import static conductance.api.NCMaterialFlags.GENERATE_RING;
@@ -23,79 +26,66 @@ import static conductance.api.NCMaterials.SULFURIC_LIGHT_FUEL;
 import static conductance.api.NCMaterials.SULFURIC_NAPHTHA;
 import static conductance.api.NCTextureSets.METALLIC;
 
-public final class MaterialLoaderSimpleChemistry {
+@ConductancePluginListener(modid = Conductance.MODID)
+final class MaterialLoaderSimpleChemistry {
 
-	//@formatter:off
-	public static void init(final MaterialRegister register) {
-		RUBBER = register.register("rubber")
+	@EventListener(priority = -88)
+	private static void init(final RegisterMaterialEvent register) {
+		RUBBER = register.register("rubber", builder -> builder
 				.ingot()
 				.liquid()
 				.color(0x54503D)
 				.flags(IS_SYNTHETIC, GENERATE_PLATE, GENERATE_FOIL, GENERATE_RING)
-				.components(CARBON, 5, HYDROGEN, 8)
-				.build();
+				.components(CARBON, 5, HYDROGEN, 8));
 
-		HYDROCHLORIC_ACID = register.register("hydrochloric_acid")
+		HYDROCHLORIC_ACID = register.register("hydrochloric_acid", builder -> builder
 				.liquid()
-				.components(HYDROGEN, CHLORINE)
-				.build();
+				.components(HYDROGEN, CHLORINE));
 
-		GLUE = register.register("glue")
+		GLUE = register.register("glue", builder -> builder
 				.liquid()
-				.color(200, 196, 0)
-				.build();
+				.color(200, 196, 0));
 
-		OIL = register.register("oil")
+		OIL = register.register("oil", builder -> builder
 				.liquid()
-				.color(0x222222)
-				.build();
+				.color(0x222222));
 
-		SULFURIC_NAPHTHA = register.register("sulfuric_naphtha")
+		SULFURIC_NAPHTHA = register.register("sulfuric_naphtha", builder -> builder
 				.liquid()
-				.color(255, 255, 0).textureSet(METALLIC)
-				.build();
+				.color(255, 255, 0).textureSet(METALLIC));
 
-		SULFURIC_HEAVY_FUEL = register.register("sulfuric_heavy_fuel")
+		SULFURIC_HEAVY_FUEL = register.register("sulfuric_heavy_fuel", builder -> builder
 				.liquid()
-				.color(255, 255, 125).textureSet(METALLIC)
-				.build();
+				.color(255, 255, 125).textureSet(METALLIC));
 
-		SULFURIC_LIGHT_FUEL = register.register("sulfuric_light_fuel")
+		SULFURIC_LIGHT_FUEL = register.register("sulfuric_light_fuel", builder -> builder
 				.liquid()
-				.color(255, 255, 200).textureSet(METALLIC)
-				.build();
+				.color(255, 255, 200).textureSet(METALLIC));
 
-		SULFURIC_GAS = register.register("sulfuric_gas")
+		SULFURIC_GAS = register.register("sulfuric_gas", builder -> builder
 				.liquid()
-				.color(200, 200, 200).textureSet(METALLIC)
-				.build();
+				.color(200, 200, 200).textureSet(METALLIC));
 
-		NAPHTHA = register.register("naphtha")
+		NAPHTHA = register.register("naphtha", builder -> builder
 				.liquid()
-				.color(255, 255, 0)
-				.build();
+				.color(255, 255, 0));
 
-		HEAVY_FUEL = register.register("heavy_fuel")
+		HEAVY_FUEL = register.register("heavy_fuel", builder -> builder
 				.liquid()
-				.color(255, 255, 125)
-				.build();
+				.color(255, 255, 125));
 
-		LIGHT_FUEL = register.register("light_fuel")
+		LIGHT_FUEL = register.register("light_fuel", builder -> builder
 				.liquid()
-				.color(255, 255, 200)
-				.build();
+				.color(255, 255, 200));
 
-		REFINERY_GAS = register.register("refinery_gas")
+		REFINERY_GAS = register.register("refinery_gas", builder -> builder
 				.liquid()
-				.color(200, 200, 200)
-				.build();
+				.color(200, 200, 200));
 
-		HYDROGEN_SULFIDE = register.register("hydrogen_sulfide")
+		HYDROGEN_SULFIDE = register.register("hydrogen_sulfide", builder -> builder
 				.liquid()
-				.color(200, 128, 0)
-				.build();
+				.color(200, 128, 0));
 	}
-	//@formatter:on
 
 	private MaterialLoaderSimpleChemistry() {
 	}

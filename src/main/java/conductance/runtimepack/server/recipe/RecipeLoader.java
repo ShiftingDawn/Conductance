@@ -3,8 +3,6 @@ package conductance.runtimepack.server.recipe;
 import java.util.Map;
 import java.util.function.Consumer;
 import net.minecraft.Util;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,9 +18,13 @@ import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeBuilder;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.plugin.RecipeBuilderFactory;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.plugin.RegisterRecipeEvent;
+import conductance.api.plugin.RemoveRecipeEvent;
 import conductance.Conductance;
 
+@ConductancePluginListener(modid = Conductance.MODID)
 public final class RecipeLoader {
 
 	public static final char WRENCH = 'W';
@@ -31,18 +33,20 @@ public final class RecipeLoader {
 	private static final Char2ObjectMap<TagKey<Item>> TOOL_LOOKUP = new Char2ObjectArrayMap<>(
 			Map.of(RecipeLoader.WRENCH, CAPI.Tags.TAG_WRENCH, RecipeLoader.HAMMER, CAPI.Tags.TAG_HAMMER, RecipeLoader.WIRE_CUTTERS, CAPI.Tags.TAG_WIRE_CUTTERS));
 
-	public static void initAddition(final RecipeOutput output, final RecipeBuilderFactory builderFactory) {
-		MaterialRecipes.add(output, builderFactory);
-		FuelAndEnergyRecipes.add(output, builderFactory);
+	@EventListener
+	private static void initAddition(final RegisterRecipeEvent event) {
+		MaterialRecipes.add(event);
+		FuelAndEnergyRecipes.add(event);
 	}
 
-	public static void initRemoval(final Consumer<ResourceLocation> remover) {
-		MaterialRecipes.remove(remover);
+	@EventListener
+	private static void initRemoval(final RemoveRecipeEvent event) {
+		MaterialRecipes.remove(event::remove);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void shaped(final RecipeOutput output, final String name, final ItemStack result, final Object... recipe) {
-		final VanillaRecipeBuilders.CraftingShaped builder = new VanillaRecipeBuilders.CraftingShaped(Conductance.id("crafting/" + name), result);
+	public static void shaped(final RegisterRecipeEvent event, final String name, final ItemStack result, final Object... recipe) {
+		final VanillaRecipeBuilders.CraftingShaped builder = new VanillaRecipeBuilders.CraftingShaped(event.id("crafting", name), result);
 		for (int i = 0; i < recipe.length; ++i) {
 			if (recipe[i] instanceof final String str) {
 				builder.row(str);
@@ -65,12 +69,12 @@ public final class RecipeLoader {
 				}
 			}
 		}
-		builder.save(output);
+		builder.save(event.getOutput());
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void shapeless(final RecipeOutput output, final String name, final ItemStack result, final Object... recipe) {
-		final VanillaRecipeBuilders.CraftingShapeless builder = new VanillaRecipeBuilders.CraftingShapeless(Conductance.id("crafting/" + name), result);
+	public static void shapeless(final RegisterRecipeEvent event, final String name, final ItemStack result, final Object... recipe) {
+		final VanillaRecipeBuilders.CraftingShapeless builder = new VanillaRecipeBuilders.CraftingShapeless(event.id("crafting", name), result);
 		for (int i = 0; i < recipe.length; ++i) {
 			switch (recipe[i]) {
 				case final Character character -> {
@@ -101,40 +105,40 @@ public final class RecipeLoader {
 				case null, default -> throw new IllegalArgumentException("Invalid recipe input " + (recipe[i] == null ? "null" : recipe[i].getClass().getName()) + " at position " + i);
 			}
 		}
-		builder.save(output);
+		builder.save(event.getOutput());
 	}
 
-	public static void smelting(final RecipeOutput recipeOutput, final String name, final ItemStack result, final Ingredient input, @Nullable final Consumer<VanillaRecipeBuilders.Smelting> consumer) {
-		Util.make(new VanillaRecipeBuilders.Smelting(Conductance.id("smelting/" + name), result, input), builder -> {
+	public static void smelting(final RegisterRecipeEvent event, final String name, final ItemStack result, final Ingredient input, @Nullable final Consumer<VanillaRecipeBuilders.Smelting> consumer) {
+		Util.make(new VanillaRecipeBuilders.Smelting(event.id("smelting", name), result, input), builder -> {
 			if (consumer != null) {
 				consumer.accept(builder);
 			}
-		}).save(recipeOutput);
+		}).save(event.getOutput());
 	}
 
-	public static void blasting(final RecipeOutput recipeOutput, final String name, final ItemStack result, final Ingredient input, @Nullable final Consumer<VanillaRecipeBuilders.Blasting> consumer) {
-		Util.make(new VanillaRecipeBuilders.Blasting(Conductance.id("blasting/" + name), result, input), builder -> {
+	public static void blasting(final RegisterRecipeEvent event, final String name, final ItemStack result, final Ingredient input, @Nullable final Consumer<VanillaRecipeBuilders.Blasting> consumer) {
+		Util.make(new VanillaRecipeBuilders.Blasting(event.id("blasting", name), result, input), builder -> {
 			if (consumer != null) {
 				consumer.accept(builder);
 			}
-		}).save(recipeOutput);
+		}).save(event.getOutput());
 	}
 
 	public static void matRecipe(
-			final RecipeOutput recipeOutput, final RecipeBuilderFactory factory, final String name, final Material material, final NCRecipeType recipeType,
+			final RegisterRecipeEvent event, final String name, final Material material, final NCRecipeType recipeType,
 			final TaggedMaterialSet input, final TaggedMaterialSet output, @Nullable final Consumer<RecipeBuilder> consumer
 	) {
-		final RecipeBuilder builder = factory.build(recipeType, Conductance.id(name.formatted(material.getName(), material.getName())));
-		final AutoRecipeData pair = CAPI.recipeHelper().calculateRecipeData(material, input, output, (int) material.getMass(), NCTiers.LV.getRecipeVoltage());
-		builder
-				.in(input, material, pair.inputCount())
-				.out(output, material, pair.outputCount())
-				.processTime(pair.processTime())
-				.inEnergy(NCTiers.LV.getRecipeVoltage());
-		if (consumer != null) {
-			consumer.accept(builder);
-		}
-		builder.save(recipeOutput);
+		event.create(recipeType, name.formatted(material.getName(), material.getName()), builder -> {
+			final AutoRecipeData pair = CAPI.recipeHelper().calculateRecipeData(material, input, output, (int) material.getMass(), NCTiers.LV.getRecipeVoltage());
+			builder
+					.in(input, material, pair.inputCount())
+					.out(output, material, pair.outputCount())
+					.processTime(pair.processTime())
+					.inEnergy(NCTiers.LV.getRecipeVoltage());
+			if (consumer != null) {
+				consumer.accept(builder);
+			}
+		});
 	}
 
 	private RecipeLoader() {

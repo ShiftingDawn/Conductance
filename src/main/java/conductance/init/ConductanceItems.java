@@ -15,10 +15,10 @@ import conductance.api.util.TieredItemType;
 import conductance.api.util.tier.Tier;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.TaggedMaterialSetImpl;
-import conductance.item.CraftingToolItem;
-import conductance.item.MaterialItem;
-import conductance.item.TieredCoverItem;
-import conductance.item.TieredItem;
+import conductance.init.item.CraftingToolItem;
+import conductance.init.item.MaterialItem;
+import conductance.init.item.TieredCoverItem;
+import conductance.init.item.TieredItem;
 import static conductance.api.NCItems.TIERED;
 
 @SuppressWarnings("NotNullFieldNotInitialized")

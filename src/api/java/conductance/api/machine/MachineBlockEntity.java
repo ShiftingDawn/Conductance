@@ -12,35 +12,31 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
 import conductance.api.capability.cover.CoverManager;
 import conductance.api.capability.cover.ICoverable;
 import conductance.api.machine.capability.MachineCapability;
 import conductance.api.machine.capability.MachineRecipeCapability;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.RecipeProcessor;
+import conductance.api.machine.sync.IManaged;
+import conductance.api.machine.sync.ManagedDataMap;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
 import conductance.api.util.RotationState;
 
-public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BaseBlockEntity implements IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IEnhancedManaged, ICoverable {
+public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BaseBlockEntity implements IManaged, ICoverable {
 
-	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineBlockEntity.class);
-	private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+	private final ManagedDataMap dataMap = CAPI.syncHelper().requestDataMap(this);
 	@Getter
 	private final MachineType<T> machineType;
 	@Getter
 	private final List<MachineCapability> capabilities = new ArrayList<>();
 	@Getter
-	@DescSynced
+	@Synchronized
 	@Persisted(key = "cover")
 	protected final CoverManager coverManager;
 
@@ -48,6 +44,7 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 		super(machineType.getBlockEntityType().get(), pos, blockState);
 		this.machineType = machineType;
 		this.coverManager = new CoverManager(this) {
+
 			@Override
 			public double getCoverBackplateThickness() {
 				return 0;
@@ -55,27 +52,10 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 		};
 	}
 
-	//region SyncData
 	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return MachineBlockEntity.MANAGED_FIELD_HOLDER;
+	public ManagedDataMap getDataMap() {
+		return this.dataMap;
 	}
-
-	@Override
-	public IManagedStorage getSyncStorage() {
-		return this.syncStorage;
-	}
-
-	@Override
-	public IManagedStorage getRootStorage() {
-		return this.getSyncStorage();
-	}
-
-	@Override
-	public void onChanged() {
-		super.setChanged();
-	}
-	//endregion
 
 	//region Capability
 	public final void registerCapability(final MachineCapability capability) {
@@ -143,9 +123,9 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 		}
 		final IOMode ioMode = IOMode.INPUT_OUTPUT;
 		//TODO auto output
-//		if (side != null && this instanceof final IAutoOutputItem autoOutputItem && autoOutputItem.getItemOutputSide() == side && !autoOutputItem.allowItemInputFromOutputSide()) {
-//			ioMode = IOMode.OUTPUT;
-//		}
+		//		if (side != null && this instanceof final IAutoOutputItem autoOutputItem && autoOutputItem.getItemOutputSide() == side && !autoOutputItem.allowItemInputFromOutputSide()) {
+		//			ioMode = IOMode.OUTPUT;
+		//		}
 		final IOItemTransferList transferList = new IOItemTransferList(handlers, ioMode, this.getItemCapFilter(side));
 		if (!useCovers || side == null || !(this instanceof final ICoverable coverable)) {
 			return transferList;
@@ -167,9 +147,9 @@ public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extend
 		}
 		final IOMode ioMode = IOMode.INPUT_OUTPUT;
 		//TODO auto output
-//		if (side != null && this instanceof final IAutoOutputItem autoOutputItem && autoOutputItem.getItemOutputSide() == side && !autoOutputItem.allowItemInputFromOutputSide()) {
-//			ioMode = IOMode.OUTPUT;
-//		}
+		//		if (side != null && this instanceof final IAutoOutputItem autoOutputItem && autoOutputItem.getItemOutputSide() == side && !autoOutputItem.allowItemInputFromOutputSide()) {
+		//			ioMode = IOMode.OUTPUT;
+		//		}
 		final IOFluidTransferList transferList = new IOFluidTransferList(handlers, ioMode, this.getFluidCapFilter(side));
 		if (!useCovers || side == null || !(this instanceof final ICoverable coverable)) {
 			return transferList;

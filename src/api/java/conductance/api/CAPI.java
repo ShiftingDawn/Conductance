@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.recipe.RecipeHelper;
+import conductance.api.machine.sync.SyncHelper;
 import conductance.api.material.ResourceFinder;
 import conductance.api.registry.MaterialRegistry;
 import conductance.api.registry.RegistryProvider;
@@ -26,7 +27,7 @@ import conductance.api.util.GsonItemStackAdapter;
 import conductance.api.util.TagHelper;
 import conductance.api.util.tier.TierRegistry;
 
-@SuppressWarnings({"unused", "NotNullFieldNotInitialized"})
+@SuppressWarnings({ "unused", "NotNullFieldNotInitialized" })
 public final class CAPI {
 
 	public static final String MOD_ID = "conductance";
@@ -44,6 +45,8 @@ public final class CAPI {
 	private static TranslationRegistry translationRegistry;
 	private static TierRegistry tierRegistry;
 	private static RecipeHelper recipeHelper;
+	private static SyncHelper syncHelper;
+
 	private static final RegistryAccess REGISTRY_FALLBACK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
 	@Nullable
 	private static RegistryAccess registryAccess;
@@ -70,6 +73,10 @@ public final class CAPI {
 
 	public static RecipeHelper recipeHelper() {
 		return CAPI.recipeHelper;
+	}
+
+	public static SyncHelper syncHelper() {
+		return CAPI.syncHelper;
 	}
 
 	public static RegistryAccess frozenRegistry() {

@@ -1,7 +1,10 @@
 package conductance.init.material;
 
 import conductance.api.NCTextureSets;
-import conductance.api.plugin.MaterialRegister;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.plugin.RegisterMaterialEvent;
+import conductance.Conductance;
 import static net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL;
 import static net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL;
 import static conductance.api.NCMaterialFlags.CAN_CENTRIFUGE;
@@ -58,93 +61,82 @@ import static conductance.api.NCTextureSets.ROUGH;
 import static conductance.api.NCTextureSets.SAND;
 import static conductance.api.NCTextureSets.SHINY;
 
-public final class MaterialLoaderSecondOrder {
+@ConductancePluginListener(modid = Conductance.MODID)
+final class MaterialLoaderSecondOrder {
 
-	//@formatter:off
-	public static void init(final MaterialRegister register) {
-		TUNGSTENSTEEL = register.register("tungstensteel")
+	@EventListener(priority = -96)
+	private static void init(final RegisterMaterialEvent register) {
+		TUNGSTENSTEEL = register.register("tungstensteel", builder -> builder
 				.ingot(NEEDS_DIAMOND_TOOL)
 				.liquid(2011)
 				.color(100, 100, 160).textureSet(METALLIC)
 				.addFlagAndPreset(METAL_ALL)
-				.components(TUNGSTEN, STEEL)
-				.build();
+				.components(TUNGSTEN, STEEL));
 
-		RUBY = register.register("ruby")
+		RUBY = register.register("ruby", builder -> builder
 				.gem()
 				.ore()
 				.color(255, 100, 100).textureSet(NCTextureSets.AMETHYST)
 				.addFlagAndPreset(METAL_EXTRA, GENERATE_LENS)
-				.components(CHROMIUM, ALUMINIUM, 2, OXYGEN, 3)
-				.build();
+				.components(CHROMIUM, ALUMINIUM, 2, OXYGEN, 3));
 
-		FLINT = register.register("flint")
+		FLINT = register.register("flint", builder -> builder
 				.gem()
 				.color(0, 32, 64).textureSet(NCTextureSets.FLINT)
 				.flags(CAN_MORTAR)
-				.components(SILICON_DIOXIDE)
-				.build();
+				.components(SILICON_DIOXIDE));
 
-		CLAY = register.register("clay")
+		CLAY = register.register("clay", builder -> builder
 				.dust()
 				.color(200, 200, 220).textureSet(ROUGH)
 				.flags(CAN_MORTAR)
-				.components(SODIUM, 2, LITHIUM, ALUMINIUM, 2, SILICON, 2, WATER, 6)
-				.build();
+				.components(SODIUM, 2, LITHIUM, ALUMINIUM, 2, SILICON, 2, WATER, 6));
 
-		GARNET_SAND = register.register("garnet_sand")
+		GARNET_SAND = register.register("garnet_sand", builder -> builder
 				.dust()
 				.ore()
 				.color(200, 100, 0).textureSet(SAND)
-				.components(ALMANDINE, ANDRADITE, GROSSULAR, PYROPE, SPESSARTINE, UVAROVITE)
-				.build();
+				.components(ALMANDINE, ANDRADITE, GROSSULAR, PYROPE, SPESSARTINE, UVAROVITE));
 
-		LAPIS_LAZULI = register.register("lapis_lazuli")
+		LAPIS_LAZULI = register.register("lapis_lazuli", builder -> builder
 				.gem()
 				.ore(6, 4)
 				.color(70, 70, 220).textureSet(NCTextureSets.LAPIS)
 				.flags(CAN_ELECTROLYZE, NO_SMELTING, GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_AND_SCREW, CAN_CRYSTALLIZE)
-				.components(LAZURITE, 12, SODALITE, 2, PYRITE, CALCIUM)
-				.build();
+				.components(LAZURITE, 12, SODALITE, 2, PYRITE, CALCIUM));
 
-		COBALT_BRASS = register.register("cobalt_brass")
+		COBALT_BRASS = register.register("cobalt_brass", builder -> builder
 				.ingot()
 				.liquid(1202)
 				.color(180, 180, 160).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA2, GENERATE_GEAR)
-				.build();
+				.addFlagAndPreset(METAL_EXTRA2, GENERATE_GEAR));
 
-		BLAZE = register.register("blaze")
+		BLAZE = register.register("blaze", builder -> builder
 				.dust()
 				.liquid(4000)
 				.color(255, 200, 0).textureSet(FINE)
 				.flags(NO_SMELTING, CAN_MORTAR, CAN_CENTRIFUGE)
-				.components(SULFUR)
-				.build();
+				.components(SULFUR));
 
-		ENDER_EYE = register.register("ender_eye")
+		ENDER_EYE = register.register("ender_eye", builder -> builder
 				.gem()
 				.color(160, 250, 230).textureSet(SHINY)
 				.flags(NO_SMELTING, GENERATE_PLATE, CAN_CENTRIFUGE)
-				.components(ENDER_PEARL, BLAZE)
-				.build();
+				.components(ENDER_PEARL, BLAZE));
 
-		AMETHYST = register.register("amethyst")
+		AMETHYST = register.register("amethyst", builder -> builder
 				.gem(NEEDS_IRON_TOOL)
 				.ore()
 				.color(0x734fbc).textureSet(NCTextureSets.AMETHYST)
 				.addFlagAndPreset(METAL_EXTRA, NO_SMELTING, GENERATE_PLATE, GENERATE_LENS)
-				.components(SILICON_DIOXIDE, 4, IRON)
-				.build();
+				.components(SILICON_DIOXIDE, 4, IRON));
 
-		DEEPSLATE = register.register("deepslate")
+		DEEPSLATE = register.register("deepslate", builder -> builder
 				.dust()
 				.color(0x2f2f37).textureSet(ROUGH)
 				.flags(CAN_CENTRIFUGE)
-				.components(SILICON_DIOXIDE, 4, BIOTITE)
-				.build();
+				.components(SILICON_DIOXIDE, 4, BIOTITE));
 	}
-	//@formatter:on
 
 	private MaterialLoaderSecondOrder() {
 	}

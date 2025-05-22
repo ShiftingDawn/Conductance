@@ -12,20 +12,20 @@ import conductance.api.CAPI;
 import conductance.api.NCBlocks;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.MaterialOreType;
-import conductance.block.WireBlock;
-import conductance.block.WireBlockItem;
-import conductance.block.MaterialBlock;
-import conductance.block.MaterialBlockItem;
-import conductance.block.MaterialOreBlock;
-import conductance.block.MaterialOreBlockItem;
-import conductance.block.MaterialOreRotatedPillarBlock;
-import conductance.block.SimpleDynamicBlock;
+import conductance.init.block.WireBlock;
+import conductance.init.block.WireBlockItem;
+import conductance.init.block.MaterialBlock;
+import conductance.init.block.MaterialBlockItem;
+import conductance.init.block.MaterialOreBlock;
+import conductance.init.block.MaterialOreBlockItem;
+import conductance.init.block.MaterialOreRotatedPillarBlock;
+import conductance.init.block.SimpleDynamicBlock;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.MaterialOreTypeImpl;
 import conductance.core.apiimpl.TaggedMaterialSetImpl;
 import conductance.core.pipenet.WireRegistry;
 import conductance.core.pipenet.WireType;
-import conductance.item.RenderedBlockItem;
+import conductance.init.item.RenderedBlockItem;
 
 @SuppressWarnings("removal")
 public final class ConductanceBlocks {

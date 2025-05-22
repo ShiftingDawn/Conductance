@@ -4,9 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import net.minecraft.core.Direction;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCRecipeElementTypes;
@@ -15,14 +12,15 @@ import conductance.api.capability.energy.IEnergyHandler;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineRunnable;
 import conductance.api.machine.recipe.IRecipe;
+import conductance.api.machine.sync.Persisted;
+import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
 import conductance.api.util.MiscUtils;
 
 public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability<Long> implements IEnergyHandler {
 
-	public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineRecipeCapabilityEnergy.class, MachineRecipeCapability.MANAGED_FIELD_HOLDER);
 	@Persisted
-	@DescSynced
+	@Synchronized
 	protected long energy;
 	protected long capacity;
 	protected long inputVoltage, inputAmperage;
@@ -42,11 +40,6 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 		this.inputAmperage = inputAmperage;
 		this.outputVoltage = outputVoltage;
 		this.outputAmperage = outputAmperage;
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return MachineRecipeCapabilityEnergy.MANAGED_FIELD_HOLDER;
 	}
 
 	public static MachineRecipeCapabilityEnergy createInput(final MachineBlockEntity<?> machine, final long capacity, final long inputVoltage, final long inputAmperage) {

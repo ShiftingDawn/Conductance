@@ -5,18 +5,17 @@ import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import net.minecraft.core.Direction;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
+import conductance.api.CAPI;
 import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.sync.IManaged;
+import conductance.api.machine.sync.ManagedDataMap;
 
-public abstract class MachineCapability implements IEnhancedManaged {
+public abstract class MachineCapability implements IManaged {
 
-	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineCapability.class);
-	private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+	private final ManagedDataMap dataMap = CAPI.syncHelper().requestDataMap(this);
 	@Getter
 	private final MachineBlockEntity<?> machineBlockEntity;
 	@Setter
@@ -51,22 +50,7 @@ public abstract class MachineCapability implements IEnhancedManaged {
 	//endregion
 
 	@Override
-	public void onChanged() {
-		this.machineBlockEntity.onChanged();
-	}
-
-	@Override
-	public void scheduleRenderUpdate() {
-		this.machineBlockEntity.scheduleRenderUpdate();
-	}
-
-	@Override
-	public FieldManagedStorage getSyncStorage() {
-		return this.syncStorage;
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return MachineCapability.MANAGED_FIELD_HOLDER;
+	public ManagedDataMap getDataMap() {
+		return this.dataMap;
 	}
 }

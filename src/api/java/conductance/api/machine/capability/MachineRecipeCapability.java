@@ -2,7 +2,6 @@ package conductance.api.machine.capability;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.ICapabilityHandler;
@@ -12,8 +11,6 @@ import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.util.IOMode;
 
 public abstract class MachineRecipeCapability<T> extends MachineCapability implements ICapabilityHandler {
-
-	protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineRecipeCapability.class, MachineCapability.MANAGED_FIELD_HOLDER);
 
 	@Getter
 	private final IOMode capabilityIoMode;
@@ -27,11 +24,6 @@ public abstract class MachineRecipeCapability<T> extends MachineCapability imple
 		this.elementType = elementType;
 		this.capabilityIoMode = capabilityIoMode;
 		this.handlerIoMode = handlerIoMode;
-	}
-
-	@Override
-	public ManagedFieldHolder getFieldHolder() {
-		return MachineRecipeCapability.MANAGED_FIELD_HOLDER;
 	}
 
 	@Nullable

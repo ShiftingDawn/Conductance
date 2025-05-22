@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.render.BakedModelItemDefaults;
 import conductance.api.machine.render.RebakedModelRenderer;
 import conductance.Conductance;
-import conductance.block.DecoLuxBlock;
+import conductance.init.block.DecoLuxBlock;
 
 public class LuxBlockRenderer extends RebakedModelRenderer implements ICTMPredicate {
 

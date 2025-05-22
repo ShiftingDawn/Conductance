@@ -1,0 +1,49 @@
+package conductance.core.mixin;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import conductance.api.CAPI;
+import conductance.api.machine.sync.IManaged;
+import conductance.api.machine.sync.Operation;
+import conductance.core.sync.ManagedDataMapImpl;
+import conductance.core.sync.task.SynchronizationContainer;
+
+@Mixin(BlockEntity.class)
+public abstract class BlockEntityMixin {
+
+	@Inject(method = "saveAdditional", at = @At("RETURN"))
+	private void conductance$saveAdditional(final CompoundTag tag, final HolderLookup.Provider registries, final CallbackInfo ci) {
+		if (this instanceof final IManaged managed) {
+			tag.put(CAPI.MOD_ID, managed.getDataMap().serialize(Operation.FULL, registries));
+		}
+	}
+
+	@Inject(method = "loadAdditional", at = @At("RETURN"))
+	private void conductance$loadAdditional(final CompoundTag tag, final HolderLookup.Provider registries, final CallbackInfo ci) {
+		if (this instanceof final IManaged managed) {
+			managed.getDataMap().deserialize(Operation.FULL, tag.getCompound(CAPI.MOD_ID), registries);
+		}
+	}
+
+	@Inject(method = "clearRemoved", at = @At("RETURN"))
+	private void conductance$clearRemoved(final CallbackInfo ci) {
+		if (this instanceof final IManaged managed && managed.getDataMap() instanceof final ManagedDataMapImpl map) {
+			map.init();
+			if (!map.getSyncFields().isEmpty()) {
+				SynchronizationContainer.dispatch((BlockEntity) (Object) this);
+			}
+		}
+	}
+
+	@Inject(method = "setRemoved", at = @At("RETURN"))
+	private void conductance$setRemoved(final CallbackInfo ci) {
+		if (this instanceof final IManaged managed && managed.getDataMap() instanceof final ManagedDataMapImpl map && !map.getSyncFields().isEmpty()) {
+			SynchronizationContainer.destroy((BlockEntity) (Object) this);
+		}
+	}
+}

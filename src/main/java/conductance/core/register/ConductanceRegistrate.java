@@ -34,7 +34,7 @@ import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import conductance.Conductance;
 import conductance.init.ConductanceCreativeTabs;
-import conductance.item.IConductanceItem;
+import conductance.init.item.IConductanceItem;
 
 public final class ConductanceRegistrate extends Registrate {
 

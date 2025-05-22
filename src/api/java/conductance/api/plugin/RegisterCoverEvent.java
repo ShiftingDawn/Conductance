@@ -1,0 +1,19 @@
+package conductance.api.plugin;
+
+import java.util.function.Function;
+import net.minecraft.resources.ResourceLocation;
+import conductance.api.capability.cover.CoverEntity;
+import conductance.api.capability.cover.CoverEntityConstructor;
+import conductance.api.capability.cover.CoverRenderer;
+import conductance.api.capability.cover.CoverType;
+
+public interface RegisterCoverEvent extends IConductancePluginEvent {
+
+	<COVER extends CoverEntity<COVER>> CoverType<COVER> register(String registryName, Function<CoverType<COVER>, CoverRenderer> coverRenderer, CoverEntityConstructor<COVER> constructor);
+
+	<COVER extends CoverEntity<COVER>> CoverType<COVER> register(String registryName, ResourceLocation coverTexture, CoverEntityConstructor<COVER> constructor);
+
+	<COVER extends CoverEntity<COVER>> CoverType<COVER> register(String registryName, String texture, CoverEntityConstructor<COVER> constructor);
+
+	<COVER extends CoverEntity<COVER>> CoverType<COVER> register(String registryName, CoverEntityConstructor<COVER> constructor);
+}

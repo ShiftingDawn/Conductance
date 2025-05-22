@@ -3,6 +3,7 @@ package conductance.core.register;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -27,6 +28,10 @@ import conductance.Conductance;
 public final class MaterialRegistryImpl implements MaterialRegistry {
 
 	public static final MaterialRegistryImpl INSTANCE = new MaterialRegistryImpl();
+	@Getter
+	private final Table<TaggedMaterialSet, Material, ItemLike[]> overrideMap = HashBasedTable.create();
+	@Getter
+	private final Table<TaggedMaterialSet, Material, Long> unitOverrideMap = HashBasedTable.create();
 	@Getter
 	private final Table<TaggedMaterialSet, Material, ItemEntry<? extends Item>> generatedItemRegistry = HashBasedTable.create();
 	@Getter
@@ -125,6 +130,22 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		this.generatedFluidRegistry.put(taggedSet, material, fluid);
 	}
 
+	@Override
+	public boolean hasOverride(final TaggedMaterialSet set, final Material material) {
+		return this.overrideMap.contains(set, material);
+	}
+
+	@Override
+	public boolean hasUnitOverride(final TaggedMaterialSet set, final Material material) {
+		return this.unitOverrideMap.contains(set, material);
+	}
+
+	@Override
+	public long getUnitOverride(final TaggedMaterialSet set, final Material material) {
+		final Long result = this.unitOverrideMap.get(set, material);
+		return Objects.requireNonNullElse(result, -1L);
+	}
+
 	public void freeze() {
 		Conductance.LOGGER.info("MaterialRegistry has been frozen!");
 		this.frozen = true;
@@ -176,15 +197,15 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		this.blockRegistry.clear();
 		this.fluidRegistry.clear();
 
-		MaterialRegistryImpl.registerOverriddenComponents();
+		this.registerOverriddenComponents();
 
 		this.generatedItemRegistry.cellSet().forEach(cell -> this.registerItemInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
 		this.generatedBlockRegistry.cellSet().forEach(cell -> this.registerBlockInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
 		this.generatedFluidRegistry.cellSet().forEach(cell -> this.registerFluidInternal(cell.getRowKey(), cell.getColumnKey(), cell.getValue().get()));
 	}
 
-	private static void registerOverriddenComponents() {
-		MaterialOverrideRegister.getOverrides().rowMap().forEach((set, mapping) -> mapping.forEach((material, overrides) -> {
+	private void registerOverriddenComponents() {
+		this.overrideMap.rowMap().forEach((set, mapping) -> mapping.forEach((material, overrides) -> {
 			Arrays.stream(overrides).forEach(override -> {
 				if (set.hasBlocks() && override instanceof final Block block) {
 					MaterialRegistryImpl.INSTANCE.registerBlockInternal(set, material, block);

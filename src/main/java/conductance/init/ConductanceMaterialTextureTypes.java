@@ -1,6 +1,9 @@
 package conductance.init;
 
-import conductance.api.plugin.MaterialTextureTypeRegister;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.plugin.RegisterMaterialTextureTypeEvent;
+import conductance.Conductance;
 import static conductance.api.NCTextureTypes.BOLT;
 import static conductance.api.NCTextureTypes.DUST;
 import static conductance.api.NCTextureTypes.FINE_WIRE;
@@ -32,50 +35,52 @@ import static conductance.api.NCTextureTypes.STORAGE_BLOCK;
 import static conductance.api.NCTextureTypes.WIRE_BASE;
 import static conductance.api.NCTextureTypes.WIRE_SIDE;
 
-public final class ConductanceMaterialTextureTypes {
+@ConductancePluginListener(modid = Conductance.MODID)
+final class ConductanceMaterialTextureTypes {
 
-	public static void init(final MaterialTextureTypeRegister register) {
-		DUST = register.register("dust");
+	@EventListener(priority = -100)
+	private static void init(final RegisterMaterialTextureTypeEvent event) {
+		DUST = event.register("dust");
 
-		INGOT = register.register("ingot");
-		NUGGET = register.register("nugget");
+		INGOT = event.register("ingot");
+		NUGGET = event.register("nugget");
 
-		GEM = register.register("gem");
-		GEM_FLAWED = register.register("flawed_gem");
-		GEM_FLAWLESS = register.register("flawless_gem");
-		GEM_EXQUISITE = register.register("exquisite_gem");
+		GEM = event.register("gem");
+		GEM_FLAWED = event.register("flawed_gem");
+		GEM_FLAWLESS = event.register("flawless_gem");
+		GEM_EXQUISITE = event.register("exquisite_gem");
 
-		STORAGE_BLOCK = register.register("block");
-		ORE = register.register("ore");
-		RAW_ORE = register.register("raw_ore");
-		RAW_ORE_BLOCK = register.register("raw_ore_block");
+		STORAGE_BLOCK = event.register("block");
+		ORE = event.register("ore");
+		RAW_ORE = event.register("raw_ore");
+		RAW_ORE_BLOCK = event.register("raw_ore_block");
 
-		LIQUID = register.register("liquid");
-		GAS = register.register("gas");
-		PLASMA = register.register("plasma");
+		LIQUID = event.register("liquid");
+		GAS = event.register("gas");
+		PLASMA = event.register("plasma");
 
-		PLATE = register.register("plate");
-		PLATE_DOUBLE = register.register("double_plate");
-		PLATE_DENSE = register.register("dense_plate");
-		FOIL = register.register("foil");
+		PLATE = event.register("plate");
+		PLATE_DOUBLE = event.register("double_plate");
+		PLATE_DENSE = event.register("dense_plate");
+		FOIL = event.register("foil");
 
-		GEAR = register.register("gear");
-		GEAR_SMALL = register.register("small_gear");
+		GEAR = event.register("gear");
+		GEAR_SMALL = event.register("small_gear");
 
-		LENS = register.register("lens");
+		LENS = event.register("lens");
 
-		ROD = register.register("rod");
-		BOLT = register.register("bolt");
-		SCREW = register.register("screw");
-		RING = register.register("ring");
+		ROD = event.register("rod");
+		BOLT = event.register("bolt");
+		SCREW = event.register("screw");
+		RING = event.register("ring");
 
-		FINE_WIRE = register.register("fine_wire");
-		ROTOR = register.register("rotor");
+		FINE_WIRE = event.register("fine_wire");
+		ROTOR = event.register("rotor");
 
-		FRAME_BOX = register.register("frame_box");
+		FRAME_BOX = event.register("frame_box");
 
-		WIRE_BASE = register.register("wire_base");
-		WIRE_SIDE = register.register("wire_side");
+		WIRE_BASE = event.register("wire_base");
+		WIRE_SIDE = event.register("wire_side");
 	}
 
 	private ConductanceMaterialTextureTypes() {

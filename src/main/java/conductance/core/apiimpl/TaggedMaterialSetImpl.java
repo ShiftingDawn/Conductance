@@ -2,12 +2,11 @@ package conductance.core.apiimpl;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.core.register.MaterialOverrideRegister;
-import conductance.core.register.MaterialUnitOverrideRegister;
 
 public final class TaggedMaterialSetImpl extends TaggedSetImpl<Material> implements TaggedMaterialSet {
 
@@ -25,22 +24,22 @@ public final class TaggedMaterialSetImpl extends TaggedSetImpl<Material> impleme
 
 	@Override
 	public boolean canGenerateItem(final Material object) {
-		return super.canGenerateItem(object) && !MaterialOverrideRegister.has(this, object);
+		return super.canGenerateItem(object) && !CAPI.materials().hasOverride(this, object);
 	}
 
 	@Override
 	public boolean canGenerateBlock(final Material object) {
-		return super.canGenerateBlock(object) && !MaterialOverrideRegister.has(this, object);
+		return super.canGenerateBlock(object) && !CAPI.materials().hasOverride(this, object);
 	}
 
 	@Override
 	public boolean canGenerateFluid(final Material object) {
-		return super.canGenerateFluid(object) && !MaterialOverrideRegister.has(this, object);
+		return super.canGenerateFluid(object) && !CAPI.materials().hasOverride(this, object);
 	}
 
 	@Override
 	public long getUnitValue(final Material object) {
-		final long override = MaterialUnitOverrideRegister.get(this, object);
+		final long override = CAPI.materials().getUnitOverride(this, object);
 		return override > 0 ? override : this.getUnitValue();
 	}
 }

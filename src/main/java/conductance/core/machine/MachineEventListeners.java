@@ -7,7 +7,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import conductance.api.machine.IMachineBlock;
 import conductance.Conductance;
-import conductance.block.WireBlock;
+import conductance.init.block.WireBlock;
 
 @EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
 public final class MachineEventListeners {

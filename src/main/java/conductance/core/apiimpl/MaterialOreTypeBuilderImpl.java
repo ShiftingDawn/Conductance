@@ -8,9 +8,9 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 import conductance.api.CAPI;
 import conductance.api.material.MaterialOreType;
-import conductance.api.plugin.MaterialOreTypeBuilder;
+import conductance.api.plugin.RegisterMaterialOreTypeEvent;
 
-final class MaterialOreTypeBuilderImpl implements MaterialOreTypeBuilder {
+public final class MaterialOreTypeBuilderImpl implements RegisterMaterialOreTypeEvent.MaterialOreTypeBuilder {
 
 	private final ResourceLocation registryName;
 	private final ResourceLocation bearingBlockModel;
@@ -21,7 +21,7 @@ final class MaterialOreTypeBuilderImpl implements MaterialOreTypeBuilder {
 	private boolean doubleOutput = false;
 	private boolean hasGravity = false;
 
-	MaterialOreTypeBuilderImpl(final ResourceLocation registryName, final ResourceLocation bearingBlockModel, final MapColor mapColor, final SoundType soundType) {
+	public MaterialOreTypeBuilderImpl(final ResourceLocation registryName, final ResourceLocation bearingBlockModel, final MapColor mapColor, final SoundType soundType) {
 		this.registryName = registryName;
 		this.bearingBlockModel = bearingBlockModel;
 		this.mapColor = mapColor;
@@ -29,24 +29,23 @@ final class MaterialOreTypeBuilderImpl implements MaterialOreTypeBuilder {
 	}
 
 	@Override
-	public MaterialOreTypeBuilder blockType(final MaterialOreType.OreBlockType type) {
+	public RegisterMaterialOreTypeEvent.MaterialOreTypeBuilder blockType(final MaterialOreType.OreBlockType type) {
 		this.blockType = type;
 		return this;
 	}
 
 	@Override
-	public MaterialOreTypeBuilder doubleOutput() {
+	public RegisterMaterialOreTypeEvent.MaterialOreTypeBuilder doubleOutput() {
 		this.doubleOutput = true;
 		return this;
 	}
 
 	@Override
-	public MaterialOreTypeBuilder hasGravity() {
+	public RegisterMaterialOreTypeEvent.MaterialOreTypeBuilder hasGravity() {
 		this.hasGravity = true;
 		return this;
 	}
 
-	@Override
 	public MaterialOreType build() {
 		final MaterialOreType result = new MaterialOreTypeImpl(
 				this.registryName, this.blockType, this.bearingBlockModel,

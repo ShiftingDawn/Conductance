@@ -8,8 +8,8 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.TaggedMaterialSetImpl;
-import conductance.fluid.MaterialBucketItem;
-import conductance.fluid.MaterialFluidType;
+import conductance.init.fluid.MaterialBucketItem;
+import conductance.init.fluid.MaterialFluidType;
 import conductance.runtimepack.client.MaterialFluidModelHandler;
 
 public final class ConductanceFluids {
