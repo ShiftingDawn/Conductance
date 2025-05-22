@@ -304,7 +304,6 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 		final MaterialImpl material = new MaterialImpl(this.registryName, dataFinalized, this.traits, this.flags, this.defaultFluid);
 		this.traits.setMaterial(material);
 		material.verify(this.calculateColor);
-		CAPI.regs().materials().register(material.getRegistryKey(), material);
 		return material;
 	}
 }

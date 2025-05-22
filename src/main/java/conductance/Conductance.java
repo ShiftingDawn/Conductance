@@ -1,5 +1,8 @@
 package conductance;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.logging.LogUtils;
@@ -45,5 +48,16 @@ public final class Conductance {
 
 	public static Component tooltip(final String suffix, final Object... args) {
 		return Component.translatable(Conductance.tooltipText(suffix), args);
+	}
+
+	public static <T> void setApiValue(final Class<T> variableType, final T value) {
+		final Field field = Arrays.stream(CAPI.class.getDeclaredFields()).filter(f -> variableType.isAssignableFrom(f.getType()) && !Modifier.isFinal(f.getModifiers())).findFirst().orElseThrow();
+		try {
+			field.setAccessible(true);
+			field.set(null, value);
+			field.setAccessible(false);
+		} catch (final IllegalAccessException e) {
+			throw new RuntimeException("Cannot set API value", e);
+		}
 	}
 }

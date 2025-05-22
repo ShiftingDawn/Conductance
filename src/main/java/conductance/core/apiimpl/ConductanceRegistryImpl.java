@@ -16,7 +16,7 @@ import conductance.api.registry.IRegistryObject;
 import conductance.api.registry.RegistryObject;
 import conductance.Conductance;
 
-abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>> extends RegistryObject<ResourceLocation> implements ConductanceRegistry<KEY, VALUE> {
+public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>> extends RegistryObject<ResourceLocation> implements ConductanceRegistry<KEY, VALUE> {
 
 	private final HashBiMap<KEY, VALUE> registry;
 	@Getter
@@ -29,12 +29,12 @@ abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>> 
 	@Setter
 	private BiConsumer<KEY, VALUE> unregisterCallback;
 
-	public ConductanceRegistryImpl(final ResourceLocation registryKey) {
+	ConductanceRegistryImpl(final ResourceLocation registryKey) {
 		super(registryKey);
 		this.registry = HashBiMap.create();
 
 		if (!registryKey.equals(Conductance.id("root"))) {
-			ApiBridge.REGISTRIES.register(registryKey, this);
+			ApiBridge.REGISTRIES.register(this);
 		}
 	}
 
@@ -53,11 +53,11 @@ abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>> 
 		return this.registry.containsValue(value);
 	}
 
-	@Override
-	public KEY register(final KEY key, final VALUE value) {
+	public final KEY register(final VALUE value) {
 		if (this.frozen) {
 			throw new IllegalStateException("[register]Registry %s has been frozen".formatted(this.getRegistryKey()));
 		}
+		final KEY key = value.getRegistryKey();
 		if (this.containsKey(key)) {
 			throw new IllegalStateException("[register]Registry %s contains key %s already".formatted(this.getRegistryKey(), key));
 		}
@@ -70,39 +70,14 @@ abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>> 
 	}
 
 	@Override
-	public VALUE registerOrOverride(final KEY key, final VALUE value) {
-		if (this.frozen) {
-			throw new IllegalStateException("[registerOrOverride]Registry %s has been frozen".formatted(this.getRegistryKey()));
-		}
-		final VALUE result = this.registry.put(key, value);
-		if (this.unregisterCallback != null && result != null) {
-			this.unregisterCallback.accept(key, result);
-		}
-		if (this.registerCallback != null) {
-			this.registerCallback.accept(key, value);
-		}
-		return result;
-	}
-
-	@Override
 	@Nullable
 	public VALUE get(final KEY key) {
 		return this.registry.get(key);
 	}
 
 	@Override
-	public VALUE getOrDefault(final KEY key, final VALUE defaultValue) {
-		return this.registry.getOrDefault(key, defaultValue);
-	}
-
-	@Override
 	public KEY getKey(final VALUE value) {
 		return this.registry.inverse().get(value);
-	}
-
-	@Override
-	public KEY getOrDefaultKey(final VALUE key, final KEY defaultKey) {
-		return this.registry.inverse().getOrDefault(key, defaultKey);
 	}
 
 	@Override
@@ -139,14 +114,14 @@ abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject<KEY>> 
 		return this.registry.values().iterator();
 	}
 
-	public static final class ResourceKeyed<VALUE extends IRegistryObject<ResourceLocation>> extends ConductanceRegistryImpl<ResourceLocation, VALUE> {
+	static final class ResourceKeyed<VALUE extends IRegistryObject<ResourceLocation>> extends ConductanceRegistryImpl<ResourceLocation, VALUE> {
 
 		ResourceKeyed(final ResourceLocation registryName) {
 			super(registryName);
 		}
 	}
 
-	public static final class StringKeyed<VALUE extends IRegistryObject<String>> extends ConductanceRegistryImpl<String, VALUE> {
+	static final class StringKeyed<VALUE extends IRegistryObject<String>> extends ConductanceRegistryImpl<String, VALUE> {
 
 		StringKeyed(final ResourceLocation registryName) {
 			super(registryName);

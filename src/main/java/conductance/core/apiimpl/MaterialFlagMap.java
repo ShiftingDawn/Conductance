@@ -18,7 +18,7 @@ final class MaterialFlagMap {
 	}
 
 	void verify(final Material material) {
-		this.flags.addAll(this.flags.stream().map(flag -> ((MaterialFlagImpl) flag).verify(material)).flatMap(Collection::stream).collect(Collectors.toSet()));
+		this.flags.addAll(this.flags.stream().map(flag -> MaterialFlagImpl.verify(material, flag)).flatMap(Collection::stream).collect(Collectors.toSet()));
 	}
 
 	public boolean has(final MaterialFlag flag) {

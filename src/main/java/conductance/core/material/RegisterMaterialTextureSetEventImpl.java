@@ -1,4 +1,4 @@
-package conductance.loader;
+package conductance.core.material;
 
 import java.util.function.BiFunction;
 import lombok.AllArgsConstructor;

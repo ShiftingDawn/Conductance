@@ -6,7 +6,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
-import conductance.api.CAPI;
 import conductance.api.material.MaterialOreType;
 import conductance.api.plugin.RegisterMaterialOreTypeEvent;
 
@@ -47,11 +46,9 @@ public final class MaterialOreTypeBuilderImpl implements RegisterMaterialOreType
 	}
 
 	public MaterialOreType build() {
-		final MaterialOreType result = new MaterialOreTypeImpl(
+		return new MaterialOreTypeImpl(
 				this.registryName, this.blockType, this.bearingBlockModel,
 				this.doubleOutput, this.hasGravity, this.mapColor, this.soundType, this.requiredToolType
 		);
-		CAPI.regs().materialOreTypes().register(result.getRegistryKey(), result);
-		return result;
 	}
 }

@@ -1,4 +1,4 @@
-package conductance.loader;
+package conductance.core.material;
 
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.function.TriConsumer;

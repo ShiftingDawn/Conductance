@@ -1,4 +1,4 @@
-package conductance.loader;
+package conductance.core.material;
 
 import net.minecraft.world.level.ItemLike;
 import lombok.AllArgsConstructor;

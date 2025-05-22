@@ -1,9 +1,8 @@
-package conductance.loader;
+package conductance.core.material;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
@@ -14,13 +13,15 @@ import conductance.api.plugin.RegisterMaterialTaggedSetEvent;
 @AllArgsConstructor
 final class RegisterMaterialTaggedSetEventImpl implements RegisterMaterialTaggedSetEvent {
 
-	private final TriFunction<String, Function<Material, String>, MaterialOreType, TaggedMaterialSetBuilder> delegate;
+	interface MaterialTaggedSetRegister {
+
+		TaggedMaterialSet apply(String registryName, Function<Material, String> unlocalizedNameFactory, @Nullable MaterialOreType oreType, Consumer<TaggedMaterialSetBuilder> builder);
+	}
+
+	private final MaterialTaggedSetRegister delegate;
 
 	@Override
 	public TaggedMaterialSet register(final String registryName, final Function<Material, String> unlocalizedNameFactory, @Nullable final MaterialOreType oreType, final Consumer<TaggedMaterialSetBuilder> builder) {
-		//TODO refactor
-		final TaggedMaterialSetBuilder b = this.delegate.apply(registryName, unlocalizedNameFactory, oreType);
-		builder.accept(b);
-		return b.build();
+		return this.delegate.apply(registryName, unlocalizedNameFactory, oreType, builder);
 	}
 }

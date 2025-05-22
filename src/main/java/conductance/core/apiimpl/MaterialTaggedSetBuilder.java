@@ -1,10 +1,8 @@
 package conductance.core.apiimpl;
 
 import java.util.function.Function;
-import net.minecraft.Util;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.CAPI;
 import conductance.api.NCTextureTypes;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
@@ -35,6 +33,6 @@ public final class MaterialTaggedSetBuilder extends TaggedSetBuilderImpl<Materia
 
 	@Override
 	public TaggedMaterialSet build() {
-		return Util.make(new TaggedMaterialSetImpl(this), set -> CAPI.regs().materialTaggedSets().register(set.getRegistryKey(), set));
+		return new TaggedMaterialSetImpl(this);
 	}
 }

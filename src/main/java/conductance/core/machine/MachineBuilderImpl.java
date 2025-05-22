@@ -25,7 +25,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.CAPI;
 import conductance.api.machine.IMachineBlockItem;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
@@ -43,6 +42,7 @@ import conductance.api.machine.render.MachineOverlayRenderer;
 import conductance.api.machine.render.WorkableMachineRenderer;
 import conductance.api.util.RotationState;
 import conductance.Conductance;
+import conductance.core.apiimpl.ApiBridge;
 import conductance.core.recipe.RecipeTypeImpl;
 import conductance.runtimepack.client.MachineBlockModelHandler;
 import static conductance.core.apiimpl.ApiBridge.getRegistrate;
@@ -234,7 +234,7 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 			});
 		});
 		machineType.validate();
-		CAPI.regs().machines().register(machineType.getRegistryKey(), machineType);
+		ApiBridge.getRegs().machines().register(machineType);
 		Arrays.stream(this.recipeTypes).forEach(type -> ((RecipeTypeImpl) type).setRecipeTypeIcon(() -> new ItemStack(machineType.getBlock().get())));
 		return machineType;
 	}

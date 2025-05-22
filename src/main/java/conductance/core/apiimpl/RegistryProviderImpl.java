@@ -4,6 +4,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import lombok.Getter;
 import conductance.api.capability.cover.CoverType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.recipe.IRecipeElementType;
@@ -74,67 +75,67 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	}
 
 	@Override
-	public ConductanceRegistry<ResourceLocation, PeriodicElement> periodicElements() {
+	public ConductanceRegistryImpl<ResourceLocation, PeriodicElement> periodicElements() {
 		return this.periodicElements;
 	}
 
 	@Override
-	public ConductanceRegistry<ResourceLocation, MaterialTextureType> materialTextureTypes() {
+	public ConductanceRegistryImpl<ResourceLocation, MaterialTextureType> materialTextureTypes() {
 		return this.materialTextureTypes;
 	}
 
 	@Override
-	public ConductanceRegistry<String, MaterialTextureSet> materialTextureSets() {
+	public ConductanceRegistryImpl<String, MaterialTextureSet> materialTextureSets() {
 		return this.materialTextureSets;
 	}
 
 	@Override
-	public ConductanceRegistry<ResourceLocation, MaterialTraitKey<?>> materialTraits() {
+	public ConductanceRegistryImpl<ResourceLocation, MaterialTraitKey<?>> materialTraits() {
 		return this.materialTraits;
 	}
 
 	@Override
-	public ConductanceRegistry<ResourceLocation, MaterialFlag> materialFlags() {
+	public ConductanceRegistryImpl<ResourceLocation, MaterialFlag> materialFlags() {
 		return this.materialFlags;
 	}
 
 	@Override
-	public ConductanceRegistry<ResourceLocation, MaterialOreType> materialOreTypes() {
+	public ConductanceRegistryImpl<ResourceLocation, MaterialOreType> materialOreTypes() {
 		return this.materialOreTypes;
 	}
 
 	@Override
-	public ConductanceRegistry<String, TaggedMaterialSet> materialTaggedSets() {
+	public ConductanceRegistryImpl<String, TaggedMaterialSet> materialTaggedSets() {
 		return this.materialTaggedSets;
 	}
 
 	@Override
-	public ConductanceRegistry<ResourceLocation, Material> materials() {
+	public ConductanceRegistryImpl<ResourceLocation, Material> materials() {
 		return this.materials;
 	}
 
 	@Override
-	public ConductanceRegistry<ResourceLocation, IRecipeElementType<?>> recipeElementTypes() {
+	public ConductanceRegistryImpl<ResourceLocation, IRecipeElementType<?>> recipeElementTypes() {
 		return this.recipeElementTypes;
 	}
 
 	@Override
-	public ConductanceRegistry<ResourceLocation, NCRecipeType> recipeTypes() {
+	public ConductanceRegistryImpl<ResourceLocation, NCRecipeType> recipeTypes() {
 		return this.recipeTypes;
 	}
 
 	@Override
-	public ConductanceRegistry<String, Tier> tiers() {
+	public ConductanceRegistryImpl<String, Tier> tiers() {
 		return this.tiers;
 	}
 
 	@Override
-	public ConductanceRegistry<String, MachineType<?>> machines() {
+	public ConductanceRegistryImpl<String, MachineType<?>> machines() {
 		return this.machines;
 	}
 
 	@Override
-	public ConductanceRegistry<ResourceLocation, CoverType<?>> covers() {
+	public ConductanceRegistryImpl<ResourceLocation, CoverType<?>> covers() {
 		return this.covers;
 	}
 }

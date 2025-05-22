@@ -1,12 +1,12 @@
 package conductance.init;
 
 import net.minecraft.Util;
-import conductance.api.CAPI;
 import conductance.api.material.MaterialTextureSet;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterMaterialTextureSetEvent;
 import conductance.Conductance;
+import conductance.core.apiimpl.ApiBridge;
 import static conductance.api.NCTextureSets.AMETHYST;
 import static conductance.api.NCTextureSets.BRIGHT;
 import static conductance.api.NCTextureSets.DIAMOND;
@@ -31,7 +31,7 @@ final class ConductanceMaterialTextureSets {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterMaterialTextureSetEvent event) {
-		DULL = Util.make(new MaterialTextureSet("dull", null), set -> CAPI.regs().materialTextureSets().register(set.getRegistryKey(), set));
+		DULL = Util.make(new MaterialTextureSet("dull", null), ApiBridge.getRegs().materialTextureSets()::register);
 		METALLIC = event.register("metallic");
 		MAGNETIC = event.register("magnetic", METALLIC);
 		SHINY = event.register("shiny", METALLIC);

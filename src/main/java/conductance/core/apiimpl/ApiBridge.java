@@ -1,8 +1,5 @@
 package conductance.core.apiimpl;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -13,11 +10,9 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.CAPI;
 import conductance.api.machine.recipe.RecipeHelper;
 import conductance.api.machine.sync.SyncHelper;
 import conductance.api.material.ResourceFinder;
-import conductance.api.registry.MaterialRegistry;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.tier.TierRegistry;
@@ -46,28 +41,16 @@ public final class ApiBridge {
 		ApiBridge.registrate = ConductanceRegistrate.create(modEventBus);
 		NeoForge.EVENT_BUS.addListener(ApiBridge::onServerAboutToStart);
 		NeoForge.EVENT_BUS.addListener(ApiBridge::onServerStopped);
-		ApiBridge.setApiValue(RegistryProvider.class, ApiBridge.regs);
-		ApiBridge.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
-		ApiBridge.setApiValue(MaterialRegistry.class, MaterialRegistryImpl.INSTANCE);
-		ApiBridge.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
-		ApiBridge.setApiValue(TierRegistry.class, TierRegistryImpl.INSTANCE);
-		ApiBridge.setApiValue(RecipeHelper.class, RecipeHelperImpl.INSTANCE);
-		ApiBridge.setApiValue(SyncHelper.class, SyncHelperImpl.INSTANCE);
-	}
-
-	private static <T> void setApiValue(final Class<T> variableType, final T value) {
-		final Field field = Arrays.stream(CAPI.class.getDeclaredFields()).filter(f -> variableType.isAssignableFrom(f.getType()) && !Modifier.isFinal(f.getModifiers())).findFirst().orElseThrow();
-		try {
-			field.setAccessible(true);
-			field.set(null, value);
-			field.setAccessible(false);
-		} catch (final IllegalAccessException e) {
-			throw new RuntimeException("Cannot set API value", e);
-		}
+		Conductance.setApiValue(RegistryProvider.class, ApiBridge.regs);
+		Conductance.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
+		Conductance.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
+		Conductance.setApiValue(TierRegistry.class, TierRegistryImpl.INSTANCE);
+		Conductance.setApiValue(RecipeHelper.class, RecipeHelperImpl.INSTANCE);
+		Conductance.setApiValue(SyncHelper.class, SyncHelperImpl.INSTANCE);
 	}
 
 	public static void resetRegistryAccess(@Nullable final RegistryAccess registryAccess) {
-		ApiBridge.setApiValue(RegistryAccess.class, registryAccess);
+		Conductance.setApiValue(RegistryAccess.class, registryAccess);
 	}
 
 	private static void onServerAboutToStart(final ServerAboutToStartEvent event) {
