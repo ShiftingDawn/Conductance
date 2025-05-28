@@ -16,7 +16,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import com.mojang.serialization.JsonOps;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialTaggedSets;
-import conductance.core.register.MaterialRegistryImpl;
+import conductance.core.material.MaterialRegistryImpl;
 
 final class LootTableGenerationHandler {
 

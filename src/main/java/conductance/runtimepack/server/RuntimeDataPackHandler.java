@@ -16,11 +16,11 @@ import net.neoforged.neoforge.event.AddPackFindersEvent;
 import conductance.Conductance;
 
 @EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
-public class RuntimeDataPackHandler implements RepositorySource {
+final class RuntimeDataPackHandler implements RepositorySource {
 
 	private static final String NAME = Conductance.MODID + ":runtime_data_pack";
 
-	public RuntimeDataPackHandler() {
+	private RuntimeDataPackHandler() {
 		RuntimeDataPack.reset();
 	}
 

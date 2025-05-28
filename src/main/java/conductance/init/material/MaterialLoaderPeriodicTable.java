@@ -4,6 +4,7 @@ import net.minecraft.tags.BlockTags;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCPeriodicElements;
 import conductance.api.NCTiers;
+import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterMaterialEvent;
@@ -13,6 +14,7 @@ import static conductance.api.NCMaterialFlags.GENERATE_BOLT_AND_SCREW;
 import static conductance.api.NCMaterialFlags.GENERATE_FINE_WIRE;
 import static conductance.api.NCMaterialFlags.GENERATE_FOIL;
 import static conductance.api.NCMaterialFlags.GENERATE_GEAR;
+import static conductance.api.NCMaterialFlags.GENERATE_PLATE;
 import static conductance.api.NCMaterialFlags.GENERATE_RING;
 import static conductance.api.NCMaterialFlags.GENERATE_ROD;
 import static conductance.api.NCMaterialFlags.GENERATE_ROTOR;
@@ -80,6 +82,8 @@ import static conductance.api.NCMaterials.LITHIUM;
 import static conductance.api.NCMaterials.LIVERMORIUM;
 import static conductance.api.NCMaterials.LUTETIUM;
 import static conductance.api.NCMaterials.MAGNESIUM;
+import static conductance.api.NCMaterials.MAGNETIC_IRON;
+import static conductance.api.NCMaterials.MAGNETIC_SAMARIUM;
 import static conductance.api.NCMaterials.MANGANESE;
 import static conductance.api.NCMaterials.MEITNERIUM;
 import static conductance.api.NCMaterials.MENDELEVIUM;
@@ -240,7 +244,7 @@ final class MaterialLoaderPeriodicTable {
 				.liquid(933)
 				.ore()
 				.color(0x80c8f0)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.ALUMINIUM)
 				.wire(NCTiers.EV, 1));
 
@@ -291,7 +295,7 @@ final class MaterialLoaderPeriodicTable {
 		TITANIUM = register.register("titanium", builder -> builder
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL).liquid()
 				.color(220, 160, 240).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL)
+				.flags(METAL_ALL)
 				.periodicElement(NCPeriodicElements.TITANIUM));
 
 		VANADIUM = register.register("vanadium", builder -> builder
@@ -303,22 +307,22 @@ final class MaterialLoaderPeriodicTable {
 				.ingot(BlockTags.NEEDS_IRON_TOOL)
 				.liquid(2180)
 				.color(255, 230, 230).textureSet(SHINY)
-				.addFlagAndPreset(METAL_EXTRA)
+				.flags(METAL_EXTRA)
 				.periodicElement(NCPeriodicElements.CHROMIUM));
 
 		MANGANESE = register.register("manganese", builder -> builder
 				.ingot()
 				.liquid(1519)
 				.color(250, 250, 250)
-				.addFlagAndPreset(METAL_DEFAULT, GENERATE_FOIL, GENERATE_BOLT_AND_SCREW)
+				.flags(GENERATE_PLATE, GENERATE_FOIL)
 				.periodicElement(NCPeriodicElements.MANGANESE));
 
 		IRON = register.register("iron", builder -> builder
-				.ingot()
+				.ingot(() -> new MaterialTraitIngot(() -> MAGNETIC_IRON, null))
 				.liquid(1811).plasma()
 				.ore()
 				.color(200, 200, 200).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, CAN_MORTAR)
+				.flags(METAL_ALL, CAN_MORTAR)
 				.periodicElement(NCPeriodicElements.IRON));
 
 		COBALT = register.register("cobalt", builder -> builder
@@ -326,7 +330,7 @@ final class MaterialLoaderPeriodicTable {
 				.liquid(1768)
 				.ore()
 				.color(80, 80, 250).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA2, GENERATE_FINE_WIRE)
+				.flags(METAL_EXTRA2, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.COBALT));
 
 		NICKEL = register.register("nickel", builder -> builder
@@ -334,7 +338,7 @@ final class MaterialLoaderPeriodicTable {
 				.liquid(1728).plasma()
 				.ore()
 				.color(200, 200, 250).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_DEFAULT, CAN_MORTAR)
+				.flags(METAL_DEFAULT, CAN_MORTAR)
 				.periodicElement(NCPeriodicElements.NICKEL));
 
 		COPPER = register.register("copper", builder -> builder
@@ -342,21 +346,21 @@ final class MaterialLoaderPeriodicTable {
 				.liquid(1358)
 				.ore()
 				.color(255, 100, 0).textureSet(SHINY)
-				.addFlagAndPreset(METAL_ALL, CAN_MORTAR, GENERATE_FINE_WIRE)
+				.flags(METAL_ALL, CAN_MORTAR, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.COPPER));
 
 		ZINC = register.register("zinc", builder -> builder
 				.ingot()
 				.liquid(693)
 				.color(250, 240, 240).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_DEFAULT, GENERATE_FOIL, GENERATE_RING, GENERATE_FINE_WIRE)
+				.flags(METAL_DEFAULT, GENERATE_FOIL, GENERATE_RING, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.ZINC));
 
 		GALLIUM = register.register("gallium", builder -> builder
 				.ingot()
 				.liquid(303)
 				.color(220, 220, 255).textureSet(SHINY)
-				.addFlagAndPreset(METAL_DEFAULT, GENERATE_FOIL)
+				.flags(METAL_DEFAULT, GENERATE_FOIL)
 				.periodicElement(NCPeriodicElements.GALLIUM));
 
 		GERMANIUM = register.register("germanium", builder -> builder
@@ -418,14 +422,14 @@ final class MaterialLoaderPeriodicTable {
 				.ore()
 				.color(180, 180, 220).textureSet(SHINY)
 				.periodicElement(NCPeriodicElements.MOLYBDENUM)
-				.flags(GENERATE_FOIL, GENERATE_BOLT_AND_SCREW));
+				.flags(GENERATE_PLATE, GENERATE_FOIL));
 
 		TECHNETIUM = register.register("technetium", builder -> builder
 				.ingot()
 				.dust()
 				.color(0xd7fce2).textureSet(SHINY)
 				.periodicElement(NCPeriodicElements.TECHNETIUM)
-				.addFlagAndPreset(METAL_ALL));
+				.flags(METAL_ALL));
 
 		RUTHENIUM = register.register("ruthenium", builder -> builder
 				.ingot()
@@ -438,7 +442,7 @@ final class MaterialLoaderPeriodicTable {
 				.ingot()
 				.liquid()
 				.color(0xDC0C58).textureSet(BRIGHT)
-				.addFlagAndPreset(METAL_ALL)
+				.flags(METAL_ALL)
 				.periodicElement(NCPeriodicElements.RHODIUM));
 
 		PALLADIUM = register.register("palladium", builder -> builder
@@ -446,7 +450,7 @@ final class MaterialLoaderPeriodicTable {
 				.liquid()
 				.ore()
 				.color(128, 128, 128).textureSet(SHINY)
-				.addFlagAndPreset(METAL_ALL)
+				.flags(METAL_ALL)
 				.periodicElement(NCPeriodicElements.PALLADIUM));
 
 		SILVER = register.register("silver", builder -> builder
@@ -455,7 +459,7 @@ final class MaterialLoaderPeriodicTable {
 				.ore()
 				.wire(NCTiers.LV, 1)
 				.color(220, 220, 255).textureSet(SHINY)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
 				.periodicElement(NCPeriodicElements.SILVER));
 
 		CADMIUM = register.register("cadmium", builder -> builder
@@ -475,7 +479,7 @@ final class MaterialLoaderPeriodicTable {
 				.ore()
 				.wire(NCTiers.LV, 1)
 				.color(220, 220, 220)
-				.addFlagAndPreset(METAL_ALL, GENERATE_ROTOR, GENERATE_FINE_WIRE, CAN_MORTAR)
+				.flags(METAL_ALL, GENERATE_ROTOR, GENERATE_FINE_WIRE, CAN_MORTAR)
 				.periodicElement(NCPeriodicElements.TIN));
 
 		ANTIMONY = register.register("antimony", builder -> builder
@@ -527,11 +531,11 @@ final class MaterialLoaderPeriodicTable {
 				.periodicElement(NCPeriodicElements.PRASEODYMIUM));
 
 		NEODYMIUM = register.register("neodymium", builder -> builder
-				.ingot()
+				.ingot(() -> new MaterialTraitIngot(() -> MAGNETIC_SAMARIUM, null))
 				.liquid()
 				.ore()
 				.color(100, 100, 100).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_DEFAULT, GENERATE_ROD, GENERATE_BOLT_AND_SCREW)
+				.flags(METAL_DEFAULT, GENERATE_ROD, GENERATE_BOLT_AND_SCREW)
 				.periodicElement(NCPeriodicElements.NEODYMIUM));
 
 		PROMETHIUM = register.register("promethium", builder -> builder
@@ -541,7 +545,7 @@ final class MaterialLoaderPeriodicTable {
 				.periodicElement(NCPeriodicElements.PROMETHIUM));
 
 		SAMARIUM = register.register("samarium", builder -> builder
-				.ingot()
+				.ingot(() -> new MaterialTraitIngot(() -> MAGNETIC_SAMARIUM, null))
 				.liquid(1345)
 				.ore()
 				.color(255, 255, 204).textureSet(METALLIC)
@@ -551,7 +555,7 @@ final class MaterialLoaderPeriodicTable {
 				.ingot()
 				.liquid(1099).plasma()
 				.color(246, 181, 255).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.EUROPIUM));
 
 		GADOLINIUM = register.register("gadolinium", builder -> builder
@@ -604,14 +608,14 @@ final class MaterialLoaderPeriodicTable {
 				.ingot()
 				.liquid(3290)
 				.color(105, 183, 255).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_DEFAULT, GENERATE_FOIL, GENERATE_FINE_WIRE)
+				.flags(METAL_DEFAULT, GENERATE_FOIL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.TANTALUM));
 
 		TUNGSTEN = register.register("tungsten", builder -> builder
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL)
 				.liquid(3695)
 				.color(50, 50, 50).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.TUNGSTEN));
 
 		RHENIUM = register.register("thenium", builder -> builder
@@ -623,7 +627,7 @@ final class MaterialLoaderPeriodicTable {
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL)
 				.liquid(3306)
 				.color(50, 50, 255).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.OSMIUM));
 
 		IRIDIUM = register.register("iridium", builder -> builder
@@ -631,7 +635,7 @@ final class MaterialLoaderPeriodicTable {
 				.liquid(2719)
 				.ore()
 				.color(240, 240, 245).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.IRIDIUM));
 
 		PLATINUM = register.register("platinum", builder -> builder
@@ -639,7 +643,7 @@ final class MaterialLoaderPeriodicTable {
 				.liquid(2041)
 				.ore()
 				.color(255, 255, 200).textureSet(SHINY)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.PLATINUM));
 
 		GOLD = register.register("gold", builder -> builder
@@ -647,7 +651,7 @@ final class MaterialLoaderPeriodicTable {
 				.liquid(1337)
 				.ore()
 				.color(255, 255, 30).textureSet(SHINY)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
 				.periodicElement(NCPeriodicElements.GOLD));
 
 		MERCURY = register.register("mercury", builder -> builder
@@ -665,7 +669,7 @@ final class MaterialLoaderPeriodicTable {
 				.liquid(600)
 				.ore()
 				.color(140, 100, 140)
-				.addFlagAndPreset(METAL_EXTRA2, GENERATE_FINE_WIRE)
+				.flags(METAL_EXTRA2, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.LEAD));
 
 		BISMUTH = register.register("bismuth", builder -> builder
@@ -709,7 +713,7 @@ final class MaterialLoaderPeriodicTable {
 				.liquid(2023).plasma()
 				.ore()
 				.color(0, 30, 0).textureSet(SHINY)
-				.addFlagAndPreset(METAL_DEFAULT, GENERATE_ROD)
+				.flags(METAL_DEFAULT, GENERATE_ROD)
 				.periodicElement(NCPeriodicElements.THORIUM));
 
 		PROTACTINIUM = register.register("protactinium", builder -> builder
@@ -721,14 +725,14 @@ final class MaterialLoaderPeriodicTable {
 				.ingot(BlockTags.NEEDS_IRON_TOOL)
 				.liquid(1405).plasma()
 				.color(50, 240, 50).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_DEFAULT)
+				.flags(METAL_DEFAULT)
 				.periodicElement(NCPeriodicElements.URANIUM_238));
 
 		URANIUM_235 = register.register("uranium_235", builder -> builder
 				.ingot(BlockTags.NEEDS_IRON_TOOL)
 				.liquid(1405).plasma()
 				.color(70, 250, 70).textureSet(SHINY)
-				.addFlagAndPreset(METAL_DEFAULT)
+				.flags(METAL_DEFAULT)
 				.periodicElement(NCPeriodicElements.URANIUM_235));
 
 		NEPTUNIUM = register.register("neptunium", builder -> builder
@@ -754,7 +758,7 @@ final class MaterialLoaderPeriodicTable {
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL)
 				.liquid(1449).plasma()
 				.color(200, 200, 200).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA, GENERATE_FOIL, GENERATE_FINE_WIRE)
+				.flags(METAL_EXTRA, GENERATE_FOIL, GENERATE_FINE_WIRE)
 				.periodicElement(NCPeriodicElements.AMERICIUM));
 
 		CURIUM = register.register("curium", builder -> builder
@@ -837,7 +841,7 @@ final class MaterialLoaderPeriodicTable {
 				.ingot()
 				.liquid()
 				.color(0x578062)
-				.addFlagAndPreset(METAL_EXTRA2, GENERATE_GEAR, GENERATE_SMALL_GEAR)
+				.flags(METAL_EXTRA2, GENERATE_GEAR, GENERATE_SMALL_GEAR)
 				.periodicElement(NCPeriodicElements.DARMSTADTIUM));
 
 		ROENTGENIUM = register.register("roentgenium", builder -> builder
@@ -883,7 +887,7 @@ final class MaterialLoaderPeriodicTable {
 		NEUTRONIUM = register.register("neutronium", builder -> builder
 				.ingot()
 				.color(250, 250, 250).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL)
+				.flags(METAL_ALL)
 				.periodicElement(NCPeriodicElements.NEUTRONIUM));
 	}
 

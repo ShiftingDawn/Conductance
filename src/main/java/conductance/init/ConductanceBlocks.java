@@ -12,19 +12,20 @@ import conductance.api.CAPI;
 import conductance.api.NCBlocks;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.MaterialOreType;
-import conductance.init.block.WireBlock;
-import conductance.init.block.WireBlockItem;
+import conductance.core.apiimpl.ApiBridge;
+import conductance.core.apiimpl.MaterialOreTypeImpl;
+import conductance.core.apiimpl.TaggedMaterialSetImpl;
+import conductance.core.material.MaterialRegistryImpl;
+import conductance.core.pipenet.WireRegistry;
+import conductance.core.pipenet.WireType;
 import conductance.init.block.MaterialBlock;
 import conductance.init.block.MaterialBlockItem;
 import conductance.init.block.MaterialOreBlock;
 import conductance.init.block.MaterialOreBlockItem;
 import conductance.init.block.MaterialOreRotatedPillarBlock;
 import conductance.init.block.SimpleDynamicBlock;
-import conductance.core.apiimpl.ApiBridge;
-import conductance.core.apiimpl.MaterialOreTypeImpl;
-import conductance.core.apiimpl.TaggedMaterialSetImpl;
-import conductance.core.pipenet.WireRegistry;
-import conductance.core.pipenet.WireType;
+import conductance.init.block.WireBlock;
+import conductance.init.block.WireBlockItem;
 import conductance.init.item.RenderedBlockItem;
 
 @SuppressWarnings("removal")
@@ -51,9 +52,9 @@ public final class ConductanceBlocks {
 			if (((TaggedMaterialSetImpl) set).getBlockGeneratorCallback() != null) {
 				((TaggedMaterialSetImpl) set).getBlockGeneratorCallback().accept(material, blockBuilder);
 			}
-			CAPI.materials().register(set, material, blockBuilder.register());
+			MaterialRegistryImpl.INSTANCE.register(set, material, blockBuilder.register());
 		}));
-		CAPI.regs().materials().values().stream().filter(material -> material.hasTrait(NCMaterialTraits.ORE)).forEach(material ->
+		CAPI.regs().materials().values().stream().filter(material -> material.has(NCMaterialTraits.ORE)).forEach(material ->
 				CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.getOreType() != null).forEach(set -> {
 					final MaterialOreType oreType = set.getOreType();
 					final String name = set.getUnlocalizedName(material);
@@ -68,7 +69,7 @@ public final class ConductanceBlocks {
 							.model(NonNullBiConsumer.noop())
 							.color(() -> MaterialOreBlockItem::handleColorTint)
 							.build();
-					CAPI.materials().register(set, material, blockBuilder.register());
+					MaterialRegistryImpl.INSTANCE.register(set, material, blockBuilder.register());
 				})
 		);
 		ConductanceBlocks.generateWires();
@@ -84,7 +85,7 @@ public final class ConductanceBlocks {
 	}
 
 	private static void generateWires() {
-		CAPI.regs().materials().values().stream().filter(mat -> mat.hasTrait(NCMaterialTraits.WIRE)).forEach(material -> {
+		CAPI.regs().materials().values().stream().filter(mat -> mat.has(NCMaterialTraits.WIRE)).forEach(material -> {
 			for (final WireType wireType : WireType.values()) {
 				final String name = wireType.getMaterialTaggedSet().getUnlocalizedName(material);
 				final BlockEntry<WireBlock> block = ApiBridge.getRegistrate().block(name, props -> new WireBlock(props, wireType, material))
@@ -97,7 +98,7 @@ public final class ConductanceBlocks {
 						.color(() -> WireBlockItem::handleColorTint)
 						.build()
 						.register();
-				CAPI.materials().register(wireType.getMaterialTaggedSet(), material, block);
+				MaterialRegistryImpl.INSTANCE.register(wireType.getMaterialTaggedSet(), material, block);
 				WireRegistry.register(wireType, material, block);
 			}
 		});

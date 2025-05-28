@@ -13,10 +13,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import conductance.init.block.IConductanceBlock;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.TaggedSetImpl;
-import conductance.core.register.MaterialRegistryImpl;
+import conductance.core.material.MaterialRegistryImpl;
+import conductance.init.block.IConductanceBlock;
 import conductance.loader.PluginEventDispatcher;
 
 public final class TagGenerationHandler {
@@ -75,7 +75,7 @@ public final class TagGenerationHandler {
 						.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
 			});
 			// Mining tool tags
-			tagMap.computeIfAbsent(material.getRequiredToolTag().location(), k -> new ArrayList<>())
+			tagMap.computeIfAbsent(material.getBlockRequiredToolTag().location(), k -> new ArrayList<>())
 					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
 			if (!((TaggedSetImpl<?>) taggedSet).getMiningTags().isEmpty()) {
 				((TaggedSetImpl<?>) taggedSet).getMiningTags().forEach(tagKey -> {

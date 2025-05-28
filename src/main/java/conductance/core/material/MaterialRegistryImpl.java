@@ -1,4 +1,4 @@
-package conductance.core.register;
+package conductance.core.material;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +11,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.IdMappingEvent;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
@@ -42,6 +44,10 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 	private final Table<TaggedMaterialSet, Material, List<Block>> blockRegistry = HashBasedTable.create();
 	private final Table<TaggedMaterialSet, Material, List<Fluid>> fluidRegistry = HashBasedTable.create();
 	private boolean frozen = false;
+
+	private MaterialRegistryImpl() {
+		NeoForge.EVENT_BUS.addListener(IdMappingEvent.class, ignored -> this.freeze());
+	}
 
 	@Override
 	public Optional<Item> getItem(final TaggedMaterialSet taggedSet, final Material material) {
@@ -106,7 +112,6 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		return fluid != null ? (BucketItem) fluid.getBucket() : null;
 	}
 
-	@Override
 	public void register(final TaggedMaterialSet tagType, final Material material, final ItemEntry<? extends Item> item) {
 		if (this.frozen) {
 			throw new IllegalStateException("Trying to register item in frozen MaterialRegistry!");
@@ -114,7 +119,6 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		this.generatedItemRegistry.put(tagType, material, item);
 	}
 
-	@Override
 	public void register(final TaggedMaterialSet taggedSet, final Material material, final BlockEntry<? extends Block> block) {
 		if (this.frozen) {
 			throw new IllegalStateException("Trying to register block in frozen MaterialRegistry!");
@@ -122,12 +126,25 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		this.generatedBlockRegistry.put(taggedSet, material, block);
 	}
 
-	@Override
 	public void register(final TaggedMaterialSet taggedSet, final Material material, final FluidEntry<? extends Fluid> fluid) {
 		if (this.frozen) {
 			throw new IllegalStateException("Trying to register fluid in frozen MaterialRegistry!");
 		}
 		this.generatedFluidRegistry.put(taggedSet, material, fluid);
+	}
+
+	public void addOverride(final TaggedMaterialSet set, final Material material, final ItemLike[] overrides) {
+		if (this.frozen) {
+			throw new IllegalStateException("Trying to register override in frozen MaterialRegistry!");
+		}
+		this.overrideMap.put(set, material, overrides);
+	}
+
+	public void addUnitOverride(final TaggedMaterialSet set, final Material material, final long newValue) {
+		if (this.frozen) {
+			throw new IllegalStateException("Trying to register unit override in frozen MaterialRegistry!");
+		}
+		this.unitOverrideMap.put(set, material, newValue);
 	}
 
 	@Override
@@ -146,7 +163,7 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		return Objects.requireNonNullElse(result, -1L);
 	}
 
-	public void freeze() {
+	private void freeze() {
 		Conductance.LOGGER.info("MaterialRegistry has been frozen!");
 		this.frozen = true;
 	}

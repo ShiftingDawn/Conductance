@@ -21,7 +21,7 @@ final class MaterialLoaderHigherOrder {
 				.ingot()
 				.liquid(1400)
 				.color(0xc55252).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
 				.components(COPPER, REDSTONE, 3));
 	}
 

@@ -1,15 +1,10 @@
 package conductance.core.apiimpl;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
-import net.neoforged.neoforge.event.server.ServerStoppedEvent;
-import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.recipe.RecipeHelper;
 import conductance.api.machine.sync.SyncHelper;
 import conductance.api.material.ResourceFinder;
@@ -20,7 +15,6 @@ import conductance.Conductance;
 import conductance.core.pipenet.WireRegistry;
 import conductance.core.recipe.RecipeHelperImpl;
 import conductance.core.register.ConductanceRegistrate;
-import conductance.core.register.MaterialRegistryImpl;
 import conductance.core.sync.SyncFieldSerializerRegisterImpl;
 import conductance.core.sync.SyncHelperImpl;
 
@@ -39,8 +33,6 @@ public final class ApiBridge {
 	public static void init(final IEventBus modEventBus) {
 		ApiBridge.regs = new RegistryProviderImpl(modEventBus);
 		ApiBridge.registrate = ConductanceRegistrate.create(modEventBus);
-		NeoForge.EVENT_BUS.addListener(ApiBridge::onServerAboutToStart);
-		NeoForge.EVENT_BUS.addListener(ApiBridge::onServerStopped);
 		Conductance.setApiValue(RegistryProvider.class, ApiBridge.regs);
 		Conductance.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
 		Conductance.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
@@ -49,24 +41,11 @@ public final class ApiBridge {
 		Conductance.setApiValue(SyncHelper.class, SyncHelperImpl.INSTANCE);
 	}
 
-	public static void resetRegistryAccess(@Nullable final RegistryAccess registryAccess) {
-		Conductance.setApiValue(RegistryAccess.class, registryAccess);
-	}
-
-	private static void onServerAboutToStart(final ServerAboutToStartEvent event) {
-		ApiBridge.resetRegistryAccess(event.getServer().registryAccess());
-	}
-
-	private static void onServerStopped(final ServerStoppedEvent event) {
-		ApiBridge.resetRegistryAccess(null);
-	}
-
 	@SubscribeEvent
 	private static void onLoadComplete(final FMLLoadCompleteEvent ignored) {
 		ApiBridge.REGISTRIES.freeze();
 		ApiBridge.REGISTRIES.values().forEach(ConductanceRegistryImpl::freeze);
 
-		MaterialRegistryImpl.INSTANCE.freeze();
 		TierRegistryImpl.freeze();
 		WireRegistry.freeze();
 		SyncFieldSerializerRegisterImpl.INSTANCE.freeze();

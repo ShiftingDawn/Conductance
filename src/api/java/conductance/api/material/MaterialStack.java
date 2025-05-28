@@ -52,6 +52,6 @@ public final class MaterialStack {
 
 	@Override
 	public String toString() {
-		return "%dx%s".formatted(this.count, this.isEmpty() ? "empty" : this.getMaterial().getUnlocalizedName());
+		return "%dx%s".formatted(this.count, this.isEmpty() ? "empty" : this.getMaterial().getDescriptionId());
 	}
 }

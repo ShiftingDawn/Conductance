@@ -2,7 +2,6 @@ package conductance.api.plugin;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -14,6 +13,7 @@ import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitFluid;
+import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.util.tier.Tier;
 
 public interface MaterialBuilder {
@@ -30,6 +30,12 @@ public interface MaterialBuilder {
 
 	MaterialBuilder ingot(TagKey<Block> requiredToolTag, int burnTime);
 
+	MaterialBuilder ingot(Supplier<MaterialTraitIngot> factory);
+
+	MaterialBuilder ingot(TagKey<Block> requiredToolTag, Supplier<MaterialTraitIngot> factory);
+
+	MaterialBuilder ingot(TagKey<Block> requiredToolTag, int burnTime, Supplier<MaterialTraitIngot> factory);
+
 	MaterialBuilder gem();
 
 	MaterialBuilder gem(TagKey<Block> requiredToolTag);
@@ -38,21 +44,21 @@ public interface MaterialBuilder {
 
 	MaterialBuilder liquid();
 
-	MaterialBuilder liquid(int temperature);
+	MaterialBuilder liquid(Supplier<MaterialTraitFluid.Liquid> factory);
 
-	MaterialBuilder liquid(Consumer<MaterialTraitFluid.Liquid> builder);
+	MaterialBuilder liquid(int temperature);
 
 	MaterialBuilder gas();
 
-	MaterialBuilder gas(int temperature);
+	MaterialBuilder gas(Supplier<MaterialTraitFluid.Gas> factory);
 
-	MaterialBuilder gas(Consumer<MaterialTraitFluid.Gas> builder);
+	MaterialBuilder gas(int temperature);
 
 	MaterialBuilder plasma();
 
-	MaterialBuilder plasma(int temperature);
+	MaterialBuilder plasma(Supplier<MaterialTraitFluid.Plasma> factory);
 
-	MaterialBuilder plasma(Consumer<MaterialTraitFluid.Plasma> builder);
+	MaterialBuilder plasma(int temperature);
 
 	MaterialBuilder defaultFluid(MaterialTraitKey<? extends MaterialTraitFluid<?>> defaultFluid);
 
@@ -78,20 +84,20 @@ public interface MaterialBuilder {
 
 	MaterialBuilder components(List<MaterialStack> components);
 
-	MaterialBuilder flags(MaterialFlag... flagsToAdd);
+	MaterialBuilder flags(Collection<MaterialFlag> preset, MaterialFlag... flagsToAdd);
 
-	MaterialBuilder addFlagAndPreset(Collection<MaterialFlag> preset, MaterialFlag... flagsToAdd);
+	MaterialBuilder flags(MaterialFlag... flagsToAdd);
 
 	MaterialBuilder periodicElement(PeriodicElement periodicElement);
 
-	MaterialBuilder ore(int dropMultiplier, int byproductMultiplier, boolean emissive, @Nullable Supplier<Material> pulverizeResult, @Nullable Supplier<Material> smeltResult);
+	MaterialBuilder ore(int dropMultiplier, int byproductMultiplier, boolean emissive, @Nullable Supplier<Material> smeltResult, @Nullable Supplier<Material> pulverizeResult);
 
-	default MaterialBuilder ore(final boolean emissive, @Nullable final Supplier<Material> pulverizeResult, @Nullable final Supplier<Material> smeltResult) {
-		return this.ore(1, 1, emissive, pulverizeResult, smeltResult);
+	default MaterialBuilder ore(final boolean emissive, @Nullable final Supplier<Material> smeltResult, @Nullable final Supplier<Material> pulverizeResult) {
+		return this.ore(1, 1, emissive, smeltResult, pulverizeResult);
 	}
 
-	default MaterialBuilder ore(@Nullable final Supplier<Material> pulverizeResult, @Nullable final Supplier<Material> smeltResult) {
-		return this.ore(false, pulverizeResult, smeltResult);
+	default MaterialBuilder ore(@Nullable final Supplier<Material> smeltResult, @Nullable final Supplier<Material> pulverizeResult) {
+		return this.ore(false, smeltResult, pulverizeResult);
 	}
 
 	default MaterialBuilder ore(final int dropMultiplier, final int byproductMultiplier, final boolean emissive) {

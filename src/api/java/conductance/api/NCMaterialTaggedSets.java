@@ -74,11 +74,11 @@ public final class NCMaterialTaggedSets {
 	public static final Predicate<Material> PREDICATE_HAS_GEM = NCMaterialTaggedSets.hasTrait(NCMaterialTraits.GEM);
 
 	public static Predicate<Material> hasTrait(final MaterialTraitKey<?> trait) {
-		return material -> material.hasTrait(trait);
+		return material -> material.has(trait);
 	}
 
 	public static Predicate<Material> hasFlag(final MaterialFlag flag) {
-		return material -> material.hasFlag(flag);
+		return material -> material.has(flag);
 	}
 	// endregion
 

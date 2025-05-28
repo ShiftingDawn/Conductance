@@ -1,9 +1,9 @@
 package conductance.init.material;
 
 import net.minecraft.tags.BlockTags;
-import conductance.api.NCMaterialTraits;
 import conductance.api.NCTextureSets;
 import conductance.api.NCTiers;
+import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterMaterialEvent;
@@ -194,11 +194,10 @@ final class MaterialLoaderFirstOrder {
 	@EventListener(priority = -98)
 	private static void init(final RegisterMaterialEvent register) {
 		MAGNETIC_IRON = register.register("magnetic_iron", builder -> builder
-				.ingot()
+				.ingot(() -> new MaterialTraitIngot(null, () -> IRON))
 				.color(200, 200, 200).textureSet(MAGNETIC)
-				.addFlagAndPreset(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
+				.flags(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
 				.components(IRON));
-		IRON.getTrait(NCMaterialTraits.INGOT).setMagneticForm(MAGNETIC_IRON);
 
 		ALMANDINE = register.register("almandine", builder -> builder
 				.gem()
@@ -230,42 +229,41 @@ final class MaterialLoaderFirstOrder {
 
 		PYRITE = register.register("pyrite", builder -> builder
 				.dust()
-				.ore(null, () -> IRON)
+				.ore(() -> IRON, null)
 				.color(150, 120, 40).textureSet(ROUGH)
 				.components(IRON, SULFUR, 2));
 
 		BRONZE = register.register("bronze", builder -> builder
 				.ingot().liquid(1357)
 				.color(255, 128, 0).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
 				.components(COPPER, 3, TIN));
 
 		STEEL = register.register("steel", builder -> builder
-				.ingot()
+				.ingot(() -> new MaterialTraitIngot(() -> MAGNETIC_STEEL, null))
 				.liquid(2046)
 				.color(128, 128, 128).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR, NO_DECOMPOSE)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR, NO_DECOMPOSE)
 				.components(IRON));
 
 		MAGNETIC_STEEL = register.register("magnetic_steel", builder -> builder
-				.ingot()
+				.ingot(() -> new MaterialTraitIngot(null, () -> STEEL))
 				.color(128, 128, 128).textureSet(MAGNETIC)
-				.addFlagAndPreset(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
+				.flags(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
 				.components(STEEL));
-		STEEL.getTrait(NCMaterialTraits.INGOT).setMagneticForm(MAGNETIC_STEEL);
 
 		WROUGHT_IRON = register.register("wrought_iron", builder -> builder
 				.ingot()
 				.liquid(2011)
 				.color(200, 180, 180).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR, NO_DECOMPOSE)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR, NO_DECOMPOSE)
 				.components(IRON));
 
 		STAINLESS_STEEL = register.register("stainless_steel", builder -> builder
 				.ingot(NEEDS_IRON_TOOL)
 				.liquid(2011)
 				.color(200, 200, 220).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
 				.components(IRON, 6, NICKEL, MANGANESE, CHROMIUM));
 
 		WATER = register.register("water", builder -> builder
@@ -308,14 +306,14 @@ final class MaterialLoaderFirstOrder {
 				.liquid(1285)
 				.wire(NCTiers.HV, 1)
 				.color(255, 255, 100).textureSet(SHINY)
-				.addFlagAndPreset(METAL_EXTRA2, CAN_MORTAR, GENERATE_FINE_WIRE, GENERATE_RING)
+				.flags(METAL_EXTRA2, CAN_MORTAR, GENERATE_FINE_WIRE, GENERATE_RING)
 				.components(SILVER, GOLD));
 
 		EMERALD = register.register("emerald", builder -> builder
 				.gem()
 				.ore(2, 1)
 				.color(80, 255, 80).textureSet(NCTextureSets.EMERALD)
-				.addFlagAndPreset(METAL_EXTRA2, GENERATE_LENS, NO_SMELTING)
+				.flags(METAL_EXTRA2, GENERATE_LENS, NO_SMELTING)
 				.components(BERYLLIUM, 3, ALUMINIUM, 2, SILICON, 6, OXYGEN, 18));
 
 		GALENA = register.register("galena", builder -> builder
@@ -333,7 +331,7 @@ final class MaterialLoaderFirstOrder {
 				.gem()
 				.ore()
 				.color(100, 200, 130).textureSet(GEM_HORIZONTAL)
-				.addFlagAndPreset(METAL_EXTRA, NO_SMELTING)
+				.flags(METAL_EXTRA, NO_SMELTING)
 				.components(ALUMINIUM, 2, OXYGEN, 3));
 
 		GROSSULAR = register.register("grossular", builder -> builder
@@ -365,7 +363,7 @@ final class MaterialLoaderFirstOrder {
 				.ingot()
 				.liquid(1916)
 				.color(0x78b446).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA2, CAN_MORTAR, GENERATE_GEAR, GENERATE_FRAME_BOX)
+				.flags(METAL_EXTRA2, CAN_MORTAR, GENERATE_GEAR, GENERATE_FRAME_BOX)
 				.components(IRON, 2, NICKEL));
 
 		LAZURITE = register.register("lazurite", builder -> builder
@@ -410,28 +408,28 @@ final class MaterialLoaderFirstOrder {
 				.ingot()
 				.liquid(1258)
 				.color(250, 220, 225).textureSet(SHINY)
-				.addFlagAndPreset(METAL_EXTRA2)
+				.flags(METAL_EXTRA2)
 				.components(COPPER, SILVER, 4));
 
 		ROSE_GOLD = register.register("rose_gold", builder -> builder
 				.ingot()
 				.liquid(1341)
 				.color(255, 230, 30).textureSet(SHINY)
-				.addFlagAndPreset(METAL_EXTRA2, GENERATE_RING)
+				.flags(METAL_EXTRA2, GENERATE_RING)
 				.components(COPPER, GOLD, 4));
 
 		BISMUTH_BRONZE = register.register("bismuth_bronze", builder -> builder
 				.ingot()
 				.liquid(1036)
 				.color(100, 125, 125).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA2)
+				.flags(METAL_EXTRA2)
 				.components(BISMUTH, ZINC, COPPER, 3));
 
 		BLACK_BRONZE = register.register("black_bronze", builder -> builder
 				.ingot()
 				.liquid(1328)
 				.color(100, 50, 125).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA2, GENERATE_GEAR)
+				.flags(METAL_EXTRA2, GENERATE_GEAR)
 				.components(GOLD, SILVER, COPPER, 3));
 
 		PYROLUSITE = register.register("pyrolusite", builder -> builder
@@ -461,7 +459,7 @@ final class MaterialLoaderFirstOrder {
 		RURIDIT = register.register("ruridit", builder -> builder
 				.ingot(BlockTags.NEEDS_DIAMOND_TOOL)
 				.color(140, 140, 140).textureSet(BRIGHT)
-				.flags(GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_FRAME_BOX, GENERATE_BOLT_AND_SCREW)
+				.flags(GENERATE_ROD, GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_FRAME_BOX, GENERATE_BOLT_AND_SCREW)
 				.components(RUTHENIUM, 2, IRIDIUM));
 
 		SALTPETER = register.register("saltpeter", builder -> builder
@@ -474,7 +472,7 @@ final class MaterialLoaderFirstOrder {
 				.gem()
 				.ore()
 				.color(100, 100, 200).textureSet(NCTextureSets.EMERALD)
-				.addFlagAndPreset(METAL_EXTRA2, NO_SMELTING, GENERATE_LENS)
+				.flags(METAL_EXTRA2, NO_SMELTING, GENERATE_LENS)
 				.components(ALUMINIUM, 2, OXYGEN, 3));
 
 		SODALITE = register.register("sodalite", builder -> builder
@@ -537,7 +535,7 @@ final class MaterialLoaderFirstOrder {
 				.gem()
 				.ore()
 				.color(255, 128, 0).textureSet(GEM_HORIZONTAL)
-				.addFlagAndPreset(METAL_EXTRA2, NO_SMELTING)
+				.flags(METAL_EXTRA2, NO_SMELTING)
 				.components(ALUMINIUM, 2, SILICON, FLUORINE, HYDROGEN, 2));
 
 		TUNGSTATE = register.register("tungstate", builder -> builder
@@ -610,7 +608,7 @@ final class MaterialLoaderFirstOrder {
 				.ingot(NEEDS_DIAMOND_TOOL)
 				.liquid(3012)
 				.color(100, 100, 255).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
 				.components(IRIDIUM, 2, OSMIUM));
 
 		CHALCOCITE = register.register("chalcocite", builder -> builder
@@ -621,7 +619,7 @@ final class MaterialLoaderFirstOrder {
 
 		CHALCOPYRITE = register.register("chalcopyrite", builder -> builder
 				.dust()
-				.ore(null, () -> COPPER)
+				.ore(() -> COPPER, null)
 				.color(160, 120, 40)
 				.components(COPPER, IRON, SULFUR, 2));
 
@@ -629,7 +627,7 @@ final class MaterialLoaderFirstOrder {
 				.ingot()
 				.liquid(1542)
 				.color(227, 150, 128).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL)
+				.flags(METAL_ALL)
 				.components(COPPER, NICKEL));
 
 		COAL = register.register("coal", builder -> builder
@@ -735,14 +733,14 @@ final class MaterialLoaderFirstOrder {
 				.ingot()
 				.liquid(1708)
 				.color(194, 210, 223).textureSet(SHINY)
-				.addFlagAndPreset(METAL_EXTRA)
+				.flags(METAL_EXTRA)
 				.components(IRON, ALUMINIUM, CHROMIUM));
 
 		BRASS = register.register("brass", builder -> builder
 				.ingot()
 				.liquid(1160)
 				.color(255, 180, 0).textureSet(SHINY)
-				.addFlagAndPreset(METAL_EXTRA2, CAN_MORTAR)
+				.flags(METAL_EXTRA2, CAN_MORTAR)
 				.components(ZINC, COPPER, 3));
 
 		ENDER_PEARL = register.register("ender_pearl", builder -> builder
@@ -769,29 +767,27 @@ final class MaterialLoaderFirstOrder {
 				.components(LEAD, COPPER, SILVER, NICKEL));
 
 		MAGNETIC_NEODYMIUM = register.register("magnetic_neodymium", builder -> builder
-				.ingot()
+				.ingot(() -> new MaterialTraitIngot(null, () -> NEODYMIUM))
 				.color(100, 100, 100).textureSet(MAGNETIC)
-				.addFlagAndPreset(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
+				.flags(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
 				.components(NEODYMIUM));
-		NEODYMIUM.getTrait(NCMaterialTraits.INGOT).setMagneticForm(MAGNETIC_NEODYMIUM);
 
 		MAGNETIC_SAMARIUM = register.register("magnetic_samarium", builder -> builder
-				.ingot()
+				.ingot(() -> new MaterialTraitIngot(null, () -> SAMARIUM))
 				.color(255, 255, 204).textureSet(MAGNETIC)
-				.addFlagAndPreset(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
+				.flags(METAL_EXTRA2, NO_DECOMPOSE, NO_SMELTING)
 				.components(SAMARIUM));
-		SAMARIUM.getTrait(NCMaterialTraits.INGOT).setMagneticForm(MAGNETIC_SAMARIUM);
 
 		NICHROME = register.register("nichrome", builder -> builder
 				.ingot()
 				.color(205, 206, 246).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA2)
+				.flags(METAL_EXTRA2)
 				.components(NICKEL, 5, CHROMIUM));
 
 		TPV_ALLOY = register.register("tpv_alloy", builder -> builder
 				.ingot()
 				.color(250, 170, 250).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA2, GENERATE_FRAME_BOX)
+				.flags(METAL_EXTRA2, GENERATE_FRAME_BOX)
 				.components(TITANIUM, 3, PLATINUM, 3, VANADIUM));
 
 		CINNABAR = register.register("cinnabar", builder -> builder
