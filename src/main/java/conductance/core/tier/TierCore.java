@@ -18,8 +18,8 @@ public final class TierCore {
 
 		ApiBridge.getRegs().tiers().setRegisterCallback((id, tier) -> TierRegistryImpl.INSTANCE.insertTier((TierImpl) tier));
 
-		PluginEventBus.postAll(RegisterTierEvent.class, new RegisterTierEventImpl((registryName, displayName, tierColor, previousTier) -> {
-			final Tier result = new TierImpl(registryName, displayName, 0xFF000000 | tierColor, Objects.requireNonNullElseGet(previousTier, TierRegistryImpl.INSTANCE::getLastTier));
+		PluginEventBus.postAll(RegisterTierEvent.class, new RegisterTierEventImpl((registryName, displayName, tierColor, componentMapFactory, previousTier) -> {
+			final Tier result = new TierImpl(registryName, displayName, 0xFF000000 | tierColor, componentMapFactory, Objects.requireNonNullElseGet(previousTier, TierRegistryImpl.INSTANCE::getLastTier));
 			ApiBridge.getRegs().tiers().register(result);
 			return result;
 		}));

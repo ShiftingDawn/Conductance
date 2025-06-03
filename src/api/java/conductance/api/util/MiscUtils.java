@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.UnknownNullability;
 import conductance.api.CAPI;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.material.Material;
@@ -26,12 +27,12 @@ import conductance.api.tier.Tier;
 
 public final class MiscUtils {
 
-	@Nullable
+	@UnknownNullability
 	public static TagKey<Item> getItemTag(final TaggedMaterialSet tagType, final Material material) {
 		return tagType.streamItemTags(material).findFirst().orElse(null);
 	}
 
-	@Nullable
+	@UnknownNullability
 	public static TagKey<Fluid> getFluidTag(final TaggedMaterialSet tagType, final Material material) {
 		return tagType.streamFluidTags(material).findFirst().orElse(null);
 	}

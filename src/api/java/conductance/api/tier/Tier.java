@@ -24,4 +24,6 @@ public interface Tier extends IRegistryObject<String> {
 	String getLocalizedNameUnformatted();
 
 	MutableComponent getLocalizedName();
+
+	TieredComponentMap getComponentMap();
 }

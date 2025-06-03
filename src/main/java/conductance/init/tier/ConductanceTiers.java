@@ -1,4 +1,4 @@
-package conductance.init;
+package conductance.init.tier;
 
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
@@ -18,10 +18,10 @@ final class ConductanceTiers {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterTierEvent event) {
-		LV = event.register("lv", DARK_BLUE + "LV", 0x004fff);
-		MV = event.register("mv", GOLD + "MV", 0xbf6a40);
-		HV = event.register("hv", YELLOW + "HV", 0xbfa640);
-		EV = event.register("ev", DARK_GREEN + "EV", 0x237070);
+		LV = event.register("lv", DARK_BLUE + "LV", 0x004fff, LvComponentMap::new);
+		MV = event.register("mv", GOLD + "MV", 0xbf6a40, MvComponentMap::new);
+		HV = event.register("hv", YELLOW + "HV", 0xbfa640, HvComponentMap::new);
+		EV = event.register("ev", DARK_GREEN + "EV", 0x237070, EvComponentMap::new);
 	}
 
 	private ConductanceTiers() {

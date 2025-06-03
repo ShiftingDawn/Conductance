@@ -3,6 +3,7 @@ package conductance.api.util;
 import java.util.Locale;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.tier.Tier;
 
 public enum TieredItemType {
 
@@ -27,6 +28,10 @@ public enum TieredItemType {
 
 	TieredItemType() {
 		this(null, null);
+	}
+
+	public String makeUnlocalizedName(final Tier tier) {
+		return this.getUnlocalizedNameFactory().formatted(tier.getRegistryKey());
 	}
 
 	@Override

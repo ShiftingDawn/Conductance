@@ -1,17 +1,19 @@
 package conductance.core.tier;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.neoforged.neoforge.common.util.Lazy;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import conductance.api.CAPI;
 import conductance.api.registry.RegistryObject;
 import conductance.api.tier.Tier;
-import conductance.core.apiimpl.ApiBridge;
+import conductance.api.tier.TieredComponentMap;
 
 final class TierImpl extends RegistryObject<String> implements Tier {
 
@@ -21,6 +23,7 @@ final class TierImpl extends RegistryObject<String> implements Tier {
 	private final MutableComponent localizedName;
 	@Getter
 	private final int color;
+	private final Lazy<TieredComponentMap> tieredComponentMap;
 
 	@Setter(AccessLevel.PACKAGE)
 	@Nullable
@@ -36,15 +39,13 @@ final class TierImpl extends RegistryObject<String> implements Tier {
 	@Getter
 	private long recipeVoltage;
 
-	TierImpl(final String registryName, final String displayName, final int color, @Nullable final Tier prevTier) {
+	TierImpl(final String registryName, final String displayName, final int color, final Supplier<TieredComponentMap> componentMapFactory, @Nullable final Tier prevTier) {
 		super(registryName);
 		this.localizedNameUnformatted = ChatFormatting.stripFormatting(displayName);
 		this.localizedName = Component.literal(displayName);
 		this.color = color;
+		this.tieredComponentMap = Lazy.of(componentMapFactory);
 		this.prevTier = prevTier;
-		if (!registryName.equals(TierRegistryImpl.ID_EMPTY) && !registryName.equals(TierRegistryImpl.ID_MAX)) {
-			ApiBridge.getRegs().tiers().register(this);
-		}
 	}
 
 	void recalculate() {
@@ -71,6 +72,14 @@ final class TierImpl extends RegistryObject<String> implements Tier {
 	@Override
 	public Tier getNextTier() {
 		return Objects.requireNonNullElseGet(this.nextTier, () -> CAPI.tiers().max());
+	}
+
+	@Override
+	public TieredComponentMap getComponentMap() {
+		if (this.tieredComponentMap == null) {
+			throw new AssertionError("Missing tiered component map for tier " + this.getRegistryKey());
+		}
+		return this.tieredComponentMap.get();
 	}
 
 	@Override

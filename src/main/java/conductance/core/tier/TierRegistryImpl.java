@@ -24,8 +24,8 @@ final class TierRegistryImpl implements TierRegistry {
 	public static final TierRegistryImpl INSTANCE = new TierRegistryImpl();
 	public static final String ID_EMPTY = "empty";
 	public static final String ID_MAX = "max";
-	private final Tier empty = new TierImpl(TierRegistryImpl.ID_EMPTY, ChatFormatting.BOLD + "EMPTY", -1, null);
-	private final Tier max = new TierImpl(TierRegistryImpl.ID_MAX, ChatFormatting.RED.toString() + ChatFormatting.BOLD + "MAX", -1, this.empty);
+	private final Tier empty = new TierImpl(TierRegistryImpl.ID_EMPTY, ChatFormatting.BOLD + "EMPTY", -1, null, null);
+	private final Tier max = new TierImpl(TierRegistryImpl.ID_MAX, ChatFormatting.RED.toString() + ChatFormatting.BOLD + "MAX", -1, null, this.empty);
 	private final LinkedList<TierImpl> tiers = new LinkedList<>();
 	private final AtomicBoolean frozen = new AtomicBoolean();
 
