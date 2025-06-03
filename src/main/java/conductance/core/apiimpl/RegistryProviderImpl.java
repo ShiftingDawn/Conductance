@@ -15,12 +15,10 @@ import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.plugin.RegisterMaterialEvent;
 import conductance.api.registry.IRegistryObject;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.util.tier.Tier;
 import conductance.Conductance;
-import conductance.core.material.MaterialImpl;
 import conductance.core.recipe.RecipeSerializerImpl;
 
 public final class RegistryProviderImpl implements RegistryProvider {
@@ -43,12 +41,6 @@ public final class RegistryProviderImpl implements RegistryProvider {
 
 	RegistryProviderImpl(final IEventBus modEventBus) {
 		modEventBus.addListener(this::onRegisterEvent);
-		this.materials.setRegisterCallback((id, material) -> {
-			if (!(material instanceof MaterialImpl)) {
-				throw new IllegalStateException("Encountered illegal material %s of type %s. Materials MUST be registered using %s".formatted(material.getRegistryKey(), material.getClass().getName(),
-						RegisterMaterialEvent.class.getName()));
-			}
-		});
 		this.tiers.setRegisterCallback((id, tier) -> TierRegistryImpl.insertTier((TierImpl) tier));
 		this.tiers.setUnregisterCallback((id, tier) -> TierRegistryImpl.removeTier((TierImpl) tier));
 	}

@@ -26,7 +26,7 @@ import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.registry.RegistryObject;
 
 @Setter(AccessLevel.PACKAGE)
-public final class MaterialImpl extends RegistryObject<ResourceLocation> implements Material {
+class MaterialImpl extends RegistryObject<ResourceLocation> implements Material {
 
 	@Getter
 	private final String descriptionId = Util.makeDescriptionId("material", this.getRegistryKey());

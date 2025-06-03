@@ -113,7 +113,9 @@ public final class MaterialCore {
 
 	private static void modifyMaterials() {
 		CAPI.regs().materials().forEach(m -> {
-			final MaterialImpl material = (MaterialImpl) m;
+			if (!(m instanceof final MaterialImpl material)) {
+				throw new IllegalStateException("Encountered invalid Material of type " + m.getClass().getName());
+			}
 			MaterialCore.modifyMaterialInternal(material);
 			final ModifyMaterialEvent event = new ModifyMaterialEventImpl(material);
 			PluginEventBus.post(ModifyMaterialEvent.class, ignored -> event);
