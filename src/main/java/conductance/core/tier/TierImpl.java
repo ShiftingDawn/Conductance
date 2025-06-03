@@ -1,5 +1,6 @@
 package conductance.core.tier;
 
+import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -7,6 +8,7 @@ import net.minecraft.network.chat.MutableComponent;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import conductance.api.CAPI;
 import conductance.api.registry.RegistryObject;
 import conductance.api.tier.Tier;
 import conductance.core.apiimpl.ApiBridge;
@@ -46,29 +48,29 @@ final class TierImpl extends RegistryObject<String> implements Tier {
 	}
 
 	void recalculate() {
-		this.index = TierRegistryImpl.getIndex(this);
+		this.index = TierRegistryImpl.INSTANCE.getIndex(this);
 		this.voltage = 32L * (long) Math.pow(4, this.index);
 		this.recipeVoltage = 30L * (long) Math.pow(4, this.index);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return this == TierRegistryImpl.EMPTY;
+		return this.getRegistryKey().equals(TierRegistryImpl.ID_EMPTY);
 	}
 
 	@Override
 	public boolean isMax() {
-		return this == TierRegistryImpl.MAX;
+		return this.getRegistryKey().equals(TierRegistryImpl.ID_MAX);
 	}
 
 	@Override
 	public Tier getPrevTier() {
-		return this.prevTier == null ? TierRegistryImpl.EMPTY : this.prevTier;
+		return Objects.requireNonNullElseGet(this.prevTier, () -> CAPI.tiers().empty());
 	}
 
 	@Override
 	public Tier getNextTier() {
-		return this.nextTier == null ? TierRegistryImpl.MAX : this.nextTier;
+		return Objects.requireNonNullElseGet(this.nextTier, () -> CAPI.tiers().max());
 	}
 
 	@Override

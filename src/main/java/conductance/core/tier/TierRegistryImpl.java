@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -23,27 +24,26 @@ final class TierRegistryImpl implements TierRegistry {
 	public static final TierRegistryImpl INSTANCE = new TierRegistryImpl();
 	public static final String ID_EMPTY = "empty";
 	public static final String ID_MAX = "max";
-	public static final Tier EMPTY = new TierImpl(TierRegistryImpl.ID_EMPTY, ChatFormatting.BOLD + "EMPTY", -1, null);
-	public static final Tier MAX = new TierImpl(TierRegistryImpl.ID_MAX, ChatFormatting.RED.toString() + ChatFormatting.BOLD + "MAX", -1, TierRegistryImpl.EMPTY);
-	private static final LinkedList<TierImpl> TIERS = new LinkedList<>();
-	private static boolean frozen = false;
+	private final Tier empty = new TierImpl(TierRegistryImpl.ID_EMPTY, ChatFormatting.BOLD + "EMPTY", -1, null);
+	private final Tier max = new TierImpl(TierRegistryImpl.ID_MAX, ChatFormatting.RED.toString() + ChatFormatting.BOLD + "MAX", -1, this.empty);
+	private final LinkedList<TierImpl> tiers = new LinkedList<>();
+	private final AtomicBoolean frozen = new AtomicBoolean();
 
 	@Override
 	public Tier empty() {
-		return TierRegistryImpl.EMPTY;
+		return this.empty;
 	}
 
 	@Override
 	public Tier max() {
-		return TierRegistryImpl.MAX;
+		return this.max;
 	}
 
 	@Override
 	public Tier getTierByVoltage(final long voltage) {
 		try {
 			return TierRegistryImpl.TIER_BY_VOLTAGE_CACHE.get(voltage, () -> {
-				for (int i = 0; i < TierRegistryImpl.TIERS.size(); ++i) {
-					final Tier tier = TierRegistryImpl.TIERS.get(i);
+				for (final Tier tier : this.tiers) {
 					if (voltage <= tier.getVoltage()) {
 						return tier;
 					}
@@ -52,13 +52,13 @@ final class TierRegistryImpl implements TierRegistry {
 			});
 		} catch (final ExecutionException e) {
 			//Should not happen, famous last words
-			throw new RuntimeException(e);
+			throw new AssertionError(e);
 		}
 	}
 
 	@Override
 	public List<Tier> getTiers() {
-		return ImmutableList.copyOf(TierRegistryImpl.TIERS);
+		return ImmutableList.copyOf(this.tiers);
 	}
 
 	@Override
@@ -70,69 +70,56 @@ final class TierRegistryImpl implements TierRegistry {
 		}));
 	}
 
-	static void insertTier(final TierImpl tier) {
-		if (TierRegistryImpl.frozen) {
+	void insertTier(final TierImpl tier) {
+		if (this.frozen.get()) {
 			throw new IllegalStateException("Trying to create new tier after TierRegistry has been frozen!");
 		}
 		if (tier.getRegistryKey().equals(TierRegistryImpl.ID_EMPTY) || tier.getRegistryKey().equals(TierRegistryImpl.ID_MAX)) {
 			return;
 		}
-		if (tier.getPrevTier() == TierRegistryImpl.MAX) {
+		if (tier.getPrevTier().getRegistryKey().equals(TierRegistryImpl.ID_MAX)) {
 			throw new IllegalStateException("Cannot register tier %s with MAX as previous tier!".formatted(tier.getRegistryKey()));
 		}
-		if (TierRegistryImpl.TIERS.isEmpty()) {
+		if (this.tiers.isEmpty()) {
 			tier.setPrevTier(null);
 			tier.setNextTier(null);
-			TierRegistryImpl.TIERS.add(tier);
+			this.tiers.add(tier);
 		} else if (tier.getPrevTier().isEmpty()) {
 			tier.setPrevTier(null);
-			tier.setNextTier(TierRegistryImpl.TIERS.getFirst());
-			TierRegistryImpl.TIERS.getFirst().setPrevTier(tier);
-			TierRegistryImpl.TIERS.offerFirst(tier);
+			tier.setNextTier(this.tiers.getFirst());
+			this.tiers.getFirst().setPrevTier(tier);
+			this.tiers.offerFirst(tier);
 		} else {
-			final Optional<TierImpl> existingTier = TierRegistryImpl.TIERS.stream().filter(existing -> existing.getPrevTier() == tier.getPrevTier()).findFirst();
+			final Optional<TierImpl> existingTier = this.tiers.stream().filter(existing -> existing.getPrevTier() == tier.getPrevTier()).findFirst();
 			if (existingTier.isPresent()) {
 				final TierImpl oldTier = existingTier.get();
-				final int index = TierRegistryImpl.TIERS.indexOf(oldTier);
+				final int index = this.tiers.indexOf(oldTier);
 				if (!oldTier.getPrevTier().isEmpty()) {
 					((TierImpl) oldTier.getPrevTier()).setNextTier(tier);
 				}
 				oldTier.setPrevTier(tier);
 				tier.setNextTier(oldTier);
-				TierRegistryImpl.TIERS.add(index, tier);
+				this.tiers.add(index, tier);
 			} else {
-				TierRegistryImpl.TIERS.getLast().setNextTier(tier);
-				tier.setPrevTier(TierRegistryImpl.TIERS.getLast());
-				TierRegistryImpl.TIERS.add(tier);
+				this.tiers.getLast().setNextTier(tier);
+				tier.setPrevTier(this.tiers.getLast());
+				this.tiers.add(tier);
 			}
 		}
-		TierRegistryImpl.TIERS.forEach(TierImpl::recalculate);
+		this.tiers.forEach(TierImpl::recalculate);
 	}
 
-	static void removeTier(final TierImpl tier) {
-		if (!TierRegistryImpl.TIERS.contains(tier)) {
-			return;
-		}
-		if (tier.getPrevTier() != TierRegistryImpl.EMPTY) {
-			((TierImpl) tier.getPrevTier()).setNextTier(tier.getNextTier());
-		}
-		if (tier.getNextTier() != TierRegistryImpl.MAX) {
-			((TierImpl) tier.getNextTier()).setPrevTier(tier.getPrevTier());
-		}
-		TierRegistryImpl.TIERS.remove(tier);
-		TierRegistryImpl.TIERS.forEach(TierImpl::recalculate);
+	@SuppressWarnings("SuspiciousMethodCalls")
+	int getIndex(final Tier tier) {
+		return this.tiers.indexOf(tier);
 	}
 
-	static int getIndex(final Tier tier) {
-		return TierRegistryImpl.TIERS.indexOf(tier);
+	public Tier getLastTier() {
+		return !this.tiers.isEmpty() ? this.tiers.getLast() : this.empty();
 	}
 
-	public static Tier getLastTier() {
-		return !TierRegistryImpl.TIERS.isEmpty() ? TierRegistryImpl.TIERS.getLast() : TierRegistryImpl.EMPTY;
-	}
-
-	public static void freeze() {
+	public void freeze() {
 		Conductance.LOGGER.info("TierRegistry has been frozen!");
-		TierRegistryImpl.frozen = true;
+		this.frozen.set(true);
 	}
 }
