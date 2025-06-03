@@ -21,6 +21,34 @@ public abstract class TieredComponentMap {
 
 	public abstract Material getRubberMaterial();
 
+	//region Casing
+	protected Material getMachineCasingPlateMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getMachineCasingPlateItem() {
+		return getItemTag(PLATE, this.getMachineCasingPlateMaterial());
+	}
+	//endregion
+
+	//region Hull
+	protected Material getMachineHullPlateMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getMachineHullPlateItem() {
+		return getItemTag(PLATE, this.getMachineHullPlateMaterial());
+	}
+
+	protected Material getMachineHullWireMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getMachineHullWireItem() {
+		return getItemTag(FINE_WIRE, this.getMachineHullWireMaterial());
+	}
+	//endregion
+
 	//region Motor
 	protected Material getElectricMotorRodMaterial() {
 		return this.getPrimaryMaterial();
