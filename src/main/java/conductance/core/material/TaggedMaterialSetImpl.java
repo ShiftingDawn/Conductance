@@ -1,4 +1,4 @@
-package conductance.core.apiimpl;
+package conductance.core.material;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -7,6 +7,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.TaggedMaterialSet;
+import conductance.core.apiimpl.TaggedSetImpl;
 
 public final class TaggedMaterialSetImpl extends TaggedSetImpl<Material> implements TaggedMaterialSet {
 

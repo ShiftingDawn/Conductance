@@ -1,10 +1,11 @@
-package conductance.api.plugin;
+package conductance.api.material.event;
 
 import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 import conductance.api.material.MaterialOreType;
+import conductance.api.plugin.IConductancePluginEvent;
 
 public interface RegisterMaterialOreTypeEvent extends IConductancePluginEvent {
 

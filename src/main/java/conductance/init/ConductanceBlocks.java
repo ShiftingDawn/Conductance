@@ -13,9 +13,8 @@ import conductance.api.NCBlocks;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.MaterialOreType;
 import conductance.core.apiimpl.ApiBridge;
-import conductance.core.apiimpl.MaterialOreTypeImpl;
-import conductance.core.apiimpl.TaggedMaterialSetImpl;
 import conductance.core.material.MaterialRegistryImpl;
+import conductance.core.material.TaggedMaterialSetImpl;
 import conductance.core.pipenet.WireRegistry;
 import conductance.core.pipenet.WireType;
 import conductance.init.block.MaterialBlock;
@@ -58,7 +57,7 @@ public final class ConductanceBlocks {
 				CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.getOreType() != null).forEach(set -> {
 					final MaterialOreType oreType = set.getOreType();
 					final String name = set.getUnlocalizedName(material);
-					final BlockBuilder<? extends Block, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> switch (((MaterialOreTypeImpl) oreType).getOreBlockType()) {
+					final BlockBuilder<? extends Block, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> switch (oreType.getOreBlockType()) {
 								case DEFAULT -> new MaterialOreBlock(props, material, set, oreType);
 								case PILLAR -> new MaterialOreRotatedPillarBlock(props, material, set, oreType);
 							})

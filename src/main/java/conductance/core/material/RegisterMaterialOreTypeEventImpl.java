@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 import lombok.AllArgsConstructor;
 import conductance.api.material.MaterialOreType;
-import conductance.api.plugin.RegisterMaterialOreTypeEvent;
+import conductance.api.material.event.RegisterMaterialOreTypeEvent;
 
 @AllArgsConstructor
 //TODO refactor

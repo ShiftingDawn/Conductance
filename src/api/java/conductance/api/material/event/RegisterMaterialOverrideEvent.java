@@ -1,9 +1,10 @@
-package conductance.api.plugin;
+package conductance.api.material.event;
 
 import net.minecraft.world.level.ItemLike;
 import conductance.api.NCMaterialTaggedSets;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
+import conductance.api.plugin.IConductancePluginEvent;
 
 public interface RegisterMaterialOverrideEvent extends IConductancePluginEvent {
 

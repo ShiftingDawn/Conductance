@@ -1,4 +1,4 @@
-package conductance.core.apiimpl;
+package conductance.core.material;
 
 import java.util.function.Function;
 import lombok.Getter;
@@ -9,9 +9,9 @@ import conductance.api.material.MaterialOreType;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.material.TaggedMaterialSetBuilder;
+import conductance.core.apiimpl.TaggedSetBuilderImpl;
 
-//TODO refactor
-public final class MaterialTaggedSetBuilder extends TaggedSetBuilderImpl<Material, TaggedMaterialSet, TaggedMaterialSetBuilder> implements TaggedMaterialSetBuilder {
+final class MaterialTaggedSetBuilder extends TaggedSetBuilderImpl<Material, TaggedMaterialSet, TaggedMaterialSetBuilder> implements TaggedMaterialSetBuilder {
 
 	@Getter
 	private MaterialTextureType textureType = NCTextureTypes.DUST;
@@ -19,7 +19,7 @@ public final class MaterialTaggedSetBuilder extends TaggedSetBuilderImpl<Materia
 	@Nullable
 	private final MaterialOreType oreType;
 
-	public MaterialTaggedSetBuilder(final String registryKey, final Function<Material, String> unlocalizedNameFactory, @Nullable final MaterialOreType oreType) {
+	MaterialTaggedSetBuilder(final String registryKey, final Function<Material, String> unlocalizedNameFactory, @Nullable final MaterialOreType oreType) {
 		super(registryKey, mat -> mat.getRegistryKey().getPath(), unlocalizedNameFactory);
 		this.oreType = oreType;
 	}

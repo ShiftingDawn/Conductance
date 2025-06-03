@@ -4,8 +4,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import lombok.AllArgsConstructor;
 import conductance.api.material.Material;
-import conductance.api.plugin.MaterialBuilder;
-import conductance.api.plugin.RegisterMaterialEvent;
+import conductance.api.material.MaterialBuilder;
+import conductance.api.material.event.RegisterMaterialEvent;
 
 @AllArgsConstructor
 final class RegisterMaterialEventImpl implements RegisterMaterialEvent {

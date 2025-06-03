@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.function.TriConsumer;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.plugin.RegisterMaterialUnitOverrideEvent;
+import conductance.api.material.event.RegisterMaterialUnitOverrideEvent;
 
 @AllArgsConstructor
 final class RegisterMaterialUnitOverrideEventImpl implements RegisterMaterialUnitOverrideEvent {

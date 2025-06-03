@@ -21,7 +21,7 @@ import conductance.api.material.IMaterialTrait;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialTraitKey;
-import conductance.api.material.PeriodicElement;
+import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.registry.RegistryObject;
 

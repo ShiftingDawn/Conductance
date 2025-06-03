@@ -1,5 +1,9 @@
-package conductance.api.material;
+package conductance.api.material.event;
 
+import conductance.api.material.IMaterialTrait;
+import conductance.api.material.Material;
+import conductance.api.material.MaterialFlag;
+import conductance.api.material.MaterialTraitKey;
 import conductance.api.plugin.IConductancePluginEvent;
 
 public interface ModifyMaterialEvent extends IConductancePluginEvent {

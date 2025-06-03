@@ -3,7 +3,7 @@ package conductance.core.material;
 import lombok.AllArgsConstructor;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.MaterialTraitKey;
-import conductance.api.plugin.RegisterMaterialTraitEvent;
+import conductance.api.material.event.RegisterMaterialTraitEvent;
 
 @AllArgsConstructor
 final class RegisterMaterialTraitEventImpl implements RegisterMaterialTraitEvent {

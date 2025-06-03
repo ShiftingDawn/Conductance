@@ -1,4 +1,4 @@
-package conductance.api.material;
+package conductance.api.periodicelement;
 
 import net.minecraft.resources.ResourceLocation;
 import conductance.api.registry.RegistryObject;

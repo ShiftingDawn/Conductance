@@ -56,7 +56,7 @@ public abstract class TaggedSetImpl<TYPE> extends RegistryObject<String> impleme
 	@Getter
 	private final long unitValue;
 
-	public TaggedSetImpl(final TaggedSetBuilderImpl<TYPE, ?, ?> builder) {
+	protected TaggedSetImpl(final TaggedSetBuilderImpl<TYPE, ?, ?> builder) {
 		super(builder.getRegistryKey());
 		this.objectSerializer = builder.getObjectSerializer();
 		this.unlocalizedNameFactory = builder.getUnlocalizedNameFactory();

@@ -4,10 +4,10 @@ import net.minecraft.tags.BlockTags;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCPeriodicElements;
 import conductance.api.NCTiers;
+import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterMaterialEvent;
 import conductance.Conductance;
 import static conductance.api.NCMaterialFlags.CAN_MORTAR;
 import static conductance.api.NCMaterialFlags.GENERATE_BOLT_AND_SCREW;
@@ -93,7 +93,6 @@ import static conductance.api.NCMaterials.MOSCOVIUM;
 import static conductance.api.NCMaterials.NEODYMIUM;
 import static conductance.api.NCMaterials.NEON;
 import static conductance.api.NCMaterials.NEPTUNIUM;
-import static conductance.api.NCMaterials.NEUTRONIUM;
 import static conductance.api.NCMaterials.NICKEL;
 import static conductance.api.NCMaterials.NIHONIUM;
 import static conductance.api.NCMaterials.NIOBIUM;
@@ -883,12 +882,6 @@ final class MaterialLoaderPeriodicTable {
 				.gas()
 				.color(0x142D64).textureSet(METALLIC)
 				.periodicElement(NCPeriodicElements.OGANESSON));
-
-		NEUTRONIUM = register.register("neutronium", builder -> builder
-				.ingot()
-				.color(250, 250, 250).textureSet(METALLIC)
-				.flags(METAL_ALL)
-				.periodicElement(NCPeriodicElements.NEUTRONIUM));
 	}
 
 	private MaterialLoaderPeriodicTable() {

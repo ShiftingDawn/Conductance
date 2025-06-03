@@ -8,7 +8,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.material.TaggedMaterialSetBuilder;
-import conductance.api.plugin.RegisterMaterialTaggedSetEvent;
+import conductance.api.material.event.RegisterMaterialTaggedSetEvent;
 
 @AllArgsConstructor
 final class RegisterMaterialTaggedSetEventImpl implements RegisterMaterialTaggedSetEvent {

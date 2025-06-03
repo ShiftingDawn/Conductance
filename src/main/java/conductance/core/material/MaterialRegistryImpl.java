@@ -24,7 +24,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.registry.MaterialRegistry;
+import conductance.api.material.MaterialRegistry;
 import conductance.Conductance;
 
 public final class MaterialRegistryImpl implements MaterialRegistry {

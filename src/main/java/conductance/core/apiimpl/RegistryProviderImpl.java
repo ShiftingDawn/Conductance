@@ -13,7 +13,7 @@ import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialOreType;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
-import conductance.api.material.PeriodicElement;
+import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.registry.IRegistryObject;
 import conductance.api.registry.RegistryProvider;

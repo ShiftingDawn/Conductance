@@ -1,4 +1,4 @@
-package conductance.api.plugin;
+package conductance.api.material.event;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -7,6 +7,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.material.TaggedMaterialSetBuilder;
+import conductance.api.plugin.IConductancePluginEvent;
 import conductance.api.util.TextHelper;
 
 public interface RegisterMaterialTaggedSetEvent extends IConductancePluginEvent {

@@ -1,4 +1,4 @@
-package conductance.api.plugin;
+package conductance.api.material;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,13 +7,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.material.Material;
-import conductance.api.material.MaterialFlag;
-import conductance.api.material.MaterialStack;
-import conductance.api.material.MaterialTraitKey;
-import conductance.api.material.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitIngot;
+import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.util.tier.Tier;
 
 public interface MaterialBuilder {

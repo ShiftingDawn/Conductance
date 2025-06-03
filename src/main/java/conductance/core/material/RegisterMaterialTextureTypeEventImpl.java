@@ -3,7 +3,7 @@ package conductance.core.material;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import conductance.api.material.MaterialTextureType;
-import conductance.api.plugin.RegisterMaterialTextureTypeEvent;
+import conductance.api.material.event.RegisterMaterialTextureTypeEvent;
 
 @AllArgsConstructor
 final class RegisterMaterialTextureTypeEventImpl implements RegisterMaterialTextureTypeEvent {

@@ -24,7 +24,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialStack;
 import conductance.api.material.MaterialTraitKey;
-import conductance.api.material.PeriodicElement;
+import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
@@ -32,7 +32,7 @@ import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.material.traits.MaterialTraitOre;
 import conductance.api.material.traits.MaterialTraitWire;
 import conductance.api.material.traits.MaterialTraitWood;
-import conductance.api.plugin.MaterialBuilder;
+import conductance.api.material.MaterialBuilder;
 import conductance.api.util.tier.Tier;
 
 final class MaterialBuilderImpl implements MaterialBuilder {

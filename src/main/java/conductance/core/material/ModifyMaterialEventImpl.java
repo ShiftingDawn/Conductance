@@ -5,7 +5,7 @@ import lombok.Getter;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialTraitKey;
-import conductance.api.material.ModifyMaterialEvent;
+import conductance.api.material.event.ModifyMaterialEvent;
 
 @AllArgsConstructor
 final class ModifyMaterialEventImpl implements ModifyMaterialEvent {

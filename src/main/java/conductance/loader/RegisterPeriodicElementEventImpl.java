@@ -2,8 +2,8 @@ package conductance.loader;
 
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
-import conductance.api.material.PeriodicElement;
-import conductance.api.plugin.RegisterPeriodicElementEvent;
+import conductance.api.periodicelement.PeriodicElement;
+import conductance.api.periodicelement.event.RegisterPeriodicElementEvent;
 
 @AllArgsConstructor
 final class RegisterPeriodicElementEventImpl implements RegisterPeriodicElementEvent {

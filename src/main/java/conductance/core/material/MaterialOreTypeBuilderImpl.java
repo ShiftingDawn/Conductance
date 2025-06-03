@@ -1,4 +1,4 @@
-package conductance.core.apiimpl;
+package conductance.core.material;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -7,9 +7,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 import conductance.api.material.MaterialOreType;
-import conductance.api.plugin.RegisterMaterialOreTypeEvent;
+import conductance.api.material.event.RegisterMaterialOreTypeEvent;
 
-public final class MaterialOreTypeBuilderImpl implements RegisterMaterialOreTypeEvent.MaterialOreTypeBuilder {
+final class MaterialOreTypeBuilderImpl implements RegisterMaterialOreTypeEvent.MaterialOreTypeBuilder {
 
 	private final ResourceLocation registryName;
 	private final ResourceLocation bearingBlockModel;
@@ -20,7 +20,7 @@ public final class MaterialOreTypeBuilderImpl implements RegisterMaterialOreType
 	private boolean doubleOutput = false;
 	private boolean hasGravity = false;
 
-	public MaterialOreTypeBuilderImpl(final ResourceLocation registryName, final ResourceLocation bearingBlockModel, final MapColor mapColor, final SoundType soundType) {
+	MaterialOreTypeBuilderImpl(final ResourceLocation registryName, final ResourceLocation bearingBlockModel, final MapColor mapColor, final SoundType soundType) {
 		this.registryName = registryName;
 		this.bearingBlockModel = bearingBlockModel;
 		this.mapColor = mapColor;

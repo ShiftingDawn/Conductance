@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.function.TriFunction;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialTraitKey;
-import conductance.api.plugin.RegisterMaterialFlagEvent;
+import conductance.api.material.event.RegisterMaterialFlagEvent;
 
 @AllArgsConstructor
 final class RegisterMaterialFlagEventImpl implements RegisterMaterialFlagEvent {

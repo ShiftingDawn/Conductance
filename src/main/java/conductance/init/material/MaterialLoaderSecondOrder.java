@@ -3,7 +3,7 @@ package conductance.init.material;
 import conductance.api.NCTextureSets;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterMaterialEvent;
+import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.Conductance;
 import static net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL;
 import static net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL;

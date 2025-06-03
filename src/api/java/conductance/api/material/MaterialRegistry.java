@@ -1,7 +1,6 @@
-package conductance.api.registry;
+package conductance.api.material;
 
-import conductance.api.material.Material;
-import conductance.api.material.TaggedMaterialSet;
+import conductance.api.registry.TaggedSetRegistry;
 
 public interface MaterialRegistry extends TaggedSetRegistry<Material, TaggedMaterialSet> {
 

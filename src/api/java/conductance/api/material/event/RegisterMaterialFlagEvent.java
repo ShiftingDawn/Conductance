@@ -1,8 +1,9 @@
-package conductance.api.plugin;
+package conductance.api.material.event;
 
 import java.util.Set;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialTraitKey;
+import conductance.api.plugin.IConductancePluginEvent;
 
 public interface RegisterMaterialFlagEvent extends IConductancePluginEvent {
 

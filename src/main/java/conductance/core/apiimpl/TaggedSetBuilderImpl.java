@@ -21,7 +21,7 @@ import conductance.api.registry.TaggedSet;
 import conductance.api.registry.TaggedSetBuilder;
 
 @SuppressWarnings("unchecked")
-abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER extends TaggedSetBuilder<TYPE, SET, BUILDER>> implements TaggedSetBuilder<TYPE, SET, BUILDER> {
+public abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER extends TaggedSetBuilder<TYPE, SET, BUILDER>> implements TaggedSetBuilder<TYPE, SET, BUILDER> {
 
 	@Getter(AccessLevel.PACKAGE)
 	private final List<TagHandler<TYPE>> tags = new ArrayList<>();
@@ -67,7 +67,7 @@ abstract class TaggedSetBuilderImpl<TYPE, SET extends TaggedSet<TYPE>, BUILDER e
 	@Getter
 	private long unitValue = -1;
 
-	TaggedSetBuilderImpl(final String registryKey, final Function<TYPE, String> objectSerializer, final Function<TYPE, String> unlocalizedNameFactory) {
+	protected TaggedSetBuilderImpl(final String registryKey, final Function<TYPE, String> objectSerializer, final Function<TYPE, String> unlocalizedNameFactory) {
 		this.registryKey = registryKey;
 		this.objectSerializer = objectSerializer;
 		this.unlocalizedNameFactory = unlocalizedNameFactory;

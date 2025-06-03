@@ -1,7 +1,8 @@
-package conductance.api.plugin;
+package conductance.api.periodicelement.event;
 
 import javax.annotation.Nullable;
-import conductance.api.material.PeriodicElement;
+import conductance.api.periodicelement.PeriodicElement;
+import conductance.api.plugin.IConductancePluginEvent;
 import conductance.api.util.TextHelper;
 
 public interface RegisterPeriodicElementEvent extends IConductancePluginEvent {
