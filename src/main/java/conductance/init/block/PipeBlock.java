@@ -98,7 +98,7 @@ public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEV
 			if (ctx instanceof final EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof final Player player) {
 				final ItemStack held = player.getMainHandItem();
 				if (
-						held.is(CAPI.Tags.TAG_WIRE_CUTTERS) || held.is(CAPI.Tags.TAG_WRENCH)
+						held.is(CAPI.TAG_WIRE_CUTTERS) || held.is(CAPI.TAG_WRENCHES)
 								|| (held.getItem() instanceof final ICoverItem<?> coverItem && ((ICoverable) pipeNode).getCoverManager().canAcceptCover(coverItem.getCoverType(), null))
 								|| (held.getItem() instanceof final BlockItem blockItem && blockItem.getBlock() instanceof final PipeBlock<?, ?, ?> pipeBlock
 								&& pipeBlock.networkType.equals(this.networkType))

@@ -31,7 +31,7 @@ public final class RecipeLoader {
 	public static final char HAMMER = 'H';
 	public static final char WIRE_CUTTERS = 'X';
 	private static final Char2ObjectMap<TagKey<Item>> TOOL_LOOKUP = new Char2ObjectArrayMap<>(
-			Map.of(RecipeLoader.WRENCH, CAPI.Tags.TAG_WRENCH, RecipeLoader.HAMMER, CAPI.Tags.TAG_HAMMER, RecipeLoader.WIRE_CUTTERS, CAPI.Tags.TAG_WIRE_CUTTERS));
+			Map.of(RecipeLoader.WRENCH, CAPI.TAG_WRENCHES, RecipeLoader.HAMMER, CAPI.TAG_HAMMERS, RecipeLoader.WIRE_CUTTERS, CAPI.TAG_WIRE_CUTTERS));
 
 	@EventListener
 	private static void initAddition(final RegisterRecipeEvent event) {

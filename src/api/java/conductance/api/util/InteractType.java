@@ -10,9 +10,9 @@ import conductance.api.CAPI;
 @Getter
 public enum InteractType {
 
-	WRENCH(CAPI.Tags.TAG_WRENCH),
-	WIRE_CUTTERS(CAPI.Tags.TAG_WIRE_CUTTERS),
-	HAMMER(CAPI.Tags.TAG_HAMMER);
+	WRENCH(CAPI.TAG_WRENCHES),
+	WIRE_CUTTERS(CAPI.TAG_WIRE_CUTTERS),
+	HAMMER(CAPI.TAG_HAMMERS);
 
 	private final TagKey<Item> toolTag;
 

@@ -4,10 +4,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialTaggedSets;
-import conductance.api.plugin.ConductancePluginListener;
-import conductance.api.plugin.EventListener;
 import conductance.api.material.event.RegisterMaterialOverrideEvent;
 import conductance.api.material.event.RegisterMaterialUnitOverrideEvent;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterTagEvent;
 import conductance.init.ConductanceItems;
 import static conductance.api.CAPI.UNIT;
@@ -124,9 +124,9 @@ public final class ConductanceMiscPluginEventListeners {
 
 	@EventListener(priority = -100)
 	private static void onRegisterTags(final RegisterTagEvent event) {
-		event.item(CAPI.Tags.TAG_WRENCH, ConductanceItems.CRAFTING_TOOL_WRENCH);
-		event.item(CAPI.Tags.TAG_HAMMER, ConductanceItems.CRAFTING_TOOL_HAMMER);
-		event.item(CAPI.Tags.TAG_WIRE_CUTTERS, ConductanceItems.CRAFTING_TOOL_WIRE_CUTTERS);
+		event.item(CAPI.TAG_WRENCHES, ConductanceItems.CRAFTING_TOOL_WRENCH);
+		event.item(CAPI.TAG_HAMMERS, ConductanceItems.CRAFTING_TOOL_HAMMER);
+		event.item(CAPI.TAG_WIRE_CUTTERS, ConductanceItems.CRAFTING_TOOL_WIRE_CUTTERS);
 	}
 
 	private ConductanceMiscPluginEventListeners() {
