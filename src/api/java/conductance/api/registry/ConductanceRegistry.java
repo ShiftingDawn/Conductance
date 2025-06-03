@@ -15,8 +15,6 @@ public interface ConductanceRegistry<KEY, VALUE extends IRegistryObject<KEY>> ex
 
 	KEY getKey(VALUE value);
 
-	boolean remove(KEY key);
-
 	Set<KEY> keys();
 
 	Set<VALUE> values();
