@@ -1,6 +1,7 @@
 package conductance.api.periodicelement;
 
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.registry.RegistryObject;
 
 public final class PeriodicElement extends RegistryObject<ResourceLocation> {
@@ -9,9 +10,10 @@ public final class PeriodicElement extends RegistryObject<ResourceLocation> {
 	private final long neutrons;
 	private final String name;
 	private final String symbol;
+	@Nullable
 	private final ResourceLocation parent;
 
-	public PeriodicElement(final ResourceLocation registryName, final long protons, final long neutrons, final String name, final String symbol, final ResourceLocation parent) {
+	public PeriodicElement(final ResourceLocation registryName, final long protons, final long neutrons, final String name, final String symbol, @Nullable final ResourceLocation parent) {
 		super(registryName);
 		this.protons = protons;
 		this.neutrons = neutrons;
@@ -36,6 +38,7 @@ public final class PeriodicElement extends RegistryObject<ResourceLocation> {
 		return this.symbol;
 	}
 
+	@Nullable
 	public ResourceLocation parent() {
 		return this.parent;
 	}

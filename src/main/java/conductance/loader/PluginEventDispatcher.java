@@ -13,11 +13,9 @@ import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeBuilder;
 import conductance.api.machine.recipe.RecipeElementCloner;
-import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.plugin.RegisterCoverEvent;
 import conductance.api.plugin.RegisterFieldSerializerEvent;
 import conductance.api.plugin.RegisterMachineEvent;
-import conductance.api.periodicelement.event.RegisterPeriodicElementEvent;
 import conductance.api.plugin.RegisterRecipeEvent;
 import conductance.api.plugin.RegisterRecipeTypeEvent;
 import conductance.api.plugin.RegisterTagEvent;
@@ -33,18 +31,6 @@ import conductance.core.sync.SyncFieldSerializerRegister;
 import conductance.runtimepack.server.TagRegister;
 
 public final class PluginEventDispatcher {
-
-	//region Material
-	public static void dispatchRegisterPeriodicElements() {
-		//TODO clean this up
-		PluginEventBus.post(RegisterPeriodicElementEvent.class, modid -> new RegisterPeriodicElementEventImpl((protons, neutrons, registryName, name, symbol, parent) -> {
-			return Util.make(
-					new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null),
-					result -> ApiBridge.getRegs().periodicElements().register(result)
-			);
-		}));
-	}
-	//endregion
 
 	//region Machine
 	public static void dispatchRegisterCovers() {

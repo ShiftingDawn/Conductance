@@ -14,6 +14,7 @@ import conductance.client.MachineUIFactory;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.apiimpl.TierImpl;
 import conductance.core.material.MaterialCore;
+import conductance.core.periodicelement.PeriodicElementCore;
 import conductance.core.sync.SyncFieldSerializerRegisterImpl;
 import conductance.init.ConductanceBlockEntities;
 import conductance.init.ConductanceBlocks;
@@ -38,7 +39,7 @@ public final class CommonProxy {
 
 		PluginEventDispatcher.dispatchRegisterSyncFieldSerializers(SyncFieldSerializerRegisterImpl.INSTANCE);
 		PluginEventDispatcher.dispatchRegisterTiers(TierImpl.Builder::new);
-		PluginEventDispatcher.dispatchRegisterPeriodicElements();
+		PeriodicElementCore.initialize();
 		MaterialCore.initialize(modEventBus);
 		PluginEventDispatcher.dispatchRegisterRecipeElementTypes();
 		PluginEventDispatcher.dispatchRegisterRecipeTypes();

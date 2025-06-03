@@ -1,4 +1,4 @@
-package conductance.loader;
+package conductance.core.periodicelement;
 
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
