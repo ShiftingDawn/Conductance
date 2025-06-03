@@ -3,7 +3,7 @@ package conductance.init.material;
 import conductance.api.NCTextureSets;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterMaterialEvent;
+import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.Conductance;
 import static net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL;
 import static net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL;
@@ -70,14 +70,14 @@ final class MaterialLoaderSecondOrder {
 				.ingot(NEEDS_DIAMOND_TOOL)
 				.liquid(2011)
 				.color(100, 100, 160).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL)
+				.flags(METAL_ALL)
 				.components(TUNGSTEN, STEEL));
 
 		RUBY = register.register("ruby", builder -> builder
 				.gem()
 				.ore()
 				.color(255, 100, 100).textureSet(NCTextureSets.AMETHYST)
-				.addFlagAndPreset(METAL_EXTRA, GENERATE_LENS)
+				.flags(METAL_EXTRA, GENERATE_LENS)
 				.components(CHROMIUM, ALUMINIUM, 2, OXYGEN, 3));
 
 		FLINT = register.register("flint", builder -> builder
@@ -109,7 +109,7 @@ final class MaterialLoaderSecondOrder {
 				.ingot()
 				.liquid(1202)
 				.color(180, 180, 160).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_EXTRA2, GENERATE_GEAR));
+				.flags(METAL_EXTRA2, GENERATE_GEAR));
 
 		BLAZE = register.register("blaze", builder -> builder
 				.dust()
@@ -128,7 +128,7 @@ final class MaterialLoaderSecondOrder {
 				.gem(NEEDS_IRON_TOOL)
 				.ore()
 				.color(0x734fbc).textureSet(NCTextureSets.AMETHYST)
-				.addFlagAndPreset(METAL_EXTRA, NO_SMELTING, GENERATE_PLATE, GENERATE_LENS)
+				.flags(METAL_EXTRA, NO_SMELTING, GENERATE_PLATE, GENERATE_LENS)
 				.components(SILICON_DIOXIDE, 4, IRON));
 
 		DEEPSLATE = register.register("deepslate", builder -> builder

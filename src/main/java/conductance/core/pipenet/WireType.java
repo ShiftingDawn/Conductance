@@ -29,8 +29,8 @@ public enum WireType {
 
 	public PipeModel createPipeModel(final Material material) {
 		return new PipeModel(this.thickness,
-				() -> NCTextureTypes.WIRE_SIDE.getBlockTexture(material.getTextureSet(), null, null),
-				() -> NCTextureTypes.WIRE_BASE.getBlockTexture(material.getTextureSet(), null, null),
+				() -> NCTextureTypes.WIRE_SIDE.getTexture(material.getTextureSet(), null, null),
+				() -> NCTextureTypes.WIRE_BASE.getTexture(material.getTextureSet(), null, null),
 				null, null);
 	}
 

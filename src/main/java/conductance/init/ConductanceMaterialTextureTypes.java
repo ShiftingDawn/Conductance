@@ -1,8 +1,8 @@
 package conductance.init;
 
+import conductance.api.material.event.RegisterMaterialTextureTypeEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterMaterialTextureTypeEvent;
 import conductance.Conductance;
 import static conductance.api.NCTextureTypes.BOLT;
 import static conductance.api.NCTextureTypes.DUST;

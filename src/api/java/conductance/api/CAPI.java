@@ -4,9 +4,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -16,11 +13,10 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.loading.FMLEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.recipe.RecipeHelper;
 import conductance.api.machine.sync.SyncHelper;
+import conductance.api.material.MaterialRegistry;
 import conductance.api.material.ResourceFinder;
-import conductance.api.registry.MaterialRegistry;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.GsonItemStackAdapter;
@@ -46,10 +42,6 @@ public final class CAPI {
 	private static TierRegistry tierRegistry;
 	private static RecipeHelper recipeHelper;
 	private static SyncHelper syncHelper;
-
-	private static final RegistryAccess REGISTRY_FALLBACK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-	@Nullable
-	private static RegistryAccess registryAccess;
 
 	public static RegistryProvider regs() {
 		return CAPI.registryProvider;
@@ -77,17 +69,6 @@ public final class CAPI {
 
 	public static SyncHelper syncHelper() {
 		return CAPI.syncHelper;
-	}
-
-	public static RegistryAccess frozenRegistry() {
-		if (CAPI.registryAccess != null) {
-			return CAPI.registryAccess;
-		} else if (CAPI.isClient()) {
-			if (Minecraft.getInstance().getConnection() != null) {
-				return Minecraft.getInstance().getConnection().registryAccess();
-			}
-		}
-		return CAPI.REGISTRY_FALLBACK;
 	}
 
 	public static boolean isClient() {

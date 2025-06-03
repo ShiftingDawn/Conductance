@@ -10,18 +10,10 @@ public interface ConductanceRegistry<KEY, VALUE extends IRegistryObject<KEY>> ex
 
 	boolean containsValue(VALUE value);
 
-	KEY register(KEY key, VALUE value);
-
-	VALUE registerOrOverride(KEY key, VALUE value);
-
 	@Nullable
 	VALUE get(KEY key);
 
-	VALUE getOrDefault(KEY key, VALUE defaultValue);
-
 	KEY getKey(VALUE value);
-
-	KEY getOrDefaultKey(VALUE key, KEY defaultKey);
 
 	boolean remove(KEY key);
 

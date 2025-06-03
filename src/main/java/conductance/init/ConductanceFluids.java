@@ -7,7 +7,8 @@ import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
 import conductance.core.apiimpl.ApiBridge;
-import conductance.core.apiimpl.TaggedMaterialSetImpl;
+import conductance.core.material.TaggedMaterialSetImpl;
+import conductance.core.material.MaterialRegistryImpl;
 import conductance.init.fluid.MaterialBucketItem;
 import conductance.init.fluid.MaterialFluidType;
 import conductance.runtimepack.client.MaterialFluidModelHandler;
@@ -31,7 +32,7 @@ public final class ConductanceFluids {
 			if (CAPI.isClient()) {
 				fluidBuilder.onRegister(fluid -> MaterialFluidModelHandler.add(fluid, material, set));
 			}
-			CAPI.materials().register(set, material, fluidBuilder.register());
+			MaterialRegistryImpl.INSTANCE.register(set, material, fluidBuilder.register());
 		}));
 	}
 

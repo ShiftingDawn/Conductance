@@ -3,13 +3,13 @@ package conductance.core.cover;
 import java.util.function.Function;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import conductance.api.CAPI;
 import conductance.api.capability.cover.CoverEntity;
 import conductance.api.capability.cover.CoverEntityConstructor;
 import conductance.api.capability.cover.CoverManager;
 import conductance.api.capability.cover.CoverRenderer;
 import conductance.api.capability.cover.CoverType;
 import conductance.api.registry.RegistryObject;
+import conductance.core.apiimpl.ApiBridge;
 
 public final class CoverTypeImpl<COVER extends CoverEntity<COVER>> extends RegistryObject<ResourceLocation> implements CoverType<COVER> {
 
@@ -20,7 +20,7 @@ public final class CoverTypeImpl<COVER extends CoverEntity<COVER>> extends Regis
 		super(registryKey);
 		this.coverRenderer = coverRenderer.apply(this);
 		this.constructor = constructor;
-		CAPI.regs().covers().register(this.getRegistryKey(), this);
+		ApiBridge.getRegs().covers().register(this);
 	}
 
 	@Override

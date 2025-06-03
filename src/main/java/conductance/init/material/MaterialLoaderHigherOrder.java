@@ -2,7 +2,7 @@ package conductance.init.material;
 
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterMaterialEvent;
+import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.Conductance;
 import static conductance.api.NCMaterialFlags.CAN_MORTAR;
 import static conductance.api.NCMaterialFlags.GENERATE_FINE_WIRE;
@@ -21,7 +21,7 @@ final class MaterialLoaderHigherOrder {
 				.ingot()
 				.liquid(1400)
 				.color(0xc55252).textureSet(METALLIC)
-				.addFlagAndPreset(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
+				.flags(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
 				.components(COPPER, REDSTONE, 3));
 	}
 

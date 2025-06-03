@@ -94,7 +94,7 @@ public final class TranslationRegistryImpl implements TranslationRegistry {
 	@Override
 	public MutableComponent makeLocalizedName(final String key, final TaggedMaterialSet taggedSet, final Material material) {
 		return this.handle(key, () -> {
-			final String materialName = this.translate(material.getUnlocalizedName(), () -> TextHelper.lowerUnderscoreToEnglish(material.getName()));
+			final String materialName = this.translate(material.getDescriptionId(), () -> TextHelper.lowerUnderscoreToEnglish(material.getName()));
 			final String translation = this.translate(key, () -> TextHelper.lowerUnderscoreToEnglish(taggedSet.getUnlocalizedNameFactory().apply(material)), materialName);
 			return Component.literal(translation);
 		});

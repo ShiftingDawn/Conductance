@@ -1,9 +1,9 @@
 package conductance.init;
 
 import conductance.api.NCPeriodicElements;
+import conductance.api.periodicelement.event.RegisterPeriodicElementEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterPeriodicElementEvent;
 import conductance.Conductance;
 
 @ConductancePluginListener(modid = Conductance.MODID)
@@ -134,11 +134,6 @@ final class ConductancePeriodicElements {
 		NCPeriodicElements.LIVERMORIUM = event.create(116, 177, "Livermorium", "Lv", null);
 		NCPeriodicElements.TENNESSINE = event.create(117, 177, "Tennessine", "Ts", null);
 		NCPeriodicElements.OGANESSON = event.create(118, 176, "Oganesson", "Og", null);
-
-		NCPeriodicElements.NEUTRONIUM = event.create(0, 1000000, "Neutronium", "Nt", null);
-		NCPeriodicElements.COSMIC_NEUTRONIUM = event.create(0, 1000000, "cosmic_neutronium", "Cosmic Neutronium", "Nt+", null);
-		NCPeriodicElements.INFINITY = event.create(1000000, 1000000, "Infinity", "If", null);
-		NCPeriodicElements.SPACETIME = event.create(10000000, 10000000, "SpaceTime", "Sp", null);
 	}
 
 	private ConductancePeriodicElements() {

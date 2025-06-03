@@ -9,45 +9,26 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.serialization.Codec;
 import org.apache.commons.lang3.function.TriFunction;
-import conductance.api.CAPI;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeBuilder;
 import conductance.api.machine.recipe.RecipeElementCloner;
-import conductance.api.material.IMaterialTrait;
-import conductance.api.material.MaterialFlag;
-import conductance.api.material.MaterialTextureSet;
-import conductance.api.material.MaterialTextureType;
-import conductance.api.material.MaterialTraitKey;
-import conductance.api.material.PeriodicElement;
+import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.plugin.RegisterCoverEvent;
 import conductance.api.plugin.RegisterFieldSerializerEvent;
 import conductance.api.plugin.RegisterMachineEvent;
-import conductance.api.plugin.RegisterMaterialEvent;
-import conductance.api.plugin.RegisterMaterialFlagEvent;
-import conductance.api.plugin.RegisterMaterialOreTypeEvent;
-import conductance.api.plugin.RegisterMaterialOverrideEvent;
-import conductance.api.plugin.RegisterMaterialTaggedSetEvent;
-import conductance.api.plugin.RegisterMaterialTextureSetEvent;
-import conductance.api.plugin.RegisterMaterialTextureTypeEvent;
-import conductance.api.plugin.RegisterMaterialTraitEvent;
-import conductance.api.plugin.RegisterMaterialUnitOverrideEvent;
-import conductance.api.plugin.RegisterPeriodicElementEvent;
+import conductance.api.periodicelement.event.RegisterPeriodicElementEvent;
 import conductance.api.plugin.RegisterRecipeEvent;
 import conductance.api.plugin.RegisterRecipeTypeEvent;
 import conductance.api.plugin.RegisterTagEvent;
 import conductance.api.plugin.RegisterTierEvent;
 import conductance.api.plugin.RemoveRecipeEvent;
 import conductance.api.util.tier.Tier;
-import conductance.core.apiimpl.MaterialBuilderImpl;
-import conductance.core.apiimpl.MaterialFlagImpl;
-import conductance.core.apiimpl.MaterialOreTypeBuilderImpl;
-import conductance.core.apiimpl.MaterialTaggedSetBuilder;
+import conductance.core.apiimpl.ApiBridge;
 import conductance.core.cover.CoverTypeImpl;
 import conductance.core.machine.MachineBuilderImpl;
 import conductance.core.recipe.RecipeElementTypeSerializer;
 import conductance.core.recipe.RecipeTypeBuilderImpl;
-import conductance.core.register.MaterialRegistryImpl;
 import conductance.core.sync.SyncFieldSerializerRegister;
 import conductance.runtimepack.server.TagRegister;
 
@@ -59,65 +40,9 @@ public final class PluginEventDispatcher {
 		PluginEventBus.post(RegisterPeriodicElementEvent.class, modid -> new RegisterPeriodicElementEventImpl((protons, neutrons, registryName, name, symbol, parent) -> {
 			return Util.make(
 					new PeriodicElement(ResourceLocation.fromNamespaceAndPath(modid, registryName), protons, neutrons, name, symbol, parent != null ? parent.getRegistryKey() : null),
-					result -> CAPI.regs().periodicElements().register(result.getRegistryKey(), result)
+					result -> ApiBridge.getRegs().periodicElements().register(result)
 			);
 		}));
-	}
-
-	public static void dispatchRegisterMaterialOreTypes() {
-		PluginEventBus.post(RegisterMaterialOreTypeEvent.class, modid -> new RegisterMaterialOreTypeEventImpl(modid, MaterialOreTypeBuilderImpl::new));
-	}
-
-	public static void dispatchRegisterMaterialTextureTypes() {
-		PluginEventBus.post(RegisterMaterialTextureTypeEvent.class, modid -> new RegisterMaterialTextureTypeEventImpl(modid, registryName -> Util.make(
-				new MaterialTextureType(registryName),
-				result -> CAPI.regs().materialTextureTypes().register(result.getRegistryKey(), result)
-		)));
-	}
-
-	public static void dispatchRegisterMaterialTextureSets() {
-		PluginEventBus.postAll(RegisterMaterialTextureSetEvent.class, new RegisterMaterialTextureSetEventImpl((registryName, parentSetName) -> Util.make(
-				new MaterialTextureSet(registryName, parentSetName),
-				result -> CAPI.regs().materialTextureSets().register(result.getRegistryKey(), result)
-		)));
-	}
-
-	public static void dispatchRegisterMaterialTraits() {
-		PluginEventBus.post(RegisterMaterialTraitEvent.class, modid -> new RegisterMaterialTraitEventImpl(modid, new RegisterMaterialTraitEventImpl.MaterialTraitRegister() {
-
-			@Override
-			public <T extends IMaterialTrait<T>> MaterialTraitKey<T> apply(final ResourceLocation registryName, final Class<T> typeClass) {
-				return Util.make(new MaterialTraitKey<>(registryName, typeClass), result -> {
-					CAPI.regs().materialTraits().register(result.getRegistryKey(), result);
-				});
-			}
-		}));
-	}
-
-	public static void dispatchRegisterMaterialFlags() {
-		PluginEventBus.post(RegisterMaterialFlagEvent.class, modid -> new RegisterMaterialFlagEventImpl(modid, (registryName, reqFlags, reqTraits) -> {
-			final MaterialFlag result = new MaterialFlagImpl.Builder(registryName).requiredFlag(reqFlags).requiredTrait(reqTraits).build();
-			CAPI.regs().materialFlags().register(result.getRegistryKey(), result);
-			return result;
-		}));
-	}
-
-	public static void dispatchRegisterMaterialTaggedSets() {
-		PluginEventBus.postAll(RegisterMaterialTaggedSetEvent.class, new RegisterMaterialTaggedSetEventImpl(MaterialTaggedSetBuilder::new));
-	}
-
-	public static void dispatchRegisterMaterials() {
-		PluginEventBus.post(RegisterMaterialEvent.class, modid -> new RegisterMaterialEventImpl(modid, MaterialBuilderImpl::new));
-	}
-
-	public static void dispatchRegisterMaterialOverrides() {
-		//TODO clean this up
-		PluginEventBus.postAll(RegisterMaterialOverrideEvent.class, new RegisterMaterialOverrideEventImpl(MaterialRegistryImpl.INSTANCE.getOverrideMap()::put));
-	}
-
-	public static void dispatchRegisterMaterialUnitOverrides() {
-		//TODO clean this up
-		PluginEventBus.postAll(RegisterMaterialUnitOverrideEvent.class, new RegisterMaterialUnitOverrideEventImpl(MaterialRegistryImpl.INSTANCE.getUnitOverrideMap()::put));
 	}
 	//endregion
 
@@ -139,7 +64,7 @@ public final class PluginEventDispatcher {
 			@Override
 			public <T> IRecipeElementType<T> register(final ResourceLocation registryKey, final Codec<T> dataCodec, final StreamCodec<RegistryFriendlyByteBuf, T> dataStreamCodec, final RecipeElementCloner<T> cloner) {
 				return Util.make(new RecipeElementTypeSerializer<>(registryKey, dataCodec, dataStreamCodec, cloner), result -> {
-					CAPI.regs().recipeElementTypes().register(result.getRegistryKey(), result);
+					ApiBridge.getRegs().recipeElementTypes().register(result);
 				});
 			}
 		}));

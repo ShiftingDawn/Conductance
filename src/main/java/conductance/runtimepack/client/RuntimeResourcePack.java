@@ -48,7 +48,11 @@ public final class RuntimeResourcePack extends AbstractRuntimePack {
 	}
 
 	private static boolean shouldDumpAssets() {
-		return Config.debug_dumpRuntimeResourcePack.getAsBoolean();
+		try {
+			return Config.debug_dumpRuntimeResourcePack.getAsBoolean();
+		} catch (final IllegalStateException ignored) {
+			return true;
+		}
 	}
 
 	static void reset() {

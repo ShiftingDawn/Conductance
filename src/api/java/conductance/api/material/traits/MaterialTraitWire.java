@@ -1,11 +1,12 @@
 package conductance.api.material.traits;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import lombok.Getter;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.Material;
-import conductance.api.material.MaterialTraitMap;
+import conductance.api.material.MaterialTraitKey;
 import conductance.api.util.tier.Tier;
 
 @Getter
@@ -20,8 +21,8 @@ public class MaterialTraitWire implements IMaterialTrait<MaterialTraitWire> {
 	}
 
 	@Override
-	public void verify(final Material material, final MaterialTraitMap traitMap) {
-		traitMap.set(NCMaterialTraits.DUST, new MaterialTraitDust());
+	public void validate(final Material material, final Consumer<MaterialTraitKey<?>> assertTrait) {
+		assertTrait.accept(NCMaterialTraits.DUST);
 	}
 
 	@Override

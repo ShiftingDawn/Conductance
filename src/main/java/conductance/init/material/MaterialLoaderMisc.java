@@ -3,7 +3,7 @@ package conductance.init.material;
 import conductance.api.NCTextureSets;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterMaterialEvent;
+import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.Conductance;
 import static net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL;
 import static conductance.api.NCMaterialFlags.CAN_MORTAR;
@@ -13,7 +13,7 @@ import static conductance.api.NCMaterialFlags.GENERATE_GEAR;
 import static conductance.api.NCMaterialFlags.GENERATE_LENS;
 import static conductance.api.NCMaterialFlags.GENERATE_PLATE;
 import static conductance.api.NCMaterialFlags.GENERATE_ROD;
-import static conductance.api.NCMaterialFlags.METAL_ALL;
+import static conductance.api.NCMaterialFlags.GENERATE_SMALL_GEAR;
 import static conductance.api.NCMaterialFlags.NO_SMELTING;
 import static conductance.api.NCMaterials.CREOSOTE_OIL;
 import static conductance.api.NCMaterials.GLASS;
@@ -58,7 +58,7 @@ final class MaterialLoaderMisc {
 				.gem(NEEDS_DIAMOND_TOOL)
 				.ore()
 				.color(255, 255, 255).textureSet(NCTextureSets.NETHER_STAR)
-				.addFlagAndPreset(METAL_ALL, GENERATE_BLOCK, GENERATE_LENS, NO_SMELTING));
+				.flags(GENERATE_BLOCK, GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_AND_SCREW, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_LENS, NO_SMELTING));
 	}
 
 	private MaterialLoaderMisc() {

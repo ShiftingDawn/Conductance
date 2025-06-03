@@ -2,7 +2,7 @@ package conductance.runtimepack.server;
 
 import net.minecraft.core.HolderLookup;
 import conductance.Conductance;
-import conductance.core.register.MaterialRegistryImpl;
+import conductance.core.material.MaterialRegistryImpl;
 import conductance.runtimepack.server.recipe.DynamicRecipeHandler;
 
 public final class RuntimeDataPackBridge {

@@ -129,8 +129,6 @@ public final class NCMaterials {
 	public static Material LIVERMORIUM;
 	public static Material TENNESSINE;
 	public static Material OGANESSON;
-
-	public static Material NEUTRONIUM;
 	//endregion
 
 	//region First Order Materials

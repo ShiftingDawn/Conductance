@@ -7,9 +7,9 @@ import conductance.api.NCMaterialOreTypes;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCTextureTypes;
 import conductance.api.material.Material;
+import conductance.api.material.event.RegisterMaterialTaggedSetEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterMaterialTaggedSetEvent;
 import conductance.Conductance;
 import static conductance.api.NCMaterialTaggedSets.BOLT;
 import static conductance.api.NCMaterialTaggedSets.DUST;
@@ -127,7 +127,7 @@ final class ConductanceMaterialTaggedSets {
 				.hasBlocks(true)
 				.textureType(NCTextureTypes.STORAGE_BLOCK)
 				.miningTool(BlockTags.MINEABLE_WITH_PICKAXE)
-				.generatorPredicate(mat -> mat.hasTrait(NCMaterialTraits.INGOT) || mat.hasTrait(NCMaterialTraits.GEM) || mat.hasFlag(NCMaterialFlags.GENERATE_BLOCK)));
+				.generatorPredicate(mat -> mat.has(NCMaterialTraits.INGOT) || mat.has(NCMaterialTraits.GEM) || mat.has(NCMaterialFlags.GENERATE_BLOCK)));
 
 		ORE_STONE = event.register("ore", "%s_ore", NCMaterialOreTypes.ORE_TYPE_STONE, builder -> builder
 				.addTag("ores/%s", "%s Ores")
@@ -252,10 +252,10 @@ final class ConductanceMaterialTaggedSets {
 				.textureType(NCTextureTypes.LIQUID)
 				.generatorPredicate(hasTrait(NCMaterialTraits.LIQUID))
 				.fluidGeneratorCallback((mat, b) -> b.properties(p -> p
-						.density(mat.getTrait(NCMaterialTraits.LIQUID).getDensity())
-						.viscosity(mat.getTrait(NCMaterialTraits.LIQUID).getViscosity())
-						.temperature(mat.getTrait(NCMaterialTraits.LIQUID).getTemperature())
-						.lightLevel(mat.getData().getBlockLightLevel())
+						.density(mat.get(NCMaterialTraits.LIQUID).getDensity())
+						.viscosity(mat.get(NCMaterialTraits.LIQUID).getViscosity())
+						.temperature(mat.get(NCMaterialTraits.LIQUID).getTemperature())
+						.lightLevel(mat.getBlockLightLevel())
 				)));
 		GAS = event.register("gas", ConductanceMaterialTaggedSets::gasUnlocalizedNameGenerator, builder -> builder
 				.addTag("gases/%s", "%s Gases")
@@ -263,10 +263,10 @@ final class ConductanceMaterialTaggedSets {
 				.textureType(NCTextureTypes.GAS)
 				.generatorPredicate(hasTrait(NCMaterialTraits.GAS))
 				.fluidGeneratorCallback((mat, b) -> b.properties(p -> p
-						.density(mat.getTrait(NCMaterialTraits.GAS).getDensity())
-						.viscosity(mat.getTrait(NCMaterialTraits.GAS).getViscosity())
-						.temperature(mat.getTrait(NCMaterialTraits.GAS).getTemperature())
-						.lightLevel(mat.getData().getBlockLightLevel())
+						.density(mat.get(NCMaterialTraits.GAS).getDensity())
+						.viscosity(mat.get(NCMaterialTraits.GAS).getViscosity())
+						.temperature(mat.get(NCMaterialTraits.GAS).getTemperature())
+						.lightLevel(mat.getBlockLightLevel())
 				)));
 		PLASMA = event.register("plasma", builder -> builder
 				.addTag("plasmas/%s", "%s Plasmas")
@@ -274,10 +274,10 @@ final class ConductanceMaterialTaggedSets {
 				.textureType(NCTextureTypes.PLASMA)
 				.generatorPredicate(hasTrait(NCMaterialTraits.PLASMA))
 				.fluidGeneratorCallback((mat, b) -> b.properties(p -> p
-						.density(mat.getTrait(NCMaterialTraits.PLASMA).getDensity())
-						.viscosity(mat.getTrait(NCMaterialTraits.PLASMA).getViscosity())
-						.temperature(mat.getTrait(NCMaterialTraits.PLASMA).getTemperature())
-						.lightLevel(mat.getData().getBlockLightLevel())
+						.density(mat.get(NCMaterialTraits.PLASMA).getDensity())
+						.viscosity(mat.get(NCMaterialTraits.PLASMA).getViscosity())
+						.temperature(mat.get(NCMaterialTraits.PLASMA).getTemperature())
+						.lightLevel(mat.getBlockLightLevel())
 				)));
 
 		PLATE = event.register("plate", ConductanceMaterialTaggedSets::plateUnlocalizedNameGenerator, builder -> builder
@@ -417,21 +417,21 @@ final class ConductanceMaterialTaggedSets {
 	}
 
 	private static String dustUnlocalizedNameGenerator(final Material material) {
-		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC) || material.hasTrait(NCMaterialTraits.WOOD)) {
+		if (material.has(NCMaterialFlags.IS_SYNTHETIC) || material.has(NCMaterialTraits.WOOD)) {
 			return "%s_pulp";
 		}
 		return "%s_dust";
 	}
 
 	private static String ingotUnlocalizedNameGenerator(final Material material) {
-		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC)) {
+		if (material.has(NCMaterialFlags.IS_SYNTHETIC)) {
 			return "%s_bar";
 		}
 		return "%s_ingot";
 	}
 
 	private static String liquidUnlocalizedNameGenerator(final Material material) {
-		if (material.hasTrait(NCMaterialTraits.INGOT)) {
+		if (material.has(NCMaterialTraits.INGOT)) {
 			return "molten_%s";
 		}
 		if (material.getDefaultFluid() == NCMaterialTraits.GAS) {
@@ -448,34 +448,34 @@ final class ConductanceMaterialTaggedSets {
 	}
 
 	private static String plateUnlocalizedNameGenerator(final Material material) {
-		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC)) {
+		if (material.has(NCMaterialFlags.IS_SYNTHETIC)) {
 			return "%s_sheet";
 		}
-		if (material.hasTrait(NCMaterialTraits.WOOD)) {
+		if (material.has(NCMaterialTraits.WOOD)) {
 			return "%s_plank";
 		}
 		return "%s_plate";
 	}
 
 	private static String plateDoubleUnlocalizedNameGenerator(final Material material) {
-		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC)) {
+		if (material.has(NCMaterialFlags.IS_SYNTHETIC)) {
 			return "stitched_%s_sheet";
 		}
-		if (material.hasTrait(NCMaterialTraits.WOOD)) {
+		if (material.has(NCMaterialTraits.WOOD)) {
 			return "double_%s_plank";
 		}
 		return "double_%s_plate";
 	}
 
 	private static String plateDenseUnlocalizedNameGenerator(final Material material) {
-		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC)) {
+		if (material.has(NCMaterialFlags.IS_SYNTHETIC)) {
 			return "compressed_%s_sheet";
 		}
 		return "dense_%s_plate";
 	}
 
 	private static String foilUnlocalizedNameGenerator(final Material material) {
-		if (material.hasFlag(NCMaterialFlags.IS_SYNTHETIC)) {
+		if (material.has(NCMaterialFlags.IS_SYNTHETIC)) {
 			return "thin_%s_sheet";
 		}
 		return "%s_foil";

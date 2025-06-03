@@ -12,7 +12,7 @@ final class MaterialTagTranslationHandler {
 			}
 			final ResourceLocation location = tag.getA().location();
 			final String key = "tag.item.%s.%s".formatted(location.getNamespace(), location.getPath().replace('/', '.'));
-			final String str = CAPI.translations().makeLocalizedName(material.getUnlocalizedName(), set, material).getString();
+			final String str = CAPI.translations().makeLocalizedName(material.getDescriptionId(), set, material).getString();
 			RuntimeResourcePack.addTranslation(key, String.format(tag.getB().apply(material), str));
 		})));
 	}

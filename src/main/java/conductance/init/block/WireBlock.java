@@ -64,7 +64,7 @@ public final class WireBlock extends PipeBlock<IWireNode, WireData, LevelEnergyN
 	}
 
 	public WireData getBaseProps() {
-		final MaterialTraitWire trait = this.material.getTrait(NCMaterialTraits.WIRE);
+		final MaterialTraitWire trait = this.material.get(NCMaterialTraits.WIRE);
 		assert trait != null;
 		return new WireData(trait.getTier().getVoltage(), trait.getAmperage());
 	}

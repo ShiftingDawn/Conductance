@@ -1,6 +1,6 @@
 package conductance.api;
 
-import conductance.api.material.PeriodicElement;
+import conductance.api.periodicelement.PeriodicElement;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCPeriodicElements {
@@ -129,13 +129,6 @@ public final class NCPeriodicElements {
 	public static PeriodicElement LIVERMORIUM;
 	public static PeriodicElement TENNESSINE;
 	public static PeriodicElement OGANESSON;
-	// endregion
-
-	// region Fantasy Elements
-	public static PeriodicElement NEUTRONIUM;
-	public static PeriodicElement COSMIC_NEUTRONIUM;
-	public static PeriodicElement INFINITY;
-	public static PeriodicElement SPACETIME;
 	// endregion
 
 	private NCPeriodicElements() {

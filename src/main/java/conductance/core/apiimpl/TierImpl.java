@@ -7,7 +7,6 @@ import net.minecraft.network.chat.MutableComponent;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import conductance.api.CAPI;
 import conductance.api.registry.RegistryObject;
 import conductance.api.util.tier.Tier;
 
@@ -40,7 +39,7 @@ public final class TierImpl extends RegistryObject<String> implements Tier {
 		this.localizedName = Component.literal(displayName);
 		this.prevTier = prevTier;
 		if (!registryName.equals(TierRegistryImpl.ID_EMPTY) && !registryName.equals(TierRegistryImpl.ID_MAX)) {
-			CAPI.regs().tiers().register(this.getRegistryKey(), this);
+			ApiBridge.getRegs().tiers().register(this);
 		}
 	}
 
@@ -93,7 +92,6 @@ public final class TierImpl extends RegistryObject<String> implements Tier {
 			this.prevTier = tier;
 			return this;
 		}
-
 
 		@Override
 		public Tier build() {

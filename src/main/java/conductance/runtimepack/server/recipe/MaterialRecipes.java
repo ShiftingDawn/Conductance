@@ -33,7 +33,7 @@ final class MaterialRecipes {
 			material.executeIf(NCMaterialTraits.GEM, () -> MaterialRecipes.addGemRecipes(event, material));
 			material.executeIf(NCMaterialTraits.WOOD, () -> MaterialRecipes.addWoodRecipes(event, material));
 
-			if (material.hasTrait(NCMaterialTraits.DUST) && !material.hasTrait(NCMaterialTraits.INGOT) && !material.hasTrait(NCMaterialTraits.GEM)) {
+			if (material.has(NCMaterialTraits.DUST) && !material.has(NCMaterialTraits.INGOT) && !material.has(NCMaterialTraits.GEM)) {
 				MaterialRecipes.addDustRecipes(event, material);
 			}
 		});
@@ -54,7 +54,7 @@ final class MaterialRecipes {
 		}
 		final Material pulverizeMaterial = trait.getPulverizeResult() != null ? trait.getPulverizeResult().get() : material;
 		final Material smeltMaterial = trait.getSmeltResult() != null ? trait.getSmeltResult().get() : material;
-		final TaggedMaterialSet smeltType = material.hasTrait(NCMaterialTraits.INGOT) ? NCMaterialTaggedSets.INGOT : material.hasTrait(NCMaterialTraits.GEM) ? NCMaterialTaggedSets.GEM : NCMaterialTaggedSets.DUST;
+		final TaggedMaterialSet smeltType = material.has(NCMaterialTraits.INGOT) ? NCMaterialTaggedSets.INGOT : material.has(NCMaterialTraits.GEM) ? NCMaterialTaggedSets.GEM : NCMaterialTaggedSets.DUST;
 		final BiConsumer<TaggedMaterialSet, Integer> pulverizeMaker = (set, multiplier) -> event.create(
 				NCRecipeTypes.PULVERIZER, "%s_from_%s".formatted(NCMaterialTaggedSets.DUST.getUnlocalizedName(pulverizeMaterial), set.getUnlocalizedName(material)),
 				builder -> builder.in(CAPI.materials().getItem(set, material, 1)).out(NCMaterialTaggedSets.DUST, pulverizeMaterial, 2 * multiplier).inEnergy(4).processTime(100));
@@ -111,13 +111,13 @@ final class MaterialRecipes {
 			matRecipe(event, "%s_screw", material, NCRecipeTypes.LATHE, NCMaterialTaggedSets.SCREW, NCMaterialTaggedSets.BOLT, null);
 		});
 		material.executeIf(NCMaterialFlags.GENERATE_GEAR, () -> {
-			if (material.hasFlag(NCMaterialFlags.GENERATE_PLATE) && material.hasFlag(NCMaterialFlags.GENERATE_ROD)) {
+			if (material.has(NCMaterialFlags.GENERATE_PLATE) && material.has(NCMaterialFlags.GENERATE_ROD)) {
 				shaped(event, "%s_gear".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.GEAR, material, 1),
 						"#$#", "$W$", "#$#", '#', MiscUtils.getItemTag(NCMaterialTaggedSets.ROD, material), '$', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material));
 			}
 		});
 		material.executeIf(NCMaterialFlags.GENERATE_SMALL_GEAR, () -> {
-			if (material.hasFlag(NCMaterialFlags.GENERATE_PLATE) && material.hasFlag(NCMaterialFlags.GENERATE_ROD)) {
+			if (material.has(NCMaterialFlags.GENERATE_PLATE) && material.has(NCMaterialFlags.GENERATE_ROD)) {
 				shaped(event, "%s_gear".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.GEAR_SMALL, material, 1),
 						" # ", "W$X", " # ", '#', MiscUtils.getItemTag(NCMaterialTaggedSets.ROD, material), '$', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material));
 			}

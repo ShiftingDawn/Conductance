@@ -24,7 +24,6 @@ import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.core.apiimpl.MaterialOreTypeImpl;
 import conductance.init.ConductanceCreativeTabs;
 import conductance.runtimepack.client.MaterialOreModelHandler;
 
@@ -65,7 +64,7 @@ public class MaterialOreBlock extends ConductanceBlock implements IMaterialOreBl
 
 	@Override
 	public TagKey<Block> getMiningToolTag() {
-		return ((MaterialOreTypeImpl) this.oreType).getRequiredToolType();
+		return this.oreType.getRequiredToolTypeTag();
 	}
 
 	@Override

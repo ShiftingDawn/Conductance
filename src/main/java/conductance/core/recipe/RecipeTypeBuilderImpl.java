@@ -9,6 +9,7 @@ import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeTypeBuilder;
+import conductance.core.apiimpl.ApiBridge;
 
 public class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 
@@ -82,7 +83,7 @@ public class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 				realRecipeViewProgressBar,
 				this.progressBarDirection
 		);
-		CAPI.regs().recipeTypes().register(result.getRegistryKey(), result);
+		ApiBridge.getRegs().recipeTypes().register(result);
 		return result;
 	}
 }

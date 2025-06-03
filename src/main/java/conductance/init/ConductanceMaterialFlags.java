@@ -3,9 +3,9 @@ package conductance.init;
 import java.util.List;
 import java.util.Set;
 import conductance.api.NCMaterialTraits;
+import conductance.api.material.event.RegisterMaterialFlagEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterMaterialFlagEvent;
 import conductance.Conductance;
 import static conductance.api.NCMaterialFlags.CAN_CENTRIFUGE;
 import static conductance.api.NCMaterialFlags.CAN_CRYSTALLIZE;
@@ -41,26 +41,26 @@ final class ConductanceMaterialFlags {
 
 		GENERATE_PLATE = event.register("generate_plate", Set.of(), Set.of(NCMaterialTraits.DUST));
 		GENERATE_ROD = event.register("generate_rod", Set.of(), Set.of(NCMaterialTraits.DUST));
-		GENERATE_BOLT_AND_SCREW = event.register("generate_bolt_and_screw", Set.of(), Set.of(NCMaterialTraits.DUST));
+		GENERATE_BOLT_AND_SCREW = event.register("generate_bolt_and_screw", Set.of(GENERATE_ROD), Set.of());
 		GENERATE_GEAR = event.register("generate_gear", Set.of(), Set.of(NCMaterialTraits.DUST));
 		GENERATE_SMALL_GEAR = event.register("generate_small_gear", Set.of(), Set.of(NCMaterialTraits.DUST));
 		GENERATE_BLOCK = event.register("generate_block", Set.of(), Set.of(NCMaterialTraits.DUST));
 
-		GENERATE_FOIL = event.register("generate_foil", Set.of(), Set.of(NCMaterialTraits.INGOT));
+		GENERATE_FOIL = event.register("generate_foil", Set.of(), Set.of(NCMaterialTraits.DUST));
 		GENERATE_RING = event.register("generate_ring", Set.of(), Set.of(NCMaterialTraits.INGOT));
 		GENERATE_FINE_WIRE = event.register("generate_fine_wire", Set.of(), Set.of(NCMaterialTraits.INGOT));
 		GENERATE_ROTOR = event.register("generate_rotor", Set.of(GENERATE_PLATE, GENERATE_BOLT_AND_SCREW, GENERATE_RING), Set.of(NCMaterialTraits.INGOT));
-		GENERATE_FRAME_BOX = event.register("generate_frame", Set.of(GENERATE_ROD), Set.of(NCMaterialTraits.INGOT));
+		GENERATE_FRAME_BOX = event.register("generate_frame", Set.of(GENERATE_ROD), Set.of());
 
-		CAN_CRYSTALLIZE = event.register("autoclave_processable", Set.of(), Set.of(NCMaterialTraits.GEM));
-		GENERATE_LENS = event.register("generate_lens", Set.of(GENERATE_PLATE), Set.of(NCMaterialTraits.INGOT));
+		CAN_CRYSTALLIZE = event.register("can_crystallize", Set.of(), Set.of(NCMaterialTraits.GEM));
+		GENERATE_LENS = event.register("generate_lens", Set.of(GENERATE_PLATE), Set.of());
 
-		CAN_MORTAR = event.register("mortar_processable", Set.of(), Set.of(NCMaterialTraits.DUST));
-		NO_SMELTING = event.register("prevent_smelting", Set.of(), Set.of(NCMaterialTraits.DUST));
-		NO_DECOMPOSE = event.register("prevent_decompose");
-		NO_HANDLING = event.register("prevent_handling");
-		CAN_ELECTROLYZE = event.register("decompose_electrolyze");
-		CAN_CENTRIFUGE = event.register("decompose_centrifuge");
+		CAN_MORTAR = event.register("can_mortar", Set.of(), Set.of(NCMaterialTraits.DUST));
+		NO_SMELTING = event.register("no_smelting", Set.of(), Set.of(NCMaterialTraits.DUST));
+		NO_DECOMPOSE = event.register("no_decompose");
+		NO_HANDLING = event.register("no_handling");
+		CAN_ELECTROLYZE = event.register("can_electrolyze");
+		CAN_CENTRIFUGE = event.register("can_centrifuge");
 
 		METAL_DEFAULT.add(GENERATE_PLATE);
 		METAL_EXTRA.addAll(METAL_DEFAULT);

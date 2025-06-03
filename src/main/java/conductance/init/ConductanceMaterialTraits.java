@@ -1,5 +1,6 @@
 package conductance.init;
 
+import conductance.api.material.event.RegisterMaterialTraitEvent;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitGem;
@@ -9,7 +10,6 @@ import conductance.api.material.traits.MaterialTraitWire;
 import conductance.api.material.traits.MaterialTraitWood;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterMaterialTraitEvent;
 import conductance.Conductance;
 import static conductance.api.NCMaterialTraits.DUST;
 import static conductance.api.NCMaterialTraits.GAS;

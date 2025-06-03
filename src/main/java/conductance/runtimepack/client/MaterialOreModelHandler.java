@@ -39,8 +39,8 @@ public final class MaterialOreModelHandler {
 	static void reload() {
 		MaterialOreModelHandler.MODELS.forEach(model -> {
 			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-			RuntimeResourcePack.addBlockModel(blockId, () -> Util.make(MaterialOreModelHandler.createOre(model.material.getTrait(NCMaterialTraits.ORE).isEmissive()), json -> {
-				final String oreTexture = NCTextureTypes.ORE.getBlockTexture(model.material.getTextureSet(), null, null).getValue().toString();
+			RuntimeResourcePack.addBlockModel(blockId, () -> Util.make(MaterialOreModelHandler.createOre(model.material.get(NCMaterialTraits.ORE).isEmissive()), json -> {
+				final String oreTexture = NCTextureTypes.ORE.getTexture(model.material.getTextureSet(), null, null).getValue().toString();
 				SerializationHelper.getOrOverrideObject("textures", json).addProperty("particle", oreTexture);
 				final JsonObject children = SerializationHelper.getOrOverrideObject("children", json);
 				SerializationHelper.getOrOverrideObject("textures", SerializationHelper.getOrOverrideObject("ore_overlay", children)).addProperty("particle", oreTexture);

@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.Block;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import conductance.api.material.Material;
-import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 
 @RequiredArgsConstructor
@@ -22,17 +21,17 @@ public final class MaterialBlockModelHandler {
 
 	private final Block block;
 	private final Material material;
-	private final MaterialTextureSet set;
+	private final ResourceLocation set;
 	private final MaterialTextureType type;
 
-	public static void add(final Block block, final Material material, final MaterialTextureSet set, final MaterialTextureType type) {
+	public static void add(final Block block, final Material material, final ResourceLocation set, final MaterialTextureType type) {
 		MaterialBlockModelHandler.MODELS.add(new MaterialBlockModelHandler(block, material, set, type));
 	}
 
 	static void reload() {
 		MaterialBlockModelHandler.MODELS.forEach(model -> {
 			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-			final ResourceLocation custom = ResourceHelper.getCustomBlockTexture(model.material, model.type);
+			final ResourceLocation custom = ResourceHelper.getCustomMaterialTexture(model.material, model.type);
 			if (custom == null) {
 				RuntimeResourcePack.addBlockModel(blockId, new DelegatedModel(model.type.getBlockModel(model.set, null, null).getValue()));
 			} else {

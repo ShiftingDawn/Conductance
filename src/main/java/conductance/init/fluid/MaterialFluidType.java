@@ -46,11 +46,11 @@ public final class MaterialFluidType extends FluidType {
 
 			@Override
 			public ResourceLocation getStillTexture() {
-				final ResourceLocation texture = ResourceHelper.getCustomFluidTexture(MaterialFluidType.this.material, MaterialFluidType.this.set.getTextureType());
+				final ResourceLocation texture = ResourceHelper.getCustomMaterialTexture(MaterialFluidType.this.material, MaterialFluidType.this.set.getTextureType());
 				if (texture != null) {
 					return texture;
 				}
-				return CAPI.resourceFinder().getFluidTexture(MaterialFluidType.this.material.getTextureSet(), MaterialFluidType.this.set.getTextureType(), null, null).getValue();
+				return CAPI.resourceFinder().getTexture(MaterialFluidType.this.material.getTextureSet(), MaterialFluidType.this.set.getTextureType(), null, null).getValue();
 			}
 
 			@Override

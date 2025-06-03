@@ -7,9 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import com.tterrag.registrate.util.entry.BlockEntry;
-import com.tterrag.registrate.util.entry.FluidEntry;
-import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.Nullable;
 
 public interface TaggedSetRegistry<TYPE, SET extends TaggedSet<TYPE>> {
@@ -39,11 +36,4 @@ public interface TaggedSetRegistry<TYPE, SET extends TaggedSet<TYPE>> {
 
 	@Nullable
 	BucketItem getBucketUnsafe(SET taggedSet, TYPE object);
-
-	void register(SET taggedSet, TYPE object, ItemEntry<? extends Item> item);
-
-	void register(SET taggedSet, TYPE object, BlockEntry<? extends Block> block);
-
-	void register(SET taggedSet, TYPE object, FluidEntry<? extends Fluid> fluid);
-
 }
