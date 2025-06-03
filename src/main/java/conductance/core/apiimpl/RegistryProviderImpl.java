@@ -11,7 +11,6 @@ import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialOreType;
-import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
@@ -29,7 +28,6 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final ConductanceRegistryImpl<ResourceLocation, PeriodicElement> periodicElements = RegistryProviderImpl.makeResourceKeyed("periodic_element");
 
 	private final ConductanceRegistryImpl<ResourceLocation, MaterialTextureType> materialTextureTypes = RegistryProviderImpl.makeResourceKeyed("material_texture_type");
-	private final ConductanceRegistryImpl<String, MaterialTextureSet> materialTextureSets = RegistryProviderImpl.makeStringKeyed("material_texture_set");
 	private final ConductanceRegistryImpl<ResourceLocation, MaterialTraitKey<?>> materialTraits = RegistryProviderImpl.makeResourceKeyed("material_trait");
 	private final ConductanceRegistryImpl<ResourceLocation, MaterialFlag> materialFlags = RegistryProviderImpl.makeResourceKeyed("material_flag");
 	private final ConductanceRegistryImpl<ResourceLocation, MaterialOreType> materialOreTypes = RegistryProviderImpl.makeResourceKeyed("material_ore_type");
@@ -88,11 +86,6 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	@Override
 	public ConductanceRegistryImpl<ResourceLocation, MaterialTextureType> materialTextureTypes() {
 		return this.materialTextureTypes;
-	}
-
-	@Override
-	public ConductanceRegistryImpl<String, MaterialTextureSet> materialTextureSets() {
-		return this.materialTextureSets;
 	}
 
 	@Override

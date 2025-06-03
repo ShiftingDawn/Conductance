@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
-import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitFluid;
@@ -44,7 +43,7 @@ public final class MaterialImpl extends RegistryObject<ResourceLocation> impleme
 	@Nullable
 	private Integer colorArgb = null;
 	@Getter
-	private MaterialTextureSet textureSet;
+	private ResourceLocation textureSet;
 	private final Lazy<Long> protons = Lazy.of(() -> this.calc(PeriodicElement::protons, Material::getProtons, 43));
 	private final Lazy<Long> neutrons = Lazy.of(() -> this.calc(PeriodicElement::neutrons, Material::getNeutrons, 55));
 	private final Lazy<Long> mass = Lazy.of(() -> this.calc(PeriodicElement::mass, Material::getMass, 43));

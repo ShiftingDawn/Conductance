@@ -3,13 +3,13 @@ package conductance.api.plugin;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialStack;
-import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitFluid;
@@ -74,7 +74,7 @@ public interface MaterialBuilder {
 
 	MaterialBuilder calcColor();
 
-	MaterialBuilder textureSet(MaterialTextureSet set);
+	MaterialBuilder textureSet(ResourceLocation textureSet);
 
 	MaterialBuilder formula(String formula);
 

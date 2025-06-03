@@ -32,7 +32,7 @@ public interface Material extends IRegistryObject<ResourceLocation> {
 		};
 	}
 
-	MaterialTextureSet getTextureSet();
+	ResourceLocation getTextureSet();
 
 	long getProtons();
 

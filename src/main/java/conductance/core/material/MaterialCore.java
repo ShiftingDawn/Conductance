@@ -1,8 +1,6 @@
 package conductance.core.material;
 
-import java.util.Arrays;
 import java.util.function.IntSupplier;
-import java.util.stream.Stream;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.EventPriority;
@@ -14,7 +12,6 @@ import conductance.api.material.IMaterialTrait;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialOreType;
-import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.ModifyMaterialEvent;
@@ -26,7 +23,6 @@ import conductance.api.plugin.RegisterMaterialFlagEvent;
 import conductance.api.plugin.RegisterMaterialOreTypeEvent;
 import conductance.api.plugin.RegisterMaterialOverrideEvent;
 import conductance.api.plugin.RegisterMaterialTaggedSetEvent;
-import conductance.api.plugin.RegisterMaterialTextureSetEvent;
 import conductance.api.plugin.RegisterMaterialTextureTypeEvent;
 import conductance.api.plugin.RegisterMaterialTraitEvent;
 import conductance.api.plugin.RegisterMaterialUnitOverrideEvent;
@@ -42,7 +38,6 @@ public final class MaterialCore {
 	public static void initialize(final IEventBus modEventBus) {
 		Conductance.setApiValue(MaterialRegistry.class, MaterialRegistryImpl.INSTANCE);
 		MaterialCore.initTextureTypes();
-		MaterialCore.initTextureSets();
 		MaterialCore.initOreTypes();
 		MaterialCore.initTraits();
 		MaterialCore.initFlags();
@@ -68,14 +63,6 @@ public final class MaterialCore {
 		PluginEventBus.post(RegisterMaterialTextureTypeEvent.class, modid -> new RegisterMaterialTextureTypeEventImpl(registryName -> {
 			final MaterialTextureType result = new MaterialTextureType(ResourceLocation.fromNamespaceAndPath(modid, registryName));
 			ApiBridge.getRegs().materialTextureTypes().register(result);
-			return result;
-		}));
-	}
-
-	private static void initTextureSets() {
-		PluginEventBus.postAll(RegisterMaterialTextureSetEvent.class, new RegisterMaterialTextureSetEventImpl((registryName, parentSetName) -> {
-			final MaterialTextureSet result = new MaterialTextureSet(registryName, parentSetName);
-			ApiBridge.getRegs().materialTextureSets().register(result);
 			return result;
 		}));
 	}

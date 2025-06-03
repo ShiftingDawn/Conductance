@@ -10,7 +10,6 @@ import net.minecraft.world.item.Item;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import conductance.api.material.Material;
-import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTextureType;
 
 @RequiredArgsConstructor
@@ -20,10 +19,10 @@ public final class MaterialItemModelHandler {
 
 	private final Item item;
 	private final Material material;
-	private final MaterialTextureSet set;
+	private final ResourceLocation set;
 	private final MaterialTextureType type;
 
-	public static void add(final Item item, final Material material, final MaterialTextureSet set, final MaterialTextureType type) {
+	public static void add(final Item item, final Material material, final ResourceLocation set, final MaterialTextureType type) {
 		MaterialItemModelHandler.MODELS.add(new MaterialItemModelHandler(item, material, set, type));
 	}
 

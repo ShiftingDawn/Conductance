@@ -23,7 +23,6 @@ import conductance.api.material.IMaterialTrait;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialStack;
-import conductance.api.material.MaterialTextureSet;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.PeriodicElement;
 import conductance.api.material.traits.MaterialTraitDust;
@@ -42,7 +41,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	private final Set<MaterialFlag> flags = new HashSet<>();
 	private final ResourceLocation registryName;
 	private final List<MaterialStack> componentList = new ArrayList<>();
-	private MaterialTextureSet textureSet = NCTextureSets.DULL;
+	private ResourceLocation textureSet = NCTextureSets.DULL;
 	@Nullable
 	private PeriodicElement periodicElement;
 	@Nullable
@@ -234,7 +233,7 @@ public final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder textureSet(final MaterialTextureSet set) {
+	public MaterialBuilder textureSet(final ResourceLocation set) {
 		this.textureSet = Objects.requireNonNull(set);
 		return this;
 	}

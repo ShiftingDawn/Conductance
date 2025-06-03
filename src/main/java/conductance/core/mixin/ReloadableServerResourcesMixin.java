@@ -25,7 +25,6 @@ public abstract class ReloadableServerResourcesMixin {
 		ApiBridge.handleDataPackRegistryStage(ApiBridge.DataPackRegistryLoadStage.UNFREEZE);
 		ApiBridge.handleDataPackRegistryStage(ApiBridge.DataPackRegistryLoadStage.RESET);
 
-		ApiBridge.resetRegistryAccess(registries.compositeAccess());
 		RuntimeDataPackBridge.reload(registries.compositeAccess());
 	}
 
