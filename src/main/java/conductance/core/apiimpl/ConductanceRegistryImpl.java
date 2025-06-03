@@ -81,14 +81,6 @@ public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject
 	}
 
 	@Override
-	public boolean remove(final KEY key) {
-		if (this.frozen) {
-			throw new IllegalStateException("[remove]Registry %s has been frozen".formatted(this.getRegistryKey()));
-		}
-		return this.registry.remove(key) != null;
-	}
-
-	@Override
 	public Set<KEY> keys() {
 		return this.registry.keySet();
 	}
