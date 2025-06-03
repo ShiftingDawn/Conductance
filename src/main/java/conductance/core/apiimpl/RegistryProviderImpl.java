@@ -13,11 +13,11 @@ import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialOreType;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
-import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.material.TaggedMaterialSet;
+import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.registry.IRegistryObject;
 import conductance.api.registry.RegistryProvider;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 import conductance.Conductance;
 import conductance.core.recipe.RecipeSerializerImpl;
 
@@ -41,8 +41,6 @@ public final class RegistryProviderImpl implements RegistryProvider {
 
 	RegistryProviderImpl(final IEventBus modEventBus) {
 		modEventBus.addListener(this::onRegisterEvent);
-		this.tiers.setRegisterCallback((id, tier) -> TierRegistryImpl.insertTier((TierImpl) tier));
-		this.tiers.setUnregisterCallback((id, tier) -> TierRegistryImpl.removeTier((TierImpl) tier));
 	}
 
 	private void onRegisterEvent(final RegisterEvent event) {

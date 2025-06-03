@@ -1,4 +1,4 @@
 @NCNonNull
-package conductance.api.util.tier;
+package conductance.api.tier;
 
 import conductance.api.util.NCNonNull;

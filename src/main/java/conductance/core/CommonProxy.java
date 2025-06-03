@@ -12,10 +12,10 @@ import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import conductance.api.util.IInteractable;
 import conductance.client.MachineUIFactory;
 import conductance.core.apiimpl.ApiBridge;
-import conductance.core.apiimpl.TierImpl;
 import conductance.core.material.MaterialCore;
 import conductance.core.periodicelement.PeriodicElementCore;
 import conductance.core.sync.SyncFieldSerializerRegisterImpl;
+import conductance.core.tier.TierCore;
 import conductance.init.ConductanceBlockEntities;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
@@ -38,7 +38,7 @@ public final class CommonProxy {
 		ConductanceCreativeTabs.init();
 
 		PluginEventDispatcher.dispatchRegisterSyncFieldSerializers(SyncFieldSerializerRegisterImpl.INSTANCE);
-		PluginEventDispatcher.dispatchRegisterTiers(TierImpl.Builder::new);
+		TierCore.initialize(modEventBus);
 		PeriodicElementCore.initialize();
 		MaterialCore.initialize(modEventBus);
 		PluginEventDispatcher.dispatchRegisterRecipeElementTypes();

@@ -21,7 +21,7 @@ import conductance.api.resource.ResourceFinder;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.GsonItemStackAdapter;
-import conductance.api.util.tier.TierRegistry;
+import conductance.api.tier.TierRegistry;
 
 @SuppressWarnings({ "unused", "NotNullFieldNotInitialized" })
 public final class CAPI {

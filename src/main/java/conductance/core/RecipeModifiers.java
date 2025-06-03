@@ -16,7 +16,7 @@ import conductance.api.machine.recipe.RecipeCapabilityHolder;
 import conductance.api.machine.recipe.RecipeModifier;
 import conductance.api.util.overclock.Overclock;
 import conductance.api.util.overclock.OverclockResult;
-import conductance.api.util.tier.TierHolder;
+import conductance.api.tier.TierHolder;
 
 public final class RecipeModifiers {
 

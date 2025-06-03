@@ -2,7 +2,7 @@ package conductance.api;
 
 import java.util.Map;
 import conductance.api.machine.MachineType;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCMachines {

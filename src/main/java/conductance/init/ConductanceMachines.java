@@ -11,7 +11,7 @@ import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterMachineEvent;
 import conductance.api.util.TextHelper;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 import conductance.Conductance;
 import conductance.init.machine.GenericGeneratorMachine;
 import conductance.init.machine.GenericRecipeMachine;

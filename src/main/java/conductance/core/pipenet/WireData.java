@@ -1,7 +1,7 @@
 package conductance.core.pipenet;
 
 import conductance.api.CAPI;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 public record WireData(long voltage, int amperage) {
 

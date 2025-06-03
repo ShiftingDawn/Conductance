@@ -9,7 +9,7 @@ import conductance.api.CAPI;
 import conductance.api.machine.sync.Operation;
 import conductance.api.machine.sync.Reference;
 import conductance.api.machine.sync.Serializer;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 public class TierSerializer extends Serializer<Tier> {
 

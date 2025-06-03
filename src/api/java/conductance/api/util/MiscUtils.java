@@ -22,7 +22,7 @@ import conductance.api.CAPI;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 public final class MiscUtils {
 

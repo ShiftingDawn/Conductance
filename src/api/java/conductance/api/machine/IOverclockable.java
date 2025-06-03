@@ -1,7 +1,7 @@
 package conductance.api.machine;
 
 import conductance.api.NCTiers;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 public interface IOverclockable {
 

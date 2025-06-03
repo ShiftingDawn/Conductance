@@ -12,7 +12,7 @@ import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.periodicelement.PeriodicElement;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 public interface RegistryProvider {
 

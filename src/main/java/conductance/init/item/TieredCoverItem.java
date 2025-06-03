@@ -5,7 +5,7 @@ import conductance.api.capability.cover.CoverEntity;
 import conductance.api.capability.cover.CoverType;
 import conductance.api.capability.cover.ICoverItem;
 import conductance.api.util.TieredItemType;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 public final class TieredCoverItem<COVER extends CoverEntity<COVER>> extends TieredItem implements ICoverItem<COVER> {
 

@@ -12,7 +12,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
 import conductance.api.NCCovers;
 import conductance.api.util.TieredItemType;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.material.TaggedMaterialSetImpl;
 import conductance.core.material.MaterialRegistryImpl;

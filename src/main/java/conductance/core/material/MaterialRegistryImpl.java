@@ -11,9 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.IdMappingEvent;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
@@ -23,8 +21,8 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
-import conductance.api.material.TaggedMaterialSet;
 import conductance.api.material.MaterialRegistry;
+import conductance.api.material.TaggedMaterialSet;
 import conductance.Conductance;
 
 public final class MaterialRegistryImpl implements MaterialRegistry {
@@ -46,7 +44,6 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 	private boolean frozen = false;
 
 	private MaterialRegistryImpl() {
-		NeoForge.EVENT_BUS.addListener(IdMappingEvent.class, ignored -> this.freeze());
 	}
 
 	@Override
@@ -163,7 +160,7 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		return Objects.requireNonNullElse(result, -1L);
 	}
 
-	private void freeze() {
+	public void freeze() {
 		Conductance.LOGGER.info("MaterialRegistry has been frozen!");
 		this.frozen = true;
 	}

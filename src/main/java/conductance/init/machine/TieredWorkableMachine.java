@@ -29,8 +29,8 @@ import conductance.api.machine.recipe.WorkableMachineRecipeProviderConfigAdapter
 import conductance.api.machine.sync.Persisted;
 import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
-import conductance.api.util.tier.Tier;
-import conductance.api.util.tier.TierHolder;
+import conductance.api.tier.Tier;
+import conductance.api.tier.TierHolder;
 
 public class TieredWorkableMachine<T extends TieredWorkableMachine<T>> extends MachineBlockEntity<T> implements WorkableMachineRecipeProviderConfigAdapter, RecipeCapabilityHolder, TierHolder, IOverclockable {
 

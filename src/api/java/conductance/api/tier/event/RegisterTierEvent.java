@@ -1,6 +1,7 @@
-package conductance.api.plugin;
+package conductance.api.tier.event;
 
-import conductance.api.util.tier.Tier;
+import conductance.api.plugin.IConductancePluginEvent;
+import conductance.api.tier.Tier;
 
 public interface RegisterTierEvent extends IConductancePluginEvent {
 

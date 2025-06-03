@@ -1,4 +1,4 @@
-package conductance.core.apiimpl;
+package conductance.core.tier;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -13,18 +13,18 @@ import net.minecraft.Util;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
-import conductance.api.util.tier.Tier;
-import conductance.api.util.tier.TierRegistry;
+import conductance.api.tier.Tier;
+import conductance.api.tier.TierRegistry;
 import conductance.Conductance;
 
-public class TierRegistryImpl implements TierRegistry {
+final class TierRegistryImpl implements TierRegistry {
 
 	private static final Cache<Long, Tier> TIER_BY_VOLTAGE_CACHE = CacheBuilder.newBuilder().maximumSize(512).build();
 	public static final TierRegistryImpl INSTANCE = new TierRegistryImpl();
 	public static final String ID_EMPTY = "empty";
 	public static final String ID_MAX = "max";
-	public static final Tier EMPTY = new TierImpl(TierRegistryImpl.ID_EMPTY, ChatFormatting.BOLD + "EMPTY", null);
-	public static final Tier MAX = new TierImpl(TierRegistryImpl.ID_MAX, ChatFormatting.RED.toString() + ChatFormatting.BOLD + "MAX", TierRegistryImpl.EMPTY);
+	public static final Tier EMPTY = new TierImpl(TierRegistryImpl.ID_EMPTY, ChatFormatting.BOLD + "EMPTY", -1, null);
+	public static final Tier MAX = new TierImpl(TierRegistryImpl.ID_MAX, ChatFormatting.RED.toString() + ChatFormatting.BOLD + "MAX", -1, TierRegistryImpl.EMPTY);
 	private static final LinkedList<TierImpl> TIERS = new LinkedList<>();
 	private static boolean frozen = false;
 
