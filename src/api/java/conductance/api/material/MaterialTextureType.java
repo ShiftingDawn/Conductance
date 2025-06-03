@@ -12,23 +12,15 @@ public final class MaterialTextureType extends RegistryObject<ResourceLocation> 
 		super(registryKey);
 	}
 
-	public SafeOptional<ResourceLocation> getItemTexture(final ResourceLocation textureSet, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		return CAPI.resourceFinder().getItemTexture(textureSet, this, pathPrefix, pathSuffix);
+	public SafeOptional<ResourceLocation> getTexture(final ResourceLocation textureSet, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
+		return CAPI.resourceFinder().getTexture(textureSet, this, pathPrefix, pathSuffix);
 	}
 
 	public SafeOptional<ResourceLocation> getItemModel(final ResourceLocation textureSet, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
 		return CAPI.resourceFinder().getItemModel(textureSet, this, pathPrefix, pathSuffix);
 	}
 
-	public SafeOptional<ResourceLocation> getBlockTexture(final ResourceLocation textureSet, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		return CAPI.resourceFinder().getBlockTexture(textureSet, this, pathPrefix, pathSuffix);
-	}
-
 	public SafeOptional<ResourceLocation> getBlockModel(final ResourceLocation textureSet, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		return CAPI.resourceFinder().getBlockTexture(textureSet, this, pathPrefix, pathSuffix);
-	}
-
-	public SafeOptional<ResourceLocation> getFluidTexture(final ResourceLocation textureSet, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		return CAPI.resourceFinder().getFluidTexture(textureSet, this, pathPrefix, pathSuffix);
+		return CAPI.resourceFinder().getBlockModel(textureSet, this, pathPrefix, pathSuffix);
 	}
 }

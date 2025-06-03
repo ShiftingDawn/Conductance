@@ -29,7 +29,7 @@ public final class MaterialItemModelHandler {
 	static void reload() {
 		MaterialItemModelHandler.MODELS.forEach(model -> {
 			final ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
-			final ResourceLocation custom = ResourceHelper.getCustomItemTexture(model.material, model.type);
+			final ResourceLocation custom = ResourceHelper.getCustomMaterialTexture(model.material, model.type);
 			if (custom == null) {
 				RuntimeResourcePack.addItemModel(itemId, new DelegatedModel(model.type.getItemModel(model.set, null, null).getValue()));
 			} else {

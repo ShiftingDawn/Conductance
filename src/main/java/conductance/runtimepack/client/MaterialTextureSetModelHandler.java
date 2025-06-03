@@ -40,7 +40,7 @@ public final class MaterialTextureSetModelHandler {
 		return Util.make(new JsonObject(), json -> {
 			json.addProperty("parent", "item/generated");
 			json.add("textures", Util.make(new JsonObject(), textures -> {
-				textures.addProperty("layer0", type.getItemTexture(set, null, null).getValue().toString());
+				textures.addProperty("layer0", type.getTexture(set, null, null).getValue().toString());
 
 				final ResourceLocation magneticOverlayTexture = ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(),
 						"item/material/%s/%s/magnetic_overlay".formatted(set.getNamespace(), set.getPath()));
@@ -52,7 +52,7 @@ public final class MaterialTextureSetModelHandler {
 				int i = 1;
 				while (!layerQueue.isEmpty()) {
 					final int overlay = i++;
-					final SafeOptional<ResourceLocation> extraOverlay = type.getItemTexture(set, null, "_overlay%s".formatted(overlay == 1 ? "" : overlay));
+					final SafeOptional<ResourceLocation> extraOverlay = type.getTexture(set, null, "_overlay%s".formatted(overlay == 1 ? "" : overlay));
 					if (CAPI.resourceFinder().isTextureValid(extraOverlay.getValue())) {
 						assert layerQueue.size() > 1;
 						textures.addProperty(layerQueue.poll(), extraOverlay.getValue().toString());
@@ -68,7 +68,7 @@ public final class MaterialTextureSetModelHandler {
 		return Util.make(new JsonObject(), json -> {
 			json.addProperty("parent", Conductance.id("block/cube_all_tinted0").toString());
 			json.add("textures", Util.make(new JsonObject(), textures -> {
-				textures.addProperty("all", type.getBlockTexture(set, null, null).getValue().toString());
+				textures.addProperty("all", type.getTexture(set, null, null).getValue().toString());
 			}));
 		});
 	}

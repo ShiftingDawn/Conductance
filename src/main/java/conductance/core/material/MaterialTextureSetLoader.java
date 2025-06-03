@@ -53,7 +53,7 @@ public final class MaterialTextureSetLoader {
 			throw new IllegalStateException("Encountered cyclic dependencies while loading material texture sets: " + String.join(" -> ", strings));
 		}
 		loadingStack.addLast(set);
-		final ResourceLocation expectedPath = set.withPath("models/material_texture_set/%s.json"::formatted);
+		final ResourceLocation expectedPath = set.withPath("models/material/%s.json"::formatted);
 		Minecraft.getInstance().getResourceManager().getResource(expectedPath).ifPresentOrElse(resource -> {
 			try (final InputStreamReader reader = new InputStreamReader(resource.open())) {
 				final JsonObject json = GsonHelper.fromJson(CAPI.GSON, reader, JsonObject.class);
@@ -61,7 +61,7 @@ public final class MaterialTextureSetLoader {
 				this.load(parent, loadingStack);
 				this.knownSets.put(set, new MaterialTextureSet(set, this.knownSets.get(parent)));
 			} catch (final IOException e) {
-				Conductance.LOGGER.error("Could not generate material texture set{}.", set, e);
+				Conductance.LOGGER.error("Could not generate material texture set {}.", set, e);
 			}
 		}, () -> {
 			Conductance.LOGGER.error("Could not generate material texture set{} because it does not exist.", set);

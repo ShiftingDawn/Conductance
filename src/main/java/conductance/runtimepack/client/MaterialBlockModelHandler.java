@@ -31,7 +31,7 @@ public final class MaterialBlockModelHandler {
 	static void reload() {
 		MaterialBlockModelHandler.MODELS.forEach(model -> {
 			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-			final ResourceLocation custom = ResourceHelper.getCustomBlockTexture(model.material, model.type);
+			final ResourceLocation custom = ResourceHelper.getCustomMaterialTexture(model.material, model.type);
 			if (custom == null) {
 				RuntimeResourcePack.addBlockModel(blockId, new DelegatedModel(model.type.getBlockModel(model.set, null, null).getValue()));
 			} else {
