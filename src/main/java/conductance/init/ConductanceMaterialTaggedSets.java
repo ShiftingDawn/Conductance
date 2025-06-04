@@ -361,7 +361,7 @@ final class ConductanceMaterialTaggedSets {
 				.textureType(NCTextureTypes.RING)
 				.generatorPredicate(hasFlag(NCMaterialFlags.GENERATE_RING)));
 
-		FINE_WIRE = event.register("fine_wire", builder -> builder
+		FINE_WIRE = event.register("fine_wire", "fine_%s_wire", builder -> builder
 				.addTag("fine_wires/%s", "Fine %s Wires")
 				.addTagUnformatted("fine_wires", "Fine Wires")
 				.unitValue(CAPI.UNIT / 8)
