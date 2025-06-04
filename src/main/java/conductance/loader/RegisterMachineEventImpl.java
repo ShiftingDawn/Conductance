@@ -7,6 +7,7 @@ import conductance.api.machine.MachineBlockEntityFactory;
 import conductance.api.machine.MachineBuilder;
 import conductance.api.machine.MachineType;
 import conductance.api.plugin.RegisterMachineEvent;
+import conductance.core.machine.MachineBuilderImpl;
 
 @AllArgsConstructor
 final class RegisterMachineEventImpl implements RegisterMachineEvent {
@@ -23,6 +24,6 @@ final class RegisterMachineEventImpl implements RegisterMachineEvent {
 		//TODO refactor
 		final MachineBuilder<T> b = this.delegate.apply(registryName, constructor);
 		builder.accept(b);
-		return b.build();
+		return ((MachineBuilderImpl<T>) b).build();
 	}
 }

@@ -27,7 +27,7 @@ final class TierModelHandlers {
 				}
 			});
 		}));
-		NCBlocks.MACHINE_CASINGS.forEach((tier, blockEntry) -> {
+		NCBlocks.MACHINE_CASING.forEach((tier, blockEntry) -> {
 			final ResourceLocation model = blockEntry.getId().withPath("block/machine_casing_tiered_%s".formatted(tier.getRegistryKey()));
 			event.addBlockState(blockEntry.getId(), builder -> builder.variants(variants -> {
 				variants.variant(HORIZONTAL_FACING, Direction.NORTH).model(model);

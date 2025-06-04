@@ -1,8 +1,11 @@
 package conductance.init.recipe;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ItemStack;
 import conductance.api.CAPI;
 import conductance.api.NCBlocks;
 import conductance.api.NCItems;
+import conductance.api.NCMachines;
 import conductance.api.plugin.RegisterRecipeEvent;
 import conductance.api.tier.Tier;
 import conductance.api.tier.TieredComponentMap;
@@ -16,8 +19,10 @@ final class TierRecipes {
 	}
 
 	private static void addTierRecipes(final RegisterRecipeEvent event, final Tier tier, final TieredComponentMap map) {
-		shaped(event, NCBlocks.MACHINE_CASINGS.get(tier).getId().getPath(), NCBlocks.MACHINE_CASINGS.get(tier).asStack(),
+		shaped(event, NCBlocks.MACHINE_CASING.get(tier).getId().getPath(), NCBlocks.MACHINE_CASING.get(tier).asStack(),
 				"AAA", "AWA", "AAA", 'A', map.getMachineCasingPlateItem());
+		shaped(event, BuiltInRegistries.BLOCK.getKey(NCMachines.MACHINE_HULL.get(tier).getBlock().get()).getPath(), new ItemStack(NCMachines.MACHINE_HULL.get(tier).getBlock().get()),
+				"AAA", "BCB", 'A', map.getMachineHullPlateItem(), 'B', map.getMachineHullWireItem(), 'C', NCBlocks.MACHINE_CASING.get(tier).asStack());
 		shaped(event, TieredItemType.ELECTRIC_MOTOR.makeUnlocalizedName(tier), NCItems.tiered(TieredItemType.ELECTRIC_MOTOR, tier, 1),
 				" AB", "ACA", "BA ", 'A', map.getElectricMotorWireItem(), 'B', map.getElectricMotorRodItem(), 'C', map.getElectricMotorMagneticRodItem());
 		shaped(event, TieredItemType.ELECTRIC_PISTON.makeUnlocalizedName(tier), NCItems.tiered(TieredItemType.ELECTRIC_PISTON, tier, 1),

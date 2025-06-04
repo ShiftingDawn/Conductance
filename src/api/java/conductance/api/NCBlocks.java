@@ -9,7 +9,7 @@ import conductance.api.tier.Tier;
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCBlocks {
 
-	public static Map<Tier, BlockEntry<? extends Block>> MACHINE_CASINGS;
+	public static Map<Tier, BlockEntry<? extends Block>> MACHINE_CASING;
 
 	public static Supplier<? extends Block> CASING_STEEL;
 	public static Supplier<? extends Block> CASING_INVAR;

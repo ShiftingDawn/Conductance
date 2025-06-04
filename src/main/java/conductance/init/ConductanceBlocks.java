@@ -78,7 +78,7 @@ public final class ConductanceBlocks {
 	}
 
 	private static void generatedTiered() {
-		NCBlocks.MACHINE_CASINGS = CAPI.tiers().newMap(tier -> ApiBridge.getRegistrate().block("%s_machine_casing".formatted(tier.getRegistryKey()), HorizontalBlock::new)
+		NCBlocks.MACHINE_CASING = CAPI.tiers().newMap(tier -> ApiBridge.getRegistrate().block("%s_machine_casing".formatted(tier.getRegistryKey()), HorizontalBlock::new)
 				.initialProperties(() -> Blocks.IRON_BLOCK)
 				.item()
 				.model(NonNullBiConsumer.noop())

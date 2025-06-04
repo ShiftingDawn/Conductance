@@ -10,11 +10,12 @@ import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterMachineEvent;
-import conductance.api.util.TextHelper;
 import conductance.api.tier.Tier;
+import conductance.api.util.TextHelper;
 import conductance.Conductance;
 import conductance.init.machine.GenericGeneratorMachine;
 import conductance.init.machine.GenericRecipeMachine;
+import conductance.init.machine.MachineHullMachine;
 import conductance.init.machine.SteamSolidBoilerMachine;
 import static conductance.Conductance.tooltip;
 
@@ -28,6 +29,11 @@ final class ConductanceMachines {
 				.tooltip(tooltip("generic.produces_fluid", 64), tooltip("boiler.explode_on_water_fill"))
 				.localized("Solid Fuel Steam Boiler")
 				.workableModelRenderer(Conductance.id("block/machine_casing_bronze")));
+
+		NCMachines.MACHINE_HULL = CAPI.tiers().newMap(tier -> event.register("%s_machine_hull".formatted(tier.getRegistryKey()), MachineHullMachine::new, builder -> builder
+				.localized("%s Machine Hull".formatted(tier.getLocalizedNameUnformatted()))
+				.tieredModelRenderer(Conductance.id("block/machine_casing_tiered_%s".formatted(tier.getRegistryKey())), "machine_hull")
+		));
 
 		NCMachines.LV_STEAM_TURBINE = ConductanceMachines.tieredGenerator(event, "steam_turbine", NCRecipeTypes.STEAM_TURBINE, NCTiers.LV);
 		NCMachines.MV_STEAM_TURBINE = ConductanceMachines.tieredGenerator(event, "steam_turbine", NCRecipeTypes.STEAM_TURBINE, NCTiers.MV);
