@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import conductance.core.mixinext.MixinTagLoaderExtension;
-import conductance.runtimepack.server.RuntimeDataPackBridge;
+import conductance.core.runtimepack.server.RuntimeDataPackBridge;
 
 @Mixin(TagLoader.class)
 public abstract class TagLoaderMixin<T> implements MixinTagLoaderExtension<T> {

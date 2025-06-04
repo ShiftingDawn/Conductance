@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import conductance.runtimepack.server.RuntimeDataPackBridge;
+import conductance.core.runtimepack.server.RuntimeDataPackBridge;
 
 @Mixin(value = RecipeManager.class, priority = 250)
 public class RecipeManagerMixin {
