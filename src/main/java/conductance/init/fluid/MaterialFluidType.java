@@ -1,5 +1,6 @@
 package conductance.init.fluid;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -10,7 +11,6 @@ import lombok.Getter;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.runtimepack.client.ResourceHelper;
 
 @SuppressWarnings("removal")
 public final class MaterialFluidType extends FluidType {
@@ -46,16 +46,15 @@ public final class MaterialFluidType extends FluidType {
 
 			@Override
 			public ResourceLocation getStillTexture() {
-				final ResourceLocation texture = ResourceHelper.getCustomMaterialTexture(MaterialFluidType.this.material, MaterialFluidType.this.set.getTextureType());
-				if (texture != null) {
-					return texture;
-				}
-				return CAPI.resourceFinder().getTexture(MaterialFluidType.this.material.getTextureSet(), MaterialFluidType.this.set.getTextureType(), null, null).getValue();
+				return Objects.requireNonNullElseGet(
+						CAPI.resourceFinder().getCustomMaterialTexture(MaterialFluidType.this.material, MaterialFluidType.this.set.getTextureType()),
+						() -> CAPI.resourceFinder().getMaterialTexture(MaterialFluidType.this.material.getTextureSet(), MaterialFluidType.this.set.getTextureType(), null, null).getValue()
+				);
 			}
 
 			@Override
 			public ResourceLocation getFlowingTexture() {
-				return this.getFlowingTexture();
+				return this.getStillTexture();
 			}
 		});
 	}

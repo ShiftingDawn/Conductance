@@ -11,6 +11,7 @@
     <suppress-xpath checks="HideUtilityClassConstructor" query="//CLASS_DEF[.//ANNOTATION/IDENT[@text='Setter']]"/>
 
     <suppress files=".+Mixin\.java" checks=".*"/>
+    <suppress files="Mixin.+Extension\.java" checks=".*"/>
 
     <suppress files="Config\.java" checks="[a-zA-Z0-9]*"/>
 

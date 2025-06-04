@@ -11,7 +11,6 @@ import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.init.ConductanceCreativeTabs;
-import conductance.runtimepack.client.MaterialBlockModelHandler;
 
 public class MaterialBlock extends ConductanceBlock {
 
@@ -26,9 +25,6 @@ public class MaterialBlock extends ConductanceBlock {
 		this.material = material;
 		this.set = set;
 		this.unlocalizedName = "block.%s.%s".formatted(material.getRegistryKey().getNamespace(), set.getUnlocalizedName(material));
-		if (CAPI.isClient()) {
-			MaterialBlockModelHandler.add(this, material, material.getTextureSet(), set.getTextureType());
-		}
 	}
 
 	@Override

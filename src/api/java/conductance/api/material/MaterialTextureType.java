@@ -13,14 +13,14 @@ public final class MaterialTextureType extends RegistryObject<ResourceLocation> 
 	}
 
 	public SafeOptional<ResourceLocation> getTexture(final ResourceLocation textureSet, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		return CAPI.resourceFinder().getTexture(textureSet, this, pathPrefix, pathSuffix);
+		return CAPI.resourceFinder().getMaterialTexture(textureSet, this, pathPrefix, pathSuffix);
 	}
 
 	public SafeOptional<ResourceLocation> getItemModel(final ResourceLocation textureSet, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		return CAPI.resourceFinder().getItemModel(textureSet, this, pathPrefix, pathSuffix);
+		return CAPI.resourceFinder().getMaterialItemModel(textureSet, this, pathPrefix, pathSuffix);
 	}
 
 	public SafeOptional<ResourceLocation> getBlockModel(final ResourceLocation textureSet, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
-		return CAPI.resourceFinder().getBlockModel(textureSet, this, pathPrefix, pathSuffix);
+		return CAPI.resourceFinder().getMaterialBlockModel(textureSet, this, pathPrefix, pathSuffix);
 	}
 }

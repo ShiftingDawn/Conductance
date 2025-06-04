@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import conductance.runtimepack.server.IConductanceTagLoader;
+import conductance.core.mixinext.MixinTagLoaderExtension;
 
 @SuppressWarnings("unchecked")
 @Mixin(TagManager.class)
@@ -24,6 +24,6 @@ public abstract class TagManagerMixin {
 			LocalCapture.CAPTURE_FAILHARD)
 	private <T> void conductance$setRegistryForTagLoaderUsage(final ResourceManager resourceManager, final Executor backgroundExecutor, final RegistryAccess.RegistryEntry<T> registryEntry,
 			final CallbackInfoReturnable<CompletableFuture<TagManager.LoadResult<T>>> cir, final ResourceKey<? extends Registry<T>> resourceKey, final Registry<T> registry, final TagLoader<Holder<T>> tagLoader) {
-		((IConductanceTagLoader<T>) tagLoader).conductance$setRegistry(registry);
+		((MixinTagLoaderExtension<T>) tagLoader).conductance$setRegistry(registry);
 	}
 }

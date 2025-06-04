@@ -44,7 +44,7 @@ import conductance.api.util.RotationState;
 import conductance.Conductance;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.recipe.RecipeTypeImpl;
-import conductance.runtimepack.client.MachineBlockModelHandler;
+import conductance.core.runtimepack.client.MachineBlockModelHandler;
 import static conductance.core.apiimpl.ApiBridge.getRegistrate;
 
 public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements MachineBuilder<T> {

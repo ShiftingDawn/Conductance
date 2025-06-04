@@ -11,7 +11,6 @@ import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import conductance.api.CAPI;
-import conductance.client.LuxBlockRenderer;
 import conductance.init.ConductanceCreativeTabs;
 
 public class DecoLuxBlock extends ConductanceBlock implements IBlockRendererProvider {

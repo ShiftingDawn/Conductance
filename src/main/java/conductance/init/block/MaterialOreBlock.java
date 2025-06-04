@@ -25,7 +25,6 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.init.ConductanceCreativeTabs;
-import conductance.runtimepack.client.MaterialOreModelHandler;
 
 public class MaterialOreBlock extends ConductanceBlock implements IMaterialOreBlock {
 
@@ -42,9 +41,6 @@ public class MaterialOreBlock extends ConductanceBlock implements IMaterialOreBl
 		this.set = set;
 		this.oreType = oreType;
 		this.unlocalizedName = "block.%s.%s".formatted(material.getRegistryKey().getNamespace(), set.getUnlocalizedName(material));
-		if (CAPI.isClient()) {
-			MaterialOreModelHandler.add(this, material, oreType);
-		}
 	}
 
 	@Override
