@@ -34,11 +34,11 @@ import conductance.api.machine.render.BakedModelItemDefaults;
 import conductance.api.machine.render.RebakedModelRenderer;
 import conductance.Conductance;
 
-final class LuxBlockRenderer extends RebakedModelRenderer implements ICTMPredicate {
+final class DecoLuxBlockRenderer extends RebakedModelRenderer implements ICTMPredicate {
 
 	private final ResourceLocation texture;
 
-	LuxBlockRenderer(final DyeColor dyeColor) {
+	DecoLuxBlockRenderer(final DyeColor dyeColor) {
 		super(ResourceLocation.withDefaultNamespace("block/cube_all"));
 		this.texture = Conductance.id("block/decoration/lux/%s".formatted(dyeColor.getSerializedName()));
 	}
