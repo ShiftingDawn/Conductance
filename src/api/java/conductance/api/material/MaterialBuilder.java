@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.api.material.traits.MaterialTraitIngot;
 import conductance.api.periodicelement.PeriodicElement;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 public interface MaterialBuilder {
 

@@ -7,7 +7,7 @@ import conductance.api.NCMaterialTraits;
 import conductance.api.material.IMaterialTrait;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialTraitKey;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 @Getter
 public class MaterialTraitWire implements IMaterialTrait<MaterialTraitWire> {

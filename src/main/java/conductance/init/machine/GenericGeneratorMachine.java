@@ -12,7 +12,7 @@ import conductance.api.machine.gui.MachineGuiSupplier;
 import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeHolder;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 import conductance.client.MachineUIFactory;
 import conductance.core.RecipeModifiers;
 

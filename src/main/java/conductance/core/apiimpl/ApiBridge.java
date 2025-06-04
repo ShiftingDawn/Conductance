@@ -10,7 +10,6 @@ import conductance.api.machine.sync.SyncHelper;
 import conductance.api.resource.ResourceFinder;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TranslationRegistry;
-import conductance.api.util.tier.TierRegistry;
 import conductance.Conductance;
 import conductance.core.pipenet.WireRegistry;
 import conductance.core.recipe.RecipeHelperImpl;
@@ -36,7 +35,6 @@ public final class ApiBridge {
 		Conductance.setApiValue(RegistryProvider.class, ApiBridge.regs);
 		Conductance.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
 		Conductance.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
-		Conductance.setApiValue(TierRegistry.class, TierRegistryImpl.INSTANCE);
 		Conductance.setApiValue(RecipeHelper.class, RecipeHelperImpl.INSTANCE);
 		Conductance.setApiValue(SyncHelper.class, SyncHelperImpl.INSTANCE);
 	}
@@ -46,7 +44,6 @@ public final class ApiBridge {
 		ApiBridge.REGISTRIES.freeze();
 		ApiBridge.REGISTRIES.values().forEach(ConductanceRegistryImpl::freeze);
 
-		TierRegistryImpl.freeze();
 		WireRegistry.freeze();
 		SyncFieldSerializerRegisterImpl.INSTANCE.freeze();
 	}

@@ -215,7 +215,6 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 		return this;
 	}
 
-	@Override
 	public MachineType<T> build() {
 		final MachineTypeImpl<T> machineType = Util.make(new MachineTypeImpl<>(this.registryKey), result -> {
 			result.setBlock(this.createBlock(result));

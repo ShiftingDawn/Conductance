@@ -20,7 +20,7 @@ import conductance.api.NCRecipeElementTypes;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.util.MiscUtils;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 public interface RecipeBuilder {
 

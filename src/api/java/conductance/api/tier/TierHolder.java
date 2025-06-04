@@ -1,4 +1,4 @@
-package conductance.api.util.tier;
+package conductance.api.tier;
 
 public interface TierHolder {
 

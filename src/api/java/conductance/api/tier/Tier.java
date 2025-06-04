@@ -1,4 +1,4 @@
-package conductance.api.util.tier;
+package conductance.api.tier;
 
 import net.minecraft.network.chat.MutableComponent;
 import conductance.api.registry.IRegistryObject;
@@ -25,10 +25,5 @@ public interface Tier extends IRegistryObject<String> {
 
 	MutableComponent getLocalizedName();
 
-	interface Builder {
-
-		Builder previous(Tier tier);
-
-		Tier build();
-	}
+	TieredComponentMap getComponentMap();
 }

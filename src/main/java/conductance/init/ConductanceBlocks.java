@@ -17,6 +17,7 @@ import conductance.core.material.MaterialRegistryImpl;
 import conductance.core.material.TaggedMaterialSetImpl;
 import conductance.core.pipenet.WireRegistry;
 import conductance.core.pipenet.WireType;
+import conductance.init.block.HorizontalBlock;
 import conductance.init.block.MaterialBlock;
 import conductance.init.block.MaterialBlockItem;
 import conductance.init.block.MaterialOreBlock;
@@ -31,6 +32,8 @@ import conductance.init.item.RenderedBlockItem;
 public final class ConductanceBlocks {
 
 	public static void init() {
+		ConductanceBlocks.generatedTiered();
+
 		NCBlocks.CASING_STEEL = ConductanceBlocks.machineCasingBlock("steel");
 		NCBlocks.CASING_INVAR = ConductanceBlocks.machineCasingBlock("invar");
 		NCBlocks.CASING_ALUMINIUM = ConductanceBlocks.machineCasingBlock("aluminium");
@@ -72,6 +75,15 @@ public final class ConductanceBlocks {
 				})
 		);
 		ConductanceBlocks.generateWires();
+	}
+
+	private static void generatedTiered() {
+		NCBlocks.MACHINE_CASING = CAPI.tiers().newMap(tier -> ApiBridge.getRegistrate().block("%s_machine_casing".formatted(tier.getRegistryKey()), HorizontalBlock::new)
+				.initialProperties(() -> Blocks.IRON_BLOCK)
+				.item()
+				.model(NonNullBiConsumer.noop())
+				.build()
+				.register());
 	}
 
 	private static BlockEntry<SimpleDynamicBlock> machineCasingBlock(final String name) {

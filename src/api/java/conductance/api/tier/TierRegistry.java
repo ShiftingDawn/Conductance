@@ -1,4 +1,4 @@
-package conductance.api.util.tier;
+package conductance.api.tier;
 
 import java.util.List;
 import java.util.Map;

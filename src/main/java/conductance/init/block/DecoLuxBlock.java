@@ -19,7 +19,7 @@ public class DecoLuxBlock extends ConductanceBlock implements IBlockRendererProv
 
 	public DecoLuxBlock(final BlockBehaviour.Properties properties, final DyeColor dyeColor) {
 		super(properties);
-		this.renderer = new LuxBlockRenderer(dyeColor);
+		this.renderer = new DecoLuxBlockRenderer(dyeColor);
 	}
 
 	@Override

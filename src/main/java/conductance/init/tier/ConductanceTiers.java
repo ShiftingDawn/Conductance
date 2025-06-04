@@ -1,10 +1,9 @@
-package conductance.init;
+package conductance.init.tier;
 
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterTierEvent;
+import conductance.api.tier.event.RegisterTierEvent;
 import conductance.Conductance;
-import conductance.core.apiimpl.TierRegistryImpl;
 import static net.minecraft.ChatFormatting.DARK_BLUE;
 import static net.minecraft.ChatFormatting.DARK_GREEN;
 import static net.minecraft.ChatFormatting.GOLD;
@@ -19,10 +18,10 @@ final class ConductanceTiers {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterTierEvent event) {
-		LV = event.register("lv", DARK_BLUE + "LV", 0x004fff, TierRegistryImpl.EMPTY);
-		MV = event.register("mv", GOLD + "MV", 0xbf6a40);
-		HV = event.register("hv", YELLOW + "HV", 0xbfa640);
-		EV = event.register("ev", DARK_GREEN + "EV", 0x237070);
+		LV = event.register("lv", DARK_BLUE + "LV", 0x004fff, LvComponentMap::new);
+		MV = event.register("mv", GOLD + "MV", 0xbf6a40, MvComponentMap::new);
+		HV = event.register("hv", YELLOW + "HV", 0xbfa640, HvComponentMap::new);
+		EV = event.register("ev", DARK_GREEN + "EV", 0x237070, EvComponentMap::new);
 	}
 
 	private ConductanceTiers() {

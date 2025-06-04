@@ -37,6 +37,7 @@ public final class RecipeLoader {
 	private static void initAddition(final RegisterRecipeEvent event) {
 		MaterialRecipes.add(event);
 		FuelAndEnergyRecipes.add(event);
+		TierRecipes.add(event);
 	}
 
 	@EventListener

@@ -33,7 +33,7 @@ import conductance.api.material.traits.MaterialTraitOre;
 import conductance.api.material.traits.MaterialTraitWire;
 import conductance.api.material.traits.MaterialTraitWood;
 import conductance.api.material.MaterialBuilder;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 final class MaterialBuilderImpl implements MaterialBuilder {
 

@@ -11,11 +11,11 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
 import conductance.api.NCCovers;
-import conductance.api.util.TieredItemType;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
+import conductance.api.tier.TieredItemType;
 import conductance.core.apiimpl.ApiBridge;
-import conductance.core.material.TaggedMaterialSetImpl;
 import conductance.core.material.MaterialRegistryImpl;
+import conductance.core.material.TaggedMaterialSetImpl;
 import conductance.init.item.CraftingToolItem;
 import conductance.init.item.MaterialItem;
 import conductance.init.item.TieredCoverItem;
@@ -61,8 +61,7 @@ public final class ConductanceItems {
 		TIERED = Tables.unmodifiableTable(Util.make(Tables.newCustomTable(new EnumMap<>(TieredItemType.class), HashMap::new), table -> {
 			for (final TieredItemType tieredItemType : TieredItemType.values()) {
 				for (final Tier tier : CAPI.tiers().getTiers()) {
-					final String name = tieredItemType.getUnlocalizedNameFactory().formatted(tier.getRegistryKey());
-					final ItemEntry<? extends Item> item = ApiBridge.getRegistrate().item(name, props -> switch (tieredItemType) {
+					final ItemEntry<? extends Item> item = ApiBridge.getRegistrate().item(tieredItemType.makeUnlocalizedName(tier), props -> switch (tieredItemType) {
 								case CONVEYOR_MODULE -> new TieredCoverItem<>(props, tieredItemType, tier, NCCovers.CONVEYORS.get(tier));
 								default -> new TieredItem(props, tieredItemType, tier);
 							})

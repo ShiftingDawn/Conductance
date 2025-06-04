@@ -5,7 +5,7 @@ import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.plugin.RegisterFieldSerializerEvent;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 import conductance.Conductance;
 import conductance.init.sync.NBTSerializableHandler;
 import conductance.init.sync.RecipeSerializer;

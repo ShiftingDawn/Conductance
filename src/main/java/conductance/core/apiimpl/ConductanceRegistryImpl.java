@@ -25,9 +25,6 @@ public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject
 	@Nullable
 	@Setter
 	private BiConsumer<KEY, VALUE> registerCallback;
-	@Nullable
-	@Setter
-	private BiConsumer<KEY, VALUE> unregisterCallback;
 
 	ConductanceRegistryImpl(final ResourceLocation registryKey) {
 		super(registryKey);

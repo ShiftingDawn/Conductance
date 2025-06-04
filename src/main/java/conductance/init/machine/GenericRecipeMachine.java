@@ -10,7 +10,7 @@ import conductance.api.machine.gui.MachineGuiHolder;
 import conductance.api.machine.gui.MachineGuiSupplier;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeHolder;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 import conductance.client.MachineUIFactory;
 
 public class GenericRecipeMachine extends TieredWorkableMachine<GenericRecipeMachine> implements MachineGuiHolder {

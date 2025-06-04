@@ -57,6 +57,4 @@ public interface MachineBuilder<T extends MachineBlockEntity<T>> {
 	MachineBuilder<T> tooltip(BiConsumer<ItemStack, List<Component>> tooltipBuilder);
 
 	MachineBuilder<T> localized(String localizedName);
-
-	MachineType<T> build();
 }

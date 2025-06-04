@@ -2,13 +2,15 @@ package conductance.api;
 
 import java.util.Map;
 import conductance.api.machine.MachineType;
-import conductance.api.util.tier.Tier;
+import conductance.api.tier.Tier;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCMachines {
 
 	public static MachineType<?> STEAM_BOILER_SOLID_FUEL;
 	public static MachineType<?> STEAM_BOILER_LIQUID_FUEL;
+
+	public static Map<Tier, MachineType<?>> MACHINE_HULL;
 
 	public static MachineType<?> LV_STEAM_TURBINE;
 	public static MachineType<?> MV_STEAM_TURBINE;
