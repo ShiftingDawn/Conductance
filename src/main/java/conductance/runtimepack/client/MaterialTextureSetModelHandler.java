@@ -17,7 +17,7 @@ import conductance.core.material.MaterialTextureSetLoader;
 @ConductancePluginListener(modid = Conductance.MODID)
 final class MaterialTextureSetModelHandler {
 
-	@EventListener(priority = -99)
+	@EventListener(priority = -101)
 	private static void onAddRuntimeModels(final AddRuntimeModelEvent event) {
 		MaterialTextureSetLoader.reload();
 		MaterialTextureSetLoader.getTextureSets().forEach(set -> {
