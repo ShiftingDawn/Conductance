@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import conductance.runtimepack.client.RuntimeResourcePack;
+import conductance.runtimepack.client.RuntimeResourcePackBridge;
 
 @Mixin(ModelManager.class)
 public abstract class ModelManagerMixin {
@@ -18,6 +18,6 @@ public abstract class ModelManagerMixin {
 	@Inject(method = "reload", at = @At("HEAD"))
 	private void conductance$injectRuntimeResourcePackModels(final PreparableReloadListener.PreparationBarrier preparationBarrier, final ResourceManager resourceManager, final ProfilerFiller preparationsProfiler,
 			final ProfilerFiller reloadProfiler, final Executor backgroundExecutor, final Executor gameExecutor, final CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-		RuntimeResourcePack.load();
+		RuntimeResourcePackBridge.loadModels();
 	}
 }

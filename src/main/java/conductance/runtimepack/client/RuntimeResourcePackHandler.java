@@ -21,7 +21,7 @@ public class RuntimeResourcePackHandler implements RepositorySource {
 	private static final String NAME = Conductance.MODID + ":runtime_resource_pack";
 
 	public RuntimeResourcePackHandler() {
-		RuntimeResourcePack.reset();
+		RuntimeResourcePackBridge.reset();
 	}
 
 	@Override

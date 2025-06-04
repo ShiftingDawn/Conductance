@@ -8,5 +8,5 @@
 		"maxShiftBy": 5
 	},
 	"mixins": ["BlockEntityMixin", "MachineBlockMixin", "RecipeManagerMixin", "ReloadableServerResourcesMixin", "TagLoaderMixin", "TagManagerMixin"],
-	"client": ["BlockModelMixin", "FaceBakeryMixin", "ModelManagerMixin"]
+	"client": ["BlockModelMixin", "FaceBakeryMixin", "LanguageManagerMixin", "ModelManagerMixin"]
 }

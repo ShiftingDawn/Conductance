@@ -14,27 +14,18 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.resource.event.AddBlockModelEvent;
-import conductance.api.resource.event.AddBlockStateEvent;
-import conductance.api.resource.event.AddItemModelEvent;
-import conductance.api.resource.event.AddTranslationEvent;
-import conductance.api.resource.event.ReloadingRuntimeResourcePackEvent;
 import conductance.Conductance;
 import conductance.Config;
 import conductance.core.apiimpl.TranslationRegistryImpl;
-import conductance.core.machine.BlockModelBuilderImpl;
-import conductance.core.machine.BlockStateBuilderImpl;
-import conductance.core.machine.ItemModelBuilderImpl;
-import conductance.loader.PluginEventBus;
 import conductance.runtimepack.AbstractRuntimePack;
 
-public final class RuntimeResourcePack extends AbstractRuntimePack {
+final class RuntimeResourcePack extends AbstractRuntimePack {
 
 	private static final Set<String> KNOWN_NAMESPACES = new ObjectOpenHashSet<>(Sets.newHashSet(CAPI.MOD_ID, ResourceLocation.DEFAULT_NAMESPACE, "c", "neoforge"));
 	private static final Map<ResourceLocation, byte[]> DATA = new ConcurrentHashMap<>();
 	private static final Map<String, String> TRANSLATIONS = new ConcurrentHashMap<>();
 
-	public RuntimeResourcePack(final PackLocationInfo location) {
+	RuntimeResourcePack(final PackLocationInfo location) {
 		super(location, PackType.CLIENT_RESOURCES);
 	}
 
@@ -58,59 +49,42 @@ public final class RuntimeResourcePack extends AbstractRuntimePack {
 		}
 	}
 
-	//TODO this should probably happen on F3+R too?
 	static void reset() {
+		if (!RuntimeResourcePack.DATA.isEmpty()) {
+			throw new RuntimeException("data");
+		}
 		RuntimeResourcePack.DATA.clear();
 		RuntimeResourcePack.TRANSLATIONS.clear();
+		//todo find appropriate place for this
 		TranslationRegistryImpl.INSTANCE.reset();
 	}
 
-	public static void load() {
-		final long sysTime = System.currentTimeMillis();
-		//Dispatch events
-		PluginEventBus.postAll(AddBlockStateEvent.class, new AddBlockStateEventImpl((location, builder) -> {
-			final JsonObject data = Util.make(new BlockStateBuilderImpl(), builder).build();
-			RuntimeResourcePack.addBlockState(location, data);
-		}));
-		PluginEventBus.postAll(AddBlockModelEvent.class, new AddBlockModelEventImpl((location, builder) -> {
-			final JsonObject data = Util.make(new BlockModelBuilderImpl(), builder).build();
-			RuntimeResourcePack.addBlockModel(location, data);
-		}));
-		PluginEventBus.postAll(AddItemModelEvent.class, new AddItemModelEventImpl((location, builder) -> {
-			final JsonObject data = Util.make(new ItemModelBuilderImpl(), builder).build();
-			RuntimeResourcePack.addItemModel(location, data);
-		}));
-		PluginEventBus.postAll(AddTranslationEvent.class, new AddTranslationEventImpl(RuntimeResourcePack::addTranslation));
-		PluginEventBus.postAll(ReloadingRuntimeResourcePackEvent.class, new ReloadingRuntimeResourcePackEventImpl(
-				RuntimeResourcePack::addBlockState, RuntimeResourcePack::addBlockModel, RuntimeResourcePack::addItemModel
-		));
-		//Build translations
+	static void freezeTranslations() {
 		RuntimeResourcePack.DATA.put(Conductance.id("lang/en_us.json"), Util.make(new JsonObject(), json -> {
 			RuntimeResourcePack.TRANSLATIONS.forEach(json::addProperty);
 			RuntimeResourcePack.writeJson(Conductance.id("lang/en_us.json"), null, json);
 		}).toString().getBytes(StandardCharsets.UTF_8));
-		Conductance.LOGGER.info("Conductance reloaded RuntimeResourcePack in {}ms", System.currentTimeMillis() - sysTime);
 	}
 
-	private static void addBlockState(final ResourceLocation location, final JsonElement blockState) {
+	static void addBlockState(final ResourceLocation location, final JsonElement blockState) {
 		final ResourceLocation realLocation = RuntimeResourcePack.getBlockStateLocation(location);
 		RuntimeResourcePack.writeJson(realLocation, null, blockState);
 		RuntimeResourcePack.DATA.put(realLocation, blockState.toString().getBytes(StandardCharsets.UTF_8));
 	}
 
-	private static void addBlockModel(final ResourceLocation location, final JsonElement blockModel) {
+	static void addBlockModel(final ResourceLocation location, final JsonElement blockModel) {
 		final ResourceLocation realLocation = RuntimeResourcePack.getBlockModelLocation(location);
 		RuntimeResourcePack.writeJson(realLocation, null, blockModel);
 		RuntimeResourcePack.DATA.put(realLocation, blockModel.toString().getBytes(StandardCharsets.UTF_8));
 	}
 
-	private static void addItemModel(final ResourceLocation location, final JsonElement itemModel) {
+	static void addItemModel(final ResourceLocation location, final JsonElement itemModel) {
 		final ResourceLocation realLocation = RuntimeResourcePack.getItemModelLocation(location);
 		RuntimeResourcePack.writeJson(realLocation, null, itemModel);
 		RuntimeResourcePack.DATA.put(realLocation, itemModel.toString().getBytes(StandardCharsets.UTF_8));
 	}
 
-	private static void addTranslation(final String key, final String translation) {
+	static void addTranslation(final String key, final String translation) {
 		RuntimeResourcePack.TRANSLATIONS.put(key, translation);
 	}
 

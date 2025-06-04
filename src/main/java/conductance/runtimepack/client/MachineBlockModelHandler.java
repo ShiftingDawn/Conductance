@@ -12,7 +12,7 @@ import conductance.api.CAPI;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.resource.ModelElementBuilder;
-import conductance.api.resource.event.AddBlockModelEvent;
+import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.Conductance;
 
 @ConductancePluginListener(modid = Conductance.MODID)
@@ -33,11 +33,11 @@ public final class MachineBlockModelHandler {
 		MachineBlockModelHandler.MODELS.remove(machineKey);
 	}
 
-	@EventListener
-	private static void onAddBlockModels(final AddBlockModelEvent event) {
+	@EventListener(priority = -100)
+	private static void onAddRuntimeModels(final AddRuntimeModelEvent event) {
 		MachineBlockModelHandler.MODELS.values().forEach(model -> {
 			final String newPath = model.modelLocation.getPath().startsWith("block/") ? model.modelLocation.getPath().substring(6) : model.modelLocation.getPath();
-			event.add(model.modelLocation.withPath(newPath), builder -> {
+			event.addBlockModel(model.modelLocation.withPath(newPath), builder -> {
 				final ModelElementBuilder<?> element = builder.element().from(0, 0, 0).to(16, 16, 16);
 				MachineBlockModelHandler.SIDES.forEach((dir, side) -> model.ifExists(side, tex -> {
 					builder.texture(side, tex);
