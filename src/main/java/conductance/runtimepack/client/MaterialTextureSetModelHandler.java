@@ -9,14 +9,19 @@ import com.google.gson.JsonObject;
 import conductance.api.CAPI;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.TaggedMaterialSet;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
 import conductance.api.registry.TaggedSet;
+import conductance.api.resource.event.ReloadingRuntimeResourcePackEvent;
 import conductance.api.util.SafeOptional;
 import conductance.Conductance;
 import conductance.core.material.MaterialTextureSetLoader;
 
-public final class MaterialTextureSetModelHandler {
+@ConductancePluginListener(modid = Conductance.MODID)
+final class MaterialTextureSetModelHandler {
 
-	static void reload() {
+	@EventListener(priority = -100)
+	private static void onReloadingRuntimeResourcePack(final ReloadingRuntimeResourcePackEvent event) {
 		MaterialTextureSetLoader.reload();
 		MaterialTextureSetLoader.getTextureSets().forEach(set -> {
 			Conductance.LOGGER.debug("Creating models for material texture set {}", set);
@@ -24,13 +29,13 @@ public final class MaterialTextureSetModelHandler {
 				final ResourceLocation path = ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(), "material/%s/%s/%s".formatted(set.getNamespace(), set.getPath(),
 						type.getRegistryKey().getPath()));
 				Conductance.LOGGER.trace("\t{}", path);
-				RuntimeResourcePack.addItemModel(path, MaterialTextureSetModelHandler.createItemEntry(set, type));
+				event.addItemModel(path, MaterialTextureSetModelHandler.createItemEntry(set, type));
 			});
 			CAPI.regs().materialTaggedSets().values().stream().filter(TaggedSet::hasBlocks).map(TaggedMaterialSet::getTextureType).distinct().forEach(type -> {
 				final ResourceLocation path = ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(), "material/%s/%s/%s".formatted(set.getNamespace(), set.getPath(),
 						type.getRegistryKey().getPath()));
 				Conductance.LOGGER.trace("\t{}", path);
-				RuntimeResourcePack.addBlockModel(path, MaterialTextureSetModelHandler.createBlockEntry(set, type));
+				event.addBlockModel(path, MaterialTextureSetModelHandler.createBlockEntry(set, type));
 			});
 		});
 	}

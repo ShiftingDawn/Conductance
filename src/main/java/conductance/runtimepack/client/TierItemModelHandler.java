@@ -1,43 +1,30 @@
 package conductance.runtimepack.client;
 
-import java.util.HashSet;
-import java.util.Set;
-import net.minecraft.Util;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import com.google.gson.JsonObject;
-import lombok.RequiredArgsConstructor;
-import conductance.api.util.TieredItemType;
+import conductance.api.NCItems;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.resource.event.AddItemModelEvent;
 import conductance.Conductance;
 
-@RequiredArgsConstructor
-public final class TierItemModelHandler {
+@ConductancePluginListener(modid = Conductance.MODID)
+final class TierItemModelHandler {
 
-	private static final Set<TierItemModelHandler> MODELS = new HashSet<>();
-
-	private final Item item;
-	private final TieredItemType type;
-
-	public static void add(final Item item, final TieredItemType type) {
-		TierItemModelHandler.MODELS.add(new TierItemModelHandler(item, type));
+	@EventListener(priority = -100)
+	private static void onAddItemModels(final AddItemModelEvent event) {
+		NCItems.TIERED.rowMap().forEach((itemType, column) -> column.forEach((tier, itemEntry) -> {
+			final ResourceLocation custom = ResourceHelper.getCustomItemTexture(itemEntry.getId());
+			event.add(itemEntry.getId(), builder -> {
+				if (custom == null) {
+					builder.layer0(Conductance.id("item/tier/%s/base".formatted(itemType)));
+					builder.layer1(Conductance.id("item/tier/%s/overlay".formatted(itemType)));
+				} else {
+					builder.layer0(custom);
+				}
+			});
+		}));
 	}
 
-	static void reload() {
-		TierItemModelHandler.MODELS.forEach(model -> {
-			final ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
-			final ResourceLocation custom = ResourceHelper.getCustomItemTexture(itemId);
-			RuntimeResourcePack.addItemModel(itemId, () -> Util.make(new JsonObject(), json -> {
-				json.addProperty("parent", "item/generated");
-				json.add("textures", Util.make(new JsonObject(), json2 -> {
-					if (custom == null) {
-						json2.addProperty("layer0", Conductance.id("item/tier/%s/base".formatted(model.type)).toString());
-						json2.addProperty("layer1", Conductance.id("item/tier/%s/overlay".formatted(model.type)).toString());
-					} else {
-						json2.addProperty("layer0", custom.toString());
-					}
-				}));
-			}));
-		});
+	private TierItemModelHandler() {
 	}
 }

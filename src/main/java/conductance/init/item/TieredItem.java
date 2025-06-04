@@ -8,7 +8,6 @@ import lombok.Getter;
 import conductance.api.CAPI;
 import conductance.api.util.TieredItemType;
 import conductance.api.util.tier.Tier;
-import conductance.runtimepack.client.TierItemModelHandler;
 
 public class TieredItem extends ConductanceItem {
 
@@ -21,9 +20,6 @@ public class TieredItem extends ConductanceItem {
 		super(properties);
 		this.type = type;
 		this.tier = tier;
-		if (CAPI.isClient()) {
-			TierItemModelHandler.add(this, type);
-		}
 	}
 
 	@Override

@@ -33,5 +33,17 @@ public interface ModelBuilder<BUILDER extends ModelBuilder<BUILDER>> {
 		return this.texture("particle", referenceTextureKey);
 	}
 
+	BUILDER addProperty(String propertyKey, String propertyValue);
+
+	BUILDER addProperty(String propertyKey, boolean propertyValue);
+
+	BUILDER addProperty(String propertyKey, Number propertyValue);
+
+	BUILDER addProperty(String propertyKey, char propertyValue);
+
+	default BUILDER addProperty(final String propertyKey, final ResourceLocation propertyValue) {
+		return this.addProperty(propertyKey, propertyValue.toString());
+	}
+
 	ModelElementBuilder<BUILDER> element();
 }

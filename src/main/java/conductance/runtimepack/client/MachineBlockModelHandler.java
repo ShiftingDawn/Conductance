@@ -6,12 +6,17 @@ import java.util.Map;
 import java.util.function.Consumer;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import conductance.api.CAPI;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
 import conductance.api.resource.ModelElementBuilder;
-import conductance.core.machine.BlockModelBuilderImpl;
+import conductance.api.resource.event.AddBlockModelEvent;
+import conductance.Conductance;
 
-@RequiredArgsConstructor
+@ConductancePluginListener(modid = Conductance.MODID)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MachineBlockModelHandler {
 
 	private static final EnumMap<Direction, String> SIDES = new EnumMap<>(Direction.class);
@@ -28,17 +33,18 @@ public final class MachineBlockModelHandler {
 		MachineBlockModelHandler.MODELS.remove(machineKey);
 	}
 
-	static void reload() {
+	@EventListener
+	private static void onAddBlockModels(final AddBlockModelEvent event) {
 		MachineBlockModelHandler.MODELS.values().forEach(model -> {
-			final BlockModelBuilderImpl builder = new BlockModelBuilderImpl();
-			final ModelElementBuilder<BlockModelBuilderImpl> element = builder.element().from(0, 0, 0).to(16, 16, 16);
-			MachineBlockModelHandler.SIDES.forEach((dir, side) -> model.ifExists(side, tex -> {
-				builder.texture(side, tex);
-				element.face(dir).texture(side).cullFace(dir).build();
-			}));
-			element.build();
 			final String newPath = model.modelLocation.getPath().startsWith("block/") ? model.modelLocation.getPath().substring(6) : model.modelLocation.getPath();
-			RuntimeResourcePack.addBlockModel(model.modelLocation.withPath(newPath), builder.build());
+			event.add(model.modelLocation.withPath(newPath), builder -> {
+				final ModelElementBuilder<?> element = builder.element().from(0, 0, 0).to(16, 16, 16);
+				MachineBlockModelHandler.SIDES.forEach((dir, side) -> model.ifExists(side, tex -> {
+					builder.texture(side, tex);
+					element.face(dir).texture(side).cullFace(dir).build();
+				}));
+				element.build();
+			});
 		});
 	}
 

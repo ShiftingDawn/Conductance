@@ -7,11 +7,10 @@ import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
 import conductance.core.apiimpl.ApiBridge;
-import conductance.core.material.TaggedMaterialSetImpl;
 import conductance.core.material.MaterialRegistryImpl;
+import conductance.core.material.TaggedMaterialSetImpl;
 import conductance.init.fluid.MaterialBucketItem;
 import conductance.init.fluid.MaterialFluidType;
-import conductance.runtimepack.client.MaterialFluidModelHandler;
 
 public final class ConductanceFluids {
 
@@ -28,9 +27,6 @@ public final class ConductanceFluids {
 					.color(() -> MaterialBucketItem::handleColorTint).model(NonNullBiConsumer.noop()).build();
 			if (((TaggedMaterialSetImpl) set).getFluidGeneratorCallback() != null) {
 				((TaggedMaterialSetImpl) set).getFluidGeneratorCallback().accept(material, fluidBuilder);
-			}
-			if (CAPI.isClient()) {
-				fluidBuilder.onRegister(fluid -> MaterialFluidModelHandler.add(fluid, material, set));
 			}
 			MaterialRegistryImpl.INSTANCE.register(set, material, fluidBuilder.register());
 		}));

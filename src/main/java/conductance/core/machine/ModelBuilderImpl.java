@@ -9,7 +9,9 @@ import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.ModelBuilder;
 import conductance.api.resource.ModelDisplayBuilder;
@@ -20,6 +22,7 @@ public abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>
 	private final Map<String, String> textures = new HashMap<>();
 	private final EnumMap<ItemDisplayContext, ModelDisplayBuilderImpl<BUILDER>> displays = new EnumMap<>(ItemDisplayContext.class);
 	private final List<ModelElementBuilderImpl<BUILDER>> elements = new ArrayList<>();
+	private final Map<String, JsonElement> customProps = new HashMap<>();
 	private ResourceLocation parent;
 	@Nullable
 	private ResourceLocation loader;
@@ -75,6 +78,30 @@ public abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>
 		return Util.make(new ModelElementBuilderImpl<>(this.self()), this.elements::add);
 	}
 
+	@Override
+	public BUILDER addProperty(final String propertyKey, final String propertyValue) {
+		this.customProps.put(propertyKey, new JsonPrimitive(propertyValue));
+		return this.self();
+	}
+
+	@Override
+	public BUILDER addProperty(final String propertyKey, final boolean propertyValue) {
+		this.customProps.put(propertyKey, new JsonPrimitive(propertyValue));
+		return this.self();
+	}
+
+	@Override
+	public BUILDER addProperty(final String propertyKey, final Number propertyValue) {
+		this.customProps.put(propertyKey, new JsonPrimitive(propertyValue));
+		return this.self();
+	}
+
+	@Override
+	public BUILDER addProperty(final String propertyKey, final char propertyValue) {
+		this.customProps.put(propertyKey, new JsonPrimitive(propertyValue));
+		return this.self();
+	}
+
 	protected abstract void addJsonProperties(JsonObject json);
 
 	public final JsonObject build() {
@@ -98,6 +125,7 @@ public abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>
 				json.add("elements", Util.make(new JsonArray(), array -> this.elements.forEach(element -> array.add(element.serialize()))));
 			}
 			this.addJsonProperties(json);
+			this.customProps.forEach(json::add);
 		});
 	}
 }
