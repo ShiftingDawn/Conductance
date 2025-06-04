@@ -4,7 +4,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import com.google.common.collect.Table;
 import com.tterrag.registrate.util.entry.ItemEntry;
-import conductance.api.util.TieredItemType;
+import conductance.api.tier.TieredItemType;
 import conductance.api.tier.Tier;
 
 @SuppressWarnings("NotNullFieldNotInitialized")

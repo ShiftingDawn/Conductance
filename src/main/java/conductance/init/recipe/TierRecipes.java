@@ -9,7 +9,7 @@ import conductance.api.NCMachines;
 import conductance.api.plugin.RegisterRecipeEvent;
 import conductance.api.tier.Tier;
 import conductance.api.tier.TieredComponentMap;
-import conductance.api.util.TieredItemType;
+import conductance.api.tier.TieredItemType;
 import static conductance.init.recipe.RecipeLoader.shaped;
 
 final class TierRecipes {

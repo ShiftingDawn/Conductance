@@ -1,9 +1,9 @@
-package conductance.api.util;
+package conductance.api.tier;
 
 import java.util.Locale;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.tier.Tier;
+import conductance.api.util.TextHelper;
 
 public enum TieredItemType {
 
