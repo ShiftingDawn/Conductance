@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +42,7 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 	private final Table<TaggedMaterialSet, Material, List<Item>> itemRegistry = HashBasedTable.create();
 	private final Table<TaggedMaterialSet, Material, List<Block>> blockRegistry = HashBasedTable.create();
 	private final Table<TaggedMaterialSet, Material, List<Fluid>> fluidRegistry = HashBasedTable.create();
-	private boolean frozen = false;
+	private final AtomicBoolean frozen = new AtomicBoolean();
 
 	private MaterialRegistryImpl() {
 	}
@@ -110,35 +111,35 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 	}
 
 	public void register(final TaggedMaterialSet tagType, final Material material, final ItemEntry<? extends Item> item) {
-		if (this.frozen) {
+		if (this.frozen.get()) {
 			throw new IllegalStateException("Trying to register item in frozen MaterialRegistry!");
 		}
 		this.generatedItemRegistry.put(tagType, material, item);
 	}
 
 	public void register(final TaggedMaterialSet taggedSet, final Material material, final BlockEntry<? extends Block> block) {
-		if (this.frozen) {
+		if (this.frozen.get()) {
 			throw new IllegalStateException("Trying to register block in frozen MaterialRegistry!");
 		}
 		this.generatedBlockRegistry.put(taggedSet, material, block);
 	}
 
 	public void register(final TaggedMaterialSet taggedSet, final Material material, final FluidEntry<? extends Fluid> fluid) {
-		if (this.frozen) {
+		if (this.frozen.get()) {
 			throw new IllegalStateException("Trying to register fluid in frozen MaterialRegistry!");
 		}
 		this.generatedFluidRegistry.put(taggedSet, material, fluid);
 	}
 
 	public void addOverride(final TaggedMaterialSet set, final Material material, final ItemLike[] overrides) {
-		if (this.frozen) {
+		if (this.frozen.get()) {
 			throw new IllegalStateException("Trying to register override in frozen MaterialRegistry!");
 		}
 		this.overrideMap.put(set, material, overrides);
 	}
 
 	public void addUnitOverride(final TaggedMaterialSet set, final Material material, final long newValue) {
-		if (this.frozen) {
+		if (this.frozen.get()) {
 			throw new IllegalStateException("Trying to register unit override in frozen MaterialRegistry!");
 		}
 		this.unitOverrideMap.put(set, material, newValue);
@@ -161,8 +162,10 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 	}
 
 	public void freeze() {
+		if (this.frozen.getAndSet(true)) {
+			throw new IllegalStateException("Trying to freeze already frozen MaterialRegistry!");
+		}
 		Conductance.LOGGER.info("MaterialRegistry has been frozen!");
-		this.frozen = true;
 	}
 
 	public Table<TaggedMaterialSet, Material, List<Item>> getItemTable() {
