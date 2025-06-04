@@ -49,13 +49,17 @@ final class RuntimeResourcePack extends AbstractRuntimePack {
 		}
 	}
 
-	static void reset() {
-		if (!RuntimeResourcePack.DATA.isEmpty()) {
-			throw new RuntimeException("data");
-		}
-		RuntimeResourcePack.DATA.clear();
+	static void resetStatesAndModels() {
+		RuntimeResourcePack.DATA.keySet().forEach(key -> {
+			if (key.getPath().startsWith("blockstates") || key.getPath().startsWith("models")) {
+				RuntimeResourcePack.DATA.remove(key);
+			}
+		});
+	}
+
+	static void resetTranslations() {
 		RuntimeResourcePack.TRANSLATIONS.clear();
-		//todo find appropriate place for this
+		RuntimeResourcePack.DATA.remove(Conductance.id("lang/en_us.json"));
 		TranslationRegistryImpl.INSTANCE.reset();
 	}
 

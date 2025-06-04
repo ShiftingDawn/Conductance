@@ -20,10 +20,6 @@ public class RuntimeResourcePackHandler implements RepositorySource {
 
 	private static final String NAME = Conductance.MODID + ":runtime_resource_pack";
 
-	public RuntimeResourcePackHandler() {
-		RuntimeResourcePackBridge.reset();
-	}
-
 	@Override
 	public void loadPacks(final Consumer<Pack> consumer) {
 		final PackLocationInfo info = new PackLocationInfo(RuntimeResourcePackHandler.NAME, Component.literal(RuntimeResourcePackHandler.NAME), PackSource.BUILT_IN, Optional.empty());

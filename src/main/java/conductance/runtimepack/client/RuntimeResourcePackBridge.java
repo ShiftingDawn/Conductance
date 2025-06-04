@@ -9,6 +9,7 @@ import conductance.api.resource.BlockStateBuilder;
 import conductance.api.resource.ItemModelBuilder;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
+import conductance.Conductance;
 import conductance.core.machine.BlockModelBuilderImpl;
 import conductance.core.machine.BlockStateBuilderImpl;
 import conductance.core.machine.ItemModelBuilderImpl;
@@ -16,21 +17,22 @@ import conductance.loader.PluginEventBus;
 
 public final class RuntimeResourcePackBridge {
 
-	public static void reset() {
-		RuntimeResourcePack.reset();
-	}
-
 	public static void loadModels() {
-		//TODO reset models
+		final long startTime = System.currentTimeMillis();
+		RuntimeResourcePack.resetStatesAndModels();
 		PluginEventBus.postAll(AddRuntimeModelEvent.class, new AddRuntimeModelEventImpl(
 				RuntimeResourcePackBridge::addBlockState, RuntimeResourcePackBridge::addBlockModel, RuntimeResourcePackBridge::addItemModel,
 				RuntimeResourcePack::addBlockState, RuntimeResourcePack::addBlockModel, RuntimeResourcePack::addItemModel
 		));
+		Conductance.LOGGER.info("Conductance loaded RuntimeResourcePack blockstates and models in {}ms", System.currentTimeMillis() - startTime);
 	}
 
 	public static void loadTranslations() {
+		final long startTime = System.currentTimeMillis();
+		RuntimeResourcePack.resetTranslations();
 		PluginEventBus.postAll(AddTranslationEvent.class, new AddTranslationEventImpl(RuntimeResourcePack::addTranslation));
 		RuntimeResourcePack.freezeTranslations();
+		Conductance.LOGGER.info("Conductance loaded RuntimeResourcePack translations in {}ms", System.currentTimeMillis() - startTime);
 	}
 
 	private static void addBlockState(final ResourceLocation location, final Consumer<BlockStateBuilder> builder) {
