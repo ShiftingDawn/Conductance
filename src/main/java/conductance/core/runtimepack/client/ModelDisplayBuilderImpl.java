@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.ModelDisplayBuilder;
-import conductance.api.util.SerializationHelper;
+import conductance.api.util.JsonUtils;
 
 @SuppressWarnings({"ConstantValue", "NotNullFieldNotInitialized"})
 final class ModelDisplayBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> implements ModelDisplayBuilder<BUILDER> {
@@ -46,13 +46,13 @@ final class ModelDisplayBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> i
 	JsonElement serialize() {
 		final JsonObject result = Util.make(new JsonObject(), json -> {
 			if (this.rotation != null) {
-				json.add("rotation", SerializationHelper.toJsonArray(this.rotation));
+				json.add("rotation", JsonUtils.toJsonArray(this.rotation));
 			}
 			if (this.translation != null) {
-				json.add("translation", SerializationHelper.toJsonArray(this.translation));
+				json.add("translation", JsonUtils.toJsonArray(this.translation));
 			}
 			if (this.scale != null) {
-				json.add("scale", SerializationHelper.toJsonArray(this.scale));
+				json.add("scale", JsonUtils.toJsonArray(this.scale));
 			}
 		});
 		return !result.isEmpty() ? result : null;

@@ -1,4 +1,4 @@
-package conductance.api.util;
+package conductance.api.util.world;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

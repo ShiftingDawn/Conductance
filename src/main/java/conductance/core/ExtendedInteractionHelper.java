@@ -19,7 +19,7 @@ import conductance.api.capability.cover.CoverType;
 import conductance.api.capability.cover.ICoverItem;
 import conductance.api.capability.cover.ICoverable;
 import conductance.api.util.world.IExtendedInteractable;
-import conductance.api.util.InteractType;
+import conductance.api.util.world.InteractType;
 import conductance.api.util.world.RotationState;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;

@@ -4,7 +4,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.util.InteractType;
 
 public interface IExtendedInteractable {
 

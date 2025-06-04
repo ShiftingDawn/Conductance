@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.ModelElementBuilder;
 import conductance.api.resource.ModelElementFaceBuilder;
-import conductance.api.util.SerializationHelper;
+import conductance.api.util.JsonUtils;
 
 final class ModelElementBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> implements ModelElementBuilder<BUILDER> {
 
@@ -74,11 +74,11 @@ final class ModelElementBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> i
 
 	JsonElement serialize() {
 		return Util.make(new JsonObject(), json -> {
-			json.add("from", SerializationHelper.toJsonArray(this.from));
-			json.add("to", SerializationHelper.toJsonArray(this.to));
+			json.add("from", JsonUtils.toJsonArray(this.from));
+			json.add("to", JsonUtils.toJsonArray(this.to));
 			if (this.rotation != null) {
 				json.add("rotation", Util.make(new JsonObject(), rot -> {
-					rot.add("origin", SerializationHelper.toJsonArray(this.rotation.originX, this.rotation.originY, this.rotation.originZ));
+					rot.add("origin", JsonUtils.toJsonArray(this.rotation.originX, this.rotation.originY, this.rotation.originZ));
 					rot.addProperty("axis", this.rotation.axis.getSerializedName());
 					rot.addProperty("angle", this.rotation.angle);
 					rot.addProperty("rescale", this.rotation.rescale);

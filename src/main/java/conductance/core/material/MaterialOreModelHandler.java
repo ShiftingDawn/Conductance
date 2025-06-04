@@ -17,7 +17,7 @@ import conductance.api.material.MaterialOreType;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
-import conductance.api.util.SerializationHelper;
+import conductance.api.util.JsonUtils;
 import conductance.Conductance;
 
 @ConductancePluginListener(modid = Conductance.MODID)
@@ -36,10 +36,10 @@ final class MaterialOreModelHandler {
 					}
 					event.insertBlockModel(blockId, () -> Util.make(MaterialOreModelHandler.createOre(material.get(NCMaterialTraits.ORE).isEmissive()), json -> {
 						final String oreTexture = NCTextureTypes.ORE.getTexture(material.getTextureSet(), null, null).getValue().toString();
-						SerializationHelper.getOrOverrideObject("textures", json).addProperty("particle", oreTexture);
-						final JsonObject children = SerializationHelper.getOrOverrideObject("children", json);
-						SerializationHelper.getOrOverrideObject("textures", SerializationHelper.getOrOverrideObject("ore_overlay", children)).addProperty("particle", oreTexture);
-						SerializationHelper.getOrOverrideObject("bearer", children).addProperty("parent", oreType.getBearingBlockModel().toString());
+						JsonUtils.getOrOverrideObject("textures", json).addProperty("particle", oreTexture);
+						final JsonObject children = JsonUtils.getOrOverrideObject("children", json);
+						JsonUtils.getOrOverrideObject("textures", JsonUtils.getOrOverrideObject("ore_overlay", children)).addProperty("particle", oreTexture);
+						JsonUtils.getOrOverrideObject("bearer", children).addProperty("parent", oreType.getBearingBlockModel().toString());
 					}));
 					event.addItemModel(BuiltInRegistries.ITEM.getKey(blockEntry.asItem()), builder -> builder.parent(ModelLocationUtils.getModelLocation(blockEntry.get())));
 				}));

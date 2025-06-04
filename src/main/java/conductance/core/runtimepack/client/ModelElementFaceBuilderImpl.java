@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.ModelElementBuilder;
 import conductance.api.resource.ModelElementFaceBuilder;
-import conductance.api.util.SerializationHelper;
+import conductance.api.util.JsonUtils;
 
 final class ModelElementFaceBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> implements ModelElementFaceBuilder<BUILDER> {
 
@@ -64,7 +64,7 @@ final class ModelElementFaceBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER
 	JsonElement serialize() {
 		return Util.make(new JsonObject(), json -> {
 			if (this.uv != null) {
-				json.add("uv", SerializationHelper.toJsonArray(this.uv));
+				json.add("uv", JsonUtils.toJsonArray(this.uv));
 			}
 			if (this.texture != null) {
 				json.addProperty("texture", this.texture);

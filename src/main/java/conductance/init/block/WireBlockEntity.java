@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.capability.CapabilityHelper;
 import conductance.api.capability.energy.IEnergyHandler;
-import conductance.api.util.InteractType;
+import conductance.api.util.world.InteractType;
 import conductance.core.pipenet.WireData;
 import conductance.core.pipenet.EnergyNet;
 import conductance.core.pipenet.EnergyNetHandler;
