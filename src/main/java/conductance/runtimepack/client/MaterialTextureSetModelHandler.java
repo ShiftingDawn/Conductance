@@ -39,8 +39,7 @@ final class MaterialTextureSetModelHandler {
 
 	private static void createItemEntry(final ResourceLocation set, final MaterialTextureType type, final ItemModelBuilder<?> builder) {
 		builder.layer0(type.getTexture(set, null, null).getValue());
-		final ResourceLocation magneticOverlayTexture = ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(),
-				"item/material/%s/%s/magnetic_overlay".formatted(set.getNamespace(), set.getPath()));
+		final ResourceLocation magneticOverlayTexture = ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(), "material/%s/%s/magnetic_overlay".formatted(set.getNamespace(), set.getPath()));
 		int currentLayer = 1;
 		if (CAPI.resourceFinder().isTextureValid(magneticOverlayTexture)) {
 			builder.textureLayer(currentLayer++, magneticOverlayTexture);
@@ -50,7 +49,7 @@ final class MaterialTextureSetModelHandler {
 			final int overlay = i++;
 			final SafeOptional<ResourceLocation> extraOverlay = type.getTexture(set, null, "_overlay%s".formatted(overlay == 1 ? "" : overlay));
 			if (CAPI.resourceFinder().isTextureValid(extraOverlay.getValue())) {
-				builder.textureLayer(currentLayer++, extraOverlay.getValue().toString());
+				builder.textureLayer(currentLayer++, extraOverlay.getValue());
 			} else {
 				break;
 			}

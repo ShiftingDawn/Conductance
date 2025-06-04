@@ -21,16 +21,18 @@ public interface ModelBuilder<BUILDER extends ModelBuilder<BUILDER>> {
 
 	ModelDisplayBuilder<BUILDER> display(ItemDisplayContext context);
 
-	BUILDER texture(String textureKey, ResourceLocation texture);
+	BUILDER texture(String textureKey, String textureOrReferenceKey);
 
-	BUILDER texture(String textureKey, String referenceTextureKey);
+	default BUILDER texture(final String referenceKey, final ResourceLocation texture) {
+		return this.texture(referenceKey, texture.toString());
+	}
 
 	default BUILDER particle(final ResourceLocation texture) {
 		return this.texture("particle", texture);
 	}
 
-	default BUILDER particle(final String referenceTextureKey) {
-		return this.texture("particle", referenceTextureKey);
+	default BUILDER particle(final String textureOrReferenceKey) {
+		return this.texture("particle", textureOrReferenceKey);
 	}
 
 	BUILDER addProperty(String propertyKey, String propertyValue);

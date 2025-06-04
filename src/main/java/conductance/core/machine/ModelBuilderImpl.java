@@ -62,14 +62,8 @@ public abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>
 	}
 
 	@Override
-	public BUILDER texture(final String textureKey, final ResourceLocation texture) {
-		this.textures.put(textureKey, texture.toString());
-		return this.self();
-	}
-
-	@Override
-	public BUILDER texture(final String textureKey, final String referenceTextureKey) {
-		this.textures.put(textureKey, '#' + referenceTextureKey);
+	public BUILDER texture(final String textureKey, final String textureOrReferenceKey) {
+		this.textures.put(textureKey, textureOrReferenceKey);
 		return this.self();
 	}
 
