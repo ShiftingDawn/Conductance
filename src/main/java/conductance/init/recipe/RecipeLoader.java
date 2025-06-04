@@ -1,4 +1,4 @@
-package conductance.runtimepack.server.recipe;
+package conductance.init.recipe;
 
 import java.util.Map;
 import java.util.function.Consumer;

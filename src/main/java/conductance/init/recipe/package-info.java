@@ -1,4 +1,4 @@
 @NCNonNull
-package conductance.runtimepack.server.recipe;
+package conductance.init.recipe;
 
 import conductance.api.util.NCNonNull;

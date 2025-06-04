@@ -1,4 +1,4 @@
-package conductance.runtimepack.server.recipe;
+package conductance.init.recipe;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.Fluids;

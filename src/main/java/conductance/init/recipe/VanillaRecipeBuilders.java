@@ -1,4 +1,4 @@
-package conductance.runtimepack.server.recipe;
+package conductance.init.recipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;

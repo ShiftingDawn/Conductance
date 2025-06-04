@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import conductance.runtimepack.server.IConductanceTagLoader;
-import conductance.runtimepack.server.TagGenerationHandler;
+import conductance.core.mixinext.MixinTagLoaderExtension;
+import conductance.runtimepack.server.RuntimeDataPackBridge;
 
 @Mixin(TagLoader.class)
-public abstract class TagLoaderMixin<T> implements IConductanceTagLoader<T> {
+public abstract class TagLoaderMixin<T> implements MixinTagLoaderExtension<T> {
 
 	@Unique
 	@Nullable
@@ -28,7 +28,7 @@ public abstract class TagLoaderMixin<T> implements IConductanceTagLoader<T> {
 		if (reg == null) {
 			return;
 		}
-		TagGenerationHandler.addEntriesToTagMap(reg, cir.getReturnValue());
+		RuntimeDataPackBridge.generateTags(reg, cir.getReturnValue());
 	}
 
 	@Override

@@ -19,12 +19,12 @@ import conductance.api.CAPI;
 import conductance.Config;
 import conductance.runtimepack.AbstractRuntimePack;
 
-public final class RuntimeDataPack extends AbstractRuntimePack {
+final class RuntimeDataPack extends AbstractRuntimePack {
 
 	private static final Set<String> KNOWN_NAMESPACES = new ObjectOpenHashSet<>(Sets.newHashSet(CAPI.MOD_ID, ResourceLocation.DEFAULT_NAMESPACE, "c", "neoforge"));
 	private static final Map<ResourceLocation, byte[]> DATA = new ConcurrentHashMap<>();
 
-	public RuntimeDataPack(final PackLocationInfo location) {
+	RuntimeDataPack(final PackLocationInfo location) {
 		super(location, PackType.SERVER_DATA);
 	}
 

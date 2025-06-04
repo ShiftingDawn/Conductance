@@ -1,9 +1,9 @@
-package conductance.runtimepack.server;
+package conductance.core.mixinext;
 
 import javax.annotation.Nullable;
 import net.minecraft.core.Registry;
 
-public interface IConductanceTagLoader<T> {
+public interface MixinTagLoaderExtension<T> {
 
 	void conductance$setRegistry(@Nullable Registry<T> registry);
 

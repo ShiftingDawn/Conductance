@@ -1,4 +1,4 @@
-package conductance.runtimepack.server.recipe;
+package conductance.init.recipe;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -17,11 +17,11 @@ import conductance.api.material.TaggedMaterialSet;
 import conductance.api.material.traits.MaterialTraitOre;
 import conductance.api.plugin.RegisterRecipeEvent;
 import conductance.api.util.MiscUtils;
-import static conductance.runtimepack.server.recipe.RecipeLoader.blasting;
-import static conductance.runtimepack.server.recipe.RecipeLoader.matRecipe;
-import static conductance.runtimepack.server.recipe.RecipeLoader.shaped;
-import static conductance.runtimepack.server.recipe.RecipeLoader.shapeless;
-import static conductance.runtimepack.server.recipe.RecipeLoader.smelting;
+import static conductance.init.recipe.RecipeLoader.blasting;
+import static conductance.init.recipe.RecipeLoader.matRecipe;
+import static conductance.init.recipe.RecipeLoader.shaped;
+import static conductance.init.recipe.RecipeLoader.shapeless;
+import static conductance.init.recipe.RecipeLoader.smelting;
 
 final class MaterialRecipes {
 

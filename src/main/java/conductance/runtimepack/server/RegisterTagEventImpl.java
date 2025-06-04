@@ -1,17 +1,22 @@
-package conductance.loader;
+package conductance.runtimepack.server;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import lombok.AllArgsConstructor;
+import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.plugin.RegisterTagEvent;
 import conductance.api.util.Marker;
-import conductance.runtimepack.server.TagRegister;
+import conductance.api.util.MiscUtils;
 
 @AllArgsConstructor
 final class RegisterTagEventImpl implements RegisterTagEvent {
+
+	interface TagRegister {
+		void item(TagKey<Item> tag, ItemLike value, ItemLike... moreValues);
+	}
 
 	private final TagRegister delegate;
 
@@ -22,11 +27,17 @@ final class RegisterTagEventImpl implements RegisterTagEvent {
 
 	@Override
 	public <MARKER extends Material & Marker> void item(final TaggedMaterialSet tag, final MARKER marker, final ItemLike value, final ItemLike... moreValues) {
-		this.delegate.item(tag, marker, value, moreValues);
+		final TagKey<Item> tagKey = MiscUtils.getItemTag(tag, marker);
+		if (tagKey != null) {
+			this.item(tagKey, value, moreValues);
+		}
 	}
 
 	@Override
 	public <MARKER extends Material & Marker> void item(final TaggedMaterialSet tag, final MARKER marker, final Material value, final Material... moreValues) {
-		this.delegate.item(tag, marker, value, moreValues);
+		CAPI.materials().getItem(tag, value).ifPresent(item -> this.item(tag, marker, item));
+		for (final Material material : moreValues) {
+			CAPI.materials().getItem(tag, material).ifPresent(item -> this.item(tag, marker, item));
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package conductance.loader;
+package conductance.runtimepack.server;
 
 import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
