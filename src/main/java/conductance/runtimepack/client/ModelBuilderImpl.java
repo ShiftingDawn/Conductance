@@ -1,4 +1,4 @@
-package conductance.core.machine;
+package conductance.runtimepack.client;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -17,7 +17,7 @@ import conductance.api.resource.ModelBuilder;
 import conductance.api.resource.ModelDisplayBuilder;
 import conductance.api.resource.ModelElementBuilder;
 
-public abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> implements ModelBuilder<BUILDER> {
+abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> implements ModelBuilder<BUILDER> {
 
 	private final Map<String, String> textures = new HashMap<>();
 	private final EnumMap<ItemDisplayContext, ModelDisplayBuilderImpl<BUILDER>> displays = new EnumMap<>(ItemDisplayContext.class);
@@ -29,7 +29,7 @@ public abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>
 	@Nullable
 	private ResourceLocation renderType;
 
-	public ModelBuilderImpl(final ResourceLocation defaultParent) {
+	ModelBuilderImpl(final ResourceLocation defaultParent) {
 		this.parent = defaultParent;
 	}
 

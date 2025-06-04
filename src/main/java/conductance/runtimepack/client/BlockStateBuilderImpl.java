@@ -1,4 +1,4 @@
-package conductance.core.machine;
+package conductance.runtimepack.client;
 
 import java.util.function.Consumer;
 import net.minecraft.Util;
@@ -8,7 +8,7 @@ import conductance.api.resource.BlockStateBuilder;
 import conductance.api.resource.BlockStateVariantBuilder;
 import conductance.api.resource.BlockStateVariantsBuilder;
 
-public final class BlockStateBuilderImpl implements BlockStateBuilder {
+final class BlockStateBuilderImpl implements BlockStateBuilder {
 
 	@Nullable
 	private BlockStateVariantBuilderImpl variant;

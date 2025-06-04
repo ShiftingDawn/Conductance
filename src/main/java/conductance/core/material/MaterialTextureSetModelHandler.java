@@ -1,4 +1,4 @@
-package conductance.runtimepack.client;
+package conductance.core.material;
 
 import net.minecraft.resources.ResourceLocation;
 import conductance.api.CAPI;
@@ -12,7 +12,6 @@ import conductance.api.resource.ItemModelBuilder;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.util.SafeOptional;
 import conductance.Conductance;
-import conductance.core.material.MaterialTextureSetLoader;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 final class MaterialTextureSetModelHandler {

@@ -1,4 +1,4 @@
-package conductance.core.machine;
+package conductance.runtimepack.client;
 
 import net.minecraft.Util;
 import net.minecraft.core.Direction;

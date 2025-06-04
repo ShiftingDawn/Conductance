@@ -1,4 +1,4 @@
-package conductance.runtimepack.client;
+package conductance.core.material;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.model.ModelLocationUtils;
@@ -9,7 +9,6 @@ import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.Conductance;
-import conductance.core.material.MaterialRegistryImpl;
 import conductance.init.block.MaterialBlock;
 
 @ConductancePluginListener(modid = Conductance.MODID)

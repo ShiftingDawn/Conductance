@@ -1,4 +1,4 @@
-package conductance.core.machine;
+package conductance.runtimepack.client;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
@@ -6,12 +6,12 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.ItemModelBuilder;
 
-public final class ItemModelBuilderImpl extends ModelBuilderImpl<ItemModelBuilderImpl> implements ItemModelBuilder<ItemModelBuilderImpl> {
+final class ItemModelBuilderImpl extends ModelBuilderImpl<ItemModelBuilderImpl> implements ItemModelBuilder<ItemModelBuilderImpl> {
 
 	@Nullable
 	private BlockModel.GuiLight guiLight;
 
-	public ItemModelBuilderImpl() {
+	ItemModelBuilderImpl() {
 		super(ResourceLocation.withDefaultNamespace("item/generated"));
 	}
 

@@ -1,4 +1,4 @@
-package conductance.runtimepack.client;
+package conductance.core.material;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +19,6 @@ import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.util.SerializationHelper;
 import conductance.Conductance;
-import conductance.core.material.MaterialRegistryImpl;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 final class MaterialOreModelHandler {

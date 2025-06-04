@@ -1,4 +1,4 @@
-package conductance.core.machine;
+package conductance.runtimepack.client;
 
 import java.util.EnumMap;
 import net.minecraft.Util;

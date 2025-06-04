@@ -17,7 +17,7 @@ import com.google.gson.GsonBuilder;
 import conductance.api.machine.recipe.RecipeHelper;
 import conductance.api.machine.sync.SyncHelper;
 import conductance.api.material.MaterialRegistry;
-import conductance.api.material.ResourceFinder;
+import conductance.api.resource.ResourceFinder;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.util.GsonItemStackAdapter;

@@ -10,7 +10,7 @@ import conductance.api.CAPI;
 import conductance.api.NCTextureSets;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialTextureType;
-import conductance.api.material.ResourceFinder;
+import conductance.api.resource.ResourceFinder;
 import conductance.api.util.SafeOptional;
 import conductance.core.material.MaterialTextureSetLoader;
 

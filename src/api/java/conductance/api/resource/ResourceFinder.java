@@ -1,7 +1,9 @@
-package conductance.api.material;
+package conductance.api.resource;
 
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.material.Material;
+import conductance.api.material.MaterialTextureType;
 import conductance.api.util.SafeOptional;
 
 public interface ResourceFinder {

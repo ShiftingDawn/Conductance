@@ -1,4 +1,4 @@
-package conductance.core.machine;
+package conductance.runtimepack.client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ final class BlockStateVariantsBuilderImpl implements BlockStateVariantsBuilder {
 	}
 
 	JsonObject serialize() {
-		JsonObject result = new JsonObject();
+		final JsonObject result = new JsonObject();
 		this.variants.forEach(variant -> variant.populateJson(result));
 		return result;
 	}

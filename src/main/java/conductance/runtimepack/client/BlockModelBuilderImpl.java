@@ -1,16 +1,16 @@
-package conductance.core.machine;
+package conductance.runtimepack.client;
 
 import net.minecraft.resources.ResourceLocation;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.BlockModelBuilder;
 
-public final class BlockModelBuilderImpl extends ModelBuilderImpl<BlockModelBuilderImpl> implements BlockModelBuilder<BlockModelBuilderImpl> {
+final class BlockModelBuilderImpl extends ModelBuilderImpl<BlockModelBuilderImpl> implements BlockModelBuilder<BlockModelBuilderImpl> {
 
 	@Nullable
 	private Boolean ambientOcclusion;
 
-	public BlockModelBuilderImpl() {
+	BlockModelBuilderImpl() {
 		super(ResourceLocation.withDefaultNamespace("block/block"));
 	}
 

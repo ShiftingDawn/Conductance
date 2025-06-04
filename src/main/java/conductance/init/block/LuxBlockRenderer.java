@@ -1,4 +1,4 @@
-package conductance.client;
+package conductance.init.block;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -33,13 +33,12 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.render.BakedModelItemDefaults;
 import conductance.api.machine.render.RebakedModelRenderer;
 import conductance.Conductance;
-import conductance.init.block.DecoLuxBlock;
 
-public class LuxBlockRenderer extends RebakedModelRenderer implements ICTMPredicate {
+final class LuxBlockRenderer extends RebakedModelRenderer implements ICTMPredicate {
 
 	private final ResourceLocation texture;
 
-	public LuxBlockRenderer(final DyeColor dyeColor) {
+	LuxBlockRenderer(final DyeColor dyeColor) {
 		super(ResourceLocation.withDefaultNamespace("block/cube_all"));
 		this.texture = Conductance.id("block/decoration/lux/%s".formatted(dyeColor.getSerializedName()));
 	}
