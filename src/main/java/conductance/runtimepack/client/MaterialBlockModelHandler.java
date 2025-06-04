@@ -7,6 +7,7 @@ import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.resources.ResourceLocation;
 import com.google.gson.JsonObject;
+import conductance.api.CAPI;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
@@ -27,7 +28,7 @@ final class MaterialBlockModelHandler {
 			event.addBlockState(blockEntry.getId(), BlockModelGenerators.createSimpleBlock(block, blockEntry.getId().withPrefix("block/")));
 			event.addItemModel(BuiltInRegistries.ITEM.getKey(block.asItem()), new DelegatedModel(ModelLocationUtils.getModelLocation(block)));
 			final MaterialTextureType textureType = block.getSet().getTextureType();
-			final ResourceLocation custom = ResourceHelper.getCustomMaterialTexture(material, textureType);
+			final ResourceLocation custom = CAPI.resourceFinder().getCustomMaterialTexture(material, textureType);
 			if (custom == null) {
 				event.addBlockModel(blockEntry.getId(), new DelegatedModel(textureType.getBlockModel(material.getTextureSet(), null, null).getValue()));
 			} else {

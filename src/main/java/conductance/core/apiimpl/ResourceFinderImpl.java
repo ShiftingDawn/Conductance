@@ -8,6 +8,7 @@ import com.google.common.collect.Table;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.NCTextureSets;
+import conductance.api.material.Material;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.ResourceFinder;
 import conductance.api.util.SafeOptional;
@@ -22,7 +23,7 @@ final class ResourceFinderImpl implements ResourceFinder {
 	private final Table<ResourceLocation, MaterialTextureType, Table<String, String, SafeOptional<ResourceLocation>>> blockModelCache = HashBasedTable.create();
 
 	@Override
-	public SafeOptional<ResourceLocation> getTexture(final ResourceLocation textureSet, final MaterialTextureType textureType, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
+	public SafeOptional<ResourceLocation> getMaterialTexture(final ResourceLocation textureSet, final MaterialTextureType textureType, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
 		final String prefix = ResourceFinderImpl.makeSafe(pathPrefix);
 		final String suffix = ResourceFinderImpl.makeSafe(pathSuffix);
 		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.textureCache, textureSet, textureType);
@@ -39,7 +40,7 @@ final class ResourceFinderImpl implements ResourceFinder {
 	}
 
 	@Override
-	public SafeOptional<ResourceLocation> getItemModel(final ResourceLocation textureSet, final MaterialTextureType textureType, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
+	public SafeOptional<ResourceLocation> getMaterialItemModel(final ResourceLocation textureSet, final MaterialTextureType textureType, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
 		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix;
 		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : pathSuffix;
 		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.itemModelCache, textureSet, textureType);
@@ -56,7 +57,7 @@ final class ResourceFinderImpl implements ResourceFinder {
 	}
 
 	@Override
-	public SafeOptional<ResourceLocation> getBlockModel(final ResourceLocation textureSet, final MaterialTextureType textureType, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
+	public SafeOptional<ResourceLocation> getMaterialBlockModel(final ResourceLocation textureSet, final MaterialTextureType textureType, @Nullable final String pathPrefix, @Nullable final String pathSuffix) {
 		final String prefix = pathPrefix == null || pathPrefix.isBlank() ? "" : pathPrefix;
 		final String suffix = pathSuffix == null || pathSuffix.isBlank() ? "" : pathSuffix;
 		final Table<String, String, SafeOptional<ResourceLocation>> rootTable = ResourceFinderImpl.innerTable(this.blockModelCache, textureSet, textureType);
@@ -84,9 +85,10 @@ final class ResourceFinderImpl implements ResourceFinder {
 	}
 
 	@Override
-	public boolean isTextureValid(final ResourceLocation texture) {
-		final ResourceLocation location = ResourceLocation.fromNamespaceAndPath(texture.getNamespace(), "textures/%s.png".formatted(texture.getPath()));
-		return this.isResourceValid(location);
+	@Nullable
+	public ResourceLocation getCustomMaterialTexture(final Material material, final MaterialTextureType type) {
+		final ResourceLocation texturePath = material.getRegistryKey().withPath("material/custom/%s/%s".formatted(material.getRegistryKey().getPath(), type.getRegistryKey().getPath()));
+		return this.isTextureValid(texturePath) ? texturePath : null;
 	}
 
 	private SafeOptional<ResourceLocation> getResourceCascaded(final String resourceType, final ResourceLocation set, final MaterialTextureType type,
