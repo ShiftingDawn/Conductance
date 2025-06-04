@@ -35,7 +35,7 @@ import conductance.api.machine.sync.ReferenceSynchronizedListener;
 import conductance.api.machine.sync.RequireRenderUpdate;
 import conductance.api.machine.sync.SpecialHandled;
 import conductance.api.machine.sync.Synchronized;
-import conductance.api.util.MiscUtils;
+import conductance.api.util.world.WorldUtils;
 import conductance.Conductance;
 
 public class ManagedDataMapImpl implements ManagedDataMap {
@@ -127,7 +127,7 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 					});
 				}
 				if (key.getRawField().isAnnotationPresent(RequireRenderUpdate.class)) {
-					listeners.add((oldValue, newValue) -> MiscUtils.requestRenderUpdate(
+					listeners.add((oldValue, newValue) -> WorldUtils.requestRenderUpdate(
 							SyncHelperImpl.tryGetLevel(managed), SyncHelperImpl.tryGetBlockPos(managed), SyncHelperImpl.tryGetBlockState(managed)
 					));
 				}

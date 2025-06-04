@@ -26,7 +26,7 @@ import conductance.api.machine.sync.ManagedDataMap;
 import conductance.api.machine.sync.Persisted;
 import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
-import conductance.api.util.RotationState;
+import conductance.api.util.world.RotationState;
 
 public abstract class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BaseBlockEntity implements IManaged, ICoverable {
 

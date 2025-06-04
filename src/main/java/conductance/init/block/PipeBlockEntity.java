@@ -20,7 +20,7 @@ import conductance.api.machine.sync.ManagedDataMap;
 import conductance.api.machine.sync.Persisted;
 import conductance.api.machine.sync.RequireRenderUpdate;
 import conductance.api.machine.sync.Synchronized;
-import conductance.api.util.IExtendedInteractable;
+import conductance.api.util.world.IExtendedInteractable;
 import conductance.api.util.InteractType;
 import conductance.core.pipenet.INetworkNode;
 import conductance.core.pipenet.LevelPipeNetwork;

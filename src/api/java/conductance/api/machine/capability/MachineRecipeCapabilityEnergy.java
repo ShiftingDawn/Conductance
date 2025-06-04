@@ -15,7 +15,7 @@ import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.sync.Persisted;
 import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
-import conductance.api.util.MiscUtils;
+import conductance.api.util.world.WorldUtils;
 
 public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability<Long> implements IEnergyHandler {
 
@@ -133,7 +133,7 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 		}
 		if (voltage > 0L && (receivingSide == null || this.canReceiveEnergy(receivingSide))) {
 			if (voltage > this.getInputVoltage()) {
-				MiscUtils.explode(this.getMachineBlockEntity(), voltage);
+				WorldUtils.explode(this.getMachineBlockEntity(), voltage);
 				return Math.min(amperage, this.getInputAmperage() - this.acceptedAmpsThisTick);
 			}
 			if (this.getEnergySpace() >= voltage) {

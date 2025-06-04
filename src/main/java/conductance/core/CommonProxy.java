@@ -3,13 +3,10 @@ package conductance.core;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
-import conductance.api.util.IInteractable;
 import conductance.client.MachineUIFactory;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.material.MaterialCore;
@@ -32,7 +29,6 @@ public final class CommonProxy {
 		PluginEventBus.initialize();
 
 		NeoForge.EVENT_BUS.addListener(CommonProxy::handleRightClickBlock);
-		NeoForge.EVENT_BUS.addListener(CommonProxy::handleLeftClickBlock);
 		UIFactory.register(MachineUIFactory.INSTANCE);
 
 		ConductanceCreativeTabs.init();
@@ -61,33 +57,6 @@ public final class CommonProxy {
 			if (result.consumesAction()) {
 				event.setCanceled(true);
 				event.setCancellationResult(result);
-				return;
-			}
-		}
-		final BlockState blockState = event.getLevel().getBlockState(event.getPos());
-		if (blockState.getBlock() instanceof final IInteractable interactable) {
-			final InteractionResult result = interactable.onRightClick(blockState, event.getLevel(), event.getPos(), event.getEntity(), event.getHand(), event.getHitVec());
-			if (result.consumesAction()) {
-				event.setCanceled(true);
-				event.setCancellationResult(result);
-			}
-		}
-	}
-
-	private static void handleLeftClickBlock(final PlayerInteractEvent.LeftClickBlock event) {
-		final BlockState blockState = event.getLevel().getBlockState(event.getPos());
-		if (blockState.hasBlockEntity()) {
-			final BlockEntity blockEntity = event.getLevel().getBlockEntity(event.getPos());
-			if (blockEntity instanceof final IInteractable interactable) {
-				if (interactable.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(), event.getFace())) {
-					event.setCanceled(true);
-					return;
-				}
-			}
-		}
-		if (blockState.getBlock() instanceof final IInteractable interactable) {
-			if (interactable.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(), event.getFace())) {
-				event.setCanceled(true);
 			}
 		}
 	}

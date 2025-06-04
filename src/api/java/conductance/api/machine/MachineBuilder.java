@@ -14,7 +14,7 @@ import conductance.api.machine.gui.MachineGuiSupplier;
 import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.util.RotationState;
+import conductance.api.util.world.RotationState;
 
 public interface MachineBuilder<T extends MachineBlockEntity<T>> {
 

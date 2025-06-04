@@ -9,7 +9,7 @@ import static conductance.api.NCMaterialTaggedSets.PLATE;
 import static conductance.api.NCMaterialTaggedSets.RING;
 import static conductance.api.NCMaterialTaggedSets.ROD;
 import static conductance.api.NCMaterialTaggedSets.ROTOR;
-import static conductance.api.util.MiscUtils.getItemTag;
+import static conductance.api.machine.recipe.RecipeHelper.getItemTag;
 
 public abstract class TieredComponentMap {
 

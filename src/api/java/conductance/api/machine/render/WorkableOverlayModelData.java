@@ -20,7 +20,7 @@ import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.utils.ResourceHelper;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.util.RelativeDirection;
+import conductance.api.util.world.RelativeDirection;
 
 public final class WorkableOverlayModelData {
 

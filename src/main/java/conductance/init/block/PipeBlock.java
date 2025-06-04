@@ -31,7 +31,7 @@ import conductance.api.CAPI;
 import conductance.api.capability.cover.ICoverItem;
 import conductance.api.capability.cover.ICoverable;
 import conductance.api.machine.IBlockEntityBlock;
-import conductance.api.util.MiscUtils;
+import conductance.api.util.world.WorldUtils;
 import conductance.core.pipenet.INetworkNode;
 import conductance.core.pipenet.LevelPipeNetwork;
 import conductance.core.pipenet.PipeBlockRenderer;
@@ -80,7 +80,7 @@ public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEV
 	public void onNeighborChange(final BlockState state, final LevelReader level, final BlockPos pos, final BlockPos neighbor) {
 		super.onNeighborChange(state, level, pos, neighbor);
 		if (level.getBlockEntity(pos) instanceof final PipeBlockEntity<?, ?, ?> pipe) {
-			pipe.onNeighborChanged(neighbor, level.getBlockState(neighbor), MiscUtils.getNeighborSide(pos, neighbor));
+			pipe.onNeighborChanged(neighbor, level.getBlockState(neighbor), WorldUtils.getNeighborSide(pos, neighbor));
 		}
 	}
 

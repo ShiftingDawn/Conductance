@@ -1,4 +1,4 @@
-package conductance.api.util;
+package conductance.api.util.world;
 
 import java.util.Locale;
 import net.minecraft.core.Direction;

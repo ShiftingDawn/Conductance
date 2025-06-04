@@ -16,7 +16,7 @@ import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.material.traits.MaterialTraitOre;
 import conductance.api.plugin.RegisterRecipeEvent;
-import conductance.api.util.MiscUtils;
+import static conductance.api.machine.recipe.RecipeHelper.getItemTag;
 import static conductance.init.recipe.RecipeLoader.blasting;
 import static conductance.init.recipe.RecipeLoader.matRecipe;
 import static conductance.init.recipe.RecipeLoader.shaped;
@@ -113,64 +113,64 @@ final class MaterialRecipes {
 		material.executeIf(NCMaterialFlags.GENERATE_GEAR, () -> {
 			if (material.has(NCMaterialFlags.GENERATE_PLATE) && material.has(NCMaterialFlags.GENERATE_ROD)) {
 				shaped(event, "%s_gear".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.GEAR, material, 1),
-						"#$#", "$W$", "#$#", '#', MiscUtils.getItemTag(NCMaterialTaggedSets.ROD, material), '$', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material));
+						"#$#", "$W$", "#$#", '#', getItemTag(NCMaterialTaggedSets.ROD, material), '$', getItemTag(NCMaterialTaggedSets.PLATE, material));
 			}
 		});
 		material.executeIf(NCMaterialFlags.GENERATE_SMALL_GEAR, () -> {
 			if (material.has(NCMaterialFlags.GENERATE_PLATE) && material.has(NCMaterialFlags.GENERATE_ROD)) {
 				shaped(event, "%s_gear".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.GEAR_SMALL, material, 1),
-						" # ", "W$X", " # ", '#', MiscUtils.getItemTag(NCMaterialTaggedSets.ROD, material), '$', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material));
+						" # ", "W$X", " # ", '#', getItemTag(NCMaterialTaggedSets.ROD, material), '$', getItemTag(NCMaterialTaggedSets.PLATE, material));
 			}
 		});
 		material.executeIf(NCMaterialFlags.GENERATE_FRAME_BOX, () -> {
 			shaped(event, "%s_frame_box".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.FRAME_BOX, material, 2),
-					"###", "#W#", "###", '#', MiscUtils.getItemTag(NCMaterialTaggedSets.ROD, material));
+					"###", "#W#", "###", '#', getItemTag(NCMaterialTaggedSets.ROD, material));
 		});
 
 		material.executeIf(NCMaterialTraits.WIRE, trait -> {
 			shapeless(event, "2x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_2X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 2);
+					getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 2);
 			shapeless(event, "4x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_4X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 4);
+					getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 4);
 			shapeless(event, "8x_%s_wire_from_1x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_8X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 8);
+					getItemTag(NCMaterialTaggedSets.WIRE_1X, material), 8);
 			shapeless(event, "1x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 2),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material));
+					getItemTag(NCMaterialTaggedSets.WIRE_2X, material));
 			shapeless(event, "4x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_4X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 2);
+					getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 2);
 			shapeless(event, "8x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_8X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 4);
+					getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 4);
 			shapeless(event, "12x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_12X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 6);
+					getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 6);
 			shapeless(event, "16x_%s_wire_from_2x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 8);
+					getItemTag(NCMaterialTaggedSets.WIRE_2X, material), 8);
 			shapeless(event, "1x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 4),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material));
+					getItemTag(NCMaterialTaggedSets.WIRE_4X, material));
 			shapeless(event, "8x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_8X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material), 2);
+					getItemTag(NCMaterialTaggedSets.WIRE_4X, material), 2);
 			shapeless(event, "12x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_12X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material), 3);
+					getItemTag(NCMaterialTaggedSets.WIRE_4X, material), 3);
 			shapeless(event, "16x_%s_wire_from_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material), 4);
+					getItemTag(NCMaterialTaggedSets.WIRE_4X, material), 4);
 			shapeless(event, "1x_%s_wire_from_8x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 8),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_8X, material));
+					getItemTag(NCMaterialTaggedSets.WIRE_8X, material));
 			shapeless(event, "16x_%s_wire_from_8x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_16X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_8X, material), 2);
+					getItemTag(NCMaterialTaggedSets.WIRE_8X, material), 2);
 			shapeless(event, "1x_%s_wire_from_12x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 12),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_12X, material));
+					getItemTag(NCMaterialTaggedSets.WIRE_12X, material));
 			shapeless(event, "12x_%s_wire_from_8x_wire_and_4x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_12X, material, 1),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_8X, material), MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_4X, material));
+					getItemTag(NCMaterialTaggedSets.WIRE_8X, material), getItemTag(NCMaterialTaggedSets.WIRE_4X, material));
 			shapeless(event, "1x_%s_wire_from_16x_wire".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.WIRE_1X, material, 16),
-					MiscUtils.getItemTag(NCMaterialTaggedSets.WIRE_16X, material));
+					getItemTag(NCMaterialTaggedSets.WIRE_16X, material));
 		});
 	}
 
 	private static void addIngotRecipes(final RegisterRecipeEvent event, final Material material) {
 		material.executeIf(NCMaterialFlags.GENERATE_PLATE, () -> {
 			shapeless(event, "%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE, material, 1),
-					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.INGOT, material), 2);
+					'H', getItemTag(NCMaterialTaggedSets.INGOT, material), 2);
 			shapeless(event, "double_%s_plate".formatted(material.getName()), CAPI.materials().getItem(NCMaterialTaggedSets.PLATE_DOUBLE, material, 1),
-					'H', MiscUtils.getItemTag(NCMaterialTaggedSets.PLATE, material), 2);
+					'H', getItemTag(NCMaterialTaggedSets.PLATE, material), 2);
 			matRecipe(event, "%s_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE, b -> b.program(1));
 			matRecipe(event, "%s_double_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DOUBLE, b -> b.program(2));
 			matRecipe(event, "%s_dense_plate", material, NCRecipeTypes.BENDING_MACHINE, NCMaterialTaggedSets.INGOT, NCMaterialTaggedSets.PLATE_DENSE, b -> b.program(9));

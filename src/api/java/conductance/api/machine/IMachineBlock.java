@@ -21,7 +21,7 @@ import conductance.api.capability.CapabilityHelper;
 import conductance.api.capability.cover.ICoverable;
 import conductance.api.capability.energy.EnergyHandlerList;
 import conductance.api.capability.energy.IEnergyHandler;
-import conductance.api.util.RotationState;
+import conductance.api.util.world.RotationState;
 
 public interface IMachineBlock<T extends MachineBlockEntity<T>> extends IBlockEntityBlock, IBlockRendererProvider {
 

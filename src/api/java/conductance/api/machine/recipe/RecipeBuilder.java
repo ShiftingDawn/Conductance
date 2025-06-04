@@ -19,7 +19,6 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.api.util.MiscUtils;
 import conductance.api.tier.Tier;
 
 public interface RecipeBuilder {
@@ -98,9 +97,9 @@ public interface RecipeBuilder {
 
 	default RecipeBuilder in(final TaggedMaterialSet taggedSet, final Material material, final int count) {
 		if (taggedSet.hasItems() || taggedSet.hasBlocks()) {
-			this.in(MiscUtils.getItemTag(taggedSet, material), count);
+			this.in(RecipeHelper.getItemTag(taggedSet, material), count);
 		} else if (taggedSet.hasFluids()) {
-			this.in(MiscUtils.getFluidTag(taggedSet, material), count);
+			this.in(RecipeHelper.getFluidTag(taggedSet, material), count);
 		}
 		return this;
 	}
@@ -175,9 +174,9 @@ public interface RecipeBuilder {
 
 	default RecipeBuilder inNc(final TaggedMaterialSet taggedSet, final Material material, final int count) {
 		if (taggedSet.hasItems() || taggedSet.hasBlocks()) {
-			this.inNc(MiscUtils.getItemTag(taggedSet, material), count);
+			this.inNc(RecipeHelper.getItemTag(taggedSet, material), count);
 		} else if (taggedSet.hasFluids()) {
-			this.inNc(MiscUtils.getFluidTag(taggedSet, material), count);
+			this.inNc(RecipeHelper.getFluidTag(taggedSet, material), count);
 		}
 		return this;
 	}
@@ -248,9 +247,9 @@ public interface RecipeBuilder {
 
 	default RecipeBuilder out(final TaggedMaterialSet taggedSet, final Material material, final int count) {
 		if (taggedSet.hasItems() || taggedSet.hasBlocks()) {
-			this.out(MiscUtils.getItemTag(taggedSet, material), count);
+			this.out(RecipeHelper.getItemTag(taggedSet, material), count);
 		} else if (taggedSet.hasFluids()) {
-			this.out(MiscUtils.getFluidTag(taggedSet, material), count);
+			this.out(RecipeHelper.getFluidTag(taggedSet, material), count);
 		}
 		return this;
 	}

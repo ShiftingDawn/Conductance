@@ -7,7 +7,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -32,12 +31,11 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.util.IInteractable;
-import conductance.api.util.MiscUtils;
-import conductance.api.util.RotationState;
+import conductance.api.util.world.RotationState;
+import conductance.api.util.world.WorldUtils;
 
 @SuppressWarnings("deprecation")
-public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements IMachineBlock<T>, IInteractable {
+public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements IMachineBlock<T> {
 
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 	private final MachineType<T> machineType;
@@ -118,9 +116,8 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 		return state.rotate(mirror.getRotation(state.getValue(this.rotationState.property)));
 	}
 
-
 	@Override
-	public InteractionResult onRightClick(final BlockState blockState, final Level level, final BlockPos pos, final Player player, final InteractionHand hand, final BlockHitResult hit) {
+	protected InteractionResult useWithoutItem(final BlockState state, final Level level, final BlockPos pos, final Player player, final BlockHitResult hitResult) {
 		return this.<InteractionResult>getMachine(level, pos, mbt -> {
 			if (mbt instanceof final IUIHolder.Block holder && !level.isClientSide && player instanceof final ServerPlayer serverPlayer) {
 				BlockEntityUIFactory.INSTANCE.openUI(holder.self(), serverPlayer);
@@ -132,7 +129,7 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	@Override
 	public void onNeighborChange(final BlockState state, final LevelReader level, final BlockPos pos, final BlockPos neighbor) {
 		super.onNeighborChange(state, level, pos, neighbor);
-		this.setMachine(level, pos, machine -> machine.onNeighborChanged(neighbor, level.getBlockState(neighbor), MiscUtils.getNeighborSide(pos, neighbor)));
+		this.setMachine(level, pos, machine -> machine.onNeighborChanged(neighbor, level.getBlockState(neighbor), WorldUtils.getNeighborSide(pos, neighbor)));
 	}
 
 	@Override

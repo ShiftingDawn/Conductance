@@ -34,7 +34,7 @@ import conductance.api.machine.gui.MachineGuiHolder;
 import conductance.api.machine.sync.Persisted;
 import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.IOMode;
-import conductance.api.util.MiscUtils;
+import conductance.api.util.world.WorldUtils;
 import conductance.client.MachineUIFactory;
 
 public abstract class SteamBoilerMachine<T extends SteamBoilerMachine<T>> extends SteamWorkableMachine<T> implements MachineGuiHolder {
@@ -150,7 +150,7 @@ public abstract class SteamBoilerMachine<T extends SteamBoilerMachine<T>> extend
 					filledSteam = this.steamTank.fillInternal(CAPI.materials().getFluid(NCMaterialTaggedSets.GAS, NCMaterials.STEAM, fillAmount), IFluidHandler.FluidAction.EXECUTE);
 				}
 				if (this.hasNoWater && hasDrainedWater) {
-					MiscUtils.explode(this.getLevel(), this.getBlockPos(), 2.0f);
+					WorldUtils.explode(this.getLevel(), this.getBlockPos(), 2.0f);
 				} else {
 					this.hasNoWater = !hasDrainedWater;
 				}

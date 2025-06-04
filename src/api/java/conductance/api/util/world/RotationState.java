@@ -1,4 +1,4 @@
-package conductance.api.util;
+package conductance.api.util.world;
 
 import java.util.function.Predicate;
 import net.minecraft.core.Direction;

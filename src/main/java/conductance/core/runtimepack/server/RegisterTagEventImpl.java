@@ -5,11 +5,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import lombok.AllArgsConstructor;
 import conductance.api.CAPI;
+import conductance.api.machine.recipe.RecipeHelper;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.plugin.RegisterTagEvent;
 import conductance.api.util.Marker;
-import conductance.api.util.MiscUtils;
 
 @AllArgsConstructor
 final class RegisterTagEventImpl implements RegisterTagEvent {
@@ -27,7 +27,7 @@ final class RegisterTagEventImpl implements RegisterTagEvent {
 
 	@Override
 	public <MARKER extends Material & Marker> void item(final TaggedMaterialSet tag, final MARKER marker, final ItemLike value, final ItemLike... moreValues) {
-		final TagKey<Item> tagKey = MiscUtils.getItemTag(tag, marker);
+		final TagKey<Item> tagKey = RecipeHelper.getItemTag(tag, marker);
 		if (tagKey != null) {
 			this.item(tagKey, value, moreValues);
 		}

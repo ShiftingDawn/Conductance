@@ -40,7 +40,7 @@ import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.render.MachineOverlayRenderer;
 import conductance.api.machine.render.WorkableMachineRenderer;
-import conductance.api.util.RotationState;
+import conductance.api.util.world.RotationState;
 import conductance.Conductance;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.recipe.RecipeTypeImpl;
