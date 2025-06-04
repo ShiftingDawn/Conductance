@@ -1,4 +1,4 @@
-package conductance.core.runtimepack.client;
+package conductance.core.tier;
 
 import conductance.api.CAPI;
 import conductance.api.NCItems;

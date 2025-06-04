@@ -244,8 +244,8 @@ final class MaterialLoaderPeriodicTable {
 				.ore()
 				.color(0x80c8f0)
 				.flags(METAL_ALL, GENERATE_FINE_WIRE)
-				.periodicElement(NCPeriodicElements.ALUMINIUM)
-				.wire(NCTiers.EV, 1));
+				.wire(NCTiers.EV, 2)
+				.periodicElement(NCPeriodicElements.ALUMINIUM));
 
 		SILICON = register.register("silicon", builder -> builder
 				.ingot()
@@ -346,6 +346,7 @@ final class MaterialLoaderPeriodicTable {
 				.ore()
 				.color(255, 100, 0).textureSet(SHINY)
 				.flags(METAL_ALL, CAN_MORTAR, GENERATE_FINE_WIRE)
+				.wire(NCTiers.MV, 1)
 				.periodicElement(NCPeriodicElements.COPPER));
 
 		ZINC = register.register("zinc", builder -> builder
@@ -456,9 +457,7 @@ final class MaterialLoaderPeriodicTable {
 				.ingot()
 				.liquid(1235)
 				.ore()
-				.wire(NCTiers.LV, 1)
 				.color(220, 220, 255).textureSet(SHINY)
-				.flags(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
 				.periodicElement(NCPeriodicElements.SILVER));
 
 		CADMIUM = register.register("cadmium", builder -> builder
@@ -651,6 +650,7 @@ final class MaterialLoaderPeriodicTable {
 				.ore()
 				.color(255, 255, 30).textureSet(SHINY)
 				.flags(METAL_ALL, GENERATE_FINE_WIRE, CAN_MORTAR)
+				.wire(NCTiers.HV, 1)
 				.periodicElement(NCPeriodicElements.GOLD));
 
 		MERCURY = register.register("mercury", builder -> builder
