@@ -6,8 +6,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import lombok.Getter;
 import conductance.api.CAPI;
+import conductance.api.tier.Tier;
 import conductance.api.util.TieredItemType;
-import conductance.api.util.tier.Tier;
 
 public class TieredItem extends ConductanceItem {
 

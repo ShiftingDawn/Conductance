@@ -1,5 +1,4 @@
-
-package conductance.runtimepack.server.recipe;
+package conductance.init.recipe;
 
 import conductance.api.CAPI;
 import conductance.api.NCItems;
@@ -7,7 +6,7 @@ import conductance.api.plugin.RegisterRecipeEvent;
 import conductance.api.tier.Tier;
 import conductance.api.tier.TieredComponentMap;
 import conductance.api.util.TieredItemType;
-import static conductance.runtimepack.server.recipe.RecipeLoader.shaped;
+import static conductance.init.recipe.RecipeLoader.shaped;
 
 final class TierRecipes {
 
