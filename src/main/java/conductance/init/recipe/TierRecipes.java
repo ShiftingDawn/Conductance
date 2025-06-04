@@ -1,6 +1,7 @@
 package conductance.init.recipe;
 
 import conductance.api.CAPI;
+import conductance.api.NCBlocks;
 import conductance.api.NCItems;
 import conductance.api.plugin.RegisterRecipeEvent;
 import conductance.api.tier.Tier;
@@ -15,6 +16,8 @@ final class TierRecipes {
 	}
 
 	private static void addTierRecipes(final RegisterRecipeEvent event, final Tier tier, final TieredComponentMap map) {
+		shaped(event, NCBlocks.MACHINE_CASINGS.get(tier).getId().getPath(), NCBlocks.MACHINE_CASINGS.get(tier).asStack(),
+				"AAA", "AWA", "AAA", 'A', map.getMachineCasingPlateItem());
 		shaped(event, TieredItemType.ELECTRIC_MOTOR.makeUnlocalizedName(tier), NCItems.tiered(TieredItemType.ELECTRIC_MOTOR, tier, 1),
 				" AB", "ACA", "BA ", 'A', map.getElectricMotorWireItem(), 'B', map.getElectricMotorRodItem(), 'C', map.getElectricMotorMagneticRodItem());
 		shaped(event, TieredItemType.ELECTRIC_PISTON.makeUnlocalizedName(tier), NCItems.tiered(TieredItemType.ELECTRIC_PISTON, tier, 1),
