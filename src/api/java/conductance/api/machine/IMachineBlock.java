@@ -12,8 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +21,7 @@ import conductance.api.capability.energy.EnergyHandlerList;
 import conductance.api.capability.energy.IEnergyHandler;
 import conductance.api.util.world.RotationState;
 
-public interface IMachineBlock<T extends MachineBlockEntity<T>> extends IBlockEntityBlock, IBlockRendererProvider {
+public interface IMachineBlock<T extends MachineBlockEntity<T>> extends IBlockEntityBlock {
 
 	default Block self() {
 		return (Block) this;
@@ -40,11 +38,6 @@ public interface IMachineBlock<T extends MachineBlockEntity<T>> extends IBlockEn
 
 	default Direction getFrontFacing(final BlockState state) {
 		return this.getRotationState() == RotationState.NONE ? Direction.NORTH : state.getValue(this.getRotationState().property);
-	}
-
-	@Override
-	default IRenderer getRenderer(final BlockState state) {
-		return this.getMachineType().getModelRenderer();
 	}
 
 	default void setMachine(final BlockGetter level, final BlockPos pos, final Consumer<MachineBlockEntity<?>> setter) {

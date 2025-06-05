@@ -84,10 +84,12 @@ final class ModelBuilderImpl implements ModelBuilder {
 	}
 
 	@Override
-	public ModelBuilder element(final Consumer<ModelElementBuilder> builder) {
+	public ModelBuilder element(final Consumer<ModelElementBuilder> builder, final boolean ignoreWhenEmpty) {
 		Util.make(new ModelElementBuilderImpl(), b -> {
 			builder.accept(b);
-			this.elements.add(b);
+			if (!(b.isEmpty() && ignoreWhenEmpty)) {
+				this.elements.add(b);
+			}
 		});
 		return this;
 	}

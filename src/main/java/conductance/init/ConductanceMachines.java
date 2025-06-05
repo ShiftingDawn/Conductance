@@ -5,6 +5,7 @@ import conductance.api.CAPI;
 import conductance.api.NCMachines;
 import conductance.api.NCRecipeTypes;
 import conductance.api.NCTiers;
+import conductance.api.machine.MachineModelType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.plugin.ConductancePluginListener;
@@ -28,11 +29,11 @@ final class ConductanceMachines {
 				.recipeType(NCRecipeTypes.STEAM_BOILER)
 				.tooltip(tooltip("generic.produces_fluid", 64), tooltip("boiler.explode_on_water_fill"))
 				.localized("Solid Fuel Steam Boiler")
-				.workableModelRenderer(Conductance.id("block/machine_casing_bronze")));
+				.modelType(MachineModelType.DEFAULT_WORKABLE, Conductance.id("block/machine_casing_bronze")));
 
 		NCMachines.MACHINE_HULL = CAPI.tiers().newMap(tier -> event.register("%s_machine_hull".formatted(tier.getRegistryKey()), MachineHullMachine::new, builder -> builder
 				.localized("%s Machine Hull".formatted(tier.getLocalizedNameUnformatted()))
-				.tieredModelRenderer(Conductance.id("block/machine_casing_tiered_%s".formatted(tier.getRegistryKey())), "machine_hull")
+				.modelType(MachineModelType.TIERED, new MachineModelType.TypeAndTier("machine_hull", tier))
 		));
 
 		NCMachines.LV_STEAM_TURBINE = ConductanceMachines.tieredGenerator(event, "steam_turbine", NCRecipeTypes.STEAM_TURBINE, NCTiers.LV);
@@ -58,7 +59,8 @@ final class ConductanceMachines {
 					.recipeType(recipeType)
 					.guiSupplier(GenericRecipeMachine.GUI_SUPPLIER.apply(recipeType))
 					.localized(localizedName)
-					.tieredWorkableModelRenderer(Conductance.id("block/machine_casing_tiered_%s".formatted(tier.getRegistryKey())), name));
+					.modelType(MachineModelType.TIERED_WORKABLE, new MachineModelType.TypeAndTier(name, tier))
+			);
 		});
 	}
 
@@ -72,7 +74,8 @@ final class ConductanceMachines {
 				.recipeModifier(GenericGeneratorMachine::recipeModifier)
 				.guiSupplier(GenericGeneratorMachine.GUI_SUPPLIER.apply(NCRecipeTypes.STEAM_TURBINE))
 				.localized(localizedName)
-				.tieredWorkableModelRenderer(Conductance.id("block/machine_casing_tiered_%s".formatted(tier.getRegistryKey())), name));
+				.modelType(MachineModelType.TIERED_WORKABLE, new MachineModelType.TypeAndTier(name, tier))
+		);
 	}
 
 	private ConductanceMachines() {

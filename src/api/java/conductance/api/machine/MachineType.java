@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.gui.MachineGuiSupplier;
@@ -28,8 +27,6 @@ public interface MachineType<T extends MachineBlockEntity<T>> extends IRegistryO
 	NonNullSupplier<? extends MachineBlock<T>> getBlock();
 
 	NonNullSupplier<BlockEntityType<T>> getBlockEntityType();
-
-	IRenderer getModelRenderer();
 
 	@Nullable
 	MachineGuiSupplier getGuiSupplier();

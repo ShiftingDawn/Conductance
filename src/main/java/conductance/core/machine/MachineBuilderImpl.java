@@ -6,15 +6,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
@@ -25,6 +22,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import conductance.api.machine.IMachineBlockItem;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
@@ -33,18 +31,15 @@ import conductance.api.machine.MachineBlockFactory;
 import conductance.api.machine.MachineBlockItem;
 import conductance.api.machine.MachineBlockItemFactory;
 import conductance.api.machine.MachineBuilder;
+import conductance.api.machine.MachineModelType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiSupplier;
 import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.render.MachineOverlayRenderer;
-import conductance.api.machine.render.WorkableMachineRenderer;
 import conductance.api.util.world.RotationState;
-import conductance.Conductance;
 import conductance.core.apiimpl.ApiBridge;
 import conductance.core.recipe.RecipeTypeImpl;
-import conductance.core.runtimepack.client.MachineBlockModelHandler;
 import static conductance.core.apiimpl.ApiBridge.getRegistrate;
 
 public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements MachineBuilder<T> {
@@ -58,7 +53,9 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	private Object2IntMap<IRecipeElementType<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
 	private BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> recipeModifier = (machine, recipe) -> recipe;
 	private RotationState rotationState = RotationState.HORIZONTAL;
-	private Supplier<IRenderer> modelRenderer;
+	private MachineModelType<?> modelType = MachineModelType.DEFAULT;
+	@UnknownNullability
+	private Object modelData;
 	@Getter
 	private MachineGuiSupplier guiSupplier;
 	private final List<Component> tooltips = new ArrayList<>();
@@ -70,7 +67,6 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	public MachineBuilderImpl(final String registryKey, final MachineBlockEntityFactory<T> machineBlockEntityFactory) {
 		this.registryKey = registryKey;
 		this.blockEntityFactory = machineBlockEntityFactory;
-		this.defaultModelRenderer(Conductance.id("block/machine_casing_generic"));
 	}
 
 	@Override
@@ -148,47 +144,17 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	}
 
 	@Override
-	public MachineBuilder<T> modelRenderer(final Supplier<IRenderer> renderer) {
-		this.modelRenderer = renderer;
+	public <A> MachineBuilder<T> modelType(final MachineModelType<A> type, final A data) {
+		this.modelType = type;
+		this.modelData = data;
 		return this;
 	}
 
 	@Override
-	public MachineBuilder<T> defaultModelRenderer(final ResourceLocation baseModelLocation, @Nullable final ResourceLocation overlayModelLocation) {
-		final ResourceLocation overlayLocation;
-		if (overlayModelLocation != null) {
-			overlayLocation = overlayModelLocation;
-			MachineBlockModelHandler.remove(this.registryKey);
-		} else {
-			overlayLocation = Conductance.id("block/machine/%s".formatted(this.registryKey));
-			MachineBlockModelHandler.add(this.registryKey, overlayLocation);
-		}
-		return this.modelRenderer(() -> new MachineOverlayRenderer(baseModelLocation, overlayLocation));
-	}
-
-	@Override
-	public MachineBuilder<T> tieredModelRenderer(final ResourceLocation baseModelLocation, final String baseMachineKey, @Nullable final ResourceLocation overlayModelLocation) {
-		final ResourceLocation overlayLocation;
-		if (overlayModelLocation != null) {
-			overlayLocation = overlayModelLocation;
-			MachineBlockModelHandler.remove(this.registryKey);
-		} else {
-			overlayLocation = Conductance.id("block/machine/%s".formatted(baseMachineKey));
-			MachineBlockModelHandler.add(this.registryKey, overlayLocation);
-		}
-		return this.modelRenderer(() -> new MachineOverlayRenderer(baseModelLocation, overlayLocation));
-	}
-
-	@Override
-	public MachineBuilder<T> workableModelRenderer(final ResourceLocation baseModelLocation) {
-		MachineBlockModelHandler.remove(this.registryKey);
-		return this.modelRenderer(() -> new WorkableMachineRenderer(baseModelLocation, Conductance.id("block/machine/%s".formatted(this.registryKey))));
-	}
-
-	@Override
-	public MachineBuilder<T> tieredWorkableModelRenderer(final ResourceLocation baseModelLocation, final String baseMachineKey) {
-		MachineBlockModelHandler.remove(this.registryKey);
-		return this.modelRenderer(() -> new WorkableMachineRenderer(baseModelLocation, Conductance.id("block/machine/%s".formatted(baseMachineKey))));
+	public MachineBuilder<T> modelType(final MachineModelType<Void> type) {
+		this.modelType = type;
+		this.modelData = null;
+		return this;
 	}
 
 	@Override
@@ -222,7 +188,8 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 			result.setRecipeTypes(this.recipeTypes);
 			result.setRecipeOutputLimits(this.recipeOutputLimits);
 			result.setRecipeModifier(this.recipeModifier);
-			result.setModelRenderer(this.modelRenderer.get());
+			result.setModelType(this.modelType);
+			result.setModelData(this.modelData);
 			result.setGuiSupplier(this.guiSupplier);
 			result.setLocalizedName(this.localized);
 			result.setTooltipBuilder((stack, tooltip) -> {

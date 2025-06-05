@@ -39,7 +39,11 @@ public interface ModelBuilder {
 		return this.texture("particle", textureOrReferenceKey);
 	}
 
-	ModelBuilder element(Consumer<ModelElementBuilder> builder);
+	ModelBuilder element(Consumer<ModelElementBuilder> builder, boolean ignoreWhenEmpty);
+
+	default ModelBuilder element(final Consumer<ModelElementBuilder> builder) {
+		return this.element(builder, false);
+	}
 
 	ModelBuilder ambientOcclusion(boolean ambientOcclusion);
 

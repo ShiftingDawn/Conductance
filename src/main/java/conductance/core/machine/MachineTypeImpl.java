@@ -16,8 +16,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.MachineModelType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiSupplier;
 import conductance.api.machine.recipe.IRecipe;
@@ -25,6 +27,7 @@ import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.registry.RegistryObject;
 
+//FIXME refactor
 public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryObject<String> implements MachineType<T> {
 
 	@Setter(AccessLevel.PACKAGE)
@@ -42,9 +45,6 @@ public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryOb
 	@Nullable
 	private BiFunction<MachineBlockEntity<?>, IRecipe, IRecipe> recipeModifier;
 	@Getter
-	@Setter
-	private IRenderer modelRenderer;
-	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	@Nullable
 	private MachineGuiSupplier guiSupplier;
@@ -55,6 +55,13 @@ public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryOb
 	@Setter(AccessLevel.PACKAGE)
 	@Getter
 	private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
+	@Setter(AccessLevel.PACKAGE)
+	@Getter
+	private MachineModelType<?> modelType;
+	@Setter(AccessLevel.PACKAGE)
+	@Getter
+	@UnknownNullability
+	private Object modelData;
 
 	public MachineTypeImpl(final String registryKey) {
 		super(registryKey);
@@ -67,7 +74,6 @@ public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryOb
 		Objects.requireNonNull(this.block, "No block");
 		Objects.requireNonNull(this.blockEntityType, "No block entity type");
 		Objects.requireNonNull(this.recipeTypes, "No recipe types");
-		Objects.requireNonNull(this.modelRenderer, "No model renderer");
 		Objects.requireNonNull(this.tooltipBuilder, "No tooltip builder");
 	}
 

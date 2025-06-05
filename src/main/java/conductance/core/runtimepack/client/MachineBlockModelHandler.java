@@ -34,18 +34,18 @@ public final class MachineBlockModelHandler {
 
 	@EventListener(priority = -100)
 	private static void onAddRuntimeModels(final AddRuntimeModelEvent event) {
-		MachineBlockModelHandler.MODELS.values().forEach(model -> {
-			final String newPath = model.modelLocation.getPath().startsWith("block/") ? model.modelLocation.getPath().substring(6) : model.modelLocation.getPath();
-			event.addBlockModel(model.modelLocation.withPath(newPath), builder -> builder
-					.element(element -> {
-						element.from(0, 0, 0).to(16, 16, 16);
-						MachineBlockModelHandler.SIDES.forEach((dir, side) -> model.ifExists(side, tex -> {
-							builder.texture(side, tex);
-							element.face(dir, face -> face.texture(side).cullFace(dir));
-						}));
-					})
-			);
-		});
+//		MachineBlockModelHandler.MODELS.values().forEach(model -> {
+//			final String newPath = model.modelLocation.getPath().startsWith("block/") ? model.modelLocation.getPath().substring(6) : model.modelLocation.getPath();
+//			event.addBlockModel(model.modelLocation.withPath(newPath), builder -> builder
+//					.element(element -> {
+//						element.from(0, 0, 0).to(16, 16, 16);
+//						MachineBlockModelHandler.SIDES.forEach((dir, side) -> model.ifExists(side, tex -> {
+//							builder.texture(side, tex);
+//							element.face(dir, face -> face.texture(side).cullFace(dir));
+//						}));
+//					})
+//			);
+//		});
 	}
 
 	private void ifExists(final String side, final Consumer<ResourceLocation> consumer) {

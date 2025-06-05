@@ -77,6 +77,10 @@ final class ModelElementBuilderImpl implements ModelElementBuilder {
 		return this;
 	}
 
+	boolean isEmpty() {
+		return this.faces.isEmpty();
+	}
+
 	JsonElement serialize() {
 		return Util.make(new JsonObject(), json -> {
 			json.add("from", JsonUtils.toJsonArray(this.from));
