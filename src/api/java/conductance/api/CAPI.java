@@ -17,11 +17,11 @@ import com.google.gson.GsonBuilder;
 import conductance.api.machine.recipe.RecipeHelper;
 import conductance.api.machine.sync.SyncHelper;
 import conductance.api.material.MaterialRegistry;
-import conductance.api.resource.ResourceFinder;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TranslationRegistry;
-import conductance.api.util.GsonItemStackAdapter;
+import conductance.api.resource.ResourceFinder;
 import conductance.api.tier.TierRegistry;
+import conductance.api.util.JsonUtils;
 
 @SuppressWarnings({ "unused", "NotNullFieldNotInitialized" })
 public final class CAPI {
@@ -79,7 +79,8 @@ public final class CAPI {
 
 	static {
 		GSON = new GsonBuilder()
-				.registerTypeAdapter(ItemStack.class, GsonItemStackAdapter.INSTANCE)
+				.registerTypeAdapter(ItemStack.class, JsonUtils.ITEMSTACK_SERIALIZER)
+				.registerTypeAdapter(ItemStack.class, JsonUtils.ITEMSTACK_DESERIALIZER)
 				.registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer()).create();
 		COLORS = Collections.unmodifiableMap(Util.make(new EnumMap<>(DyeColor.class), map -> {
 			map.put(DyeColor.WHITE, 0xFFF9FFFE);

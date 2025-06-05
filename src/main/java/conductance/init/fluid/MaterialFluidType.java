@@ -48,7 +48,7 @@ public final class MaterialFluidType extends FluidType {
 			public ResourceLocation getStillTexture() {
 				return Objects.requireNonNullElseGet(
 						CAPI.resourceFinder().getCustomMaterialTexture(MaterialFluidType.this.material, MaterialFluidType.this.set.getTextureType()),
-						() -> CAPI.resourceFinder().getMaterialTexture(MaterialFluidType.this.material.getTextureSet(), MaterialFluidType.this.set.getTextureType(), null, null).getValue()
+						() -> CAPI.resourceFinder().getMaterialTexture(MaterialFluidType.this.material.getTextureSet(), MaterialFluidType.this.set.getTextureType(), null, null).value()
 				);
 			}
 

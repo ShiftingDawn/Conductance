@@ -16,7 +16,7 @@ final class MaterialItemModelHandler {
 			final ResourceLocation custom = CAPI.resourceFinder().getCustomMaterialTexture(material, taggedSet.getTextureType());
 			event.addItemModel(itemEntry.getId(), builder -> {
 				if (custom == null) {
-					builder.parent(taggedSet.getTextureType().getItemModel(material.getTextureSet(), null, null).getValue());
+					builder.parent(taggedSet.getTextureType().getItemModel(material.getTextureSet(), null, null).value());
 				} else {
 					builder.layer0(custom);
 				}

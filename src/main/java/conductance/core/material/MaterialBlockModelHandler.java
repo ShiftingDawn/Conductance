@@ -27,7 +27,7 @@ final class MaterialBlockModelHandler {
 			final MaterialTextureType textureType = block.getSet().getTextureType();
 			final ResourceLocation custom = CAPI.resourceFinder().getCustomMaterialTexture(material, textureType);
 			if (custom == null) {
-				event.addBlockModel(blockEntry.getId(), builder -> builder.parent(textureType.getBlockModel(material.getTextureSet(), null, null).getValue()));
+				event.addBlockModel(blockEntry.getId(), builder -> builder.parent(textureType.getBlockModel(material.getTextureSet(), null, null).value()));
 			} else {
 				event.addBlockModel(blockEntry.getId(), builder -> builder.parent("block/cube_all").texture("all", custom));
 			}

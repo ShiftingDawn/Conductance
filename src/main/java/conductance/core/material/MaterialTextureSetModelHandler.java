@@ -37,7 +37,7 @@ final class MaterialTextureSetModelHandler {
 	}
 
 	private static void createItemEntry(final ResourceLocation set, final MaterialTextureType type, final ItemModelBuilder<?> builder) {
-		builder.layer0(type.getTexture(set, null, null).getValue());
+		builder.layer0(type.getTexture(set, null, null).value());
 		final ResourceLocation magneticOverlayTexture = ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(), "material/%s/%s/magnetic_overlay".formatted(set.getNamespace(), set.getPath()));
 		int currentLayer = 1;
 		if (CAPI.resourceFinder().isTextureValid(magneticOverlayTexture)) {
@@ -47,8 +47,8 @@ final class MaterialTextureSetModelHandler {
 		while (currentLayer < 5) {
 			final int overlay = i++;
 			final SafeOptional<ResourceLocation> extraOverlay = type.getTexture(set, null, "_overlay%s".formatted(overlay == 1 ? "" : overlay));
-			if (CAPI.resourceFinder().isTextureValid(extraOverlay.getValue())) {
-				builder.textureLayer(currentLayer++, extraOverlay.getValue());
+			if (CAPI.resourceFinder().isTextureValid(extraOverlay.value())) {
+				builder.textureLayer(currentLayer++, extraOverlay.value());
 			} else {
 				break;
 			}
@@ -58,7 +58,7 @@ final class MaterialTextureSetModelHandler {
 	private static void createBlockEntry(final ResourceLocation set, final MaterialTextureType type, final BlockModelBuilder<?> builder) {
 		builder
 				.parent(Conductance.id("block/cube_all_tinted0"))
-				.texture("all", type.getTexture(set, null, null).getValue());
+				.texture("all", type.getTexture(set, null, null).value());
 	}
 
 	private MaterialTextureSetModelHandler() {

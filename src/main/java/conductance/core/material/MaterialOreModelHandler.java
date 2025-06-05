@@ -35,7 +35,7 @@ final class MaterialOreModelHandler {
 						event.insertBlockState(blockId, BlockModelGenerators.createSimpleBlock(blockEntry.get(), blockId.withPrefix("block/")));
 					}
 					event.insertBlockModel(blockId, () -> Util.make(MaterialOreModelHandler.createOre(material.get(NCMaterialTraits.ORE).isEmissive()), json -> {
-						final String oreTexture = NCTextureTypes.ORE.getTexture(material.getTextureSet(), null, null).getValue().toString();
+						final String oreTexture = NCTextureTypes.ORE.getTexture(material.getTextureSet(), null, null).value().toString();
 						JsonUtils.getOrOverrideObject("textures", json).addProperty("particle", oreTexture);
 						final JsonObject children = JsonUtils.getOrOverrideObject("children", json);
 						JsonUtils.getOrOverrideObject("textures", JsonUtils.getOrOverrideObject("ore_overlay", children)).addProperty("particle", oreTexture);

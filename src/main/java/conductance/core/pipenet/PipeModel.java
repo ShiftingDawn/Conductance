@@ -95,22 +95,22 @@ public class PipeModel {
 	@OnlyIn(Dist.CLIENT)
 	public List<BakedQuad> bakeQuads(@Nullable final Direction side, final int connections) {
 		if (this.spriteSide == null) {
-			this.spriteSide = ModelFactory.getBlockSprite(this.textureSide.get().getValue());
+			this.spriteSide = ModelFactory.getBlockSprite(this.textureSide.get().value());
 		}
 		if (this.spriteEnd == null) {
-			this.spriteEnd = ModelFactory.getBlockSprite(this.textureEnd.get().getValue());
+			this.spriteEnd = ModelFactory.getBlockSprite(this.textureEnd.get().value());
 		}
-		if (this.textureSideSecondary != null && !this.textureSideSecondary.get().isFallback() && this.spriteSideSecondary == null) {
-			this.spriteSideSecondary = ModelFactory.getBlockSprite(this.textureSideSecondary.get().getValue());
+		if (this.textureSideSecondary != null && !this.textureSideSecondary.get().fallback() && this.spriteSideSecondary == null) {
+			this.spriteSideSecondary = ModelFactory.getBlockSprite(this.textureSideSecondary.get().value());
 		}
-		if (this.textureEndSecondary != null && !this.textureEndSecondary.get().isFallback() && this.spriteEndSecondary == null) {
-			this.spriteEndSecondary = ModelFactory.getBlockSprite(this.textureEndSecondary.get().getValue());
+		if (this.textureEndSecondary != null && !this.textureEndSecondary.get().fallback() && this.spriteEndSecondary == null) {
+			this.spriteEndSecondary = ModelFactory.getBlockSprite(this.textureEndSecondary.get().value());
 		}
 		if (this.sideOverlayTexture != null && this.spriteSideOverlay == null) {
-			this.spriteSideOverlay = ModelFactory.getBlockSprite(this.sideOverlayTexture.getValue());
+			this.spriteSideOverlay = ModelFactory.getBlockSprite(this.sideOverlayTexture.value());
 		}
 		if (this.endOverlayTexture != null && this.spriteEndOverlay == null) {
-			this.spriteEndOverlay = ModelFactory.getBlockSprite(this.endOverlayTexture.getValue());
+			this.spriteEndOverlay = ModelFactory.getBlockSprite(this.endOverlayTexture.value());
 		}
 		if (side != null) {
 			if (this.thickness == 1) {
@@ -171,7 +171,7 @@ public class PipeModel {
 	@OnlyIn(Dist.CLIENT)
 	public TextureAtlasSprite getParticleTexture() {
 		if (this.spriteSide == null) {
-			this.spriteSide = ModelFactory.getBlockSprite(this.textureSide.get().getValue());
+			this.spriteSide = ModelFactory.getBlockSprite(this.textureSide.get().value());
 		}
 		return this.spriteSide;
 	}
@@ -194,13 +194,13 @@ public class PipeModel {
 	@OnlyIn(Dist.CLIENT)
 	public void registerTextureAtlas(final Consumer<ResourceLocation> register) {
 		this.itemModelCache.clear();
-		register.accept(this.textureSide.get().getValue());
-		register.accept(this.textureEnd.get().getValue());
+		register.accept(this.textureSide.get().value());
+		register.accept(this.textureEnd.get().value());
 		if (this.sideOverlayTexture != null) {
-			register.accept(this.sideOverlayTexture.getValue());
+			register.accept(this.sideOverlayTexture.value());
 		}
 		if (this.endOverlayTexture != null) {
-			register.accept(this.endOverlayTexture.getValue());
+			register.accept(this.endOverlayTexture.value());
 		}
 		this.spriteSide = null;
 		this.spriteEnd = null;

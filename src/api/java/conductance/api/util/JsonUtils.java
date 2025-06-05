@@ -1,11 +1,24 @@
 package conductance.api.util;
 
 import net.minecraft.Util;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.world.item.ItemStack;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
 
 public final class JsonUtils {
+
+	public static JsonSerializer<ItemStack> ITEMSTACK_SERIALIZER;
+	public static JsonDeserializer<ItemStack> ITEMSTACK_DESERIALIZER;
 
 	public static JsonArray toJsonArray(final Boolean... booleans) {
 		return Util.make(new JsonArray(booleans.length), arr -> {
@@ -92,6 +105,22 @@ public final class JsonUtils {
 			parent.add(name, new JsonObject());
 		}
 		return parent.getAsJsonObject(name);
+	}
+
+	static {
+		JsonUtils.ITEMSTACK_SERIALIZER = (src, typeOfSrc, context) ->
+				new JsonPrimitive(src.save(ServerLifecycleHooks.getCurrentServer().registryAccess(), new CompoundTag()).toString());
+		JsonUtils.ITEMSTACK_DESERIALIZER = (json, typeOfT, context) -> {
+			try {
+				return ItemStack.CODEC.parse(
+								RegistryOps.create(NbtOps.INSTANCE, ServerLifecycleHooks.getCurrentServer().registryAccess()),
+								TagParser.parseTag(json.getAsString()))
+						.result()
+						.orElseThrow();
+			} catch (final CommandSyntaxException e) {
+				return null;
+			}
+		};
 	}
 
 	private JsonUtils() {
