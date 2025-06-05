@@ -17,8 +17,8 @@ import com.google.gson.JsonSerializer;
 
 public final class JsonUtils {
 
-	public static JsonSerializer<ItemStack> ITEMSTACK_SERIALIZER;
-	public static JsonDeserializer<ItemStack> ITEMSTACK_DESERIALIZER;
+	public static final JsonSerializer<ItemStack> ITEMSTACK_SERIALIZER;
+	public static final JsonDeserializer<ItemStack> ITEMSTACK_DESERIALIZER;
 
 	public static JsonArray toJsonArray(final Boolean... booleans) {
 		return Util.make(new JsonArray(booleans.length), arr -> {
@@ -108,9 +108,9 @@ public final class JsonUtils {
 	}
 
 	static {
-		JsonUtils.ITEMSTACK_SERIALIZER = (src, typeOfSrc, context) ->
+		ITEMSTACK_SERIALIZER = (src, typeOfSrc, context) ->
 				new JsonPrimitive(src.save(ServerLifecycleHooks.getCurrentServer().registryAccess(), new CompoundTag()).toString());
-		JsonUtils.ITEMSTACK_DESERIALIZER = (json, typeOfT, context) -> {
+		ITEMSTACK_DESERIALIZER = (json, typeOfT, context) -> {
 			try {
 				return ItemStack.CODEC.parse(
 								RegistryOps.create(NbtOps.INSTANCE, ServerLifecycleHooks.getCurrentServer().registryAccess()),
