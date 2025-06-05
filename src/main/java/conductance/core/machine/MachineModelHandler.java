@@ -46,7 +46,7 @@ final class MachineModelHandler {
 					MachineModelHandler.addSides(Conductance.id(machineType), child, element, null);
 				}, true))
 				.itemRenderOrder("hull", "overlay")
-		));
+		).loader(Conductance.id("machine")));
 		if (workable) {
 			event.addBlockModel(blockId.withSuffix("_working"), model -> model.composite(composite -> composite
 					.child("hull", child -> child.parent(hullModel).renderType("solid"))
@@ -55,7 +55,7 @@ final class MachineModelHandler {
 						MachineModelHandler.addSides(Conductance.id(machineType), child, element, "_working");
 					}, true))
 					.itemRenderOrder("hull", "overlay")
-			));
+			).loader(Conductance.id("machine")));
 		}
 		event.addBlockState(blockId, b -> b.variants(builder -> {
 			final ResourceLocation defaultModel = blockId.withPrefix("block/");
