@@ -4,9 +4,8 @@ import java.util.function.Consumer;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import com.google.gson.JsonObject;
-import conductance.api.resource.BlockModelBuilder;
 import conductance.api.resource.BlockStateBuilder;
-import conductance.api.resource.ItemModelBuilder;
+import conductance.api.resource.ModelBuilder;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
 import conductance.Conductance;
@@ -37,13 +36,13 @@ public final class RuntimeResourcePackBridge {
 		RuntimeResourcePack.addBlockState(location, data);
 	}
 
-	private static void addBlockModel(final ResourceLocation location, final Consumer<BlockModelBuilder<?>> builder) {
-		final JsonObject data = Util.make(new BlockModelBuilderImpl(), builder).build();
+	private static void addBlockModel(final ResourceLocation location, final Consumer<ModelBuilder> builder) {
+		final JsonObject data = Util.make(new ModelBuilderImpl(ResourceLocation.withDefaultNamespace("block/cube")), builder).build();
 		RuntimeResourcePack.addBlockModel(location, data);
 	}
 
-	private static void addItemModel(final ResourceLocation location, final Consumer<ItemModelBuilder<?>> builder) {
-		final JsonObject data = Util.make(new ItemModelBuilderImpl(), builder).build();
+	private static void addItemModel(final ResourceLocation location, final Consumer<ModelBuilder> builder) {
+		final JsonObject data = Util.make(new ModelBuilderImpl(ResourceLocation.withDefaultNamespace("item/generated")), builder).build();
 		RuntimeResourcePack.addItemModel(location, data);
 	}
 

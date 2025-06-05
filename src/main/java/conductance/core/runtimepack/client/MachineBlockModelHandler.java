@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import conductance.api.CAPI;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.resource.ModelElementBuilder;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.Conductance;
 
@@ -37,14 +36,15 @@ public final class MachineBlockModelHandler {
 	private static void onAddRuntimeModels(final AddRuntimeModelEvent event) {
 		MachineBlockModelHandler.MODELS.values().forEach(model -> {
 			final String newPath = model.modelLocation.getPath().startsWith("block/") ? model.modelLocation.getPath().substring(6) : model.modelLocation.getPath();
-			event.addBlockModel(model.modelLocation.withPath(newPath), builder -> {
-				final ModelElementBuilder<?> element = builder.element().from(0, 0, 0).to(16, 16, 16);
-				MachineBlockModelHandler.SIDES.forEach((dir, side) -> model.ifExists(side, tex -> {
-					builder.texture(side, tex);
-					element.face(dir).texture(side).cullFace(dir).build();
-				}));
-				element.build();
-			});
+			event.addBlockModel(model.modelLocation.withPath(newPath), builder -> builder
+					.element(element -> {
+						element.from(0, 0, 0).to(16, 16, 16);
+						MachineBlockModelHandler.SIDES.forEach((dir, side) -> model.ifExists(side, tex -> {
+							builder.texture(side, tex);
+							element.face(dir, face -> face.texture(side).cullFace(dir));
+						}));
+					})
+			);
 		});
 	}
 

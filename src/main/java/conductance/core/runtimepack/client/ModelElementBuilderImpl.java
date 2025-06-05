@@ -1,6 +1,8 @@
 package conductance.core.runtimepack.client;
 
 import java.util.EnumMap;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import com.google.gson.JsonElement;
@@ -10,12 +12,11 @@ import conductance.api.resource.ModelElementBuilder;
 import conductance.api.resource.ModelElementFaceBuilder;
 import conductance.api.util.JsonUtils;
 
-final class ModelElementBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> implements ModelElementBuilder<BUILDER> {
+final class ModelElementBuilderImpl implements ModelElementBuilder {
 
 	private final int[] from = new int[] {0, 0, 0};
 	private final int[] to = new int[] {16, 16, 16};
-	private final EnumMap<Direction, ModelElementFaceBuilderImpl<BUILDER>> faces = new EnumMap<>(Direction.class);
-	private final BUILDER builder;
+	private final EnumMap<Direction, ModelElementFaceBuilderImpl> faces = new EnumMap<>(Direction.class);
 	@Nullable
 	private Rotation rotation;
 	@Nullable
@@ -23,13 +24,8 @@ final class ModelElementBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> i
 	@Nullable
 	private Integer lightEmission = null;
 
-
-	ModelElementBuilderImpl(final BUILDER builder) {
-		this.builder = builder;
-	}
-
 	@Override
-	public ModelElementBuilder<BUILDER> from(final int x, final int y, final int z) {
+	public ModelElementBuilder from(final int x, final int y, final int z) {
 		this.from[0] = x;
 		this.from[1] = y;
 		this.from[2] = z;
@@ -37,7 +33,7 @@ final class ModelElementBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> i
 	}
 
 	@Override
-	public ModelElementBuilder<BUILDER> to(final int x, final int y, final int z) {
+	public ModelElementBuilder to(final int x, final int y, final int z) {
 		this.to[0] = x;
 		this.to[1] = y;
 		this.to[2] = z;
@@ -45,31 +41,40 @@ final class ModelElementBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> i
 	}
 
 	@Override
-	public ModelElementBuilder<BUILDER> rotation(final int originX, final int originY, final int originZ, final Direction.Axis axis, final float angle, final boolean rescale) {
+	public ModelElementBuilder rotation(final int originX, final int originY, final int originZ, final Direction.Axis axis, final float angle, final boolean rescale) {
 		this.rotation = new Rotation(originX, originY, originZ, axis, angle, rescale);
 		return this;
 	}
 
 	@Override
-	public ModelElementBuilder<BUILDER> shade(final boolean newShade) {
+	public ModelElementBuilder shade(final boolean newShade) {
 		this.shade = newShade;
 		return this;
 	}
 
 	@Override
-	public ModelElementBuilder<BUILDER> lightEmission(final int newLightEmission) {
+	public ModelElementBuilder lightEmission(final int newLightEmission) {
 		this.lightEmission = newLightEmission;
 		return this;
 	}
 
 	@Override
-	public ModelElementFaceBuilder<BUILDER> face(final Direction face) {
-		return this.faces.computeIfAbsent(face, k -> new ModelElementFaceBuilderImpl<>(this));
+	public ModelElementBuilder face(final Direction face, final Consumer<ModelElementFaceBuilder> builder) {
+		Util.make(this.faces.computeIfAbsent(face, k -> new ModelElementFaceBuilderImpl()), builder);
+		return this;
 	}
 
 	@Override
-	public BUILDER build() {
-		return this.builder;
+	public ModelElementBuilder faces(final BiConsumer<Direction, ModelElementFaceBuilder> faceBuilder, final boolean cull, final Direction... facesToMake) {
+		for (final Direction face : facesToMake.length > 0 ? facesToMake : Direction.values()) {
+			this.face(face, elementFaceBuilder -> {
+				if (cull) {
+					elementFaceBuilder.cullFace(face);
+				}
+				faceBuilder.accept(face, elementFaceBuilder);
+			});
+		}
+		return this;
 	}
 
 	JsonElement serialize() {
@@ -97,5 +102,6 @@ final class ModelElementBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> i
 	}
 
 	private record Rotation(int originX, int originY, int originZ, Direction.Axis axis, float angle, boolean rescale) {
+
 	}
 }

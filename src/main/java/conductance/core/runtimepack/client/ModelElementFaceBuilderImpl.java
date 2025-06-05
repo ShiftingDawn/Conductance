@@ -6,14 +6,12 @@ import net.minecraft.data.models.blockstates.VariantProperties;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.resource.ModelElementBuilder;
 import conductance.api.resource.ModelElementFaceBuilder;
 import conductance.api.util.JsonUtils;
 
-final class ModelElementFaceBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> implements ModelElementFaceBuilder<BUILDER> {
+final class ModelElementFaceBuilderImpl implements ModelElementFaceBuilder {
 
-	private final ModelElementBuilder<BUILDER> builder;
-	private int[] uv;
+	private int[] uv = new int[0];
 	@Nullable
 	private String texture;
 	@Nullable
@@ -22,48 +20,39 @@ final class ModelElementFaceBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER
 	private VariantProperties.Rotation rotation;
 	private int tintIndex = -1;
 
-	ModelElementFaceBuilderImpl(final ModelElementBuilder<BUILDER> builder) {
-		this.builder = builder;
-	}
-
 	@Override
-	public ModelElementFaceBuilder<BUILDER> uv(final int x1, final int y1, final int x2, final int y2) {
+	public ModelElementFaceBuilder uv(final int x1, final int y1, final int x2, final int y2) {
 		this.uv = new int[] {x1, y1, x2, y2};
 		return this;
 	}
 
 	@Override
-	public ModelElementFaceBuilder<BUILDER> texture(final String textureKey) {
+	public ModelElementFaceBuilder texture(final String textureKey) {
 		this.texture = '#' + textureKey;
 		return this;
 	}
 
 	@Override
-	public ModelElementFaceBuilder<BUILDER> cullFace(final Direction face) {
+	public ModelElementFaceBuilder cullFace(final Direction face) {
 		this.cullFace = face;
 		return this;
 	}
 
 	@Override
-	public ModelElementFaceBuilder<BUILDER> rotation(final VariantProperties.Rotation newRotation) {
+	public ModelElementFaceBuilder rotation(final VariantProperties.Rotation newRotation) {
 		this.rotation = newRotation;
 		return this;
 	}
 
 	@Override
-	public ModelElementFaceBuilder<BUILDER> tintIndex(final int newTintIndex) {
+	public ModelElementFaceBuilder tintIndex(final int newTintIndex) {
 		this.tintIndex = newTintIndex;
 		return this;
 	}
 
-	@Override
-	public ModelElementBuilder<BUILDER> build() {
-		return this.builder;
-	}
-
 	JsonElement serialize() {
 		return Util.make(new JsonObject(), json -> {
-			if (this.uv != null) {
+			if (this.uv.length > 0) {
 				json.add("uv", JsonUtils.toJsonArray(this.uv));
 			}
 			if (this.texture != null) {

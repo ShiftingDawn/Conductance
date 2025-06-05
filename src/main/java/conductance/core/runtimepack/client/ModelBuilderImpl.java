@@ -5,104 +5,137 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import net.minecraft.Util;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.resource.CompositeModelBuilder;
 import conductance.api.resource.ModelBuilder;
 import conductance.api.resource.ModelDisplayBuilder;
 import conductance.api.resource.ModelElementBuilder;
 
-abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> implements ModelBuilder<BUILDER> {
+final class ModelBuilderImpl implements ModelBuilder {
 
 	private final Map<String, String> textures = new HashMap<>();
-	private final EnumMap<ItemDisplayContext, ModelDisplayBuilderImpl<BUILDER>> displays = new EnumMap<>(ItemDisplayContext.class);
-	private final List<ModelElementBuilderImpl<BUILDER>> elements = new ArrayList<>();
+	private final EnumMap<ItemDisplayContext, ModelDisplayBuilderImpl> displays = new EnumMap<>(ItemDisplayContext.class);
+	private final List<ModelElementBuilderImpl> elements = new ArrayList<>();
 	private final Map<String, JsonElement> customProps = new HashMap<>();
 	private ResourceLocation parent;
 	@Nullable
 	private ResourceLocation loader;
 	@Nullable
+	private CompositeModelBuilderImpl compositeBuilder;
+	@Nullable
 	private ResourceLocation renderType;
+	@Nullable
+	private Boolean ambientOcclusion;
+	@Nullable
+	private BlockModel.GuiLight guiLight;
 
 	ModelBuilderImpl(final ResourceLocation defaultParent) {
 		this.parent = defaultParent;
 	}
 
-	@SuppressWarnings("unchecked")
-	private BUILDER self() {
-		return (BUILDER) this;
+	@Override
+	public ModelBuilder composite(final Consumer<CompositeModelBuilder> builder) {
+		if (this.compositeBuilder == null) {
+			this.compositeBuilder = new CompositeModelBuilderImpl();
+			this.loader(ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "composite"));
+		}
+		builder.accept(this.compositeBuilder);
+		return this;
 	}
 
 	@Override
-	public BUILDER parent(final ResourceLocation newParent) {
+	public ModelBuilder parent(final ResourceLocation newParent) {
 		this.parent = newParent;
-		return this.self();
+		return this;
 	}
 
 	@Override
-	public BUILDER loader(final ResourceLocation newLoader) {
+	public ModelBuilder loader(final ResourceLocation newLoader) {
 		this.loader = newLoader;
-		return this.self();
+		return this;
 	}
 
 	@Override
-	public BUILDER renderType(final ResourceLocation type) {
+	public ModelBuilder renderType(final ResourceLocation type) {
 		this.renderType = type;
-		return this.self();
+		return this;
 	}
 
 	@Override
-	public ModelDisplayBuilder<BUILDER> display(final ItemDisplayContext context) {
-		return this.displays.computeIfAbsent(context, k -> new ModelDisplayBuilderImpl<>(this.self()));
+	public ModelBuilder display(final ItemDisplayContext context, final Consumer<ModelDisplayBuilder> builder) {
+		Util.make(this.displays.computeIfAbsent(context, k -> new ModelDisplayBuilderImpl()), builder);
+		return this;
 	}
 
 	@Override
-	public BUILDER texture(final String textureKey, final String textureOrReferenceKey) {
+	public ModelBuilder texture(final String textureKey, final String textureOrReferenceKey) {
 		this.textures.put(textureKey, textureOrReferenceKey);
-		return this.self();
+		return this;
 	}
 
 	@Override
-	public ModelElementBuilder<BUILDER> element() {
-		return Util.make(new ModelElementBuilderImpl<>(this.self()), this.elements::add);
+	public ModelBuilder element(final Consumer<ModelElementBuilder> builder) {
+		Util.make(new ModelElementBuilderImpl(), b -> {
+			builder.accept(b);
+			this.elements.add(b);
+		});
+		return this;
 	}
 
 	@Override
-	public BUILDER addProperty(final String propertyKey, final String propertyValue) {
+	public ModelBuilder ambientOcclusion(final boolean newAmbientOcclusion) {
+		this.ambientOcclusion = newAmbientOcclusion;
+		return this;
+	}
+
+	@Override
+	public ModelBuilder guiLight(final BlockModel.GuiLight newGuiLight) {
+		this.guiLight = newGuiLight;
+		return this;
+	}
+
+	@Override
+	public ModelBuilder addProperty(final String propertyKey, final String propertyValue) {
 		this.customProps.put(propertyKey, new JsonPrimitive(propertyValue));
-		return this.self();
+		return this;
 	}
 
 	@Override
-	public BUILDER addProperty(final String propertyKey, final boolean propertyValue) {
+	public ModelBuilder addProperty(final String propertyKey, final boolean propertyValue) {
 		this.customProps.put(propertyKey, new JsonPrimitive(propertyValue));
-		return this.self();
+		return this;
 	}
 
 	@Override
-	public BUILDER addProperty(final String propertyKey, final Number propertyValue) {
+	public ModelBuilder addProperty(final String propertyKey, final Number propertyValue) {
 		this.customProps.put(propertyKey, new JsonPrimitive(propertyValue));
-		return this.self();
+		return this;
 	}
 
 	@Override
-	public BUILDER addProperty(final String propertyKey, final char propertyValue) {
+	public ModelBuilder addProperty(final String propertyKey, final char propertyValue) {
 		this.customProps.put(propertyKey, new JsonPrimitive(propertyValue));
-		return this.self();
+		return this;
 	}
 
-	protected abstract void addJsonProperties(JsonObject json);
-
-	public final JsonObject build() {
+	public JsonObject build() {
 		return Util.make(new JsonObject(), json -> {
 			json.addProperty("parent", this.parent.toString());
 			if (this.loader != null) {
 				json.addProperty("loader", this.loader.toString());
+			}
+			if (this.compositeBuilder != null) {
+				this.compositeBuilder.addToJson(json);
 			}
 			if (this.renderType != null) {
 				json.addProperty("render_type", this.renderType.toString());
@@ -118,7 +151,12 @@ abstract class ModelBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> imple
 			if (!this.elements.isEmpty()) {
 				json.add("elements", Util.make(new JsonArray(), array -> this.elements.forEach(element -> array.add(element.serialize()))));
 			}
-			this.addJsonProperties(json);
+			if (this.ambientOcclusion != null) {
+				json.addProperty("ambientocclusion", this.ambientOcclusion);
+			}
+			if (this.guiLight != null) {
+				json.addProperty("gui_light", this.guiLight.getSerializedName());
+			}
 			this.customProps.forEach(json::add);
 		});
 	}

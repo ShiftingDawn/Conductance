@@ -5,17 +5,16 @@ import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
 import com.google.gson.JsonElement;
 import lombok.AllArgsConstructor;
-import conductance.api.resource.BlockModelBuilder;
 import conductance.api.resource.BlockStateBuilder;
-import conductance.api.resource.ItemModelBuilder;
+import conductance.api.resource.ModelBuilder;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 
 @AllArgsConstructor
 final class AddRuntimeModelEventImpl implements AddRuntimeModelEvent {
 
 	private final BiConsumer<ResourceLocation, Consumer<BlockStateBuilder>> addBlockStateDelegate;
-	private final BiConsumer<ResourceLocation, Consumer<BlockModelBuilder<?>>> addBlockModelDelegate;
-	private final BiConsumer<ResourceLocation, Consumer<ItemModelBuilder<?>>> addItemModelDelegate;
+	private final BiConsumer<ResourceLocation, Consumer<ModelBuilder>> addBlockModelDelegate;
+	private final BiConsumer<ResourceLocation, Consumer<ModelBuilder>> addItemModelDelegate;
 	private final BiConsumer<ResourceLocation, JsonElement> insertBlockStateDelegate;
 	private final BiConsumer<ResourceLocation, JsonElement> insertBlockModelDelegate;
 	private final BiConsumer<ResourceLocation, JsonElement> insertItemModelDelegate;
@@ -26,13 +25,12 @@ final class AddRuntimeModelEventImpl implements AddRuntimeModelEvent {
 	}
 
 	@Override
-	public void addBlockModel(final ResourceLocation location, final Consumer<BlockModelBuilder<?>> builder) {
+	public void addBlockModel(final ResourceLocation location, final Consumer<ModelBuilder> builder) {
 		this.addBlockModelDelegate.accept(location, builder);
-
 	}
 
 	@Override
-	public void addItemModel(final ResourceLocation location, final Consumer<ItemModelBuilder<?>> builder) {
+	public void addItemModel(final ResourceLocation location, final Consumer<ModelBuilder> builder) {
 		this.addItemModelDelegate.accept(location, builder);
 	}
 
@@ -44,7 +42,6 @@ final class AddRuntimeModelEventImpl implements AddRuntimeModelEvent {
 	@Override
 	public void insertBlockModel(final ResourceLocation location, final JsonElement data) {
 		this.insertBlockModelDelegate.accept(location, data);
-
 	}
 
 	@Override

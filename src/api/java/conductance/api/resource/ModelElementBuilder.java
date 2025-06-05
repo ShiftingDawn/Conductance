@@ -1,24 +1,26 @@
 package conductance.api.resource;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import net.minecraft.core.Direction;
 
-public interface ModelElementBuilder<BUILDER extends ModelBuilder<BUILDER>> {
+public interface ModelElementBuilder {
 
-	ModelElementBuilder<BUILDER> from(int x, int y, int z);
+	ModelElementBuilder from(int x, int y, int z);
 
-	ModelElementBuilder<BUILDER> to(int x, int y, int z);
+	ModelElementBuilder to(int x, int y, int z);
 
-	ModelElementBuilder<BUILDER> rotation(int originX, int originY, int originZ, Direction.Axis axis, float angle, boolean rescale);
+	ModelElementBuilder rotation(int originX, int originY, int originZ, Direction.Axis axis, float angle, boolean rescale);
 
-	default ModelElementBuilder<BUILDER> rotation(final int originX, final int originY, final int originZ, final Direction.Axis axis, final float angle) {
+	default ModelElementBuilder rotation(final int originX, final int originY, final int originZ, final Direction.Axis axis, final float angle) {
 		return this.rotation(originX, originY, originZ, axis, angle, false);
 	}
 
-	ModelElementBuilder<BUILDER> shade(boolean shade);
+	ModelElementBuilder shade(boolean shade);
 
-	ModelElementBuilder<BUILDER> lightEmission(int lightEmission);
+	ModelElementBuilder lightEmission(int lightEmission);
 
-	ModelElementFaceBuilder<BUILDER> face(Direction face);
+	ModelElementBuilder face(Direction face, Consumer<ModelElementFaceBuilder> builder);
 
-	BUILDER build();
+	ModelElementBuilder faces(BiConsumer<Direction, ModelElementFaceBuilder> faceBuilder, boolean cull, Direction... faces);
 }

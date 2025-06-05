@@ -1,12 +1,10 @@
 package conductance.api.resource;
 
-public interface ModelDisplayBuilder<BUILDER extends ModelBuilder<BUILDER>> {
+public interface ModelDisplayBuilder {
 
-	ModelDisplayBuilder<BUILDER> rotation(int x, int y, int z);
+	ModelDisplayBuilder rotation(int x, int y, int z);
 
-	ModelDisplayBuilder<BUILDER> translation(int x, int y, int z);
+	ModelDisplayBuilder translation(int x, int y, int z);
 
-	ModelDisplayBuilder<BUILDER> scale(float x, float y, float z);
-
-	BUILDER build();
+	ModelDisplayBuilder scale(float x, float y, float z);
 }

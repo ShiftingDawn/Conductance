@@ -1,51 +1,99 @@
 package conductance.api.resource;
 
+import java.util.function.Consumer;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 
-public interface ModelBuilder<BUILDER extends ModelBuilder<BUILDER>> {
+public interface ModelBuilder {
 
-	BUILDER parent(ResourceLocation parent);
+	ModelBuilder composite(Consumer<CompositeModelBuilder> builder);
 
-	default BUILDER parent(final String parent) {
+	ModelBuilder parent(ResourceLocation parent);
+
+	default ModelBuilder parent(final String parent) {
 		return this.parent(ResourceLocation.withDefaultNamespace(parent));
 	}
 
-	BUILDER loader(ResourceLocation loader);
+	ModelBuilder loader(ResourceLocation loader);
 
-	BUILDER renderType(ResourceLocation renderType);
+	ModelBuilder renderType(ResourceLocation renderType);
 
-	default BUILDER renderType(final String renderType) {
+	default ModelBuilder renderType(final String renderType) {
 		return this.renderType(ResourceLocation.withDefaultNamespace(renderType));
 	}
 
-	ModelDisplayBuilder<BUILDER> display(ItemDisplayContext context);
+	ModelBuilder display(ItemDisplayContext context, Consumer<ModelDisplayBuilder> builder);
 
-	BUILDER texture(String textureKey, String textureOrReferenceKey);
+	ModelBuilder texture(String textureKey, String textureOrReferenceKey);
 
-	default BUILDER texture(final String referenceKey, final ResourceLocation texture) {
+	default ModelBuilder texture(final String referenceKey, final ResourceLocation texture) {
 		return this.texture(referenceKey, texture.toString());
 	}
 
-	default BUILDER particle(final ResourceLocation texture) {
+	default ModelBuilder particle(final ResourceLocation texture) {
 		return this.texture("particle", texture);
 	}
 
-	default BUILDER particle(final String textureOrReferenceKey) {
+	default ModelBuilder particle(final String textureOrReferenceKey) {
 		return this.texture("particle", textureOrReferenceKey);
 	}
 
-	BUILDER addProperty(String propertyKey, String propertyValue);
+	ModelBuilder element(Consumer<ModelElementBuilder> builder);
 
-	BUILDER addProperty(String propertyKey, boolean propertyValue);
+	ModelBuilder ambientOcclusion(boolean ambientOcclusion);
 
-	BUILDER addProperty(String propertyKey, Number propertyValue);
+	ModelBuilder guiLight(BlockModel.GuiLight guiLight);
 
-	BUILDER addProperty(String propertyKey, char propertyValue);
-
-	default BUILDER addProperty(final String propertyKey, final ResourceLocation propertyValue) {
-		return this.addProperty(propertyKey, propertyValue.toString());
+	default ModelBuilder textureLayer(final int layer, final ResourceLocation texture) {
+		return this.texture("layer" + layer, texture);
 	}
 
-	ModelElementBuilder<BUILDER> element();
+	default ModelBuilder textureLayer(final int layer, final String textureOrReferenceKey) {
+		return this.texture("layer" + layer, textureOrReferenceKey);
+	}
+
+	default ModelBuilder layer0(final ResourceLocation texture) {
+		return this.textureLayer(0, texture);
+	}
+
+	default ModelBuilder layer0(final String textureOrReferenceKey) {
+		return this.textureLayer(0, textureOrReferenceKey);
+	}
+
+	default ModelBuilder layer1(final ResourceLocation texture) {
+		return this.textureLayer(1, texture);
+	}
+
+	default ModelBuilder layer1(final String textureOrReferenceKey) {
+		return this.textureLayer(1, textureOrReferenceKey);
+	}
+
+	default ModelBuilder layer2(final ResourceLocation texture) {
+		return this.textureLayer(2, texture);
+	}
+
+	default ModelBuilder layer2(final String textureOrReferenceKey) {
+		return this.textureLayer(2, textureOrReferenceKey);
+	}
+
+	default ModelBuilder layer3(final ResourceLocation texture) {
+		return this.textureLayer(3, texture);
+	}
+
+	default ModelBuilder layer3(final String textureOrReferenceKey) {
+		return this.textureLayer(3, textureOrReferenceKey);
+	}
+
+	ModelBuilder addProperty(String propertyKey, String propertyValue);
+
+	ModelBuilder addProperty(String propertyKey, boolean propertyValue);
+
+	ModelBuilder addProperty(String propertyKey, Number propertyValue);
+
+	ModelBuilder addProperty(String propertyKey, char propertyValue);
+
+	default ModelBuilder addProperty(final String propertyKey, final ResourceLocation propertyValue) {
+		return this.addProperty(propertyKey, propertyValue.toString());
+	}
 }

@@ -7,51 +7,40 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.ModelDisplayBuilder;
 import conductance.api.util.JsonUtils;
 
-@SuppressWarnings({"ConstantValue", "NotNullFieldNotInitialized"})
-final class ModelDisplayBuilderImpl<BUILDER extends ModelBuilderImpl<BUILDER>> implements ModelDisplayBuilder<BUILDER> {
+final class ModelDisplayBuilderImpl implements ModelDisplayBuilder {
 
-	private final BUILDER builder;
-	private int[] rotation;
-	private int[] translation;
-	private float[] scale;
-
-	ModelDisplayBuilderImpl(final BUILDER builder) {
-		this.builder = builder;
-	}
+	private int[] rotation = new int[0];
+	private int[] translation = new int[0];
+	private float[] scale = new float[0];
 
 	@Override
-	public ModelDisplayBuilder<BUILDER> rotation(final int x, final int y, final int z) {
+	public ModelDisplayBuilder rotation(final int x, final int y, final int z) {
 		this.rotation = new int[] {x, y, z};
 		return this;
 	}
 
 	@Override
-	public ModelDisplayBuilder<BUILDER> translation(final int x, final int y, final int z) {
+	public ModelDisplayBuilder translation(final int x, final int y, final int z) {
 		this.translation = new int[] {x, y, z};
 		return this;
 	}
 
 	@Override
-	public ModelDisplayBuilder<BUILDER> scale(final float x, final float y, final float z) {
+	public ModelDisplayBuilder scale(final float x, final float y, final float z) {
 		this.scale = new float[] {x, y, z};
 		return this;
-	}
-
-	@Override
-	public BUILDER build() {
-		return this.builder;
 	}
 
 	@Nullable
 	JsonElement serialize() {
 		final JsonObject result = Util.make(new JsonObject(), json -> {
-			if (this.rotation != null) {
+			if (this.rotation.length > 0) {
 				json.add("rotation", JsonUtils.toJsonArray(this.rotation));
 			}
-			if (this.translation != null) {
+			if (this.translation.length > 0) {
 				json.add("translation", JsonUtils.toJsonArray(this.translation));
 			}
-			if (this.scale != null) {
+			if (this.scale.length > 0) {
 				json.add("scale", JsonUtils.toJsonArray(this.scale));
 			}
 		});

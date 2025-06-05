@@ -7,8 +7,7 @@ import conductance.api.material.TaggedMaterialSet;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.registry.TaggedSet;
-import conductance.api.resource.BlockModelBuilder;
-import conductance.api.resource.ItemModelBuilder;
+import conductance.api.resource.ModelBuilder;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.util.SafeOptional;
 import conductance.Conductance;
@@ -36,7 +35,7 @@ final class MaterialTextureSetModelHandler {
 		});
 	}
 
-	private static void createItemEntry(final ResourceLocation set, final MaterialTextureType type, final ItemModelBuilder<?> builder) {
+	private static void createItemEntry(final ResourceLocation set, final MaterialTextureType type, final ModelBuilder builder) {
 		builder.layer0(type.getTexture(set, null, null).value());
 		final ResourceLocation magneticOverlayTexture = ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(), "material/%s/%s/magnetic_overlay".formatted(set.getNamespace(), set.getPath()));
 		int currentLayer = 1;
@@ -55,7 +54,7 @@ final class MaterialTextureSetModelHandler {
 		}
 	}
 
-	private static void createBlockEntry(final ResourceLocation set, final MaterialTextureType type, final BlockModelBuilder<?> builder) {
+	private static void createBlockEntry(final ResourceLocation set, final MaterialTextureType type, final ModelBuilder builder) {
 		builder
 				.parent(Conductance.id("block/cube_all_tinted0"))
 				.texture("all", type.getTexture(set, null, null).value());

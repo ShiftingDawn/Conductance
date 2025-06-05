@@ -2,20 +2,29 @@ package conductance.api.resource.event;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import com.google.gson.JsonElement;
 import conductance.api.plugin.IConductancePluginEvent;
-import conductance.api.resource.BlockModelBuilder;
 import conductance.api.resource.BlockStateBuilder;
-import conductance.api.resource.ItemModelBuilder;
+import conductance.api.resource.ModelBuilder;
 
 public interface AddRuntimeModelEvent extends IConductancePluginEvent {
 
 	void addBlockState(ResourceLocation location, Consumer<BlockStateBuilder> builder);
 
-	void addBlockModel(ResourceLocation location, Consumer<BlockModelBuilder<?>> builder);
+	void addBlockModel(ResourceLocation location, Consumer<ModelBuilder> builder);
 
-	void addItemModel(ResourceLocation location, Consumer<ItemModelBuilder<?>> builder);
+	void addItemModel(ResourceLocation location, Consumer<ModelBuilder> builder);
+
+	default void addItemModelDelegate(final Block block) {
+		this.addItemModel(
+				BuiltInRegistries.ITEM.getKey(block.asItem()),
+				builder -> builder.parent(ModelLocationUtils.getModelLocation(block))
+		);
+	}
 
 	void insertBlockState(ResourceLocation location, JsonElement data);
 
