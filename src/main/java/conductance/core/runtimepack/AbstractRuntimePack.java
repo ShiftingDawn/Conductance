@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -19,23 +20,27 @@ import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.resources.IoSupplier;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
 import com.google.gson.JsonElement;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 import conductance.Conductance;
+import conductance.loader.PluginEventBus;
 
 public abstract class AbstractRuntimePack implements PackResources {
 
+	private final Set<String> namespaces = new ObjectOpenHashSet<>();
 	private final PackLocationInfo locationInfo;
 	private final PackType packType;
 
 	public AbstractRuntimePack(final PackLocationInfo locationInfo, final PackType packType) {
 		this.locationInfo = locationInfo;
 		this.packType = packType;
+		this.namespaces.addAll(List.of(ResourceLocation.DEFAULT_NAMESPACE, "c", NeoForgeVersion.MOD_ID));
+		this.namespaces.addAll(PluginEventBus.getAllModids());
 	}
 
-	protected abstract Map<ResourceLocation, byte[]> getData();
-
-	protected abstract Set<String> getKnownNamespaces();
+	protected abstract Map<ResourceLocation, byte[]> getAllData();
 
 	@Nullable
 	@Override
@@ -46,8 +51,8 @@ public abstract class AbstractRuntimePack implements PackResources {
 	@Nullable
 	@Override
 	public IoSupplier<InputStream> getResource(final PackType pType, final ResourceLocation resourceLocation) {
-		if (pType == this.packType && this.getData().containsKey(resourceLocation)) {
-			return () -> new ByteArrayInputStream(this.getData().get(resourceLocation));
+		if (pType == this.packType && this.getAllData().containsKey(resourceLocation)) {
+			return () -> new ByteArrayInputStream(this.getAllData().get(resourceLocation));
 		}
 		return null;
 	}
@@ -56,7 +61,7 @@ public abstract class AbstractRuntimePack implements PackResources {
 	public void listResources(final PackType pType, final String namespace, final String path, final ResourceOutput resourceOutput) {
 		if (pType == this.packType) {
 			final String path2 = path.endsWith("/") ? path : path + "/";
-			this.getData().keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(path2)).forEach(location -> {
+			this.getAllData().keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(path2)).forEach(location -> {
 				final IoSupplier<InputStream> resource = this.getResource(pType, location);
 				if (resource != null) {
 					resourceOutput.accept(location, resource);
@@ -67,7 +72,7 @@ public abstract class AbstractRuntimePack implements PackResources {
 
 	@Override
 	public Set<String> getNamespaces(final PackType pType) {
-		return pType == this.packType ? this.getKnownNamespaces() : Set.of();
+		return pType == this.packType ? this.namespaces : Set.of();
 	}
 
 	@SuppressWarnings("unchecked")

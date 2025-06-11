@@ -4,14 +4,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
@@ -28,6 +31,13 @@ public final class PluginEventBus {
 
 	private record EventMethod(String modid, Class<IConductancePluginEvent> eventType, Consumer<IConductancePluginEvent> listener) {
 
+	}
+
+	public static Set<String> getAllModids() {
+		if (!PluginEventBus.INITIALIZED.get()) {
+			throw new AssertionError();
+		}
+		return PluginEventBus.LISTENERS.values().stream().flatMap(Collection::stream).map(EventMethod::modid).collect(Collectors.toSet());
 	}
 
 	public static void initialize() {

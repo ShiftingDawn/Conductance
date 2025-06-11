@@ -3,7 +3,6 @@ package conductance.core.runtimepack.server;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import net.minecraft.Util;
@@ -11,17 +10,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.Tuple;
-import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.CAPI;
 import conductance.Config;
 import conductance.core.runtimepack.AbstractRuntimePack;
 
 final class RuntimeDataPack extends AbstractRuntimePack {
 
-	private static final Set<String> KNOWN_NAMESPACES = new ObjectOpenHashSet<>(Sets.newHashSet(CAPI.MOD_ID, ResourceLocation.DEFAULT_NAMESPACE, "c", "neoforge"));
 	private static final Map<ResourceLocation, byte[]> DATA = new ConcurrentHashMap<>();
 
 	RuntimeDataPack(final PackLocationInfo location) {
@@ -29,13 +24,8 @@ final class RuntimeDataPack extends AbstractRuntimePack {
 	}
 
 	@Override
-	protected Map<ResourceLocation, byte[]> getData() {
+	protected Map<ResourceLocation, byte[]> getAllData() {
 		return RuntimeDataPack.DATA;
-	}
-
-	@Override
-	public Set<String> getKnownNamespaces() {
-		return RuntimeDataPack.KNOWN_NAMESPACES;
 	}
 
 	private static boolean shouldDumpAssets() {
