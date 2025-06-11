@@ -3,9 +3,10 @@ package conductance.client;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import net.minecraft.Util;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -13,17 +14,17 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.model.ElementsModel;
+import net.neoforged.neoforge.client.model.CompositeModel;
 import net.neoforged.neoforge.client.model.IDynamicBakedModel;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
@@ -35,59 +36,44 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.capability.CapabilityHelper;
+import conductance.api.capability.cover.CoverManager;
+import conductance.api.capability.cover.CoverModelData;
+import conductance.api.capability.cover.ICoverable;
+import conductance.api.util.model.DelegatedBakedModel;
 import conductance.Conductance;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
 public final class MachineModel {
 
-	@RequiredArgsConstructor
-	public static final class MachineBakedModel implements IDynamicBakedModel {
+	public static final class MachineBakedModel extends DelegatedBakedModel<CompositeModel.Baked> {
 
-		private final BakedModel base;
+		public MachineBakedModel(final CompositeModel.Baked delegate) {
+			super(delegate);
+		}
 
 		@Override
 		public List<BakedQuad> getQuads(@Nullable final BlockState state, @Nullable final Direction side, final RandomSource rand, final ModelData data, @Nullable final RenderType renderType) {
-			final List<BakedQuad> quadList = new ArrayList<>();
-			//
-			quadList.addAll(this.base.getQuads(state, side, rand, data, renderType));
-			//System.out.println(data.getProperties());
-			//
-			return quadList;
+			return Util.make(new ArrayList<>(this.getDelegate().getQuads(state, side, rand, data, renderType)), quads -> {
+				if (renderType == RenderType.SOLID) {
+					if (side != null && data.get(CoverModelData.MODEL_PROPERTY) instanceof final CoverManager coverManager) {
+						coverManager.getCover(side).ifPresent(coverEntity ->  {
+							//TODO cover render
+//							coverEntity.getCoverType().getRenderer()
+						});
+					}
+				}
+			});
 		}
 
 		@Override
-		public boolean useAmbientOcclusion() {
-			return this.base.useAmbientOcclusion();
-		}
-
-		@Override
-		public boolean isGui3d() {
-			return this.base.isGui3d();
-		}
-
-		@Override
-		public boolean usesBlockLight() {
-			return this.base.usesBlockLight();
-		}
-
-		@Override
-		public boolean isCustomRenderer() {
-			return false;
-		}
-
-		@Override
-		public TextureAtlasSprite getParticleIcon() {
-			return this.base.getParticleIcon();
-		}
-
-		@Override
-		public ItemOverrides getOverrides() {
-			return this.base.getOverrides();
-		}
-
-		@Override
-		public BakedModel applyTransform(final ItemDisplayContext transformType, final PoseStack poseStack, final boolean applyLeftHandTransform) {
-			return this.base.applyTransform(transformType, poseStack, applyLeftHandTransform);
+		public ModelData getModelData(final BlockAndTintGetter level, final BlockPos pos, final BlockState state, final ModelData modelData) {
+			final ModelData.Builder builder = super.getModelData(level, pos, state, modelData).derive();
+			final ICoverable coverable = CapabilityHelper.getCoverable(level, pos);
+			if (coverable != null) {
+				builder.with(CoverModelData.MODEL_PROPERTY, coverable.getCoverManager());
+			}
+			return builder.build();
 		}
 	}
 
@@ -98,7 +84,7 @@ public final class MachineModel {
 		@Override
 		public MachineUnbakedModel read(final JsonObject json, final JsonDeserializationContext ctx) throws JsonParseException {
 			json.addProperty("loader", ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "composite").toString());
-			final BlockModel base = ctx.deserialize(json, BlockModel.class);
+			final CompositeModel base = CompositeModel.Loader.INSTANCE.read(json, ctx);
 			return new MachineUnbakedModel(base);
 		}
 	}
@@ -106,18 +92,16 @@ public final class MachineModel {
 	@RequiredArgsConstructor
 	public static final class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel> {
 
-		private final BlockModel baseModel;
+		private final CompositeModel baseModel;
 
-		@SuppressWarnings("deprecation")
 		@Override
 		public BakedModel bake(final IGeometryBakingContext ctx, final ModelBaker baker, final Function<Material, TextureAtlasSprite> spriteGetter, final ModelState modelState, final ItemOverrides overrides) {
-			final BakedModel bakedBase = new ElementsModel(this.baseModel.getElements()).bake(ctx, baker, spriteGetter, modelState, overrides);
-			return new MachineBakedModel(bakedBase);
+			return new MachineBakedModel((CompositeModel.Baked) this.baseModel.bake(ctx, baker, spriteGetter, modelState, overrides));
 		}
 
 		@Override
 		public void resolveParents(final Function<ResourceLocation, UnbakedModel> modelGetter, final IGeometryBakingContext context) {
-			this.baseModel.resolveParents(modelGetter);
+			this.baseModel.resolveParents(modelGetter, context);
 		}
 	}
 

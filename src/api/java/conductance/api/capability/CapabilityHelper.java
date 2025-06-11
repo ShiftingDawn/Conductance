@@ -3,7 +3,9 @@ package conductance.api.capability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
@@ -23,6 +25,15 @@ public final class CapabilityHelper {
 	@Nullable
 	public static ICoverable getCoverable(final Level level, final BlockPos pos) {
 		return level.getCapability(CapabilityHelper.COVERABLE_BLOCK, pos);
+	}
+
+	@Nullable
+	public static ICoverable getCoverable(final BlockAndTintGetter level, final BlockPos pos) {
+		final BlockEntity be = level.getBlockEntity(pos);
+		if (be != null && be.getLevel() != null) {
+			return be.getLevel().getCapability(CapabilityHelper.COVERABLE_BLOCK, pos);
+		}
+		return null;
 	}
 
 	static {
