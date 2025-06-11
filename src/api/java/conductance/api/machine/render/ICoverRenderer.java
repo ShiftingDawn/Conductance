@@ -77,7 +77,7 @@ public interface ICoverRenderer extends IRenderer {
 			}
 		}
 		if (modelFacing != null && cover.getSide() == side) {
-			cover.getCoverType().getRenderer().renderCover(quads, side, rand, cover, modelFacing, modelState);
+//			cover.getCoverType().getRenderer().renderCover(quads, side, rand, cover, modelFacing, modelState);
 		}
 	}
 }

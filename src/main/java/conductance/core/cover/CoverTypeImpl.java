@@ -1,22 +1,23 @@
 package conductance.core.cover;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import conductance.api.capability.cover.CoverEntity;
 import conductance.api.capability.cover.CoverEntityConstructor;
 import conductance.api.capability.cover.CoverManager;
-import conductance.api.capability.cover.CoverRenderer;
+import conductance.api.capability.cover.CoverQuadProvider;
 import conductance.api.capability.cover.CoverType;
 import conductance.api.registry.RegistryObject;
 import conductance.core.apiimpl.ApiBridge;
 
 public final class CoverTypeImpl<COVER extends CoverEntity<COVER>> extends RegistryObject<ResourceLocation> implements CoverType<COVER> {
 
-	private final CoverRenderer coverRenderer;
+	private final Supplier<CoverQuadProvider> coverRenderer;
 	private final CoverEntityConstructor<COVER> constructor;
 
-	public CoverTypeImpl(final ResourceLocation registryKey, final Function<CoverType<COVER>, CoverRenderer> coverRenderer, final CoverEntityConstructor<COVER> constructor) {
+	public CoverTypeImpl(final ResourceLocation registryKey, final Function<CoverType<COVER>, Supplier<CoverQuadProvider>> coverRenderer, final CoverEntityConstructor<COVER> constructor) {
 		super(registryKey);
 		this.coverRenderer = coverRenderer.apply(this);
 		this.constructor = constructor;
@@ -24,7 +25,7 @@ public final class CoverTypeImpl<COVER extends CoverEntity<COVER>> extends Regis
 	}
 
 	@Override
-	public CoverRenderer getRenderer() {
+	public Supplier<CoverQuadProvider> getRenderer() {
 		return this.coverRenderer;
 	}
 

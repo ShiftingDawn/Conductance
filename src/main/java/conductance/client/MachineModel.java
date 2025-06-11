@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import net.minecraft.Util;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -25,7 +24,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.model.CompositeModel;
-import net.neoforged.neoforge.client.model.IDynamicBakedModel;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
@@ -39,8 +37,10 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.capability.CapabilityHelper;
 import conductance.api.capability.cover.CoverManager;
 import conductance.api.capability.cover.CoverModelData;
+import conductance.api.capability.cover.CoverQuadProvider;
 import conductance.api.capability.cover.ICoverable;
 import conductance.api.util.model.DelegatedBakedModel;
+import conductance.api.util.model.ModelUtils;
 import conductance.Conductance;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
@@ -55,11 +55,13 @@ public final class MachineModel {
 		@Override
 		public List<BakedQuad> getQuads(@Nullable final BlockState state, @Nullable final Direction side, final RandomSource rand, final ModelData data, @Nullable final RenderType renderType) {
 			return Util.make(new ArrayList<>(this.getDelegate().getQuads(state, side, rand, data, renderType)), quads -> {
-				if (renderType == RenderType.SOLID) {
+				final Direction frontFacing = ModelUtils.getRotationFromState(state);
+				if (renderType == RenderType.cutout() || renderType == RenderType.cutoutMipped()) {
 					if (side != null && data.get(CoverModelData.MODEL_PROPERTY) instanceof final CoverManager coverManager) {
-						coverManager.getCover(side).ifPresent(coverEntity ->  {
-							//TODO cover render
-//							coverEntity.getCoverType().getRenderer()
+						coverManager.getCover(side).ifPresent(coverEntity -> {
+							final ModelState rotationState = ModelUtils.getModelRotationState(frontFacing);
+							final CoverQuadProvider coverRenderer = coverEntity.getCoverType().getRenderer().get();
+							quads.addAll(coverRenderer.getCoverQuads(side, rand, coverEntity, frontFacing, rotationState));
 						});
 					}
 				}
