@@ -50,7 +50,7 @@ public final class MachineModel {
 			final List<BakedQuad> quadList = new ArrayList<>();
 			//
 			quadList.addAll(this.base.getQuads(state, side, rand, data, renderType));
-			System.out.println(data.getProperties());
+			//System.out.println(data.getProperties());
 			//
 			return quadList;
 		}
