@@ -35,12 +35,12 @@ final class RegisterCoverEventImpl implements RegisterCoverEvent {
 
 	@Override
 	public <COVER extends CoverEntity<COVER>> CoverType<COVER> register(final String registryName, final String texture, final CoverEntityConstructor<COVER> constructor) {
-		return this.register(registryName, coverType -> () -> new SimpleTextureCoverQuadProvider(coverType.getRegistryKey().withPath(("block/cover/" + texture))), constructor);
+		return this.register(registryName, coverType -> () -> new SimpleTextureCoverQuadProvider(coverType.getRegistryKey().withPath("cover/" + texture)), constructor);
 	}
 
 	@Override
 	public <COVER extends CoverEntity<COVER>> CoverType<COVER> register(final String registryName, final CoverEntityConstructor<COVER> constructor) {
-		return this.register(registryName, coverType -> () -> new SimpleTextureCoverQuadProvider(coverType.getRegistryKey().withPrefix("block/cover/")), constructor);
+		return this.register(registryName, coverType -> () -> new SimpleTextureCoverQuadProvider(coverType.getRegistryKey().withPrefix("cover/")), constructor);
 	}
 
 }

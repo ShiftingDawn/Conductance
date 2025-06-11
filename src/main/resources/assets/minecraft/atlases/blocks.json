@@ -4,6 +4,11 @@
 			"type": "directory",
 			"source": "material",
 			"prefix": "material/"
+		},
+		{
+			"type": "directory",
+			"source": "cover",
+			"prefix": "cover/"
 		}
 	]
 }
