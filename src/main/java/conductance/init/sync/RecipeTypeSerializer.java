@@ -3,7 +3,6 @@ package conductance.init.sync;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
@@ -23,15 +22,5 @@ public class RecipeTypeSerializer extends Serializer<NCRecipeType> {
 	@Override
 	public void deserialize(final Operation operation, final Reference ref, @Nullable final Tag tag, final HolderLookup.Provider registries) {
 		this.deserialize(tag, StringTag.class, t -> CAPI.regs().recipeTypes().get(ResourceLocation.parse(t.getAsString())));
-	}
-
-	@Override
-	public void toNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		this.write(buf, data -> buf.writeResourceLocation(data.getRegistryKey()));
-	}
-
-	@Override
-	public void fromNetwork(final Operation operation, final Reference ref, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		this.read(buf, () -> CAPI.regs().recipeTypes().get(buf.readResourceLocation()));
 	}
 }

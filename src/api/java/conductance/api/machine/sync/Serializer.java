@@ -1,12 +1,9 @@
 package conductance.api.machine.sync;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -23,10 +20,6 @@ public abstract class Serializer<T> {
 	public abstract Tag serialize(Operation operation, Reference ref, HolderLookup.Provider registries);
 
 	public abstract void deserialize(Operation operation, Reference ref, @Nullable Tag tag, HolderLookup.Provider registries);
-
-	public abstract void toNetwork(Operation operation, Reference ref, RegistryFriendlyByteBuf buf, HolderLookup.Provider registries);
-
-	public abstract void fromNetwork(Operation operation, Reference ref, RegistryFriendlyByteBuf buf, HolderLookup.Provider registries);
 
 	protected final <A extends Tag> A testTag(final Tag tag, final Class<A> expectedType) {
 		if (expectedType.isAssignableFrom(tag.getClass())) {
@@ -73,50 +66,6 @@ public abstract class Serializer<T> {
 		}
 		if (expectedType.isAssignableFrom(obj.getClass())) {
 			callback.accept((T) obj, this.testTag(tag, tagType));
-		} else {
-			throw new IllegalArgumentException("Field %s is not an instance of %s!".formatted(ref.getKey().getRawField(), expectedType.getName()));
-		}
-	}
-
-	protected final void write(final RegistryFriendlyByteBuf buf, final Consumer<T> consumer) {
-		final T d = this.getData();
-		buf.writeBoolean(d != null);
-		if (d != null) {
-			consumer.accept(d);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	protected final void writeRaw(final Reference ref, final Class<T> expectedType, final RegistryFriendlyByteBuf buf, final Consumer<T> consumer) {
-		final Object obj = ref.getValueHolder().get();
-		buf.writeBoolean(obj != null);
-		if (obj != null) {
-			if (expectedType.isAssignableFrom(obj.getClass())) {
-				consumer.accept((T) obj);
-			} else {
-				throw new IllegalArgumentException("Field %s is not an instance of %s!".formatted(ref.getKey().getRawField(), expectedType.getName()));
-			}
-		}
-	}
-
-	protected final void read(final RegistryFriendlyByteBuf buf, final Supplier<T> callback) {
-		if (buf.readBoolean()) {
-			this.setData(callback.get());
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	protected final void readRaw(final Reference ref, final Class<T> expectedType, final RegistryFriendlyByteBuf buf, final Consumer<T> callback) {
-		if (!buf.readBoolean()) {
-			ref.getValueHolder().set(null);
-			return;
-		}
-		final Object obj = ref.getValueHolder().get();
-		if (obj == null) {
-			throw new IllegalArgumentException("Field %s is null! If null is a valid value, use the %s annotation!".formatted(ref.getKey().getRawField(), SpecialHandled.class.getName()));
-		}
-		if (expectedType.isAssignableFrom(obj.getClass())) {
-			callback.accept((T) obj);
 		} else {
 			throw new IllegalArgumentException("Field %s is not an instance of %s!".formatted(ref.getKey().getRawField(), expectedType.getName()));
 		}

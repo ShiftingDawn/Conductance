@@ -16,7 +16,6 @@ import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
@@ -51,7 +50,7 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 
 	@Getter
 	private final Object2IntMap<ReferenceKey> syncFields;
-	private final Map<String, ReferenceKey> syncMapper;
+	private final Map<String, ReferenceKey> syncMapping;
 	private final BitSet dirtySyncFields;
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<ReferenceKey, List<ReferenceSynchronizedListener<?>>> syncClientUpdateListeners;
@@ -105,7 +104,7 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 		})));
 		this.dirtyPersistenceFields = new BitSet(this.persistenceFields.size());
 
-		this.syncMapper = Collections.unmodifiableMap(Util.make(new Object2ObjectArrayMap<>(), map -> this.syncFields.keySet().forEach(field -> {
+		this.syncMapping = Collections.unmodifiableMap(Util.make(new Object2ObjectArrayMap<>(), map -> this.syncFields.keySet().forEach(field -> {
 			if (map.containsKey(field.getSyncKey())) {
 				throw new RuntimeException("Duplicate field with synchronization key %s (%s, %s)".formatted(field.getSyncKey(), map.get(field.getSyncKey()).getRawField(), field.getRawField()));
 			}
@@ -205,14 +204,20 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 	@Override
 	public CompoundTag serialize(final Operation operation, final HolderLookup.Provider registries) {
 		final CompoundTag result = new CompoundTag();
-		this.persistenceMapping.entrySet().stream().filter(entry -> switch (operation) {
-			case FULL -> true;
-			case PARTIAL -> this.dirtyPersistenceFields.get(this.persistenceFields.getInt(entry.getValue()));
+		(operation.isPersist() ? this.persistenceMapping : this.syncMapping).entrySet().stream().filter(entry -> {
+			if (operation.isFull()) {
+				return true;
+			}
+			if (operation.isPersist()) {
+				return this.dirtyPersistenceFields.get(this.persistenceFields.getInt(entry.getValue()));
+			} else {
+				return this.dirtySyncFields.get(this.syncFields.getInt(entry.getValue()));
+			}
 		}).forEach(entry -> {
 			try {
 				final Reference ref = this.getReference(entry.getValue());
-				final Tag serializedRef = SyncHelperImpl.writeRefToNbt(operation, ref, registries);
-				result.put(entry.getKey(), serializedRef);
+				final Tag serializedRef = SyncHelperImpl.serializeRef(operation, ref, registries);
+				result.put(entry.getKey(), Objects.requireNonNullElseGet(serializedRef, CompoundTag::new));
 				ref.clearPersistenceMark();
 			} catch (final Throwable e) {
 				Conductance.LOGGER.error("An error occurred while serializing field {}", entry.getValue().getRawField(), e);
@@ -222,59 +227,23 @@ public class ManagedDataMapImpl implements ManagedDataMap {
 	}
 
 	@Override
-	public void deserialize(final Operation operation, final CompoundTag nbt, final HolderLookup.Provider registries) {
-		for (final String tagKey : nbt.getAllKeys()) {
-			final ReferenceKey field = this.persistenceMapping.get(tagKey);
+	public void deserialize(final Operation operation, final CompoundTag tag, final HolderLookup.Provider registries) {
+		for (final String tagKey : tag.getAllKeys()) {
+			final ReferenceKey field = (operation.isPersist() ? this.persistenceMapping : this.syncMapping).get(tagKey);
 			if (field == null) {
 				Conductance.LOGGER.warn("Cannot deserialize data for key {} since it has no mapping.", tagKey);
 			} else {
 				try {
 					final Reference ref = this.getReference(field);
-					SyncHelperImpl.readRefFromNbt(operation, ref, Objects.requireNonNull(nbt.get(tagKey)), registries);
-					ref.clearPersistenceMark();
+					final Tag itemTag = tag.get(tagKey);
+					SyncHelperImpl.deserializeRef(this, operation, ref, itemTag instanceof final CompoundTag c && c.isEmpty() ? null : itemTag, registries);
+					if (operation.isPersist()) {
+						ref.clearPersistenceMark();
+					} else {
+						ref.clearSyncMark();
+					}
 				} catch (final Throwable e) {
 					Conductance.LOGGER.error("An error occurred while deserializing field {}", field.getRawField(), e);
-				}
-			}
-		}
-	}
-
-	@Override
-	public void toNetwork(final Operation operation, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		buf.writeVarInt(switch (operation) {
-			case FULL -> this.syncMapper.size();
-			case PARTIAL -> this.dirtySyncFields.cardinality();
-		});
-		this.syncMapper.entrySet().stream().filter(entry -> switch (operation) {
-			case FULL -> true;
-			case PARTIAL -> this.dirtyPersistenceFields.get(this.syncFields.getInt(entry.getValue()));
-		}).forEach(entry -> {
-			try {
-				buf.writeUtf(entry.getKey());
-				final Reference ref = this.getReference(entry.getValue());
-				SyncHelperImpl.writeRefToNetwork(operation, buf, ref, registries);
-				ref.clearSyncMark();
-			} catch (final Throwable e) {
-				Conductance.LOGGER.error("An error occurred while encoding field {}", entry.getValue().getRawField(), e);
-			}
-		});
-	}
-
-	@Override
-	public void fromNetwork(final Operation operation, final RegistryFriendlyByteBuf buf, final HolderLookup.Provider registries) {
-		final int iterationCount = buf.readVarInt();
-		for (int i = 0; i < iterationCount; ++i) {
-			final String syncKey = buf.readUtf();
-			final ReferenceKey field = this.syncMapper.get(syncKey);
-			if (field == null) {
-				Conductance.LOGGER.warn("Cannot deserialize data for key {} since it has no mapping.", syncKey);
-			} else {
-				try {
-					final Reference ref = this.getReference(field);
-					SyncHelperImpl.readRefFromNetwork(this, operation, buf, ref, registries);
-					ref.clearSyncMark();
-				} catch (final Throwable e) {
-					Conductance.LOGGER.error("An error occurred while decoding field {}", field.getRawField(), e);
 				}
 			}
 		}

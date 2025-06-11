@@ -28,7 +28,7 @@ public final class SynchronizationContainer implements SyncTask {
 				map.tick();
 				if (map.hasDirtySyncFields()) {
 					ServerLifecycleHooks.getCurrentServer().execute(() -> {
-						final S2CSyncPacket packet = S2CSyncPacket.of(this.blockEntity, false);
+						final S2CSyncPacket packet = S2CSyncPacket.of(this.blockEntity, this.managed, false);
 						PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(this.blockEntity.getBlockPos()), packet);
 					});
 				}
