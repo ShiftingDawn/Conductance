@@ -18,7 +18,7 @@ import conductance.init.sync.TierSerializer;
 @ConductancePluginListener(modid = Conductance.MODID)
 final class ConductanceSyncFieldSerializers {
 
-	@EventListener
+	@EventListener(priority = -100)
 	private static void init(final RegisterFieldSerializerEvent event) {
 		event.register(TagSerializer.class, TagSerializer::new, new NBTSerializableHandler());
 		event.register(ItemStackSerializer.class, ItemStackSerializer::new, ItemStack.class, true);

@@ -14,7 +14,7 @@ import conductance.init.cover.ConveyorCoverEntity;
 @ConductancePluginListener(modid = Conductance.MODID)
 final class ConductanceCovers {
 
-	@EventListener
+	@EventListener(priority = -100)
 	private static void init(final RegisterCoverEvent event) {
 		NCCovers.CONVEYORS = Collections.unmodifiableMap(Util.make(new HashMap<>(), map -> CAPI.tiers().getTiers().forEach(tier ->
 				map.put(tier, event.register("%s_conveyor".formatted(tier.getRegistryKey()), "conveyor/base", ConveyorCoverEntity::new))

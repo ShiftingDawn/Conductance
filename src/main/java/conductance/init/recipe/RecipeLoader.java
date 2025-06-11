@@ -33,14 +33,14 @@ public final class RecipeLoader {
 	private static final Char2ObjectMap<TagKey<Item>> TOOL_LOOKUP = new Char2ObjectArrayMap<>(
 			Map.of(RecipeLoader.WRENCH, CAPI.TAG_WRENCHES, RecipeLoader.HAMMER, CAPI.TAG_HAMMERS, RecipeLoader.WIRE_CUTTERS, CAPI.TAG_WIRE_CUTTERS));
 
-	@EventListener
+	@EventListener(priority = -100)
 	private static void initAddition(final RegisterRecipeEvent event) {
 		MaterialRecipes.add(event);
 		FuelAndEnergyRecipes.add(event);
 		TierRecipes.add(event);
 	}
 
-	@EventListener
+	@EventListener(priority = -100)
 	private static void initRemoval(final RemoveRecipeEvent event) {
 		MaterialRecipes.remove(event::remove);
 	}
