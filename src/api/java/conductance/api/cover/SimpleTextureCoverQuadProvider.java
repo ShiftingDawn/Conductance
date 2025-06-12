@@ -1,4 +1,4 @@
-package conductance.api.capability.cover;
+package conductance.api.cover;
 
 import java.util.List;
 import net.minecraft.client.renderer.block.model.BakedQuad;

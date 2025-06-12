@@ -4,11 +4,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
 import lombok.AllArgsConstructor;
-import conductance.api.capability.cover.CoverEntity;
-import conductance.api.capability.cover.CoverEntityConstructor;
-import conductance.api.capability.cover.CoverQuadProvider;
-import conductance.api.capability.cover.CoverType;
-import conductance.api.capability.cover.SimpleTextureCoverQuadProvider;
+import conductance.api.cover.CoverEntity;
+import conductance.api.cover.CoverEntityConstructor;
+import conductance.api.cover.CoverQuadProvider;
+import conductance.api.cover.CoverType;
+import conductance.api.cover.SimpleTextureCoverQuadProvider;
 import conductance.api.plugin.RegisterCoverEvent;
 
 @AllArgsConstructor

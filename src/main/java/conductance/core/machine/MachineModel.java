@@ -18,6 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,10 +35,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.capability.CapabilityHelper;
-import conductance.api.capability.cover.CoverManager;
-import conductance.api.capability.cover.CoverModelData;
-import conductance.api.capability.cover.ICoverable;
+import conductance.api.NCCapabilities;
+import conductance.api.cover.CoverManager;
+import conductance.api.cover.CoverModelData;
+import conductance.api.cover.ICoverable;
 import conductance.api.resource.model.DelegatedBakedModel;
 import conductance.api.resource.model.ModelUtils;
 import conductance.Conductance;
@@ -66,12 +67,21 @@ final class MachineModel {
 		@Override
 		public ModelData getModelData(final BlockAndTintGetter level, final BlockPos pos, final BlockState state, final ModelData modelData) {
 			final ModelData.Builder builder = super.getModelData(level, pos, state, modelData).derive();
-			final ICoverable coverable = CapabilityHelper.getCoverable(level, pos);
+			final ICoverable coverable = MachineModel.getCoverable(level, pos);
 			if (coverable != null) {
 				builder.with(CoverModelData.MODEL_PROPERTY, coverable.getCoverManager());
 			}
 			return builder.build();
 		}
+	}
+
+	@Nullable
+	private static ICoverable getCoverable(final BlockAndTintGetter level, final BlockPos pos) {
+		final BlockEntity be = level.getBlockEntity(pos);
+		if (be != null && be.getLevel() != null) {
+			return be.getLevel().getCapability(NCCapabilities.COVERABLE_BLOCK, pos);
+		}
+		return null;
 	}
 
 	public static final class MachineModelLoader implements IGeometryLoader<MachineUnbakedModel> {

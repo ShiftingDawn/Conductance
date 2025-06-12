@@ -6,9 +6,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import conductance.api.capability.CapabilityHelper;
-import conductance.api.capability.cover.ICoverItem;
-import conductance.api.capability.cover.ICoverable;
+import conductance.api.NCCapabilities;
+import conductance.api.cover.ICoverItem;
+import conductance.api.cover.ICoverable;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
@@ -67,7 +67,7 @@ public final class InteractionHelper {
 		final BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
 		final BlockEntity blockEntity = ctx.getLevel().getBlockEntity(ctx.getClickedPos());
 		if (blockEntity != null) {
-			final ICoverable coverable = CapabilityHelper.getCoverable(ctx.getLevel(), ctx.getClickedPos());
+			final ICoverable coverable = NCCapabilities.getCoverable(ctx.getLevel(), ctx.getClickedPos());
 			if (coverable != null && (ctx.getItemInHand().getItem() instanceof ICoverItem || ctx.getPlayer().isCrouching() || InteractType.HAMMER.is(ctx.getItemInHand()))) {
 				return true;
 			}

@@ -4,7 +4,7 @@ import net.minecraft.Util;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
-import conductance.api.capability.energy.IEnergyHandler;
+import conductance.api.energy.IEnergyHandler;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.capability.MachineRecipeCapabilityEnergy;
 import conductance.api.machine.gui.EnergyBarWidget;

@@ -1,4 +1,4 @@
-package conductance.api.capability.energy;
+package conductance.api.energy;
 
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;

@@ -1,9 +1,9 @@
 package conductance.init.item;
 
 import lombok.Getter;
-import conductance.api.capability.cover.CoverEntity;
-import conductance.api.capability.cover.CoverType;
-import conductance.api.capability.cover.ICoverItem;
+import conductance.api.cover.CoverEntity;
+import conductance.api.cover.CoverType;
+import conductance.api.cover.ICoverItem;
 import conductance.api.tier.TieredItemType;
 import conductance.api.tier.Tier;
 

@@ -31,7 +31,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.capability.cover.ICoverable;
+import conductance.api.cover.ICoverable;
 import conductance.init.block.PipeBlock;
 
 public class PipeBlockRenderer implements IRenderer {

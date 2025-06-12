@@ -15,12 +15,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import conductance.api.capability.CapabilityHelper;
-import conductance.api.capability.cover.CoverEntity;
-import conductance.api.capability.cover.CoverManager;
-import conductance.api.capability.cover.CoverType;
-import conductance.api.capability.cover.ICoverItem;
-import conductance.api.capability.cover.ICoverable;
+import conductance.api.NCCapabilities;
+import conductance.api.cover.CoverEntity;
+import conductance.api.cover.CoverManager;
+import conductance.api.cover.CoverType;
+import conductance.api.cover.ICoverItem;
+import conductance.api.cover.ICoverable;
 import conductance.api.util.world.IExtendedInteractable;
 import conductance.api.util.world.InteractType;
 import conductance.api.util.world.InteractionHelper;
@@ -63,7 +63,7 @@ final class GridInteractionHelper {
 				}
 			}
 		}
-		final ICoverable coverable = CapabilityHelper.getCoverable(ctx.getLevel(), ctx.getClickedPos());
+		final ICoverable coverable = NCCapabilities.getCoverable(ctx.getLevel(), ctx.getClickedPos());
 		if (coverable != null && ctx.getPlayer() != null) {
 			final CoverManager coverManager = coverable.getCoverManager();
 			final Optional<? extends CoverEntity<?>> cover = coverManager.getCover(side);

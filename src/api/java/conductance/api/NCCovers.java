@@ -1,7 +1,7 @@
 package conductance.api;
 
 import java.util.Map;
-import conductance.api.capability.cover.CoverType;
+import conductance.api.cover.CoverType;
 import conductance.api.tier.Tier;
 
 @SuppressWarnings("NotNullFieldNotInitialized")

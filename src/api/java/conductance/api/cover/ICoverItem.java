@@ -1,4 +1,4 @@
-package conductance.api.capability.cover;
+package conductance.api.cover;
 
 public interface ICoverItem<COVER extends CoverEntity<COVER>> {
 

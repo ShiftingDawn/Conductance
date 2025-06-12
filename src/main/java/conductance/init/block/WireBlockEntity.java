@@ -8,8 +8,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.capability.CapabilityHelper;
-import conductance.api.capability.energy.IEnergyHandler;
+import conductance.api.NCCapabilities;
+import conductance.api.energy.IEnergyHandler;
 import conductance.api.util.world.InteractType;
 import conductance.lib.pipenet.WireData;
 import conductance.lib.pipenet.EnergyNet;
@@ -49,7 +49,7 @@ public class WireBlockEntity extends PipeBlockEntity<IWireNode, WireData, LevelE
 
 	@Override
 	public boolean canConnectTo(final Level level, final BlockPos pos, final Direction side) {
-		return CapabilityHelper.getEnergyHandler(level, pos.relative(side), side.getOpposite()) != null;
+		return NCCapabilities.getEnergyHandler(level, pos.relative(side), side.getOpposite()) != null;
 	}
 
 	@Override

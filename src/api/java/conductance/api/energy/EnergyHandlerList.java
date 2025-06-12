@@ -1,4 +1,4 @@
-package conductance.api.capability.energy;
+package conductance.api.energy;
 
 import java.util.List;
 import net.minecraft.core.Direction;

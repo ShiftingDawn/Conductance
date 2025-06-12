@@ -1,4 +1,4 @@
 @NCNonNull
-package conductance.api.capability.cover;
+package conductance.api.energy;
 
 import conductance.api.util.NCNonNull;

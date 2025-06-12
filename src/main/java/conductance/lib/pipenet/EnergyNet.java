@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultEdge;
-import conductance.api.capability.CapabilityHelper;
+import conductance.api.NCCapabilities;
 import conductance.Conductance;
 
 public class EnergyNet extends PipeNetwork<IWireNode, WireData> {
@@ -24,6 +24,6 @@ public class EnergyNet extends PipeNetwork<IWireNode, WireData> {
 
 	@Override
 	protected boolean isEndpointStillValid(final Level level, final BlockPos pos, final Direction side) {
-		return CapabilityHelper.getEnergyHandler(level, pos.relative(side), side.getOpposite()) != null;
+		return NCCapabilities.getEnergyHandler(level, pos.relative(side), side.getOpposite()) != null;
 	}
 }

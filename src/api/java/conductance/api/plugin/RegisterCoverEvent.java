@@ -3,10 +3,10 @@ package conductance.api.plugin;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
-import conductance.api.capability.cover.CoverEntity;
-import conductance.api.capability.cover.CoverEntityConstructor;
-import conductance.api.capability.cover.CoverQuadProvider;
-import conductance.api.capability.cover.CoverType;
+import conductance.api.cover.CoverEntity;
+import conductance.api.cover.CoverEntityConstructor;
+import conductance.api.cover.CoverQuadProvider;
+import conductance.api.cover.CoverType;
 
 public interface RegisterCoverEvent extends IConductancePluginEvent {
 

@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.capability.cover.ICoverable;
+import conductance.api.cover.ICoverable;
 
 public class BaseBlockEntity extends BlockEntity implements IBlockEntity {
 

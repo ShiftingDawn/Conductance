@@ -1,7 +1,7 @@
 package conductance.api.registry;
 
 import net.minecraft.resources.ResourceLocation;
-import conductance.api.capability.cover.CoverType;
+import conductance.api.cover.CoverType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;

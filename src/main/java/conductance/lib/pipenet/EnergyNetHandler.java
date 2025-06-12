@@ -8,8 +8,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.capability.CapabilityHelper;
-import conductance.api.capability.energy.IEnergyHandler;
+import conductance.api.NCCapabilities;
+import conductance.api.energy.IEnergyHandler;
 import conductance.Conductance;
 
 public class EnergyNetHandler implements IEnergyHandler {
@@ -36,7 +36,7 @@ public class EnergyNetHandler implements IEnergyHandler {
 			if (Objects.equals(this.wire.getBlockPos(), path.getDest()) && receivingSide == path.getSide()) {
 				continue;
 			}
-			final IEnergyHandler destination = CapabilityHelper.getEnergyHandler(this.level, path.getDest().relative(path.getSide()), path.getSide().getOpposite());
+			final IEnergyHandler destination = NCCapabilities.getEnergyHandler(this.level, path.getDest().relative(path.getSide()), path.getSide().getOpposite());
 			final Direction destinationSide = path.getSide();
 			if (destination == null || !destination.canReceiveEnergy(destinationSide) || destination.getEnergySpace() <= 0) {
 				continue;

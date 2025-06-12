@@ -19,7 +19,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialTraits;
-import conductance.api.capability.CapabilityHelper;
+import conductance.api.NCCapabilities;
 import conductance.api.machine.IPaintable;
 import conductance.api.material.Material;
 import conductance.api.material.traits.MaterialTraitWire;
@@ -89,7 +89,7 @@ public final class WireBlock extends PipeBlock<IWireNode, WireData, LevelEnergyN
 	}
 
 	public void attachCapabilities(final RegisterCapabilitiesEvent event) {
-		event.registerBlock(CapabilityHelper.ENERGY_HANDLER_BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
+		event.registerBlock(NCCapabilities.ENERGY_HANDLER_BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
 			if (blockEntity instanceof final WireBlockEntity wireBlockEntity) {
 				return wireBlockEntity.getEnergyHandler(direction);
 			}

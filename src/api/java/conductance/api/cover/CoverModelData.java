@@ -1,4 +1,4 @@
-package conductance.api.capability.cover;
+package conductance.api.cover;
 
 import java.util.ArrayList;
 import java.util.List;

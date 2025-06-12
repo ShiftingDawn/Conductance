@@ -4,11 +4,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import conductance.api.capability.cover.CoverEntity;
-import conductance.api.capability.cover.CoverEntityConstructor;
-import conductance.api.capability.cover.CoverManager;
-import conductance.api.capability.cover.CoverQuadProvider;
-import conductance.api.capability.cover.CoverType;
+import conductance.api.cover.CoverEntity;
+import conductance.api.cover.CoverEntityConstructor;
+import conductance.api.cover.CoverManager;
+import conductance.api.cover.CoverQuadProvider;
+import conductance.api.cover.CoverType;
 import conductance.api.registry.RegistryObject;
 
 public final class CoverTypeImpl<COVER extends CoverEntity<COVER>> extends RegistryObject<ResourceLocation> implements CoverType<COVER> {

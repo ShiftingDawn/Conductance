@@ -15,10 +15,10 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.capability.CapabilityHelper;
-import conductance.api.capability.cover.ICoverable;
-import conductance.api.capability.energy.EnergyHandlerList;
-import conductance.api.capability.energy.IEnergyHandler;
+import conductance.api.NCCapabilities;
+import conductance.api.cover.ICoverable;
+import conductance.api.energy.EnergyHandlerList;
+import conductance.api.energy.IEnergyHandler;
 import conductance.api.util.world.RotationState;
 
 public interface IMachineBlock<T extends MachineBlockEntity<T>> extends IBlockEntityBlock {
@@ -82,7 +82,7 @@ public interface IMachineBlock<T extends MachineBlockEntity<T>> extends IBlockEn
 			}
 			return null;
 		}, this.self());
-		event.registerBlock(CapabilityHelper.ENERGY_HANDLER_BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
+		event.registerBlock(NCCapabilities.ENERGY_HANDLER_BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
 			if (blockEntity instanceof final IEnergyHandler handler) {
 				return handler;
 			}
@@ -97,7 +97,7 @@ public interface IMachineBlock<T extends MachineBlockEntity<T>> extends IBlockEn
 			}
 			return null;
 		}, this.self());
-		event.registerBlock(CapabilityHelper.COVERABLE_BLOCK, (level, blockPos, blockState, blockEntity, unused) -> {
+		event.registerBlock(NCCapabilities.COVERABLE_BLOCK, (level, blockPos, blockState, blockEntity, unused) -> {
 			return blockEntity instanceof final ICoverable coverable ? coverable : null;
 		}, this.self());
 	}

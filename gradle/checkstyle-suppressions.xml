@@ -17,53 +17,8 @@
 
     <suppress files="Config\.java" checks="[a-zA-Z0-9]*"/>
 
-    <suppress files="NCBlocks\.java" checks="VisibilityModifier"/>
-    <suppress files="NCBlocks\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCCovers\.java" checks="VisibilityModifier"/>
-    <suppress files="NCCovers\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCDecoration\.java" checks="VisibilityModifier"/>
-    <suppress files="NCDecoration\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCItems\.java" checks="VisibilityModifier"/>
-    <suppress files="NCItems\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCMachines\.java" checks="VisibilityModifier"/>
-    <suppress files="NCMachines\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCMaterialFlags\.java" checks="VisibilityModifier"/>
-    <suppress files="NCMaterialFlags\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCMaterialOreTypes\.java" checks="VisibilityModifier"/>
-    <suppress files="NCMaterialOreTypes\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCMaterials\.java" checks="VisibilityModifier"/>
-    <suppress files="NCMaterials\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCMaterialTaggedSets\.java" checks="VisibilityModifier"/>
-    <suppress files="NCMaterialTaggedSets\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCMaterialTraits\.java" checks="VisibilityModifier"/>
-    <suppress files="NCMaterialTraits\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCPeriodicElements\.java" checks="VisibilityModifier"/>
-    <suppress files="NCPeriodicElements\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCRecipeElementTypes\.java" checks="VisibilityModifier"/>
-    <suppress files="NCRecipeElementTypes\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCRecipeTypes\.java" checks="VisibilityModifier"/>
-    <suppress files="NCRecipeTypes\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCTextureSets\.java" checks="VisibilityModifier"/>
-    <suppress files="NCTextureSets\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCTextureTypes\.java" checks="VisibilityModifier"/>
-    <suppress files="NCTextureTypes\.java" checks="StaticVariableName"/>
-
-    <suppress files="NCTiers\.java" checks="VisibilityModifier"/>
-    <suppress files="NCTiers\.java" checks="StaticVariableName"/>
+    <suppress files="NC.+\.java" checks="VisibilityModifier"/>
+    <suppress files="NC.+\.java" checks="StaticVariableName"/>
 
     <suppress files="DataAttachmentHelper\.java" checks="VisibilityModifier"/>
     <suppress files="DataAttachmentHelper\.java" checks="StaticVariableName"/>

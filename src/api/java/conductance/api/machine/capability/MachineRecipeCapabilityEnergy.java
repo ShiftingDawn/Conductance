@@ -7,8 +7,8 @@ import net.minecraft.core.Direction;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCRecipeElementTypes;
-import conductance.api.capability.CapabilityHelper;
-import conductance.api.capability.energy.IEnergyHandler;
+import conductance.api.NCCapabilities;
+import conductance.api.energy.IEnergyHandler;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineRunnable;
 import conductance.api.machine.recipe.IRecipe;
@@ -94,7 +94,7 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 				continue;
 			}
 			final Direction oppositeSide = side.getOpposite();
-			final IEnergyHandler energyContainer = CapabilityHelper.getEnergyHandler(this.getMachineBlockEntity().getLevel(), this.getMachineBlockEntity().getBlockPos().relative(side), oppositeSide);
+			final IEnergyHandler energyContainer = NCCapabilities.getEnergyHandler(this.getMachineBlockEntity().getLevel(), this.getMachineBlockEntity().getBlockPos().relative(side), oppositeSide);
 			if (energyContainer != null && energyContainer.canReceiveEnergy(oppositeSide)) {
 				ampsUsed += energyContainer.receiveEnergy(oppositeSide, outVolts, outAmps - ampsUsed);
 				if (ampsUsed == outAmps) {

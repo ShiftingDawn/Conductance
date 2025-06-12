@@ -1,9 +1,9 @@
 package conductance.init.cover;
 
 import net.minecraft.core.Direction;
-import conductance.api.capability.cover.CoverEntity;
-import conductance.api.capability.cover.CoverManager;
-import conductance.api.capability.cover.CoverType;
+import conductance.api.cover.CoverEntity;
+import conductance.api.cover.CoverManager;
+import conductance.api.cover.CoverType;
 
 public final class ConveyorCoverEntity extends CoverEntity<ConveyorCoverEntity> {
 

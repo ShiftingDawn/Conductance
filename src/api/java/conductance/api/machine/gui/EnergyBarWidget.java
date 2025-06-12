@@ -10,7 +10,7 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import org.jetbrains.annotations.NotNull;
-import conductance.api.capability.energy.IEnergyHandler;
+import conductance.api.energy.IEnergyHandler;
 import conductance.api.util.TextHelper;
 
 public class EnergyBarWidget extends ProgressWidget {
