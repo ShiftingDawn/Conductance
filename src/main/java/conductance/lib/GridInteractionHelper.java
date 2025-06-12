@@ -12,6 +12,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import conductance.api.capability.CapabilityHelper;
 import conductance.api.capability.cover.CoverEntity;
 import conductance.api.capability.cover.CoverManager;
@@ -20,41 +23,29 @@ import conductance.api.capability.cover.ICoverItem;
 import conductance.api.capability.cover.ICoverable;
 import conductance.api.util.world.IExtendedInteractable;
 import conductance.api.util.world.InteractType;
+import conductance.api.util.world.InteractionHelper;
 import conductance.api.util.world.RotationState;
+import conductance.Conductance;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
-public final class ExtendedInteractionHelper {
+@EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.GAME)
+final class GridInteractionHelper {
 
-	public static boolean shouldUseExtendedInteraction(final UseOnContext ctx) {
-		if (ctx.getPlayer() == null) {
-			return false;
-		}
-		final BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
-		final BlockEntity blockEntity = ctx.getLevel().getBlockEntity(ctx.getClickedPos());
-		if (blockEntity != null) {
-			final ICoverable coverable = CapabilityHelper.getCoverable(ctx.getLevel(), ctx.getClickedPos());
-			if (coverable != null && (ctx.getItemInHand().getItem() instanceof ICoverItem || ctx.getPlayer().isCrouching() || InteractType.HAMMER.is(ctx.getItemInHand()))) {
-				return true;
+	@SubscribeEvent
+	private static void onRightClickBlock(final PlayerInteractEvent.RightClickBlock event) {
+		final UseOnContext ctx = new UseOnContext(event.getLevel(), event.getEntity(), event.getHand(), event.getItemStack(), event.getHitVec());
+		final Direction side = InteractionHelper.getLogicalSideFromGrid(event.getHitVec());
+		if (InteractionHelper.shouldInteractUsingGrid(ctx)) {
+			final InteractionResult result = GridInteractionHelper.handleExtendedInteraction(ctx, side);
+			if (result.consumesAction()) {
+				event.setCanceled(true);
+				event.setCancellationResult(result);
 			}
-			if (ctx.getPlayer().isCrouching() && (blockState.getBlock() instanceof IExtendedInteractable || blockEntity instanceof IExtendedInteractable)) {
-				return true;
-			}
-			//TODO pipelike
-//			if (ctx.getItemInHand().getItem() instanceof final PipeBlockItem pipeBlockItem && blockEntity instanceof final PipeBlockEntity<?, ?> pipeBlockEntity &&
-//					pipeBlockItem.getBlock().pipeType.type().equals(pipeBlockEntity.getPipeType().type())) {
-//				return true;
-//			}
 		}
-		//Fall back to rotatable blocks
-		if (InteractType.WRENCH.is(ctx.getItemInHand())) {
-			final BlockState state = ctx.getLevel().getBlockState(ctx.getClickedPos());
-			return state.hasProperty(FACING) || state.hasProperty(HORIZONTAL_FACING) || state.hasProperty(RotationState.ALL.property);
-		}
-		return false;
 	}
 
-	public static InteractionResult handleExtendedInteraction(final UseOnContext ctx, final Direction side) {
+	private static InteractionResult handleExtendedInteraction(final UseOnContext ctx, final Direction side) {
 		final InteractType interactType = InteractType.findTypeForStack(ctx.getItemInHand());
 		final BlockEntity blockEntity = ctx.getLevel().getBlockEntity(ctx.getClickedPos());
 		if (interactType != null) {
@@ -88,14 +79,14 @@ public final class ExtendedInteractionHelper {
 							}
 						}
 						//TODO play cover break sound
-//						ConductanceSounds.TOOL_CROWBAR.play(ctx.getLevel(), ctx.getPlayer(), ctx.getClickedPos(), 1.0f, 0.15f);
+						//						ConductanceSounds.TOOL_CROWBAR.play(ctx.getLevel(), ctx.getPlayer(), ctx.getClickedPos(), 1.0f, 0.15f);
 					}
 					return InteractionResult.sidedSuccess(ctx.getLevel().isClientSide);
 				} else if (ctx.getPlayer().isCrouching() && ctx.getPlayer().getItemInHand(ctx.getHand()).isEmpty()) {
 					//TODO handle gui open
-//					if (!ctx.getLevel().isClientSide) {
-//						CoverGuiFactory.INSTANCE.openUI(coverEntity, (ServerPlayer) ctx.getPlayer());
-//					}
+					//					if (!ctx.getLevel().isClientSide) {
+					//						CoverGuiFactory.INSTANCE.openUI(coverEntity, (ServerPlayer) ctx.getPlayer());
+					//					}
 					return InteractionResult.sidedSuccess(ctx.getLevel().isClientSide);
 				}
 			} else if (ctx.getItemInHand().getItem() instanceof final ICoverItem<?> coverItem) {
@@ -108,11 +99,11 @@ public final class ExtendedInteractionHelper {
 			}
 		}
 		if (interactType != null) {
-			if (interactType == InteractType.WRENCH && ExtendedInteractionHelper.tryWrench(ctx, side)) {
+			if (interactType == InteractType.WRENCH && GridInteractionHelper.tryWrench(ctx, side)) {
 				//TODO play wrench sound
-//				if (ctx.getLevel().isClientSide) {
-//					ConductanceSounds.TOOL_WRENCH.play(ctx.getLevel(), ctx.getPlayer());
-//				}
+				//				if (ctx.getLevel().isClientSide) {
+				//					ConductanceSounds.TOOL_WRENCH.play(ctx.getLevel(), ctx.getPlayer());
+				//				}
 				return InteractionResult.sidedSuccess(ctx.getLevel().isClientSide);
 			}
 		}
@@ -139,6 +130,6 @@ public final class ExtendedInteractionHelper {
 		return false;
 	}
 
-	private ExtendedInteractionHelper() {
+	private GridInteractionHelper() {
 	}
 }
