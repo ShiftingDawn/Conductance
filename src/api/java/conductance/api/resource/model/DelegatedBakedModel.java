@@ -1,4 +1,4 @@
-package conductance.api.util.model;
+package conductance.api.resource.model;
 
 import java.util.List;
 import net.minecraft.client.renderer.RenderType;

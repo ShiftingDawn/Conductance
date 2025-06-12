@@ -32,10 +32,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.capability.cover.ICoverable;
-import conductance.api.machine.render.ICoverRenderer;
 import conductance.init.block.PipeBlock;
 
-public class PipeBlockRenderer implements IRenderer, ICoverRenderer {
+public class PipeBlockRenderer implements IRenderer {
 
 	@Getter
 	private final Lazy<PipeModel> pipeModel;
@@ -82,7 +81,6 @@ public class PipeBlockRenderer implements IRenderer, ICoverRenderer {
 			final List<BakedQuad> quads = new LinkedList<>(this.pipeModel.get().bakeQuads(side, networkNode.getConnections()));
 			final ModelState modelState = ModelFactory.getRotation(((ICoverable) networkNode).getFrontFacing());
 			final Direction modelFacing = side == null ? null : ModelFactory.modelFacing(side, ((ICoverable) networkNode).getFrontFacing());
-			ICoverRenderer.super.renderCovers(quads, side, rand, (ICoverable) networkNode, modelFacing, modelState);
 			return quads;
 		}
 		return Collections.emptyList();

@@ -1,13 +1,12 @@
-package conductance.api.util.model;
+package conductance.api.resource.model;
 
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockElementFace;
-import net.minecraft.client.renderer.block.model.BlockFaceUV;
 import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BlockModelRotation;
@@ -17,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import conductance.api.util.world.RotationState;
@@ -34,14 +33,26 @@ public final class ModelUtils {
 		return Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(texture);
 	}
 
-	public static BakedQuad bakeFace(final Vector3f posFrom, final Vector3f posTo, final Direction facing, final TextureAtlasSprite sprite, final ModelState rotation, final int tintIndex, final boolean cull,
-			final boolean shade) {
-		final BlockElementFace blockElementFace = new BlockElementFace(cull ? facing : null, tintIndex, "", new BlockFaceUV(new float[] {0f, 0f, 16f, 16f}, 0));
-		return ModelUtils.FACE_BAKERY.bakeQuad(posFrom, posTo, blockElementFace, sprite, facing, rotation, null, shade);
+	public static BakedQuad bakeFace(final Vector3f posFrom, final Vector3f posTo, final Direction facing, final TextureAtlasSprite sprite, final ModelState rotation, @Nullable final Consumer<FaceQuadBuilder> builder) {
+		return Util.make(new FaceQuadBuilder(facing, sprite, rotation, null), b -> {
+			b.from(posFrom).to(posTo);
+			if (builder != null) {
+				builder.accept(b);
+			}
+		}).build();
 	}
 
-	public static BakedQuad bakeFace(final Direction facing, final TextureAtlasSprite sprite, final ModelState rotation, final int tintIndex, final boolean cull, final boolean shade) {
-		return ModelUtils.bakeFace(ModelUtils.BLOCK_START, ModelUtils.BLOCK_END, facing, sprite, rotation, tintIndex, false, false);
+	public static BakedQuad bakeFace(final AABB box, final Direction facing, final TextureAtlasSprite sprite, final ModelState rotation, @Nullable final Consumer<FaceQuadBuilder> builder) {
+		return Util.make(new FaceQuadBuilder(facing, sprite, rotation, null), b -> {
+			b.from(box);
+			if (builder != null) {
+				builder.accept(b);
+			}
+		}).build();
+	}
+
+	public static BakedQuad bakeFace(final Direction facing, final TextureAtlasSprite sprite, final ModelState rotation, @Nullable final Consumer<FaceQuadBuilder> builder) {
+		return ModelUtils.bakeFace(ModelUtils.BLOCK_START, ModelUtils.BLOCK_END, facing, sprite, rotation, builder);
 	}
 
 	public static Direction getRotationFromState(@Nullable final BlockState state) {

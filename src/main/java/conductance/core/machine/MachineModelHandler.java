@@ -14,7 +14,7 @@ import conductance.api.plugin.EventListener;
 import conductance.api.resource.ModelBuilder;
 import conductance.api.resource.ModelElementBuilder;
 import conductance.api.resource.event.AddRuntimeModelEvent;
-import conductance.api.util.model.ModelUtils;
+import conductance.api.resource.model.ModelUtils;
 import conductance.api.util.world.RotationState;
 import conductance.Conductance;
 

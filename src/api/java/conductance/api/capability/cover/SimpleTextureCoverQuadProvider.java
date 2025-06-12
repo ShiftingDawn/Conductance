@@ -10,7 +10,7 @@ import net.minecraft.util.RandomSource;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.util.model.ModelUtils;
+import conductance.api.resource.model.ModelUtils;
 
 @RequiredArgsConstructor
 public final class SimpleTextureCoverQuadProvider implements CoverQuadProvider {
@@ -20,6 +20,6 @@ public final class SimpleTextureCoverQuadProvider implements CoverQuadProvider {
 	@Override
 	public List<BakedQuad> getCoverQuads(final Direction face, final RandomSource rand, @NotNull final CoverEntity<?> cover, @Nullable final Direction modelFacing, final ModelState modelState) {
 		final TextureAtlasSprite sprite = ModelUtils.getSprite(this.texture);
-		return List.of(ModelUtils.bakeFace(face, sprite, modelState, 0, true, true));
+		return List.of(ModelUtils.bakeFace(face, sprite, modelState, null));
 	}
 }

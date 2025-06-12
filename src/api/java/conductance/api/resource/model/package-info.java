@@ -1,4 +1,4 @@
 @NCNonNull
-package conductance.api.util.model;
+package conductance.api.resource.model;
 
 import conductance.api.util.NCNonNull;

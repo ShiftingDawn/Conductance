@@ -37,10 +37,9 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.capability.CapabilityHelper;
 import conductance.api.capability.cover.CoverManager;
 import conductance.api.capability.cover.CoverModelData;
-import conductance.api.capability.cover.CoverQuadProvider;
 import conductance.api.capability.cover.ICoverable;
-import conductance.api.util.model.DelegatedBakedModel;
-import conductance.api.util.model.ModelUtils;
+import conductance.api.resource.model.DelegatedBakedModel;
+import conductance.api.resource.model.ModelUtils;
 import conductance.Conductance;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
@@ -58,11 +57,7 @@ public final class MachineModel {
 				final Direction frontFacing = ModelUtils.getRotationFromState(state);
 				if (renderType == RenderType.cutout() || renderType == RenderType.cutoutMipped()) {
 					if (side != null && data.get(CoverModelData.MODEL_PROPERTY) instanceof final CoverManager coverManager) {
-						coverManager.getCover(side).ifPresent(coverEntity -> {
-							final ModelState rotationState = ModelUtils.getModelRotationState(frontFacing);
-							final CoverQuadProvider coverRenderer = coverEntity.getCoverType().getRenderer().get();
-							quads.addAll(coverRenderer.getCoverQuads(side, rand, coverEntity, frontFacing, rotationState));
-						});
+						quads.addAll(CoverModelData.getCoverQuads(coverManager, side, rand, frontFacing));
 					}
 				}
 			});
