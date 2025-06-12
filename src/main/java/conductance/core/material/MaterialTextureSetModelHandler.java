@@ -26,11 +26,12 @@ final class MaterialTextureSetModelHandler {
 				Conductance.LOGGER.trace("\t{}", path);
 				event.addItemModel(path, builder -> MaterialTextureSetModelHandler.createItemEntry(set, type, builder));
 			});
-			CAPI.regs().materialTaggedSets().values().stream().filter(TaggedSet::hasBlocks).map(TaggedMaterialSet::getTextureType).distinct().forEach(type -> {
+			CAPI.regs().materialTaggedSets().values().stream().filter(TaggedSet::hasBlocks).forEach(taggedSet -> {
+				final MaterialTextureType type = taggedSet.getTextureType();
 				final ResourceLocation path = ResourceLocation.fromNamespaceAndPath(type.getRegistryKey().getNamespace(), "material/%s/%s/%s".formatted(set.getNamespace(), set.getPath(),
 						type.getRegistryKey().getPath()));
 				Conductance.LOGGER.trace("\t{}", path);
-				event.addBlockModel(path, builder -> MaterialTextureSetModelHandler.createBlockEntry(set, type, builder));
+				event.addBlockModel(path, builder -> MaterialTextureSetModelHandler.createBlockEntry(taggedSet, set, type, builder));
 			});
 		});
 	}
@@ -54,10 +55,11 @@ final class MaterialTextureSetModelHandler {
 		}
 	}
 
-	private static void createBlockEntry(final ResourceLocation set, final MaterialTextureType type, final ModelBuilder builder) {
-		builder
-				.parent(Conductance.id("block/cube_all_tinted0"))
-				.texture("all", type.getTexture(set, null, null).value());
+	private static void createBlockEntry(final TaggedMaterialSet taggedSet, final ResourceLocation set, final MaterialTextureType type, final ModelBuilder builder) {
+		builder.parent(Conductance.id("block/material_block_base")).particle(type.getTexture(set, null, null).value());
+		if (!taggedSet.shouldOccludeBlocks()) {
+			builder.renderType("cutout_mipped");
+		}
 	}
 
 	private MaterialTextureSetModelHandler() {

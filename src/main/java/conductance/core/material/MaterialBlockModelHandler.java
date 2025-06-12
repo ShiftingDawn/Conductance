@@ -1,7 +1,5 @@
 package conductance.core.material;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.resources.ResourceLocation;
 import conductance.api.CAPI;
 import conductance.api.material.MaterialTextureType;
@@ -23,7 +21,6 @@ final class MaterialBlockModelHandler {
 			event.addBlockState(blockEntry.getId(), blockStateBuilder -> blockStateBuilder.simple(variant ->
 					variant.model(blockEntry.getId().withPrefix("block/")))
 			);
-			event.addItemModel(BuiltInRegistries.ITEM.getKey(block.asItem()), builder -> builder.parent(ModelLocationUtils.getModelLocation(block)));
 			final MaterialTextureType textureType = block.getSet().getTextureType();
 			final ResourceLocation custom = CAPI.resourceFinder().getCustomMaterialTexture(material, textureType);
 			if (custom == null) {
@@ -31,6 +28,7 @@ final class MaterialBlockModelHandler {
 			} else {
 				event.addBlockModel(blockEntry.getId(), builder -> builder.parent("block/cube_all").texture("all", custom));
 			}
+			event.addItemModelDelegate(block);
 		}));
 	}
 

@@ -1,8 +1,10 @@
 package conductance.init.block;
 
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import com.tterrag.registrate.util.entry.RegistryEntry;
@@ -40,6 +42,14 @@ public class MaterialBlock extends ConductanceBlock {
 	@Override
 	public RegistryEntry<CreativeModeTab, CreativeModeTab> getCreativeTab() {
 		return ConductanceCreativeTabs.MATERIAL_BLOCKS;
+	}
+
+	@Override
+	protected boolean skipRendering(final BlockState state, final BlockState adjacentState, final Direction direction) {
+		if (this.set.shouldOccludeBlocks() && adjacentState.is(this)) {
+			return true;
+		}
+		return super.skipRendering(state, adjacentState, direction);
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -28,7 +28,7 @@ import conductance.lib.pipenet.WireRegistry;
 import conductance.lib.pipenet.WireType;
 import static conductance.core.register.RegisterCore.REGISTRATE;
 
-@SuppressWarnings("removal")
+//@SuppressWarnings("removal")
 public final class ConductanceBlocks {
 
 	public static void init() {
@@ -43,8 +43,7 @@ public final class ConductanceBlocks {
 			final BlockBuilder<MaterialBlock, Registrate> blockBuilder = REGISTRATE.block(name, props -> new MaterialBlock(props, material, set))
 					.initialProperties(() -> Blocks.IRON_BLOCK);
 			if (!set.shouldOccludeBlocks()) {
-				blockBuilder.properties(BlockBehaviour.Properties::noOcclusion)
-						.addLayer(() -> RenderType::cutoutMipped);
+				blockBuilder.properties(BlockBehaviour.Properties::noOcclusion);
 			}
 			blockBuilder.color(() -> MaterialBlock::handleColorTint)
 					.item(MaterialBlockItem::new)
