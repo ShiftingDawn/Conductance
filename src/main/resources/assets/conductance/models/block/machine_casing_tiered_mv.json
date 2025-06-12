@@ -1,10 +1,6 @@
 {
-  "parent": "conductance:block/machine_base",
+  "parent": "block/cube_all",
   "textures": {
-    "top": "conductance:block/casing/tiered/mv/top",
-    "bottom": "conductance:block/casing/tiered/mv/bottom",
-    "front": "conductance:block/casing/tiered/mv/front",
-    "back": "conductance:block/casing/tiered/mv/back",
-    "side": "conductance:block/casing/tiered/mv/side"
+    "all": "conductance:block/casing/tiered/mv"
   }
 }
