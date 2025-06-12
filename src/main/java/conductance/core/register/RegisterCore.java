@@ -4,8 +4,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import conductance.api.registry.RegistryProvider;
+import conductance.api.registry.TranslationRegistry;
 import conductance.api.resource.ResourceFinder;
 import conductance.Conductance;
+import conductance.core.TranslationRegistryImpl;
 
 public final class RegisterCore {
 
@@ -22,6 +24,7 @@ public final class RegisterCore {
 
 		Conductance.setApiValue(RegistryProvider.class, RegisterCore.REGS);
 		Conductance.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
+		Conductance.setApiValue(TranslationRegistry.class, TranslationRegistryImpl.INSTANCE);
 	}
 
 	public enum DataPackRegistryLoadStage {

@@ -1,15 +1,15 @@
 {
-	"required": true,
-	"minVersion": "0.8",
-	"package": "conductance.core.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"injectors": {
-		"defaultRequire": 1,
-		"maxShiftBy": 5
-	},
-	"mixins": [
-		"conductance.lib.mixin.BlockEntityMixin", "conductance.lib.mixin.MachineBlockMixin", "conductance.lib.mixin.RecipeManagerMixin", "conductance.lib.mixin.ReloadableServerResourcesMixin",
-		"conductance.lib.mixin.TagLoaderMixin", "conductance.lib.mixin.TagManagerMixin"
-	],
-	"client": ["conductance.lib.mixin.BlockModelMixin", "conductance.lib.mixin.FaceBakeryMixin", "conductance.lib.mixin.LanguageManagerMixin", "conductance.lib.mixin.ModelManagerMixin"]
+  "required": true,
+  "minVersion": "0.8",
+  "package": "conductance.lib.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "injectors": {
+    "defaultRequire": 1,
+    "maxShiftBy": 5
+  },
+  "mixins": [
+    "BlockEntityMixin", "MachineBlockMixin", "RecipeManagerMixin", "ReloadableServerResourcesMixin", "TagLoaderMixin",
+    "TagManagerMixin"
+  ],
+  "client": ["BlockModelMixin", "FaceBakeryMixin", "LanguageManagerMixin", "ModelManagerMixin"]
 }

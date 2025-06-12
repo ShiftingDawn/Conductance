@@ -62,8 +62,11 @@ final class PluginEventBus {
 				final EventMethod wrapper = new EventMethod(info.modid(), (Class<IConductancePluginEvent>) method.getParameterTypes()[0], event -> {
 					try {
 						method.invoke(null, event);
-					} catch (final IllegalAccessException | InvocationTargetException e) {
+					} catch (final IllegalAccessException e) {
 						throw new RuntimeException(e);
+					} catch (final InvocationTargetException e) {
+						Conductance.LOGGER.error("An error occurred during the invocation of plugin event listener {} owned by {}", method, info.modid(), e.getCause());
+						throw new RuntimeException(e.getCause());
 					}
 				});
 				final EventListener listenerInfo = method.getAnnotation(EventListener.class);

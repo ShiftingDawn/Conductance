@@ -3,6 +3,7 @@ package conductance.api;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import net.minecraft.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -14,16 +15,16 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.loading.FMLEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import conductance.api.recipe.RecipeHelper;
-import conductance.api.sync.SyncHelper;
 import conductance.api.material.MaterialRegistry;
+import conductance.api.recipe.RecipeHelper;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.registry.TranslationRegistry;
 import conductance.api.resource.ResourceFinder;
+import conductance.api.sync.SyncHelper;
 import conductance.api.tier.TierRegistry;
 import conductance.api.util.JsonUtils;
 
-@SuppressWarnings({ "unused", "NotNullFieldNotInitialized" })
+@SuppressWarnings({"unused", "NotNullFieldNotInitialized"})
 public final class CAPI {
 
 	public static final String MOD_ID = "conductance";
@@ -46,31 +47,31 @@ public final class CAPI {
 	private static SyncHelper syncHelper;
 
 	public static RegistryProvider regs() {
-		return CAPI.registryProvider;
+		return Objects.requireNonNull(CAPI.registryProvider, "CAPI::regs called too early!");
 	}
 
 	public static ResourceFinder resourceFinder() {
-		return CAPI.resourceFinder;
+		return Objects.requireNonNull(CAPI.resourceFinder, "CAPI::resourceFinder called too early!");
 	}
 
 	public static MaterialRegistry materials() {
-		return CAPI.materialRegistry;
+		return Objects.requireNonNull(CAPI.materialRegistry, "CAPI::materials called too early!");
 	}
 
 	public static TranslationRegistry translations() {
-		return CAPI.translationRegistry;
+		return Objects.requireNonNull(CAPI.translationRegistry, "CAPI::translations called too early!");
 	}
 
 	public static TierRegistry tiers() {
-		return CAPI.tierRegistry;
+		return Objects.requireNonNull(CAPI.tierRegistry, "CAPI::tiers called too early!");
 	}
 
 	public static RecipeHelper recipeHelper() {
-		return CAPI.recipeHelper;
+		return Objects.requireNonNull(CAPI.recipeHelper, "CAPI::recipeHelper called too early!");
 	}
 
 	public static SyncHelper syncHelper() {
-		return CAPI.syncHelper;
+		return Objects.requireNonNull(CAPI.syncHelper, "CAPI::syncHelper called too early!");
 	}
 
 	public static boolean isClient() {
