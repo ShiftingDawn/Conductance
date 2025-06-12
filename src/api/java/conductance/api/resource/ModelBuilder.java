@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 
-public interface ModelBuilder {
+public interface ModelBuilder extends JsonResourceBuilder<ModelBuilder> {
 
 	ModelBuilder composite(Consumer<CompositeModelBuilder> builder);
 
@@ -25,7 +25,7 @@ public interface ModelBuilder {
 
 	ModelBuilder display(ItemDisplayContext context, Consumer<ModelDisplayBuilder> builder);
 
-	ModelBuilder texture(String textureKey, String textureOrReferenceKey);
+	ModelBuilder texture(String referenceKey, String textureOrReferenceKey);
 
 	default ModelBuilder texture(final String referenceKey, final ResourceLocation texture) {
 		return this.texture(referenceKey, texture.toString());
@@ -87,17 +87,5 @@ public interface ModelBuilder {
 
 	default ModelBuilder layer3(final String textureOrReferenceKey) {
 		return this.textureLayer(3, textureOrReferenceKey);
-	}
-
-	ModelBuilder addProperty(String propertyKey, String propertyValue);
-
-	ModelBuilder addProperty(String propertyKey, boolean propertyValue);
-
-	ModelBuilder addProperty(String propertyKey, Number propertyValue);
-
-	ModelBuilder addProperty(String propertyKey, char propertyValue);
-
-	default ModelBuilder addProperty(final String propertyKey, final ResourceLocation propertyValue) {
-		return this.addProperty(propertyKey, propertyValue.toString());
 	}
 }

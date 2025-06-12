@@ -1,12 +1,11 @@
 package conductance.core.runtimepack.client;
 
-import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.BlockStateModelPropsBuilder;
 
-final class BlockStateModelPropsBuilderImpl implements BlockStateModelPropsBuilder {
+final class BlockStateModelPropsBuilderImpl extends JsonResourceBuilderImpl<BlockStateModelPropsBuilder> implements BlockStateModelPropsBuilder {
 
 	private final ResourceLocation model;
 	@Nullable
@@ -46,21 +45,20 @@ final class BlockStateModelPropsBuilderImpl implements BlockStateModelPropsBuild
 		return this;
 	}
 
-	JsonObject serialize() {
-		return Util.make(new JsonObject(), json -> {
-			json.addProperty("model", this.model.toString());
-			if (this.x != null) {
-				json.addProperty("x", this.x);
-			}
-			if (this.y != null) {
-				json.addProperty("y", this.y);
-			}
-			if (this.uvLock != null) {
-				json.addProperty("uvlock", this.uvLock);
-			}
-			if (this.weight != null) {
-				json.addProperty("weight", this.weight);
-			}
-		});
+	@Override
+	protected void populateJson(final JsonObject json) {
+		json.addProperty("model", this.model.toString());
+		if (this.x != null) {
+			json.addProperty("x", this.x);
+		}
+		if (this.y != null) {
+			json.addProperty("y", this.y);
+		}
+		if (this.uvLock != null) {
+			json.addProperty("uvlock", this.uvLock);
+		}
+		if (this.weight != null) {
+			json.addProperty("weight", this.weight);
+		}
 	}
 }

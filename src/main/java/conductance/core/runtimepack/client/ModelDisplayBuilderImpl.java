@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.ModelDisplayBuilder;
 import conductance.api.util.JsonUtils;
 
-final class ModelDisplayBuilderImpl implements ModelDisplayBuilder {
+final class ModelDisplayBuilderImpl extends JsonResourceBuilderImpl<ModelDisplayBuilder> implements ModelDisplayBuilder {
 
 	private int[] rotation = new int[0];
 	private int[] translation = new int[0];
@@ -31,19 +31,16 @@ final class ModelDisplayBuilderImpl implements ModelDisplayBuilder {
 		return this;
 	}
 
-	@Nullable
-	JsonElement serialize() {
-		final JsonObject result = Util.make(new JsonObject(), json -> {
-			if (this.rotation.length > 0) {
-				json.add("rotation", JsonUtils.toJsonArray(this.rotation));
-			}
-			if (this.translation.length > 0) {
-				json.add("translation", JsonUtils.toJsonArray(this.translation));
-			}
-			if (this.scale.length > 0) {
-				json.add("scale", JsonUtils.toJsonArray(this.scale));
-			}
-		});
-		return !result.isEmpty() ? result : null;
+	@Override
+	protected void populateJson(final JsonObject json) {
+		if (this.rotation.length > 0) {
+			json.add("rotation", JsonUtils.toJsonArray(this.rotation));
+		}
+		if (this.translation.length > 0) {
+			json.add("translation", JsonUtils.toJsonArray(this.translation));
+		}
+		if (this.scale.length > 0) {
+			json.add("scale", JsonUtils.toJsonArray(this.scale));
+		}
 	}
 }

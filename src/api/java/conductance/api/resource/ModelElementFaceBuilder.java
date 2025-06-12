@@ -1,9 +1,10 @@
 package conductance.api.resource;
 
+import java.util.function.Consumer;
 import net.minecraft.core.Direction;
 import net.minecraft.data.models.blockstates.VariantProperties;
 
-public interface ModelElementFaceBuilder {
+public interface ModelElementFaceBuilder extends JsonResourceBuilder<ModelElementFaceBuilder> {
 
 	ModelElementFaceBuilder uv(int x1, int y1, int x2, int y2);
 
@@ -18,4 +19,6 @@ public interface ModelElementFaceBuilder {
 	ModelElementFaceBuilder rotation(VariantProperties.Rotation rotation);
 
 	ModelElementFaceBuilder tintIndex(int tintIndex);
+
+	ModelElementFaceBuilder neoforgeData(Consumer<ModelNeoforgeDataBuilder> builder);
 }

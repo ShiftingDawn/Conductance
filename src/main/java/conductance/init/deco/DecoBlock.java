@@ -1,13 +1,14 @@
-package conductance.init.block;
+package conductance.init.deco;
 
 import net.minecraft.world.item.CreativeModeTab;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import conductance.init.ConductanceCreativeTabs;
+import conductance.init.block.ConductanceBlock;
 
-public class DecoSimpleBlock extends SimpleDynamicBlock {
+public class DecoBlock extends ConductanceBlock {
 
-	public DecoSimpleBlock(final Properties properties, final String textureName) {
-		super(properties, textureName);
+	public DecoBlock(final Properties properties) {
+		super(properties);
 	}
 
 	@Override

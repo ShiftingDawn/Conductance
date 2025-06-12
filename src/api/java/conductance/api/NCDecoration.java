@@ -9,7 +9,8 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 public final class NCDecoration {
 
 	public static final EnumMap<DyeColor, BlockEntry<? extends Block>> LUX = new EnumMap<>(DyeColor.class);
-	public static final EnumMap<DyeColor, BlockEntry<? extends Block>> CIRCUIT = new EnumMap<>(DyeColor.class);
+	public static final EnumMap<DyeColor, BlockEntry<? extends Block>> LIGHT_CIRCUIT = new EnumMap<>(DyeColor.class);
+	public static final EnumMap<DyeColor, BlockEntry<? extends Block>> DARK_CIRCUIT = new EnumMap<>(DyeColor.class);
 
 	public static final EnumMap<DyeColor, BlockEntry<? extends Block>> TILES_1 = new EnumMap<>(DyeColor.class);
 	public static final EnumMap<DyeColor, BlockEntry<? extends Block>> TILES_2 = new EnumMap<>(DyeColor.class);

@@ -1,6 +1,6 @@
 package conductance.api.resource;
 
-public interface ModelDisplayBuilder {
+public interface ModelDisplayBuilder extends JsonResourceBuilder<ModelDisplayBuilder> {
 
 	ModelDisplayBuilder rotation(int x, int y, int z);
 

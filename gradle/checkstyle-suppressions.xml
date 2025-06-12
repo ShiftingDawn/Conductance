@@ -13,6 +13,7 @@
     <suppress files=".+Mixin\.java" checks=".*"/>
     <suppress files="Mixin.+Extension\.java" checks=".*"/>
     <suppress files=".+Builder\.java" checks="HiddenField"/>
+    <suppress files=".+BuilderImpl\.java" checks="HiddenField"/>
 
     <suppress files="Config\.java" checks="[a-zA-Z0-9]*"/>
 

@@ -1,4 +1,4 @@
-package conductance.init.block;
+package conductance.init.deco;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -7,10 +7,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-public class ConcreteBlock extends DecoSimpleBlock {
+public class ConcreteBlock extends DecoBlock {
 
-	public ConcreteBlock(final BlockBehaviour.Properties properties, final String textureName) {
-		super(properties, textureName);
+	public ConcreteBlock(final BlockBehaviour.Properties properties) {
+		super(properties);
 	}
 
 	@Override

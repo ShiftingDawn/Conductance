@@ -55,9 +55,9 @@ final class BlockStateVariantBuilderImpl implements BlockStateVariantBuilder {
 
 	private JsonElement getJsonValue() {
 		if (this.models.size() == 1) {
-			return this.models.getFirst().serialize();
+			return this.models.getFirst().build();
 		} else {
-			return Util.make(new JsonArray(), arr -> this.models.forEach(model -> arr.add(model.serialize())));
+			return Util.make(new JsonArray(), arr -> this.models.forEach(model -> arr.add(model.build())));
 		}
 	}
 

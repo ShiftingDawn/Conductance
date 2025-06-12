@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.minecraft.core.Direction;
 
-public interface ModelElementBuilder {
+public interface ModelElementBuilder extends JsonResourceBuilder<ModelElementBuilder> {
 
 	ModelElementBuilder from(int x, int y, int z);
 
@@ -23,4 +23,6 @@ public interface ModelElementBuilder {
 	ModelElementBuilder face(Direction face, Consumer<ModelElementFaceBuilder> builder);
 
 	ModelElementBuilder faces(BiConsumer<Direction, ModelElementFaceBuilder> faceBuilder, boolean cull, Direction... faces);
+
+	ModelElementBuilder neoforgeData(Consumer<ModelNeoforgeDataBuilder> builder);
 }

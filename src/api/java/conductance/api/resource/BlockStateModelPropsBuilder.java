@@ -1,6 +1,6 @@
 package conductance.api.resource;
 
-public interface BlockStateModelPropsBuilder {
+public interface BlockStateModelPropsBuilder extends JsonResourceBuilder<BlockStateModelPropsBuilder> {
 
 	BlockStateModelPropsBuilder x(int x);
 
