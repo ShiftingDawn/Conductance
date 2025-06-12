@@ -1,8 +1,6 @@
 package conductance.init.block;
 
-import net.minecraft.world.item.BlockItem;
-
-public class PipeBlockItem extends BlockItem {
+public class PipeBlockItem extends ConductanceBlockItem {
 
 	public PipeBlockItem(final PipeBlock<?, ?, ?> block, final Properties properties) {
 		super(block, properties);

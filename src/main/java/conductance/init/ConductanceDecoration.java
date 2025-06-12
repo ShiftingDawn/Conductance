@@ -11,9 +11,9 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.Conductance;
+import conductance.init.block.ConductanceBlockItem;
 import conductance.init.deco.ConcreteBlock;
 import conductance.init.deco.DecoBlock;
-import conductance.init.item.RenderedBlockItem;
 import static conductance.api.NCDecoration.CONCRETE_DARK;
 import static conductance.api.NCDecoration.CONCRETE_DARK_BORDERED;
 import static conductance.api.NCDecoration.CONCRETE_DARK_BRICKS;
@@ -77,7 +77,7 @@ public final class ConductanceDecoration {
 		final BlockBuilder<DecoBlock, Registrate> b = REGISTRATE.block(name, DecoBlock::new)
 				.initialProperties(() -> Blocks.IRON_BLOCK)
 				.blockstate(NonNullBiConsumer.noop())
-				.item(RenderedBlockItem::new)
+				.item(ConductanceBlockItem::new)
 				.model(NonNullBiConsumer.noop())
 				.build();
 		if (builder != null) {
@@ -90,7 +90,7 @@ public final class ConductanceDecoration {
 		return REGISTRATE.block(name, ConcreteBlock::new)
 				.initialProperties(() -> Blocks.STONE)
 				.blockstate(NonNullBiConsumer.noop())
-				.item(RenderedBlockItem::new)
+				.item(ConductanceBlockItem::new)
 				.model(NonNullBiConsumer.noop())
 				.build()
 				.register();
