@@ -7,7 +7,7 @@ class EvComponentMap extends HvComponentMap {
 
 	@Override
 	public Material getPrimaryMaterial() {
-		return NCMaterials.STAINLESS_STEEL;
+		return NCMaterials.TITANIUM;
 	}
 
 	@Override

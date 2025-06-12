@@ -7,7 +7,7 @@ class MvComponentMap extends LvComponentMap {
 
 	@Override
 	public Material getPrimaryMaterial() {
-		return NCMaterials.STEEL;
+		return NCMaterials.ALUMINIUM;
 	}
 
 	@Override

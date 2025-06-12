@@ -7,16 +7,16 @@ class HvComponentMap extends MvComponentMap {
 
 	@Override
 	public Material getPrimaryMaterial() {
-		return NCMaterials.ALUMINIUM;
-	}
-
-	@Override
-	public Material getWireMaterial() {
-		return NCMaterials.GOLD;
+		return NCMaterials.STAINLESS_STEEL;
 	}
 
 	@Override
 	public Material getMagneticMaterial() {
 		return NCMaterials.MAGNETIC_STEEL;
+	}
+
+	@Override
+	public Material getWireMaterial() {
+		return NCMaterials.GOLD;
 	}
 }

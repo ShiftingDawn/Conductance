@@ -8,7 +8,7 @@ class LvComponentMap extends TieredComponentMap {
 
 	@Override
 	public Material getPrimaryMaterial() {
-		return NCMaterials.IRON;
+		return NCMaterials.STEEL;
 	}
 
 	@Override
