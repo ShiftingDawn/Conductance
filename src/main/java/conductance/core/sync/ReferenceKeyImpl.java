@@ -9,10 +9,10 @@ import net.neoforged.neoforge.common.util.Lazy;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.sync.Persisted;
-import conductance.api.machine.sync.ReferenceKey;
-import conductance.api.machine.sync.SpecialHandled;
-import conductance.api.machine.sync.Synchronized;
+import conductance.api.sync.Persisted;
+import conductance.api.sync.ReferenceKey;
+import conductance.api.sync.SpecialHandled;
+import conductance.api.sync.Synchronized;
 import conductance.Conductance;
 
 final class ReferenceKeyImpl implements ReferenceKey {

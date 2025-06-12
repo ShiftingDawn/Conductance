@@ -2,11 +2,11 @@ package conductance.core.sync;
 
 import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
-import conductance.api.machine.sync.Checker;
-import conductance.api.machine.sync.Copier;
-import conductance.api.machine.sync.ReferenceHandler;
-import conductance.api.machine.sync.Serializer;
-import conductance.api.plugin.RegisterFieldSerializerEvent;
+import conductance.api.sync.Checker;
+import conductance.api.sync.Copier;
+import conductance.api.sync.ReferenceHandler;
+import conductance.api.sync.Serializer;
+import conductance.api.sync.event.RegisterFieldSerializerEvent;
 
 @AllArgsConstructor
 final class RegisterFieldSerializerEventImpl implements RegisterFieldSerializerEvent {

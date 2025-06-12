@@ -8,20 +8,20 @@ import conductance.api.cover.CoverEntity;
 import conductance.api.cover.CoverEntityConstructor;
 import conductance.api.cover.CoverQuadProvider;
 import conductance.api.cover.CoverType;
-import conductance.api.plugin.RegisterCoverEvent;
+import conductance.api.cover.event.RegisterCoverEvent;
+import conductance.Conductance;
 import conductance.core.register.RegisterCore;
-import conductance.loader.PluginEventBus;
 
 public final class CoverCore {
 
 	public static void initialize() {
-		PluginEventBus.post(RegisterCoverEvent.class, modid -> new RegisterCoverEventImpl(new RegisterCoverEventImpl.CoverRegister() {
+		Conductance.dispatch(RegisterCoverEvent.class, modid -> new RegisterCoverEventImpl(new RegisterCoverEventImpl.CoverRegister() {
 
 			@Override
 			public <COVER extends CoverEntity<COVER>> CoverType<COVER> register(final String registryName, final Function<CoverType<COVER>, Supplier<CoverQuadProvider>> coverRenderer,
 					final CoverEntityConstructor<COVER> constructor) {
 				return Util.make(new CoverTypeImpl<>(ResourceLocation.fromNamespaceAndPath(modid, registryName), coverRenderer, constructor),
-						RegisterCore.getRegs().covers()::register
+						RegisterCore.REGS.covers()::register
 				);
 			}
 		}));

@@ -11,12 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.NCRecipeSerializer;
-import conductance.api.machine.recipe.RecipeElement;
+import conductance.api.recipe.IRecipe;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.NCRecipeSerializer;
+import conductance.api.recipe.RecipeElement;
+import conductance.api.recipe.RecipeHelper;
 
-public class RecipeSerializerImpl implements NCRecipeSerializer {
+final class RecipeSerializerImpl implements NCRecipeSerializer {
 
 	public static final MapCodec<IRecipe> CODEC;
 	public static final StreamCodec<RegistryFriendlyByteBuf, IRecipe> STREAM_CODEC = StreamCodec.of(RecipeSerializerImpl::toNetwork, RecipeSerializerImpl::fromNetwork);
@@ -42,7 +43,6 @@ public class RecipeSerializerImpl implements NCRecipeSerializer {
 		buf.writeVarInt(recipe.getProgram());
 	}
 
-
 	public static IRecipe fromNetwork(final RegistryFriendlyByteBuf buf) {
 		return new RecipeImpl(
 				BuiltInRegistries.RECIPE_TYPE.get(buf.readResourceLocation()),
@@ -59,7 +59,7 @@ public class RecipeSerializerImpl implements NCRecipeSerializer {
 	private static void writeRecipeMap(final RegistryFriendlyByteBuf buf, final Map<IRecipeElementType<?>, List<RecipeElement>> map) {
 		buf.writeVarInt(map.size());
 		map.forEach((key, list) -> {
-			RecipeCodecs.ELEMENT_TYPE_STREAM.encode(buf, key);
+			RecipeHelper.ELEMENT_TYPE_STREAM_CODEC.encode(buf, key);
 			buf.writeVarInt(list.size());
 			list.forEach(element -> key.toNetwork(buf, element));
 		});
@@ -69,7 +69,7 @@ public class RecipeSerializerImpl implements NCRecipeSerializer {
 		final int mapSize = buf.readVarInt();
 		final Map<IRecipeElementType<?>, List<RecipeElement>> result = new HashMap<>();
 		for (int i = 0; i < mapSize; ++i) {
-			final IRecipeElementType<?> key = RecipeCodecs.ELEMENT_TYPE_STREAM.decode(buf);
+			final IRecipeElementType<?> key = RecipeHelper.ELEMENT_TYPE_STREAM_CODEC.decode(buf);
 			final int listSize = buf.readVarInt();
 			final List<RecipeElement> list = result.computeIfAbsent(key, k -> new ArrayList<>(listSize));
 			for (int j = 0; j < listSize; ++j) {
@@ -83,10 +83,10 @@ public class RecipeSerializerImpl implements NCRecipeSerializer {
 		CODEC = RecordCodecBuilder.mapCodec(ins -> ins.group(
 				BuiltInRegistries.RECIPE_TYPE.byNameCodec().fieldOf("type").forGetter(IRecipe::getType),
 				ResourceLocation.CODEC.fieldOf("id").forGetter(IRecipe::getId),
-				RecipeCodecs.ELEMENT_MAP.fieldOf("inputs").forGetter(IRecipe::getInputs),
-				RecipeCodecs.ELEMENT_MAP.fieldOf("outputs").forGetter(IRecipe::getOutputs),
-				RecipeCodecs.ELEMENT_MAP.fieldOf("inputspertick").forGetter(IRecipe::getInputsPerTick),
-				RecipeCodecs.ELEMENT_MAP.fieldOf("outputspertick").forGetter(IRecipe::getOutputsPerTick),
+				RecipeHelper.ELEMENT_MAP_CODEC.fieldOf("inputs").forGetter(IRecipe::getInputs),
+				RecipeHelper.ELEMENT_MAP_CODEC.fieldOf("outputs").forGetter(IRecipe::getOutputs),
+				RecipeHelper.ELEMENT_MAP_CODEC.fieldOf("inputspertick").forGetter(IRecipe::getInputsPerTick),
+				RecipeHelper.ELEMENT_MAP_CODEC.fieldOf("outputspertick").forGetter(IRecipe::getOutputsPerTick),
 				Codec.INT.fieldOf("processtime").forGetter(IRecipe::getProcessTime),
 				Codec.INT.fieldOf("program").forGetter(IRecipe::getProgram)
 		).apply(ins, RecipeImpl::new));

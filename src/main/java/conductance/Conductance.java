@@ -3,6 +3,10 @@ package conductance;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.logging.LogUtils;
@@ -14,6 +18,7 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.slf4j.Logger;
 import conductance.api.CAPI;
+import conductance.api.plugin.IConductancePluginEvent;
 import conductance.client.ClientProxy;
 import conductance.core.CommonProxy;
 
@@ -31,6 +36,7 @@ public final class Conductance {
 	private void modLoad(final IEventBus modEventBus, final ModContainer modContainer) {
 		modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
+		PluginEventBus.initialize();
 		CommonProxy.init(modEventBus);
 		if (CAPI.isClient()) {
 			ClientProxy.init(modEventBus);
@@ -59,5 +65,23 @@ public final class Conductance {
 		} catch (final IllegalAccessException e) {
 			throw new RuntimeException("Cannot set API value", e);
 		}
+	}
+
+	public static Set<String> getKnownPluginNamespaces() {
+		return PluginEventBus.LISTENERS.values().stream().flatMap(Collection::stream).map(PluginEventBus.EventMethod::modid).collect(Collectors.toSet());
+	}
+
+	public static <T extends IConductancePluginEvent> void dispatch(final Class<T> eventClass, final Function<String, T> eventFactory) {
+		PluginEventBus.LISTENERS.values().forEach(listeners -> {
+			for (final PluginEventBus.EventMethod listener : listeners) {
+				if (listener.eventType().isAssignableFrom(eventClass)) {
+					listener.listener().accept(eventFactory.apply(listener.modid()));
+				}
+			}
+		});
+	}
+
+	public static <T extends IConductancePluginEvent> void dispatchAll(final Class<T> eventClass, final T event) {
+		Conductance.dispatch(eventClass, modid -> event);
 	}
 }

@@ -3,7 +3,7 @@ package conductance.core.sync;
 import java.lang.reflect.Field;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.sync.Holder;
+import conductance.api.sync.Holder;
 
 abstract class ReflectionHolder implements Holder {
 

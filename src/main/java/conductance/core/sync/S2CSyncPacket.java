@@ -12,8 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import lombok.RequiredArgsConstructor;
-import conductance.api.machine.sync.IManaged;
-import conductance.api.machine.sync.Operation;
+import conductance.api.sync.IManaged;
+import conductance.api.sync.Operation;
 import conductance.Conductance;
 
 @RequiredArgsConstructor

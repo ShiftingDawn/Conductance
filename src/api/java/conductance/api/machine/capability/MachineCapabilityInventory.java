@@ -7,8 +7,8 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.ICapabilityHandler;
 import conductance.api.machine.ItemStackTransfer;
 import conductance.api.machine.MachineBlockEntity;
-import conductance.api.machine.sync.Persisted;
-import conductance.api.machine.sync.Synchronized;
+import conductance.api.sync.Persisted;
+import conductance.api.sync.Synchronized;
 import conductance.api.util.IOMode;
 
 public class MachineCapabilityInventory extends MachineCapability implements ICapabilityHandler, IItemHandlerModifiable {

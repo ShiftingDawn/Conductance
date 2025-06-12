@@ -3,10 +3,10 @@ package conductance.core.sync;
 import java.util.function.Supplier;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
-import conductance.api.machine.sync.Operation;
-import conductance.api.machine.sync.Reference;
-import conductance.api.machine.sync.ReferenceHandler;
-import conductance.api.machine.sync.Serializer;
+import conductance.api.sync.Operation;
+import conductance.api.sync.Reference;
+import conductance.api.sync.ReferenceHandler;
+import conductance.api.sync.Serializer;
 
 final class SimpleObjectHandler implements ReferenceHandler {
 

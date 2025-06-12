@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import com.tterrag.registrate.Registrate;
@@ -44,9 +43,8 @@ public final class ConductanceRegistrate extends Registrate {
 		super(Conductance.MODID);
 	}
 
-	public static ConductanceRegistrate create(final IEventBus modEventBus) {
+	static ConductanceRegistrate create() {
 		return Util.make(new ConductanceRegistrate(), registrate -> {
-			registrate.registerEventListeners(modEventBus);
 			registrate.addRegisterCallback(Registries.BLOCK, () -> registrate.getAll(Registries.BLOCK).forEach(entry -> {
 				if (entry.get() instanceof final IConductanceItem conductanceItem) {
 					registrate.setCreativeTab(entry, conductanceItem.getCreativeTab());

@@ -4,15 +4,15 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import conductance.api.machine.IMachineBlock;
-import conductance.api.plugin.RegisterMachineEvent;
+import conductance.api.machine.event.RegisterMachineEvent;
+import conductance.Conductance;
 import conductance.init.block.WireBlock;
-import conductance.loader.PluginEventBus;
 
 public final class MachineCore {
 
 	public static void initialize(final IEventBus modEventBus) {
 		modEventBus.addListener(MachineCore::onAttachCapabilities);
-		PluginEventBus.postAll(RegisterMachineEvent.class, new RegisterMachineEventImpl(MachineBuilderImpl::new));
+		Conductance.dispatchAll(RegisterMachineEvent.class, new RegisterMachineEventImpl(MachineBuilderImpl::new));
 	}
 
 	private static void onAttachCapabilities(final RegisterCapabilitiesEvent event) {

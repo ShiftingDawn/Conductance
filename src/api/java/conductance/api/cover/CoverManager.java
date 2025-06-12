@@ -21,12 +21,12 @@ import conductance.api.machine.IAppearance;
 import conductance.api.machine.IBlockEntity;
 import conductance.api.machine.MachineRunnable;
 import conductance.api.machine.RunnableContainer;
-import conductance.api.machine.sync.IManaged;
-import conductance.api.machine.sync.ManagedDataMap;
-import conductance.api.machine.sync.OnSynchronized;
-import conductance.api.machine.sync.Persisted;
-import conductance.api.machine.sync.SpecialHandled;
-import conductance.api.machine.sync.Synchronized;
+import conductance.api.sync.IManaged;
+import conductance.api.sync.ManagedDataMap;
+import conductance.api.sync.OnSynchronized;
+import conductance.api.sync.Persisted;
+import conductance.api.sync.SpecialHandled;
+import conductance.api.sync.Synchronized;
 
 public class CoverManager implements IManaged, EnvironmentProvider, RunnableContainer, IAppearance {
 

@@ -5,7 +5,7 @@ import dev.emi.emi.api.EmiApi;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
-import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.recipe.NCRecipeType;
 
 @EmiEntrypoint
 public final class ConductanceEmiPlugin implements EmiPlugin {

@@ -1,11 +1,11 @@
 package conductance.init;
 
 import net.minecraft.world.item.ItemStack;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.recipe.IRecipe;
+import conductance.api.recipe.NCRecipeType;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterFieldSerializerEvent;
+import conductance.api.sync.event.RegisterFieldSerializerEvent;
 import conductance.api.tier.Tier;
 import conductance.Conductance;
 import conductance.init.sync.ItemStackSerializer;

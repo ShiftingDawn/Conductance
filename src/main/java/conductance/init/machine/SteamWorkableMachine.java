@@ -14,13 +14,13 @@ import lombok.Getter;
 import lombok.Setter;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.capability.MachineRecipeCapability;
-import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.recipe.RecipeCapabilityHolder;
-import conductance.api.machine.recipe.RecipeProcessor;
-import conductance.api.machine.recipe.WorkableMachineRecipeProviderConfigAdapter;
-import conductance.api.machine.sync.Persisted;
-import conductance.api.machine.sync.Synchronized;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.NCRecipeType;
+import conductance.api.recipe.RecipeCapabilityHolder;
+import conductance.api.recipe.RecipeProcessor;
+import conductance.api.recipe.WorkableMachineRecipeProviderConfigAdapter;
+import conductance.api.sync.Persisted;
+import conductance.api.sync.Synchronized;
 import conductance.api.util.IOMode;
 
 public abstract class SteamWorkableMachine<T extends SteamWorkableMachine<T>> extends SteamMachine<T> implements WorkableMachineRecipeProviderConfigAdapter, RecipeCapabilityHolder {

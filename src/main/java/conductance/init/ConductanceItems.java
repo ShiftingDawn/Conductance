@@ -20,7 +20,7 @@ import conductance.init.item.MaterialItem;
 import conductance.init.item.TieredCoverItem;
 import conductance.init.item.TieredItem;
 import static conductance.api.NCItems.TIERED;
-import static conductance.core.register.RegisterCore.getRegistrate;
+import static conductance.core.register.RegisterCore.REGISTRATE;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class ConductanceItems {
@@ -39,7 +39,7 @@ public final class ConductanceItems {
 	private static void generateMaterialItems() {
 		CAPI.regs().materials().forEach(material -> CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.canGenerateItem(material)).forEach(set -> {
 			final String name = set.getUnlocalizedName(material);
-			final ItemBuilder<MaterialItem, Registrate> itemBuilder = getRegistrate().item(name, props -> new MaterialItem(props, material, set)).model(NonNullBiConsumer.noop())
+			final ItemBuilder<MaterialItem, Registrate> itemBuilder = REGISTRATE.item(name, props -> new MaterialItem(props, material, set)).model(NonNullBiConsumer.noop())
 					.properties(p -> p.stacksTo(set.getMaxStackSize())).color(() -> MaterialItem::handleColorTint);
 			if (((TaggedMaterialSetImpl) set).getItemGeneratorCallback() != null) {
 				((TaggedMaterialSetImpl) set).getItemGeneratorCallback().accept(material, itemBuilder);
@@ -49,11 +49,11 @@ public final class ConductanceItems {
 	}
 
 	private static void generateCraftingTools() {
-		ConductanceItems.CRAFTING_TOOL_WRENCH = getRegistrate().item("wrench", CraftingToolItem::new)
+		ConductanceItems.CRAFTING_TOOL_WRENCH = REGISTRATE.item("wrench", CraftingToolItem::new)
 				.defaultModel().register();
-		ConductanceItems.CRAFTING_TOOL_HAMMER = getRegistrate().item("hammer", CraftingToolItem::new)
+		ConductanceItems.CRAFTING_TOOL_HAMMER = REGISTRATE.item("hammer", CraftingToolItem::new)
 				.defaultModel().register();
-		ConductanceItems.CRAFTING_TOOL_WIRE_CUTTERS = getRegistrate().item("wire_cutters", CraftingToolItem::new)
+		ConductanceItems.CRAFTING_TOOL_WIRE_CUTTERS = REGISTRATE.item("wire_cutters", CraftingToolItem::new)
 				.defaultModel().register();
 	}
 
@@ -61,7 +61,7 @@ public final class ConductanceItems {
 		TIERED = Tables.unmodifiableTable(Util.make(Tables.newCustomTable(new EnumMap<>(TieredItemType.class), HashMap::new), table -> {
 			for (final TieredItemType tieredItemType : TieredItemType.values()) {
 				for (final Tier tier : CAPI.tiers().getTiers()) {
-					final ItemEntry<? extends Item> item = getRegistrate().item(tieredItemType.makeUnlocalizedName(tier), props -> switch (tieredItemType) {
+					final ItemEntry<? extends Item> item = REGISTRATE.item(tieredItemType.makeUnlocalizedName(tier), props -> switch (tieredItemType) {
 								case CONVEYOR_MODULE -> new TieredCoverItem<>(props, tieredItemType, tier, NCCovers.CONVEYORS.get(tier));
 								default -> new TieredItem(props, tieredItemType, tier);
 							})

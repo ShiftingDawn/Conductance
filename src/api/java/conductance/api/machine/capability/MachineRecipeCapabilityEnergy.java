@@ -11,9 +11,9 @@ import conductance.api.NCCapabilities;
 import conductance.api.energy.IEnergyHandler;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineRunnable;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.sync.Persisted;
-import conductance.api.machine.sync.Synchronized;
+import conductance.api.recipe.IRecipe;
+import conductance.api.sync.Persisted;
+import conductance.api.sync.Synchronized;
 import conductance.api.util.IOMode;
 import conductance.api.util.world.WorldUtils;
 

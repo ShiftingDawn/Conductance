@@ -1,10 +1,10 @@
 package conductance.core.sync;
 
 import conductance.api.CAPI;
-import conductance.api.machine.sync.Holder;
-import conductance.api.machine.sync.IManaged;
-import conductance.api.machine.sync.ManagedDataMap;
-import conductance.api.machine.sync.ReferenceKey;
+import conductance.api.sync.Holder;
+import conductance.api.sync.IManaged;
+import conductance.api.sync.ManagedDataMap;
+import conductance.api.sync.ReferenceKey;
 
 final class ManagedReferenceOuter extends ReferenceImpl {
 

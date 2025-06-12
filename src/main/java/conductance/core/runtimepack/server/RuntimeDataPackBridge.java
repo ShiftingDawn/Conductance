@@ -21,13 +21,12 @@ import com.mojang.serialization.JsonOps;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import com.google.gson.JsonElement;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.plugin.RegisterRecipeEvent;
-import conductance.api.plugin.RegisterTagEvent;
-import conductance.api.plugin.RemoveRecipeEvent;
+import conductance.api.recipe.event.RegisterRecipeEvent;
+import conductance.api.recipe.event.RemoveRecipeEvent;
+import conductance.api.resource.RegisterTagEvent;
 import conductance.Conductance;
 import conductance.core.material.MaterialRegistryImpl;
-import conductance.core.recipe.RecipeBuilderImpl;
-import conductance.loader.PluginEventBus;
+import conductance.core.recipe.RecipeCore;
 
 public final class RuntimeDataPackBridge {
 
@@ -56,11 +55,11 @@ public final class RuntimeDataPackBridge {
 						: Optional.of(() -> new Tuple<>(Advancement.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), advancementHolder.value()).getOrThrow(), advancementHolder.id())));
 			}
 		};
-		PluginEventBus.post(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, output, RecipeBuilderImpl::new));
+		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, output, RecipeCore.getRecipeBuilderFactory()));
 	}
 
 	public static void removeRecipes(final Map<ResourceLocation, JsonElement> recipeMap) {
-		PluginEventBus.postAll(RemoveRecipeEvent.class, new RemoveRecipeEventImpl(id -> {
+		Conductance.dispatchAll(RemoveRecipeEvent.class, new RemoveRecipeEventImpl(id -> {
 			if (recipeMap.remove(id) == null) {
 				Conductance.LOGGER.warn("Trying to remove non-existing recipe: {}", id);
 			}
@@ -69,7 +68,7 @@ public final class RuntimeDataPackBridge {
 
 	public static void generateTags(final Registry<?> registry, final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
 		TagGenerationHandler.CUSTOM_ITEM_TAGS.clear();
-		PluginEventBus.postAll(RegisterTagEvent.class, new RegisterTagEventImpl((tag, value, moreValues) -> {
+		Conductance.dispatchAll(RegisterTagEvent.class, new RegisterTagEventImpl((tag, value, moreValues) -> {
 			final List<ItemLike> list = TagGenerationHandler.CUSTOM_ITEM_TAGS.computeIfAbsent(tag, k -> Collections.synchronizedList(new ArrayList<>()));
 			list.add(value);
 			list.addAll(Arrays.asList(moreValues));

@@ -10,8 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 import conductance.api.CAPI;
 import conductance.api.machine.MachineBlockEntity;
-import conductance.api.machine.sync.IManaged;
-import conductance.api.machine.sync.ManagedDataMap;
+import conductance.api.sync.IManaged;
+import conductance.api.sync.ManagedDataMap;
 
 public abstract class MachineCapability implements IManaged {
 

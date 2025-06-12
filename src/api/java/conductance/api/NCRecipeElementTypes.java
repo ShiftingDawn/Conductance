@@ -2,7 +2,7 @@ package conductance.api;
 
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import conductance.api.machine.recipe.IRecipeElementType;
+import conductance.api.recipe.IRecipeElementType;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCRecipeElementTypes {

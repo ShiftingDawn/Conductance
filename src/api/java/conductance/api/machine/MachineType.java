@@ -11,9 +11,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.gui.MachineGuiSupplier;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.recipe.IRecipe;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.NCRecipeType;
 import conductance.api.registry.IRegistryObject;
 
 public interface MachineType<T extends MachineBlockEntity<T>> extends IRegistryObject<String> {

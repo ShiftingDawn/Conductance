@@ -29,8 +29,7 @@ import conductance.api.material.event.RegisterMaterialUnitOverrideEvent;
 import conductance.api.material.traits.MaterialTraitDust;
 import conductance.api.material.traits.MaterialTraitFluid;
 import conductance.Conductance;
-import conductance.loader.PluginEventBus;
-import static conductance.core.register.RegisterCore.getRegs;
+import static conductance.core.register.RegisterCore.REGS;
 
 public final class MaterialCore {
 
@@ -51,64 +50,64 @@ public final class MaterialCore {
 	}
 
 	private static void initOreTypes() {
-		PluginEventBus.post(RegisterMaterialOreTypeEvent.class, modid -> new RegisterMaterialOreTypeEventImpl(((registryName, bearingBlockModel, mapColor, soundType, builder) -> {
+		Conductance.dispatch(RegisterMaterialOreTypeEvent.class, modid -> new RegisterMaterialOreTypeEventImpl(((registryName, bearingBlockModel, mapColor, soundType, builder) -> {
 			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
 			final MaterialOreType result = Util.make(new MaterialOreTypeBuilderImpl(registryKey, bearingBlockModel, mapColor, soundType), builder).build();
-			getRegs().materialOreTypes().register(result);
+			REGS.materialOreTypes().register(result);
 			return result;
 		})));
 	}
 
 	private static void initTextureTypes() {
-		PluginEventBus.post(RegisterMaterialTextureTypeEvent.class, modid -> new RegisterMaterialTextureTypeEventImpl(registryName -> {
+		Conductance.dispatch(RegisterMaterialTextureTypeEvent.class, modid -> new RegisterMaterialTextureTypeEventImpl(registryName -> {
 			final MaterialTextureType result = new MaterialTextureType(ResourceLocation.fromNamespaceAndPath(modid, registryName));
-			getRegs().materialTextureTypes().register(result);
+			REGS.materialTextureTypes().register(result);
 			return result;
 		}));
 	}
 
 	private static void initTraits() {
-		PluginEventBus.post(RegisterMaterialTraitEvent.class, modid -> new RegisterMaterialTraitEventImpl(new RegisterMaterialTraitEventImpl.MaterialTraitRegister() {
+		Conductance.dispatch(RegisterMaterialTraitEvent.class, modid -> new RegisterMaterialTraitEventImpl(new RegisterMaterialTraitEventImpl.MaterialTraitRegister() {
 
 			@Override
 			public <T extends IMaterialTrait<T>> MaterialTraitKey<T> apply(final String registryName, final Class<T> typeClass) {
 				final MaterialTraitKey<T> result = new MaterialTraitKey<>(ResourceLocation.fromNamespaceAndPath(modid, registryName), typeClass);
-				getRegs().materialTraits().register(result);
+				REGS.materialTraits().register(result);
 				return result;
 			}
 		}));
 	}
 
 	private static void initFlags() {
-		PluginEventBus.post(RegisterMaterialFlagEvent.class, modid -> new RegisterMaterialFlagEventImpl((registryName, reqFlags, reqTraits) -> {
+		Conductance.dispatch(RegisterMaterialFlagEvent.class, modid -> new RegisterMaterialFlagEventImpl((registryName, reqFlags, reqTraits) -> {
 			final MaterialFlag result = new MaterialFlag(ResourceLocation.fromNamespaceAndPath(modid, registryName), reqFlags, reqTraits);
-			getRegs().materialFlags().register(result);
+			REGS.materialFlags().register(result);
 			return result;
 		}));
 	}
 
 	private static void initTaggedSets() {
-		PluginEventBus.post(RegisterMaterialTaggedSetEvent.class, modid -> new RegisterMaterialTaggedSetEventImpl((registryName, unlocalizedNameFactory, oreType, builder) -> {
+		Conductance.dispatch(RegisterMaterialTaggedSetEvent.class, modid -> new RegisterMaterialTaggedSetEventImpl((registryName, unlocalizedNameFactory, oreType, builder) -> {
 			final TaggedMaterialSet result = Util.make(new MaterialTaggedSetBuilder(registryName, unlocalizedNameFactory, oreType), builder).build();
-			getRegs().materialTaggedSets().register(result);
+			REGS.materialTaggedSets().register(result);
 			return result;
 		}));
 	}
 
 	private static void initMaterials() {
-		PluginEventBus.post(RegisterMaterialEvent.class, modid -> new RegisterMaterialEventImpl((registryName, builder) -> {
+		Conductance.dispatch(RegisterMaterialEvent.class, modid -> new RegisterMaterialEventImpl((registryName, builder) -> {
 			final Material result = Util.make(new MaterialBuilderImpl(ResourceLocation.fromNamespaceAndPath(modid, registryName)), builder).build();
-			getRegs().materials().register(result);
+			REGS.materials().register(result);
 			return result;
 		}));
 	}
 
 	private static void initOverrides() {
-		PluginEventBus.post(RegisterMaterialOverrideEvent.class, ignored -> new RegisterMaterialOverrideEventImpl(MaterialRegistryImpl.INSTANCE::addOverride));
+		Conductance.dispatch(RegisterMaterialOverrideEvent.class, ignored -> new RegisterMaterialOverrideEventImpl(MaterialRegistryImpl.INSTANCE::addOverride));
 	}
 
 	private static void initUnitOverrides() {
-		PluginEventBus.post(RegisterMaterialUnitOverrideEvent.class, ignored -> new RegisterMaterialUnitOverrideEventImpl(MaterialRegistryImpl.INSTANCE::addUnitOverride));
+		Conductance.dispatch(RegisterMaterialUnitOverrideEvent.class, ignored -> new RegisterMaterialUnitOverrideEventImpl(MaterialRegistryImpl.INSTANCE::addUnitOverride));
 	}
 
 	private static void modifyMaterials() {
@@ -118,7 +117,7 @@ public final class MaterialCore {
 			}
 			MaterialCore.modifyMaterialInternal(material);
 			final ModifyMaterialEvent event = new ModifyMaterialEventImpl(material);
-			PluginEventBus.post(ModifyMaterialEvent.class, ignored -> event);
+			Conductance.dispatch(ModifyMaterialEvent.class, ignored -> event);
 		});
 	}
 

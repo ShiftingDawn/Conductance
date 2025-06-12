@@ -8,7 +8,7 @@ import conductance.api.NCMaterials;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.capability.MachineRecipeCapabilityFluids;
-import conductance.api.machine.sync.Persisted;
+import conductance.api.sync.Persisted;
 
 public abstract class SteamMachine<T extends SteamMachine<T>> extends MachineBlockEntity<T> {
 

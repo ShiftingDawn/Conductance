@@ -6,7 +6,7 @@ import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineBlockEntityFactory;
 import conductance.api.machine.MachineBuilder;
 import conductance.api.machine.MachineType;
-import conductance.api.plugin.RegisterMachineEvent;
+import conductance.api.machine.event.RegisterMachineEvent;
 
 @AllArgsConstructor
 final class RegisterMachineEventImpl implements RegisterMachineEvent {

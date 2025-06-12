@@ -1,6 +1,6 @@
 package conductance.api.util.overclock;
 
-import conductance.api.machine.recipe.IRecipe;
+import conductance.api.recipe.IRecipe;
 
 public interface OverclockFunction {
 

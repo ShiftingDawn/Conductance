@@ -7,7 +7,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import conductance.api.machine.sync.IManaged;
+import conductance.api.sync.IManaged;
 
 final class SynchronizationContainer implements SyncTask {
 

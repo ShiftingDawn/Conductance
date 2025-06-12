@@ -2,7 +2,7 @@ package conductance.init;
 
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterRecipeTypeEvent;
+import conductance.api.recipe.event.RegisterRecipeTypeEvent;
 import conductance.Conductance;
 import static conductance.api.NCRecipeTypes.BENDING_MACHINE;
 import static conductance.api.NCRecipeTypes.COMPRESSOR;

@@ -34,13 +34,13 @@ import conductance.api.machine.MachineBuilder;
 import conductance.api.machine.MachineModelType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiSupplier;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.recipe.IRecipe;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.NCRecipeType;
 import conductance.api.util.world.RotationState;
 import conductance.core.recipe.RecipeTypeImpl;
-import conductance.core.register.RegisterCore;
-import static conductance.core.register.RegisterCore.getRegistrate;
+import static conductance.core.register.RegisterCore.REGISTRATE;
+import static conductance.core.register.RegisterCore.REGS;
 
 class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements MachineBuilder<T> {
 
@@ -89,7 +89,7 @@ class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements MachineBuil
 
 	@SuppressWarnings("removal")
 	private BlockEntry<? extends MachineBlock<T>> createBlock(final MachineTypeImpl<T> machineType) {
-		final BlockBuilder<MachineBlock<T>, Registrate> blockBuilder = getRegistrate().block(this.registryKey, props -> {
+		final BlockBuilder<MachineBlock<T>, Registrate> blockBuilder = REGISTRATE.block(this.registryKey, props -> {
 			RotationState.set(this.rotationState);
 			final MachineBlock<T> block = this.blockFactory.newInstance(props, machineType);
 			RotationState.clear();
@@ -112,7 +112,7 @@ class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements MachineBuil
 	}
 
 	private BlockEntityEntry<T> createBlockEntity(final MachineTypeImpl<T> machineType) {
-		final BlockEntityBuilder<T, Registrate> builder = getRegistrate().blockEntity(this.registryKey, (type, pos, state) -> this.blockEntityFactory.newInstance(machineType, pos, state));
+		final BlockEntityBuilder<T, Registrate> builder = REGISTRATE.blockEntity(this.registryKey, (type, pos, state) -> this.blockEntityFactory.newInstance(machineType, pos, state));
 		builder.validBlock(machineType.getBlock());
 		return builder.register();
 	}
@@ -200,7 +200,7 @@ class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements MachineBuil
 			});
 		});
 		machineType.validate();
-		RegisterCore.getRegs().machines().register(machineType);
+		REGS.machines().register(machineType);
 		Arrays.stream(this.recipeTypes).forEach(type -> ((RecipeTypeImpl) type).setRecipeTypeIcon(() -> new ItemStack(machineType.getBlock().get())));
 		return machineType;
 	}

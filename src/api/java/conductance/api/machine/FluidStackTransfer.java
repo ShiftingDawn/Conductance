@@ -10,7 +10,7 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.sync.ContentChangeListener;
+import conductance.api.sync.ContentChangeListener;
 
 public class FluidStackTransfer extends FluidTank implements ContentChangeListener, INBTSerializable<CompoundTag>, IFluidHandlerModifiable {
 

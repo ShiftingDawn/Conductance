@@ -21,9 +21,9 @@ import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineModelType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiSupplier;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.recipe.IRecipe;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.NCRecipeType;
 import conductance.api.registry.RegistryObject;
 
 //FIXME refactor

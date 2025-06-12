@@ -4,10 +4,10 @@ import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.sync.ContentChangeListener;
-import conductance.api.machine.sync.Holder;
-import conductance.api.machine.sync.Reference;
-import conductance.api.machine.sync.ReferenceKey;
+import conductance.api.sync.ContentChangeListener;
+import conductance.api.sync.Holder;
+import conductance.api.sync.Reference;
+import conductance.api.sync.ReferenceKey;
 
 class ReferenceImpl implements Reference {
 

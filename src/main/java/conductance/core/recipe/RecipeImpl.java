@@ -12,11 +12,11 @@ import net.minecraft.world.item.crafting.RecipeType;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCRecipeElementTypes;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.recipe.RecipeElement;
-import conductance.api.machine.recipe.RecipeModifier;
+import conductance.api.recipe.IRecipe;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.NCRecipeType;
+import conductance.api.recipe.RecipeElement;
+import conductance.api.recipe.RecipeModifier;
 import conductance.api.util.overclock.OverclockResult;
 
 public class RecipeImpl implements IRecipe {

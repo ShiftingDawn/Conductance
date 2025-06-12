@@ -6,7 +6,7 @@ import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.recipe.IRecipe;
+import conductance.api.recipe.IRecipe;
 import conductance.compat.ConductanceRecipeWidget;
 
 final class NCEmiRecipe extends ModularEmiRecipe<WidgetGroup> {

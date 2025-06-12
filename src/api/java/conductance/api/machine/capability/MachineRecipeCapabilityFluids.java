@@ -19,8 +19,8 @@ import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.FluidStackTransfer;
 import conductance.api.machine.ICapabilityHandler;
 import conductance.api.machine.MachineBlockEntity;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.sync.Persisted;
+import conductance.api.recipe.IRecipe;
+import conductance.api.sync.Persisted;
 import conductance.api.util.IOMode;
 
 public class MachineRecipeCapabilityFluids extends MachineRecipeCapability<SizedFluidIngredient> implements ICapabilityHandler, IFluidHandlerModifiable {

@@ -1,13 +1,13 @@
 package conductance.init;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
-import conductance.lib.pipenet.WireRegistry;
 import conductance.core.register.RegisterCore;
 import conductance.init.block.WireBlockEntity;
+import conductance.lib.pipenet.WireRegistry;
 
 public final class ConductanceBlockEntities {
 
-	public static final BlockEntityEntry<WireBlockEntity> WIRE = RegisterCore.getRegistrate().blockEntity("wire", WireBlockEntity::new)
+	public static final BlockEntityEntry<WireBlockEntity> WIRE = RegisterCore.REGISTRATE.blockEntity("wire", WireBlockEntity::new)
 			.validBlocks(WireRegistry.getAllBlocks())
 			.register();
 

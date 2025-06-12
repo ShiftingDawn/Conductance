@@ -25,7 +25,6 @@ import com.google.gson.JsonElement;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 import conductance.Conductance;
-import conductance.loader.PluginEventBus;
 
 public abstract class AbstractRuntimePack implements PackResources {
 
@@ -37,7 +36,7 @@ public abstract class AbstractRuntimePack implements PackResources {
 		this.locationInfo = locationInfo;
 		this.packType = packType;
 		this.namespaces.addAll(List.of(ResourceLocation.DEFAULT_NAMESPACE, "c", NeoForgeVersion.MOD_ID));
-		this.namespaces.addAll(PluginEventBus.getAllModids());
+		this.namespaces.addAll(Conductance.getKnownPluginNamespaces());
 	}
 
 	protected abstract Map<ResourceLocation, byte[]> getAllData();

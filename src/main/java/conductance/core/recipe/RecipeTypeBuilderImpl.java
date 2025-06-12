@@ -6,12 +6,12 @@ import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.NCRecipeElementTypes;
-import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.recipe.RecipeTypeBuilder;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.NCRecipeType;
+import conductance.api.recipe.RecipeTypeBuilder;
 import conductance.core.register.RegisterCore;
 
-public class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
+final class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 
 	private final ResourceLocation registryKey;
 	private final Object2IntArrayMap<IRecipeElementType<?>> maxInputs = new Object2IntArrayMap<>();
@@ -83,7 +83,7 @@ public class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 				realRecipeViewProgressBar,
 				this.progressBarDirection
 		);
-		RegisterCore.getRegs().recipeTypes().register(result);
+		RegisterCore.REGS.recipeTypes().register(result);
 		return result;
 	}
 }

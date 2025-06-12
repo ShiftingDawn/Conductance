@@ -4,9 +4,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.sync.Operation;
-import conductance.api.machine.sync.Reference;
-import conductance.api.machine.sync.Serializer;
+import conductance.api.sync.Operation;
+import conductance.api.sync.Reference;
+import conductance.api.sync.Serializer;
 
 public class ItemStackSerializer extends Serializer<ItemStack> {
 

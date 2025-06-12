@@ -13,15 +13,15 @@ import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.NCTiers;
-import conductance.api.machine.recipe.AutoRecipeData;
-import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.recipe.RecipeBuilder;
+import conductance.api.recipe.AutoRecipeData;
+import conductance.api.recipe.NCRecipeType;
+import conductance.api.recipe.RecipeBuilder;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterRecipeEvent;
-import conductance.api.plugin.RemoveRecipeEvent;
+import conductance.api.recipe.event.RegisterRecipeEvent;
+import conductance.api.recipe.event.RemoveRecipeEvent;
 import conductance.Conductance;
 
 @ConductancePluginListener(modid = Conductance.MODID)

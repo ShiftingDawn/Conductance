@@ -10,7 +10,7 @@ import conductance.core.material.MaterialRegistryImpl;
 import conductance.core.material.TaggedMaterialSetImpl;
 import conductance.init.fluid.MaterialBucketItem;
 import conductance.init.fluid.MaterialFluidType;
-import static conductance.core.register.RegisterCore.getRegistrate;
+import static conductance.core.register.RegisterCore.REGISTRATE;
 
 public final class ConductanceFluids {
 
@@ -18,9 +18,9 @@ public final class ConductanceFluids {
 	public static void init() {
 		CAPI.regs().materials().forEach(material -> CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.canGenerateFluid(material)).forEach(set -> {
 			final String name = set.getUnlocalizedName(material);
-			getRegistrate().object(name);
+			REGISTRATE.object(name);
 			//noinspection DataFlowIssue
-			final FluidBuilder<BaseFlowingFluid.Flowing, Registrate> fluidBuilder = getRegistrate().fluid(name, ((properties, stillTexture, flowingTexture) -> new MaterialFluidType(material, set, properties)))
+			final FluidBuilder<BaseFlowingFluid.Flowing, Registrate> fluidBuilder = REGISTRATE.fluid(name, ((properties, stillTexture, flowingTexture) -> new MaterialFluidType(material, set, properties)))
 					.noBlock().fluidProperties(p -> p.block(null))
 					.noBucket();
 			fluidBuilder.getOwner().item(fluidBuilder, name + "_bucket", p -> new MaterialBucketItem(fluidBuilder.getEntry(), p)).properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))

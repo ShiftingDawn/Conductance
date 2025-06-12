@@ -35,7 +35,7 @@ import static conductance.api.NCDecoration.TILES_3;
 import static conductance.api.NCDecoration.TILES_4;
 import static conductance.api.NCDecoration.TILES_5;
 import static conductance.api.NCDecoration.TILES_6;
-import static conductance.core.register.RegisterCore.getRegistrate;
+import static conductance.core.register.RegisterCore.REGISTRATE;
 
 public final class ConductanceDecoration {
 
@@ -74,7 +74,7 @@ public final class ConductanceDecoration {
 	}
 
 	private static BlockEntry<DecoBlock> decoBlock(final String name, @Nullable final Consumer<BlockBuilder<DecoBlock, Registrate>> builder) {
-		final BlockBuilder<DecoBlock, Registrate> b = getRegistrate().block(name, DecoBlock::new)
+		final BlockBuilder<DecoBlock, Registrate> b = REGISTRATE.block(name, DecoBlock::new)
 				.initialProperties(() -> Blocks.IRON_BLOCK)
 				.blockstate(NonNullBiConsumer.noop())
 				.item(RenderedBlockItem::new)
@@ -87,7 +87,7 @@ public final class ConductanceDecoration {
 	}
 
 	private static BlockEntry<ConcreteBlock> concrete(final String name) {
-		return getRegistrate().block(name, ConcreteBlock::new)
+		return REGISTRATE.block(name, ConcreteBlock::new)
 				.initialProperties(() -> Blocks.STONE)
 				.blockstate(NonNullBiConsumer.noop())
 				.item(RenderedBlockItem::new)

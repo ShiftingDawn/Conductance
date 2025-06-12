@@ -1,13 +1,10 @@
 package conductance.core.register;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.RegisterEvent;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import conductance.api.cover.CoverType;
 import conductance.api.machine.MachineType;
-import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialOreType;
@@ -15,12 +12,14 @@ import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.periodicelement.PeriodicElement;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.NCRecipeType;
 import conductance.api.registry.IRegistryObject;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.tier.Tier;
 import conductance.Conductance;
-import conductance.core.recipe.RecipeSerializerImpl;
 
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public final class RegistryProviderImpl implements RegistryProvider {
 
 	private final ConductanceRegistryImpl<ResourceLocation, PeriodicElement> periodicElements = RegistryProviderImpl.makeResourceKeyed("periodic_element");
@@ -38,23 +37,6 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final ConductanceRegistryImpl<String, Tier> tiers = RegistryProviderImpl.makeStringKeyed("tier");
 	private final ConductanceRegistryImpl<String, MachineType<?>> machines = RegistryProviderImpl.makeStringKeyed("machine_type");
 	private final ConductanceRegistryImpl<ResourceLocation, CoverType<?>> covers = RegistryProviderImpl.makeResourceKeyed("cover");
-
-	RegistryProviderImpl(final IEventBus modEventBus) {
-		modEventBus.addListener(this::onRegisterEvent);
-	}
-
-	private void onRegisterEvent(final RegisterEvent event) {
-		if (event.getRegistryKey() == Registries.RECIPE_TYPE) {
-			this.recipeTypes.values().forEach(recipeType -> {
-				event.register(Registries.RECIPE_TYPE, recipeType.getRegistryKey(), () -> recipeType);
-			});
-		}
-		if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
-			this.recipeTypes.values().forEach(recipeType -> {
-				event.register(Registries.RECIPE_SERIALIZER, recipeType.getRegistryKey(), RecipeSerializerImpl::new);
-			});
-		}
-	}
 
 	private static <VALUE extends IRegistryObject<String>> ConductanceRegistryImpl<String, VALUE> makeStringKeyed(final String registryName) {
 		return new ConductanceRegistryImpl.StringKeyed<>(Conductance.id(registryName));

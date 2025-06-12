@@ -6,7 +6,7 @@ import conductance.api.CAPI;
 import conductance.api.NCBlocks;
 import conductance.api.NCItems;
 import conductance.api.NCMachines;
-import conductance.api.plugin.RegisterRecipeEvent;
+import conductance.api.recipe.event.RegisterRecipeEvent;
 import conductance.api.tier.Tier;
 import conductance.api.tier.TieredComponentMap;
 import conductance.api.tier.TieredItemType;

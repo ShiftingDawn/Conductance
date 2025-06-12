@@ -9,7 +9,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import org.apache.commons.lang3.ArrayUtils;
 import conductance.api.CAPI;
-import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.recipe.NCRecipeType;
 
 final class NCEmiRecipeCategory extends EmiRecipeCategory {
 

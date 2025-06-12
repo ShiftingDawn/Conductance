@@ -9,13 +9,13 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import lombok.Getter;
 import conductance.api.NCRecipeElementTypes;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.recipe.RecipeBuilder;
-import conductance.api.machine.recipe.RecipeElement;
+import conductance.api.recipe.IRecipe;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.NCRecipeType;
+import conductance.api.recipe.RecipeBuilder;
+import conductance.api.recipe.RecipeElement;
 
-public class RecipeBuilderImpl implements RecipeBuilder {
+final class RecipeBuilderImpl implements RecipeBuilder {
 
 	@Getter
 	private final Map<IRecipeElementType<?>, List<RecipeElement>> inputs = new HashMap<>();
@@ -37,7 +37,7 @@ public class RecipeBuilderImpl implements RecipeBuilder {
 	@Getter
 	private int program = 0;
 
-	public RecipeBuilderImpl(final NCRecipeType recipeType, final ResourceLocation recipeId) {
+	RecipeBuilderImpl(final NCRecipeType recipeType, final ResourceLocation recipeId) {
 		this.recipeType = recipeType;
 		this.recipeId = recipeId.withPrefix(recipeType.getRegistryKey().getPath() + "/");
 	}

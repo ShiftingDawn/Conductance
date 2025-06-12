@@ -6,9 +6,9 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.machine.sync.Copier;
-import conductance.api.machine.sync.Holder;
-import conductance.api.machine.sync.ReferenceKey;
+import conductance.api.sync.Copier;
+import conductance.api.sync.Holder;
+import conductance.api.sync.ReferenceKey;
 
 final class ArrayReferenceOuter extends ReferenceImpl {
 

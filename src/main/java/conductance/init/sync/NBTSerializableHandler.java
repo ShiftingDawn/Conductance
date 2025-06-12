@@ -4,10 +4,10 @@ import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import conductance.api.machine.sync.Operation;
-import conductance.api.machine.sync.Reference;
-import conductance.api.machine.sync.ReferenceHandler;
-import conductance.api.machine.sync.Serializer;
+import conductance.api.sync.Operation;
+import conductance.api.sync.Reference;
+import conductance.api.sync.ReferenceHandler;
+import conductance.api.sync.Serializer;
 import conductance.Conductance;
 
 public class NBTSerializableHandler implements ReferenceHandler {

@@ -9,7 +9,7 @@ import conductance.api.cover.CoverEntityConstructor;
 import conductance.api.cover.CoverQuadProvider;
 import conductance.api.cover.CoverType;
 import conductance.api.cover.SimpleTextureCoverQuadProvider;
-import conductance.api.plugin.RegisterCoverEvent;
+import conductance.api.cover.event.RegisterCoverEvent;
 
 @AllArgsConstructor
 final class RegisterCoverEventImpl implements RegisterCoverEvent {

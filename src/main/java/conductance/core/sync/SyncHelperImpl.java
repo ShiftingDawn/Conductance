@@ -12,14 +12,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.machine.sync.Checker;
-import conductance.api.machine.sync.IManaged;
-import conductance.api.machine.sync.ManagedDataMap;
-import conductance.api.machine.sync.Operation;
-import conductance.api.machine.sync.Reference;
-import conductance.api.machine.sync.ReferenceHandler;
-import conductance.api.machine.sync.Serializer;
-import conductance.api.machine.sync.SyncHelper;
+import conductance.api.sync.Checker;
+import conductance.api.sync.IManaged;
+import conductance.api.sync.ManagedDataMap;
+import conductance.api.sync.Operation;
+import conductance.api.sync.Reference;
+import conductance.api.sync.ReferenceHandler;
+import conductance.api.sync.Serializer;
+import conductance.api.sync.SyncHelper;
 import conductance.Conductance;
 
 final class SyncHelperImpl implements SyncHelper {

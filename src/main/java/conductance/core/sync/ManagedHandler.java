@@ -2,11 +2,11 @@ package conductance.core.sync;
 
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
-import conductance.api.machine.sync.IManaged;
-import conductance.api.machine.sync.Operation;
-import conductance.api.machine.sync.Reference;
-import conductance.api.machine.sync.ReferenceHandler;
-import conductance.api.machine.sync.Serializer;
+import conductance.api.sync.IManaged;
+import conductance.api.sync.Operation;
+import conductance.api.sync.Reference;
+import conductance.api.sync.ReferenceHandler;
+import conductance.api.sync.Serializer;
 
 final class ManagedHandler implements ReferenceHandler {
 

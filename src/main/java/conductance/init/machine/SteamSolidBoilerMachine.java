@@ -9,8 +9,8 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.capability.MachineRecipeCapabilityItems;
 import conductance.api.machine.gui.GuiTextures;
-import conductance.api.machine.sync.Persisted;
-import conductance.api.machine.sync.Synchronized;
+import conductance.api.sync.Persisted;
+import conductance.api.sync.Synchronized;
 import conductance.api.util.IOMode;
 
 public final class SteamSolidBoilerMachine extends SteamBoilerMachine<SteamSolidBoilerMachine> {

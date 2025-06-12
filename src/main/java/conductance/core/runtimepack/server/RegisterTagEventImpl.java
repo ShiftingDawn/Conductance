@@ -4,7 +4,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import lombok.AllArgsConstructor;
-import conductance.api.plugin.RegisterTagEvent;
+import conductance.api.resource.RegisterTagEvent;
 
 @AllArgsConstructor
 final class RegisterTagEventImpl implements RegisterTagEvent {

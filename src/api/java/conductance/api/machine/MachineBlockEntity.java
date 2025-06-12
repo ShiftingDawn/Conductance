@@ -19,12 +19,12 @@ import conductance.api.cover.CoverManager;
 import conductance.api.cover.ICoverable;
 import conductance.api.machine.capability.MachineCapability;
 import conductance.api.machine.capability.MachineRecipeCapability;
-import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.RecipeProcessor;
-import conductance.api.machine.sync.IManaged;
-import conductance.api.machine.sync.ManagedDataMap;
-import conductance.api.machine.sync.Persisted;
-import conductance.api.machine.sync.Synchronized;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.RecipeProcessor;
+import conductance.api.sync.IManaged;
+import conductance.api.sync.ManagedDataMap;
+import conductance.api.sync.Persisted;
+import conductance.api.sync.Synchronized;
 import conductance.api.util.IOMode;
 import conductance.api.util.world.RotationState;
 

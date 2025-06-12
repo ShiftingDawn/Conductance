@@ -1,10 +1,10 @@
 package conductance.core.sync;
 
 import java.util.Collection;
-import conductance.api.machine.sync.Holder;
-import conductance.api.machine.sync.IManaged;
-import conductance.api.machine.sync.Reference;
-import conductance.api.machine.sync.ReferenceKey;
+import conductance.api.sync.Holder;
+import conductance.api.sync.IManaged;
+import conductance.api.sync.Reference;
+import conductance.api.sync.ReferenceKey;
 
 final class ReferenceHelper {
 

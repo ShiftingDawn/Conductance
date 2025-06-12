@@ -12,18 +12,18 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import com.google.common.collect.Table;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.capability.MachineRecipeCapability;
-import conductance.api.machine.recipe.AutoRecipeData;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.recipe.IRecipeElementType;
-import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.recipe.RecipeCapabilityHolder;
-import conductance.api.machine.recipe.RecipeElement;
-import conductance.api.machine.recipe.RecipeHelper;
-import conductance.api.machine.recipe.RecipeModifier;
+import conductance.api.recipe.AutoRecipeData;
+import conductance.api.recipe.IRecipe;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.NCRecipeType;
+import conductance.api.recipe.RecipeCapabilityHolder;
+import conductance.api.recipe.RecipeElement;
+import conductance.api.recipe.RecipeHelper;
+import conductance.api.recipe.RecipeModifier;
 import conductance.api.registry.TaggedSet;
 import conductance.api.util.IOMode;
 
-public final class RecipeHelperImpl implements RecipeHelper {
+final class RecipeHelperImpl implements RecipeHelper {
 
 	public static final RecipeHelperImpl INSTANCE = new RecipeHelperImpl();
 

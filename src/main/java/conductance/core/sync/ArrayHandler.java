@@ -6,10 +6,10 @@ import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import conductance.api.machine.sync.Operation;
-import conductance.api.machine.sync.Reference;
-import conductance.api.machine.sync.ReferenceHandler;
-import conductance.api.machine.sync.Serializer;
+import conductance.api.sync.Operation;
+import conductance.api.sync.Reference;
+import conductance.api.sync.ReferenceHandler;
+import conductance.api.sync.Serializer;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class ArrayHandler implements ReferenceHandler {

@@ -1,6 +1,6 @@
 package conductance.api;
 
-import conductance.api.machine.recipe.NCRecipeType;
+import conductance.api.recipe.NCRecipeType;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCRecipeTypes {

@@ -6,8 +6,8 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.ICapabilityHandler;
 import conductance.api.machine.MachineBlockEntity;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.recipe.IRecipeElementType;
+import conductance.api.recipe.IRecipe;
+import conductance.api.recipe.IRecipeElementType;
 import conductance.api.util.IOMode;
 
 public abstract class MachineRecipeCapability<T> extends MachineCapability implements ICapabilityHandler {

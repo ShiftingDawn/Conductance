@@ -7,7 +7,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.sync.ContentChangeListener;
+import conductance.api.sync.ContentChangeListener;
 
 public class ItemStackTransfer extends ItemStackHandler implements ContentChangeListener {
 

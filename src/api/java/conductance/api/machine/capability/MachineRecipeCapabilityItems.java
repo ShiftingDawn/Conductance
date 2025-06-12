@@ -15,9 +15,9 @@ import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.ICapabilityHandler;
 import conductance.api.machine.ItemStackTransfer;
 import conductance.api.machine.MachineBlockEntity;
-import conductance.api.machine.recipe.IRecipe;
-import conductance.api.machine.sync.Persisted;
-import conductance.api.machine.sync.Synchronized;
+import conductance.api.recipe.IRecipe;
+import conductance.api.sync.Persisted;
+import conductance.api.sync.Synchronized;
 import conductance.api.util.IOMode;
 
 public class MachineRecipeCapabilityItems extends MachineRecipeCapability<SizedIngredient> implements ICapabilityHandler, IItemHandlerModifiable {

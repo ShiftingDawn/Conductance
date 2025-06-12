@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import conductance.api.machine.sync.IManaged;
-import conductance.api.machine.sync.Operation;
+import conductance.api.sync.IManaged;
+import conductance.api.sync.Operation;
 import conductance.core.sync.SyncCore;
 
 @Mixin(BlockEntity.class)

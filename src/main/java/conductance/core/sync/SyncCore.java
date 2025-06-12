@@ -3,18 +3,17 @@ package conductance.core.sync;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import conductance.api.machine.sync.IManaged;
-import conductance.api.machine.sync.SyncHelper;
-import conductance.api.plugin.RegisterFieldSerializerEvent;
+import conductance.api.sync.IManaged;
+import conductance.api.sync.SyncHelper;
+import conductance.api.sync.event.RegisterFieldSerializerEvent;
 import conductance.Conductance;
-import conductance.loader.PluginEventBus;
 
 public final class SyncCore {
 
 	public static void initialize(final IEventBus modEventBus) {
 		Conductance.setApiValue(SyncHelper.class, SyncHelperImpl.INSTANCE);
 		modEventBus.addListener(FMLLoadCompleteEvent.class, ignored -> SyncFieldSerializerRegisterImpl.INSTANCE.freeze());
-		PluginEventBus.postAll(RegisterFieldSerializerEvent.class, new RegisterFieldSerializerEventImpl(SyncFieldSerializerRegisterImpl.INSTANCE));
+		Conductance.dispatchAll(RegisterFieldSerializerEvent.class, new RegisterFieldSerializerEventImpl(SyncFieldSerializerRegisterImpl.INSTANCE));
 	}
 
 	public static void setupBlockEntity(final BlockEntity blockEntity, final IManaged managed) {

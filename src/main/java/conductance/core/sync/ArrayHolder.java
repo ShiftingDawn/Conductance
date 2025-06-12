@@ -4,7 +4,7 @@ import java.lang.reflect.Array;
 import java.util.function.BiFunction;
 import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.sync.Holder;
+import conductance.api.sync.Holder;
 
 final class ArrayHolder<T> implements Holder {
 

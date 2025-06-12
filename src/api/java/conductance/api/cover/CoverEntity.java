@@ -11,10 +11,10 @@ import lombok.Setter;
 import conductance.api.CAPI;
 import conductance.api.machine.EnvironmentProvider;
 import conductance.api.machine.IBlockEntity;
-import conductance.api.machine.sync.IManaged;
-import conductance.api.machine.sync.ManagedDataMap;
-import conductance.api.machine.sync.Persisted;
-import conductance.api.machine.sync.Synchronized;
+import conductance.api.sync.IManaged;
+import conductance.api.sync.ManagedDataMap;
+import conductance.api.sync.Persisted;
+import conductance.api.sync.Synchronized;
 
 public class CoverEntity<COVER extends CoverEntity<COVER>> implements IManaged, EnvironmentProvider {
 

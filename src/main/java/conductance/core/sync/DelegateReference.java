@@ -1,7 +1,7 @@
 package conductance.core.sync;
 
-import conductance.api.machine.sync.Holder;
-import conductance.api.machine.sync.ReferenceKey;
+import conductance.api.sync.Holder;
+import conductance.api.sync.ReferenceKey;
 
 final class DelegateReference extends ReferenceImpl {
 

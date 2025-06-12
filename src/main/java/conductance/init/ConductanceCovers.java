@@ -7,7 +7,7 @@ import conductance.api.CAPI;
 import conductance.api.NCCovers;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterCoverEvent;
+import conductance.api.cover.event.RegisterCoverEvent;
 import conductance.Conductance;
 import conductance.init.cover.ConveyorCoverEntity;
 

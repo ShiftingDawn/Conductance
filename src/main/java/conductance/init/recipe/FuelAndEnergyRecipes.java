@@ -13,7 +13,7 @@ import conductance.api.NCMaterialTaggedSets;
 import conductance.api.NCMaterials;
 import conductance.api.NCRecipeTypes;
 import conductance.api.NCTiers;
-import conductance.api.plugin.RegisterRecipeEvent;
+import conductance.api.recipe.event.RegisterRecipeEvent;
 
 final class FuelAndEnergyRecipes {
 

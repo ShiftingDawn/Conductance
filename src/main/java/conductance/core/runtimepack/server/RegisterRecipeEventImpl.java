@@ -6,9 +6,9 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.recipe.RecipeBuilder;
-import conductance.api.plugin.RegisterRecipeEvent;
+import conductance.api.recipe.NCRecipeType;
+import conductance.api.recipe.RecipeBuilder;
+import conductance.api.recipe.event.RegisterRecipeEvent;
 
 @AllArgsConstructor
 final class RegisterRecipeEventImpl implements RegisterRecipeEvent {

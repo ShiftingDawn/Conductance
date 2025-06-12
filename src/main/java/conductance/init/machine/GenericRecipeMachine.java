@@ -8,8 +8,8 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.MachineGuiHolder;
 import conductance.api.machine.gui.MachineGuiSupplier;
-import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.recipe.RecipeHolder;
+import conductance.api.recipe.NCRecipeType;
+import conductance.api.recipe.RecipeHolder;
 import conductance.api.tier.Tier;
 import conductance.client.MachineUIFactory;
 

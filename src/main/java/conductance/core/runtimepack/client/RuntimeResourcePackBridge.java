@@ -9,14 +9,13 @@ import conductance.api.resource.ModelBuilder;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
 import conductance.Conductance;
-import conductance.loader.PluginEventBus;
 
 public final class RuntimeResourcePackBridge {
 
 	public static void loadModels() {
 		final long startTime = System.currentTimeMillis();
 		RuntimeResourcePack.resetStatesAndModels();
-		PluginEventBus.postAll(AddRuntimeModelEvent.class, new AddRuntimeModelEventImpl(
+		Conductance.dispatchAll(AddRuntimeModelEvent.class, new AddRuntimeModelEventImpl(
 				RuntimeResourcePackBridge::addBlockState, RuntimeResourcePackBridge::addBlockModel, RuntimeResourcePackBridge::addItemModel,
 				RuntimeResourcePack::addBlockState, RuntimeResourcePack::addBlockModel, RuntimeResourcePack::addItemModel
 		));
@@ -26,7 +25,7 @@ public final class RuntimeResourcePackBridge {
 	public static void loadTranslations() {
 		final long startTime = System.currentTimeMillis();
 		RuntimeResourcePack.resetTranslations();
-		PluginEventBus.postAll(AddTranslationEvent.class, new AddTranslationEventImpl(RuntimeResourcePack::addTranslation));
+		Conductance.dispatchAll(AddTranslationEvent.class, new AddTranslationEventImpl(RuntimeResourcePack::addTranslation));
 		RuntimeResourcePack.freezeTranslations();
 		Conductance.LOGGER.info("Conductance loaded RuntimeResourcePack translations in {}ms", System.currentTimeMillis() - startTime);
 	}

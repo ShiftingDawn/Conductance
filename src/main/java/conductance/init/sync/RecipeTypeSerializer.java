@@ -6,10 +6,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.machine.recipe.NCRecipeType;
-import conductance.api.machine.sync.Operation;
-import conductance.api.machine.sync.Reference;
-import conductance.api.machine.sync.Serializer;
+import conductance.api.recipe.NCRecipeType;
+import conductance.api.sync.Operation;
+import conductance.api.sync.Reference;
+import conductance.api.sync.Serializer;
 
 public class RecipeTypeSerializer extends Serializer<NCRecipeType> {
 
