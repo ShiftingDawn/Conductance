@@ -43,18 +43,26 @@ final class MachineModelHandler {
 				.child("hull", child -> child.parent(hullModel).renderType("solid"))
 				.child("overlay", child -> child.renderType("cutout_mipped").element(element -> {
 					element.from(0, 0, 0).to(16, 16, 16);
-					MachineModelHandler.addSides(Conductance.id(machineType), child, element, null);
+					MachineModelHandler.addSides(Conductance.id(machineType), child, element, null, false);
 				}, true))
-				.itemRenderOrder("hull", "overlay")
+				.child("overlay2", child -> child.renderType("cutout_mipped").element(element -> {
+					element.from(0, 0, 0).to(16, 16, 16);
+					MachineModelHandler.addSides(Conductance.id(machineType), child, element, "_emissive", true);
+				}, true))
+				.itemRenderOrder("hull", "overlay", "overlay2")
 		).loader(Conductance.id("machine")));
 		if (workable) {
 			event.addBlockModel(blockId.withSuffix("_working"), model -> model.composite(composite -> composite
 					.child("hull", child -> child.parent(hullModel).renderType("solid"))
 					.child("overlay", child -> child.renderType("cutout_mipped").element(element -> {
 						element.from(0, 0, 0).to(16, 16, 16);
-						MachineModelHandler.addSides(Conductance.id(machineType), child, element, "_working");
+						MachineModelHandler.addSides(Conductance.id(machineType), child, element, "_working", false);
 					}, true))
-					.itemRenderOrder("hull", "overlay")
+					.child("overlay2", child -> child.renderType("cutout_mipped").element(element -> {
+						element.from(0, 0, 0).to(16, 16, 16);
+						MachineModelHandler.addSides(Conductance.id(machineType), child, element, "_working_emissive", true);
+					}, true))
+					.itemRenderOrder("hull", "overlay", "overlay2")
 			).loader(Conductance.id("machine")));
 		}
 		event.addBlockState(blockId, b -> b.variants(builder -> {
@@ -77,20 +85,14 @@ final class MachineModelHandler {
 		}));
 	}
 
-	private static void addSides(final ResourceLocation machineKey, final ModelBuilder builder, final ModelElementBuilder element, @Nullable final String suffix) {
+	private static void addSides(final ResourceLocation machineKey, final ModelBuilder builder, final ModelElementBuilder element, @Nullable final String suffix, final boolean emissive) {
 		ModelUtils.LOGICAL_SIDES.forEach((face, side) -> {
-			ResourceLocation texLoc = machineKey.withPath(current -> "block/machine/%s/%s%s_emissive".formatted(current, side, Objects.requireNonNullElse(suffix, "")));
-			boolean emissive = true;
-			if (!CAPI.resourceFinder().isTextureValid(texLoc)) {
-				texLoc = machineKey.withPath(current -> "block/machine/%s/%s%s".formatted(current, side, Objects.requireNonNullElse(suffix, "")));
-				emissive = false;
-			}
+			final ResourceLocation texLoc = machineKey.withPath(current -> "block/machine/%s/%s%s".formatted(current, side, Objects.requireNonNullElse(suffix, "")));
 			if (CAPI.resourceFinder().isTextureValid(texLoc)) {
 				builder.texture(side, texLoc);
-				final boolean finalEmissive = emissive;
 				element.face(face, f -> {
 					f.texture(side).cullFace(face);
-					if (finalEmissive) {
+					if (emissive) {
 						f.tintIndex(-100);
 					}
 				});

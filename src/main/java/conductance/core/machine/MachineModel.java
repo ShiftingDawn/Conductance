@@ -1,4 +1,4 @@
-package conductance.client;
+package conductance.core.machine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +43,11 @@ import conductance.api.resource.model.ModelUtils;
 import conductance.Conductance;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
-public final class MachineModel {
+final class MachineModel {
 
 	public static final class MachineBakedModel extends DelegatedBakedModel<CompositeModel.Baked> {
 
-		public MachineBakedModel(final CompositeModel.Baked delegate) {
+		MachineBakedModel(final CompositeModel.Baked delegate) {
 			super(delegate);
 		}
 
