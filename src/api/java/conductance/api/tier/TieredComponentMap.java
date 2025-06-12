@@ -41,7 +41,7 @@ public abstract class TieredComponentMap {
 	}
 
 	protected Material getMachineHullWireMaterial() {
-		return this.getPrimaryMaterial();
+		return this.getWireMaterial();
 	}
 
 	public TagKey<Item> getMachineHullWireItem() {
