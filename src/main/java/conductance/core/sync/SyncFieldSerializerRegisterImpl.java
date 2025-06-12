@@ -24,7 +24,7 @@ import conductance.api.machine.sync.ReferenceHandler;
 import conductance.api.machine.sync.Serializer;
 import conductance.api.plugin.RegisterFieldSerializerEvent;
 
-public final class SyncFieldSerializerRegisterImpl implements SyncFieldSerializerRegister {
+final class SyncFieldSerializerRegisterImpl implements SyncFieldSerializerRegister {
 
 	private static final AtomicBoolean INITIALIZED = new AtomicBoolean(false);
 	public static final SyncFieldSerializerRegisterImpl INSTANCE = new SyncFieldSerializerRegisterImpl();
@@ -171,7 +171,8 @@ public final class SyncFieldSerializerRegisterImpl implements SyncFieldSerialize
 		return this.handlerTypeCache.computeIfAbsent(clazz, ignored -> this.handlersSorted.stream().filter(entry -> entry.canHandle(clazz)).findFirst().orElse(null));
 	}
 
-	public Class<?> getRawType(final Type type) {
+	@Nullable
+	public Class<?> getRawType(@Nullable final Type type) {
 		return switch (type) {
 			case final Class<?> aClass -> aClass;
 			case final GenericArrayType genericArrayType -> this.getRawType(genericArrayType.getGenericComponentType());

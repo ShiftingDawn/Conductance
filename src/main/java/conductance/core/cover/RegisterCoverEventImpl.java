@@ -1,4 +1,4 @@
-package conductance.loader;
+package conductance.core.cover;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -16,16 +16,15 @@ final class RegisterCoverEventImpl implements RegisterCoverEvent {
 
 	public interface CoverRegister {
 
-		<COVER extends CoverEntity<COVER>> CoverType<COVER> register(ResourceLocation registryName, Function<CoverType<COVER>, Supplier<CoverQuadProvider>> coverRenderer, CoverEntityConstructor<COVER> constructor);
+		<COVER extends CoverEntity<COVER>> CoverType<COVER> register(String registryName, Function<CoverType<COVER>, Supplier<CoverQuadProvider>> coverRenderer, CoverEntityConstructor<COVER> constructor);
 	}
 
-	private final String modid;
 	private final CoverRegister delegate;
 
 	@Override
 	public <COVER extends CoverEntity<COVER>> CoverType<COVER> register(final String registryName, final Function<CoverType<COVER>, Supplier<CoverQuadProvider>> coverRenderer,
 			final CoverEntityConstructor<COVER> constructor) {
-		return this.delegate.register(ResourceLocation.fromNamespaceAndPath(this.modid, registryName), coverRenderer, constructor);
+		return this.delegate.register(registryName, coverRenderer, constructor);
 	}
 
 	@Override

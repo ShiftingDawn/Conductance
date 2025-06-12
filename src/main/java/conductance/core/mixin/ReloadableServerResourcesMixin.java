@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import conductance.core.apiimpl.ApiBridge;
+import conductance.core.register.RegisterCore;
 import conductance.core.runtimepack.server.RuntimeDataPackBridge;
 
 @Mixin(ReloadableServerResources.class)
@@ -22,8 +22,8 @@ public abstract class ReloadableServerResourcesMixin {
 	private static void conductance$unfreezeRegistries(final ResourceManager resourceManager, final LayeredRegistryAccess<RegistryLayer> registries, final FeatureFlagSet enabledFeatures,
 			final Commands.CommandSelection commandSelection, final int functionCompilationLevel, final Executor backgroundExecutor, final Executor gameExecutor,
 			final CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
-		ApiBridge.handleDataPackRegistryStage(ApiBridge.DataPackRegistryLoadStage.UNFREEZE);
-		ApiBridge.handleDataPackRegistryStage(ApiBridge.DataPackRegistryLoadStage.RESET);
+		RegisterCore.progressDataPackStage(RegisterCore.DataPackRegistryLoadStage.UNFREEZE);
+		RegisterCore.progressDataPackStage(RegisterCore.DataPackRegistryLoadStage.RESET);
 
 		RuntimeDataPackBridge.reload(registries.compositeAccess());
 	}
@@ -33,7 +33,7 @@ public abstract class ReloadableServerResourcesMixin {
 			final Commands.CommandSelection commandSelection, final int functionCompilationLevel, final Executor backgroundExecutor, final Executor gameExecutor,
 			final CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
 		cir.setReturnValue(cir.getReturnValue().thenApply(o -> {
-			ApiBridge.handleDataPackRegistryStage(ApiBridge.DataPackRegistryLoadStage.REFREEZE);
+			RegisterCore.progressDataPackStage(RegisterCore.DataPackRegistryLoadStage.REFREEZE);
 			return o;
 		}));
 	}

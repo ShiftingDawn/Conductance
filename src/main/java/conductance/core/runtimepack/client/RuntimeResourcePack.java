@@ -12,7 +12,7 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 import conductance.Conductance;
 import conductance.Config;
-import conductance.core.apiimpl.TranslationRegistryImpl;
+import conductance.core.TranslationRegistryImpl;
 import conductance.core.runtimepack.AbstractRuntimePack;
 
 final class RuntimeResourcePack extends AbstractRuntimePack {

@@ -13,9 +13,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import conductance.core.apiimpl.ApiBridge;
-import conductance.core.apiimpl.TaggedSetImpl;
+import conductance.core.TaggedSetImpl;
 import conductance.core.material.MaterialRegistryImpl;
+import conductance.core.register.RegisterCore;
 import conductance.init.block.IConductanceBlock;
 
 final class TagGenerationHandler {
@@ -53,7 +53,7 @@ final class TagGenerationHandler {
 	}
 
 	private static void addBlockEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
-		ApiBridge.getRegistrate().getAll(Registries.BLOCK).forEach(blockEntry -> {
+		RegisterCore.getRegistrate().getAll(Registries.BLOCK).forEach(blockEntry -> {
 			if (blockEntry.get() instanceof final IConductanceBlock conductanceBlock) {
 				tagMap.computeIfAbsent(conductanceBlock.getMiningToolTag().location(), k -> new ArrayList<>())
 						.add(new TagLoader.EntryWithSource(TagEntry.element(blockEntry.getId()), TagGenerationHandler.TAG_SOURCE));

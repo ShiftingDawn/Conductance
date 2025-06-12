@@ -1,4 +1,4 @@
-package conductance.core.apiimpl;
+package conductance.core.register;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -31,7 +31,7 @@ public abstract class ConductanceRegistryImpl<KEY, VALUE extends IRegistryObject
 		this.registry = HashBiMap.create();
 
 		if (!registryKey.equals(Conductance.id("root"))) {
-			ApiBridge.REGISTRIES.register(this);
+			RegisterCore.REGISTRIES.register(this);
 		}
 	}
 

@@ -17,7 +17,7 @@ import conductance.api.NCTiers;
 import conductance.core.pipenet.WireRegistry;
 import conductance.core.pipenet.WireType;
 import conductance.init.item.IConductanceItem;
-import static conductance.core.apiimpl.ApiBridge.getRegistrate;
+import static conductance.core.register.RegisterCore.getRegistrate;
 
 public final class ConductanceCreativeTabs {
 

@@ -1,5 +1,8 @@
 package conductance.core.pipenet;
 
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -7,6 +10,7 @@ import conductance.api.material.Material;
 import conductance.Conductance;
 import conductance.init.block.WireBlock;
 
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public final class WireRegistry {
 
 	private static final Table<WireType, Material, BlockEntry<WireBlock>> REGISTRY = HashBasedTable.create();
@@ -28,7 +32,8 @@ public final class WireRegistry {
 		return WireRegistry.REGISTRY.values().toArray(BlockEntry[]::new);
 	}
 
-	public static void freeze() {
+	@SubscribeEvent
+	private static void onLoadComplete(final FMLLoadCompleteEvent ignored) {
 		Conductance.LOGGER.info("WireRegistry has been frozen!");
 		WireRegistry.frozen = true;
 	}

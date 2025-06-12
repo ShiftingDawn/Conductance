@@ -8,10 +8,12 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import conductance.client.MachineUIFactory;
-import conductance.core.apiimpl.ApiBridge;
+import conductance.core.cover.CoverCore;
+import conductance.core.machine.MachineCore;
 import conductance.core.material.MaterialCore;
 import conductance.core.periodicelement.PeriodicElementCore;
-import conductance.core.sync.SyncFieldSerializerRegisterImpl;
+import conductance.core.register.RegisterCore;
+import conductance.core.sync.SyncCore;
 import conductance.core.tier.TierCore;
 import conductance.init.ConductanceBlockEntities;
 import conductance.init.ConductanceBlocks;
@@ -25,7 +27,7 @@ import conductance.loader.PluginEventDispatcher;
 public final class CommonProxy {
 
 	public static void init(final IEventBus modEventBus) {
-		ApiBridge.init(modEventBus);
+		RegisterCore.initialize(modEventBus);
 		PluginEventBus.initialize();
 
 		NeoForge.EVENT_BUS.addListener(CommonProxy::handleRightClickBlock);
@@ -33,19 +35,19 @@ public final class CommonProxy {
 
 		ConductanceCreativeTabs.init();
 
-		PluginEventDispatcher.dispatchRegisterSyncFieldSerializers(SyncFieldSerializerRegisterImpl.INSTANCE);
+		SyncCore.initialize(modEventBus);
 		TierCore.initialize(modEventBus);
 		PeriodicElementCore.initialize();
 		MaterialCore.initialize(modEventBus);
 		PluginEventDispatcher.dispatchRegisterRecipeElementTypes();
 		PluginEventDispatcher.dispatchRegisterRecipeTypes();
-		PluginEventDispatcher.dispatchRegisterCovers();
+		CoverCore.initialize();
 
 		ConductanceItems.init();
 		ConductanceBlocks.init();
 		ConductanceFluids.init();
 		ConductanceBlockEntities.init();
-		PluginEventDispatcher.dispatchRegisterMachines();
+		MachineCore.initialize(modEventBus);
 		ConductanceDecoration.init();
 	}
 

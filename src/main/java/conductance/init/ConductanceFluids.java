@@ -6,11 +6,11 @@ import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import conductance.api.CAPI;
-import conductance.core.apiimpl.ApiBridge;
 import conductance.core.material.MaterialRegistryImpl;
 import conductance.core.material.TaggedMaterialSetImpl;
 import conductance.init.fluid.MaterialBucketItem;
 import conductance.init.fluid.MaterialFluidType;
+import static conductance.core.register.RegisterCore.getRegistrate;
 
 public final class ConductanceFluids {
 
@@ -18,9 +18,9 @@ public final class ConductanceFluids {
 	public static void init() {
 		CAPI.regs().materials().forEach(material -> CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.canGenerateFluid(material)).forEach(set -> {
 			final String name = set.getUnlocalizedName(material);
-			ApiBridge.getRegistrate().object(name);
+			getRegistrate().object(name);
 			//noinspection DataFlowIssue
-			final FluidBuilder<BaseFlowingFluid.Flowing, Registrate> fluidBuilder = ApiBridge.getRegistrate().fluid(name, ((properties, stillTexture, flowingTexture) -> new MaterialFluidType(material, set, properties)))
+			final FluidBuilder<BaseFlowingFluid.Flowing, Registrate> fluidBuilder = getRegistrate().fluid(name, ((properties, stillTexture, flowingTexture) -> new MaterialFluidType(material, set, properties)))
 					.noBlock().fluidProperties(p -> p.block(null))
 					.noBucket();
 			fluidBuilder.getOwner().item(fluidBuilder, name + "_bucket", p -> new MaterialBucketItem(fluidBuilder.getEntry(), p)).properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))

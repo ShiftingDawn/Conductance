@@ -1,4 +1,4 @@
-package conductance.core.apiimpl;
+package conductance.core;
 
 import java.util.ArrayList;
 import java.util.List;

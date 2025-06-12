@@ -12,7 +12,6 @@ import conductance.api.CAPI;
 import conductance.api.NCBlocks;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.MaterialOreType;
-import conductance.core.apiimpl.ApiBridge;
 import conductance.core.material.MaterialRegistryImpl;
 import conductance.core.material.TaggedMaterialSetImpl;
 import conductance.core.pipenet.WireRegistry;
@@ -27,6 +26,7 @@ import conductance.init.block.SimpleDynamicBlock;
 import conductance.init.block.WireBlock;
 import conductance.init.block.WireBlockItem;
 import conductance.init.item.RenderedBlockItem;
+import static conductance.core.register.RegisterCore.getRegistrate;
 
 @SuppressWarnings("removal")
 public final class ConductanceBlocks {
@@ -40,7 +40,7 @@ public final class ConductanceBlocks {
 
 		CAPI.regs().materials().forEach(material -> CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.canGenerateBlock(material)).forEach(set -> {
 			final String name = set.getUnlocalizedName(material);
-			final BlockBuilder<MaterialBlock, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> new MaterialBlock(props, material, set))
+			final BlockBuilder<MaterialBlock, Registrate> blockBuilder = getRegistrate().block(name, props -> new MaterialBlock(props, material, set))
 					.initialProperties(() -> Blocks.IRON_BLOCK);
 			if (!set.shouldOccludeBlocks()) {
 				blockBuilder.properties(BlockBehaviour.Properties::noOcclusion)
@@ -60,7 +60,7 @@ public final class ConductanceBlocks {
 				CAPI.regs().materialTaggedSets().values().stream().filter(set -> set.getOreType() != null).forEach(set -> {
 					final MaterialOreType oreType = set.getOreType();
 					final String name = set.getUnlocalizedName(material);
-					final BlockBuilder<? extends Block, Registrate> blockBuilder = ApiBridge.getRegistrate().block(name, props -> switch (oreType.getOreBlockType()) {
+					final BlockBuilder<? extends Block, Registrate> blockBuilder = getRegistrate().block(name, props -> switch (oreType.getOreBlockType()) {
 								case DEFAULT -> new MaterialOreBlock(props, material, set, oreType);
 								case PILLAR -> new MaterialOreRotatedPillarBlock(props, material, set, oreType);
 							})
@@ -78,7 +78,7 @@ public final class ConductanceBlocks {
 	}
 
 	private static void generatedTiered() {
-		NCBlocks.MACHINE_CASING = CAPI.tiers().newMap(tier -> ApiBridge.getRegistrate().block("%s_machine_casing".formatted(tier.getRegistryKey()), HorizontalBlock::new)
+		NCBlocks.MACHINE_CASING = CAPI.tiers().newMap(tier -> getRegistrate().block("%s_machine_casing".formatted(tier.getRegistryKey()), HorizontalBlock::new)
 				.initialProperties(() -> Blocks.IRON_BLOCK)
 				.item()
 				.model(NonNullBiConsumer.noop())
@@ -87,7 +87,7 @@ public final class ConductanceBlocks {
 	}
 
 	private static BlockEntry<SimpleDynamicBlock> machineCasingBlock(final String name) {
-		return ApiBridge.getRegistrate().block("%s_machine_casing".formatted(name), props -> new SimpleDynamicBlock(props, "casing/%s".formatted(name)))
+		return getRegistrate().block("%s_machine_casing".formatted(name), props -> new SimpleDynamicBlock(props, "casing/%s".formatted(name)))
 				.initialProperties(() -> Blocks.IRON_BLOCK)
 				.item(RenderedBlockItem::new)
 				.model(NonNullBiConsumer.noop())
@@ -99,7 +99,7 @@ public final class ConductanceBlocks {
 		CAPI.regs().materials().values().stream().filter(mat -> mat.has(NCMaterialTraits.WIRE)).forEach(material -> {
 			for (final WireType wireType : WireType.values()) {
 				final String name = wireType.getMaterialTaggedSet().getUnlocalizedName(material);
-				final BlockEntry<WireBlock> block = ApiBridge.getRegistrate().block(name, props -> new WireBlock(props, wireType, material))
+				final BlockEntry<WireBlock> block = getRegistrate().block(name, props -> new WireBlock(props, wireType, material))
 						.initialProperties(() -> Blocks.IRON_BLOCK)
 						.properties(props -> props.dynamicShape().noOcclusion())
 						.addLayer(() -> RenderType::cutoutMipped)

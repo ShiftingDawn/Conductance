@@ -1,4 +1,4 @@
-package conductance.core.apiimpl;
+package conductance.core.register;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;

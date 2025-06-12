@@ -1,4 +1,4 @@
-package conductance.loader;
+package conductance.core.machine;
 
 import java.util.function.Consumer;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import conductance.api.machine.MachineBlockEntityFactory;
 import conductance.api.machine.MachineBuilder;
 import conductance.api.machine.MachineType;
 import conductance.api.plugin.RegisterMachineEvent;
-import conductance.core.machine.MachineBuilderImpl;
 
 @AllArgsConstructor
 final class RegisterMachineEventImpl implements RegisterMachineEvent {

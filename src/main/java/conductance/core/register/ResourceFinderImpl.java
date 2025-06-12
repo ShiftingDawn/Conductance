@@ -1,4 +1,4 @@
-package conductance.core.apiimpl;
+package conductance.core.register;
 
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;

@@ -1,4 +1,4 @@
-package conductance.loader;
+package conductance.core.sync;
 
 import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import conductance.api.machine.sync.Copier;
 import conductance.api.machine.sync.ReferenceHandler;
 import conductance.api.machine.sync.Serializer;
 import conductance.api.plugin.RegisterFieldSerializerEvent;
-import conductance.core.sync.SyncFieldSerializerRegister;
 
 @AllArgsConstructor
 final class RegisterFieldSerializerEventImpl implements RegisterFieldSerializerEvent {

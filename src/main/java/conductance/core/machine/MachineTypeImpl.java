@@ -7,7 +7,6 @@ import java.util.function.BiFunction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
@@ -28,7 +27,7 @@ import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.registry.RegistryObject;
 
 //FIXME refactor
-public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryObject<String> implements MachineType<T> {
+class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryObject<String> implements MachineType<T> {
 
 	@Setter(AccessLevel.PACKAGE)
 	private BlockEntry<? extends MachineBlock<T>> block;
@@ -63,7 +62,7 @@ public class MachineTypeImpl<T extends MachineBlockEntity<T>> extends RegistryOb
 	@UnknownNullability
 	private Object modelData;
 
-	public MachineTypeImpl(final String registryKey) {
+	MachineTypeImpl(final String registryKey) {
 		super(registryKey);
 	}
 

@@ -38,11 +38,11 @@ import conductance.api.machine.recipe.IRecipe;
 import conductance.api.machine.recipe.IRecipeElementType;
 import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.util.world.RotationState;
-import conductance.core.apiimpl.ApiBridge;
 import conductance.core.recipe.RecipeTypeImpl;
-import static conductance.core.apiimpl.ApiBridge.getRegistrate;
+import conductance.core.register.RegisterCore;
+import static conductance.core.register.RegisterCore.getRegistrate;
 
-public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements MachineBuilder<T> {
+class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements MachineBuilder<T> {
 
 	private final String registryKey;
 	private MachineBlockFactory<T> blockFactory = MachineBlock::new;
@@ -64,7 +64,7 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 	@Nullable
 	private String localized = null;
 
-	public MachineBuilderImpl(final String registryKey, final MachineBlockEntityFactory<T> machineBlockEntityFactory) {
+	MachineBuilderImpl(final String registryKey, final MachineBlockEntityFactory<T> machineBlockEntityFactory) {
 		this.registryKey = registryKey;
 		this.blockEntityFactory = machineBlockEntityFactory;
 	}
@@ -200,7 +200,7 @@ public class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Mach
 			});
 		});
 		machineType.validate();
-		ApiBridge.getRegs().machines().register(machineType);
+		RegisterCore.getRegs().machines().register(machineType);
 		Arrays.stream(this.recipeTypes).forEach(type -> ((RecipeTypeImpl) type).setRecipeTypeIcon(() -> new ItemStack(machineType.getBlock().get())));
 		return machineType;
 	}

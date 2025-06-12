@@ -7,7 +7,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
 import conductance.api.material.MaterialTextureType;
 import conductance.api.material.TaggedMaterialSet;
-import conductance.core.apiimpl.TaggedSetImpl;
+import conductance.core.TaggedSetImpl;
 
 public final class TaggedMaterialSetImpl extends TaggedSetImpl<Material> implements TaggedMaterialSet {
 

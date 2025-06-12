@@ -11,7 +11,6 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.Conductance;
-import conductance.core.apiimpl.ApiBridge;
 import conductance.init.deco.ConcreteBlock;
 import conductance.init.deco.DecoBlock;
 import conductance.init.item.RenderedBlockItem;
@@ -36,6 +35,7 @@ import static conductance.api.NCDecoration.TILES_3;
 import static conductance.api.NCDecoration.TILES_4;
 import static conductance.api.NCDecoration.TILES_5;
 import static conductance.api.NCDecoration.TILES_6;
+import static conductance.core.register.RegisterCore.getRegistrate;
 
 public final class ConductanceDecoration {
 
@@ -74,7 +74,7 @@ public final class ConductanceDecoration {
 	}
 
 	private static BlockEntry<DecoBlock> decoBlock(final String name, @Nullable final Consumer<BlockBuilder<DecoBlock, Registrate>> builder) {
-		final BlockBuilder<DecoBlock, Registrate> b = ApiBridge.getRegistrate().block(name, DecoBlock::new)
+		final BlockBuilder<DecoBlock, Registrate> b = getRegistrate().block(name, DecoBlock::new)
 				.initialProperties(() -> Blocks.IRON_BLOCK)
 				.blockstate(NonNullBiConsumer.noop())
 				.item(RenderedBlockItem::new)
@@ -87,7 +87,7 @@ public final class ConductanceDecoration {
 	}
 
 	private static BlockEntry<ConcreteBlock> concrete(final String name) {
-		return ApiBridge.getRegistrate().block(name, ConcreteBlock::new)
+		return getRegistrate().block(name, ConcreteBlock::new)
 				.initialProperties(() -> Blocks.STONE)
 				.blockstate(NonNullBiConsumer.noop())
 				.item(RenderedBlockItem::new)
