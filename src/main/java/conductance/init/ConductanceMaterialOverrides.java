@@ -1,22 +1,17 @@
-package conductance;
+package conductance.init;
 
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import conductance.api.CAPI;
 import conductance.api.NCMaterialTaggedSets;
 import conductance.api.material.event.RegisterMaterialOverrideEvent;
-import conductance.api.material.event.RegisterMaterialUnitOverrideEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
-import conductance.api.plugin.RegisterTagEvent;
-import conductance.init.ConductanceItems;
-import static conductance.api.CAPI.UNIT;
+import conductance.Conductance;
 import static conductance.api.NCMaterials.AMETHYST;
 import static conductance.api.NCMaterials.BLAZE;
 import static conductance.api.NCMaterials.BONE;
 import static conductance.api.NCMaterials.BRICK;
 import static conductance.api.NCMaterials.CALCITE;
-import static conductance.api.NCMaterials.CERTUS_QUARTZ;
 import static conductance.api.NCMaterials.CHARCOAL;
 import static conductance.api.NCMaterials.CLAY;
 import static conductance.api.NCMaterials.COAL;
@@ -38,7 +33,7 @@ import static conductance.api.NCMaterials.REDSTONE;
 import static conductance.api.NCMaterials.WOOD;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductanceMiscPluginEventListeners {
+final class ConductanceMaterialOverrides {
 
 	@EventListener(priority = -100)
 	private static void onRegisterMaterialOverrides(final RegisterMaterialOverrideEvent event) {
@@ -109,26 +104,6 @@ public final class ConductanceMiscPluginEventListeners {
 		event.add(NCMaterialTaggedSets.RAW_ORE_BLOCK, COPPER, Blocks.RAW_COPPER_BLOCK);
 	}
 
-	@EventListener(priority = -100)
-	private static void onRegisterMaterialUnitOverrides(final RegisterMaterialUnitOverrideEvent event) {
-		event.add(NCMaterialTaggedSets.STORAGE_BLOCK, CLAY, UNIT * 4);
-		event.add(NCMaterialTaggedSets.STORAGE_BLOCK, BRICK, UNIT * 4);
-		event.add(NCMaterialTaggedSets.STORAGE_BLOCK, ICE, UNIT);
-		event.add(NCMaterialTaggedSets.STORAGE_BLOCK, CALCITE, UNIT * 4);
-		event.add(NCMaterialTaggedSets.STORAGE_BLOCK, GLASS, UNIT);
-		event.add(NCMaterialTaggedSets.STORAGE_BLOCK, CERTUS_QUARTZ, UNIT * 4);
-		event.add(NCMaterialTaggedSets.STORAGE_BLOCK, AMETHYST, UNIT * 4);
-		event.add(NCMaterialTaggedSets.ROD, BLAZE, UNIT * 4);
-		event.add(NCMaterialTaggedSets.ROD, BONE, UNIT * 5);
-	}
-
-	@EventListener(priority = -100)
-	private static void onRegisterTags(final RegisterTagEvent event) {
-		event.item(CAPI.TAG_WRENCHES, ConductanceItems.CRAFTING_TOOL_WRENCH);
-		event.item(CAPI.TAG_HAMMERS, ConductanceItems.CRAFTING_TOOL_HAMMER);
-		event.item(CAPI.TAG_WIRE_CUTTERS, ConductanceItems.CRAFTING_TOOL_WIRE_CUTTERS);
-	}
-
-	private ConductanceMiscPluginEventListeners() {
+	private ConductanceMaterialOverrides() {
 	}
 }
