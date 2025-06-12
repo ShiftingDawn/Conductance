@@ -21,6 +21,8 @@ import conductance.init.ConductanceCreativeTabs;
 import conductance.init.ConductanceDecoration;
 import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
+import conductance.lib.ExtendedInteractionHelper;
+import conductance.lib.InteractionHelper;
 import conductance.loader.PluginEventBus;
 import conductance.loader.PluginEventDispatcher;
 

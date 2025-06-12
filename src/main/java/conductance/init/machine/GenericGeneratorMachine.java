@@ -14,7 +14,7 @@ import conductance.api.machine.recipe.NCRecipeType;
 import conductance.api.machine.recipe.RecipeHolder;
 import conductance.api.tier.Tier;
 import conductance.client.MachineUIFactory;
-import conductance.core.RecipeModifiers;
+import conductance.core.recipe.RecipeModifiers;
 
 public class GenericGeneratorMachine extends TieredWorkableMachine<GenericGeneratorMachine> implements MachineGuiHolder {
 

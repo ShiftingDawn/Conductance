@@ -1,7 +1,7 @@
 package conductance.init;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
-import conductance.core.pipenet.WireRegistry;
+import conductance.lib.pipenet.WireRegistry;
 import conductance.core.register.RegisterCore;
 import conductance.init.block.WireBlockEntity;
 

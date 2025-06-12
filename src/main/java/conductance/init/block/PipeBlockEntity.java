@@ -22,9 +22,9 @@ import conductance.api.machine.sync.RequireRenderUpdate;
 import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.world.IExtendedInteractable;
 import conductance.api.util.world.InteractType;
-import conductance.core.pipenet.INetworkNode;
-import conductance.core.pipenet.LevelPipeNetwork;
-import conductance.core.pipenet.PipeNetHelper;
+import conductance.lib.pipenet.INetworkNode;
+import conductance.lib.pipenet.LevelPipeNetwork;
+import conductance.lib.pipenet.PipeNetHelper;
 
 public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DATA, LEVELNET extends LevelPipeNetwork<NODE, DATA>> extends BaseBlockEntity
 		implements INetworkNode<NODE, DATA>, IManaged, ICoverable, IExtendedInteractable, IPaintable {

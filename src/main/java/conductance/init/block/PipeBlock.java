@@ -32,10 +32,10 @@ import conductance.api.capability.cover.ICoverItem;
 import conductance.api.capability.cover.ICoverable;
 import conductance.api.machine.IBlockEntityBlock;
 import conductance.api.util.world.WorldUtils;
-import conductance.core.pipenet.INetworkNode;
-import conductance.core.pipenet.LevelPipeNetwork;
-import conductance.core.pipenet.PipeBlockRenderer;
-import conductance.core.pipenet.PipeModel;
+import conductance.lib.pipenet.INetworkNode;
+import conductance.lib.pipenet.LevelPipeNetwork;
+import conductance.lib.pipenet.PipeBlockRenderer;
+import conductance.lib.pipenet.PipeModel;
 import conductance.init.ConductanceCreativeTabs;
 
 public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEVELNET extends LevelPipeNetwork<NODE, DATA>> extends ConductanceBlock implements IBlockEntityBlock, IBlockRendererProvider {

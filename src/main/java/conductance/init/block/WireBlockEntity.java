@@ -11,13 +11,13 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.capability.CapabilityHelper;
 import conductance.api.capability.energy.IEnergyHandler;
 import conductance.api.util.world.InteractType;
-import conductance.core.pipenet.WireData;
-import conductance.core.pipenet.EnergyNet;
-import conductance.core.pipenet.EnergyNetHandler;
-import conductance.core.pipenet.IWireNode;
-import conductance.core.pipenet.LevelEnergyNet;
-import conductance.core.pipenet.PerTickLongHandler;
-import conductance.core.pipenet.PipeNetHelper;
+import conductance.lib.pipenet.WireData;
+import conductance.lib.pipenet.EnergyNet;
+import conductance.lib.pipenet.EnergyNetHandler;
+import conductance.lib.pipenet.IWireNode;
+import conductance.lib.pipenet.LevelEnergyNet;
+import conductance.lib.pipenet.PerTickLongHandler;
+import conductance.lib.pipenet.PipeNetHelper;
 
 public class WireBlockEntity extends PipeBlockEntity<IWireNode, WireData, LevelEnergyNet> implements IWireNode {
 

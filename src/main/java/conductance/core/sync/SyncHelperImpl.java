@@ -22,7 +22,7 @@ import conductance.api.machine.sync.Serializer;
 import conductance.api.machine.sync.SyncHelper;
 import conductance.Conductance;
 
-public final class SyncHelperImpl implements SyncHelper {
+final class SyncHelperImpl implements SyncHelper {
 
 	public static final SyncHelperImpl INSTANCE = new SyncHelperImpl();
 

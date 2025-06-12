@@ -24,8 +24,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import conductance.core.ExtendedInteractionHelper;
-import static conductance.core.InteractionHelper.QUADRANT_SIZE;
+import conductance.lib.ExtendedInteractionHelper;
+import static conductance.lib.InteractionHelper.QUADRANT_SIZE;
 
 final class ExtendedInteractionRenderer {
 

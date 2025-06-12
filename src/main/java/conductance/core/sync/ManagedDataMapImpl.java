@@ -37,7 +37,7 @@ import conductance.api.machine.sync.Synchronized;
 import conductance.api.util.world.WorldUtils;
 import conductance.Conductance;
 
-public class ManagedDataMapImpl implements ManagedDataMap {
+final class ManagedDataMapImpl implements ManagedDataMap {
 
 	private final IManaged managed;
 	private final ReferenceKey[] fields;

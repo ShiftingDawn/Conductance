@@ -6,7 +6,7 @@ import conductance.api.machine.sync.Copier;
 import conductance.api.machine.sync.ReferenceHandler;
 import conductance.api.machine.sync.Serializer;
 
-public interface SyncFieldSerializerRegister {
+interface SyncFieldSerializerRegister {
 
 	<T extends Serializer<?>> int register(Class<T> serializerType, Supplier<T> factory);
 

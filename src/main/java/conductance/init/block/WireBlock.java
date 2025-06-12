@@ -25,13 +25,13 @@ import conductance.api.material.Material;
 import conductance.api.material.traits.MaterialTraitWire;
 import conductance.api.util.TextHelper;
 import conductance.Conductance;
-import conductance.core.pipenet.WireData;
-import conductance.core.pipenet.WireType;
-import conductance.core.pipenet.EnergyNet;
-import conductance.core.pipenet.IWireNode;
-import conductance.core.pipenet.LevelEnergyNet;
-import conductance.core.pipenet.PipeBlockRenderer;
-import conductance.core.pipenet.PipeModel;
+import conductance.lib.pipenet.WireData;
+import conductance.lib.pipenet.WireType;
+import conductance.lib.pipenet.EnergyNet;
+import conductance.lib.pipenet.IWireNode;
+import conductance.lib.pipenet.LevelEnergyNet;
+import conductance.lib.pipenet.PipeBlockRenderer;
+import conductance.lib.pipenet.PipeModel;
 import conductance.init.ConductanceBlockEntities;
 
 public final class WireBlock extends PipeBlock<IWireNode, WireData, LevelEnergyNet> {

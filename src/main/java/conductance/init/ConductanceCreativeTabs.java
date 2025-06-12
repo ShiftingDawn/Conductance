@@ -14,8 +14,8 @@ import conductance.api.NCMachines;
 import conductance.api.NCMaterialTaggedSets;
 import conductance.api.NCMaterials;
 import conductance.api.NCTiers;
-import conductance.core.pipenet.WireRegistry;
-import conductance.core.pipenet.WireType;
+import conductance.lib.pipenet.WireRegistry;
+import conductance.lib.pipenet.WireType;
 import conductance.init.item.IConductanceItem;
 import static conductance.core.register.RegisterCore.getRegistrate;
 

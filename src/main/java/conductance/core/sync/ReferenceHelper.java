@@ -6,7 +6,7 @@ import conductance.api.machine.sync.IManaged;
 import conductance.api.machine.sync.Reference;
 import conductance.api.machine.sync.ReferenceKey;
 
-public final class ReferenceHelper {
+final class ReferenceHelper {
 
 	public static Reference of(final ReferenceKey referenceKey, final Holder valueHolder) {
 		if (valueHolder instanceof final ReflectionHolder reflectionHolder && reflectionHolder.isPrimitive()) {
