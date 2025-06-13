@@ -5,6 +5,7 @@ import net.minecraft.Util;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.BlockStateBuilder;
+import conductance.api.resource.BlockStateMultipartBuilder;
 import conductance.api.resource.BlockStateVariantBuilder;
 import conductance.api.resource.BlockStateVariantsBuilder;
 
@@ -14,6 +15,8 @@ final class BlockStateBuilderImpl implements BlockStateBuilder {
 	private BlockStateVariantBuilderImpl variant;
 	@Nullable
 	private BlockStateVariantsBuilderImpl variants;
+	@Nullable
+	private BlockStateMultipartBuilderImpl multipart;
 
 	@Override
 	public void simple(final Consumer<BlockStateVariantBuilder> callback) {
@@ -27,12 +30,21 @@ final class BlockStateBuilderImpl implements BlockStateBuilder {
 		callback.accept(this.variants);
 	}
 
+	@Override
+	public void multipart(final Consumer<BlockStateMultipartBuilder> callback) {
+		this.multipart = new BlockStateMultipartBuilderImpl();
+		callback.accept(this.multipart);
+	}
+
 	public JsonObject build() {
 		if (this.variant != null) {
 			return Util.make(new JsonObject(), root -> root.add("variants", Util.make(new JsonObject(), this.variant::populateJson)));
 		}
 		if (this.variants != null) {
 			return Util.make(new JsonObject(), root -> root.add("variants", this.variants.serialize()));
+		}
+		if (this.multipart != null) {
+			return Util.make(new JsonObject(), root -> root.add("multipart", this.multipart.serialize()));
 		}
 		return new JsonObject();
 	}

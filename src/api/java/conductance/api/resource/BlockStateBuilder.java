@@ -7,4 +7,6 @@ public interface BlockStateBuilder {
 	void simple(Consumer<BlockStateVariantBuilder> callback);
 
 	void variants(Consumer<BlockStateVariantsBuilder> callback);
+
+	void multipart(Consumer<BlockStateMultipartBuilder> callback);
 }
