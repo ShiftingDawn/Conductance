@@ -20,6 +20,8 @@ import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
 import conductance.api.material.TaggedMaterialSet;
+import conductance.core.block.IConductanceBlock;
+import conductance.core.block.IMaterialOreBlock;
 import conductance.init.ConductanceCreativeTabs;
 
 public class MaterialOreRotatedPillarBlock extends RotatedPillarBlock implements IConductanceBlock, IMaterialOreBlock {

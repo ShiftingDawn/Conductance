@@ -4,6 +4,7 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import conductance.core.block.IMaterialOreBlock;
 
 public class MaterialOreBlockItem extends ConductanceBlockItem {
 

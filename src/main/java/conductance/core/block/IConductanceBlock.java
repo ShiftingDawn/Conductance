@@ -1,4 +1,4 @@
-package conductance.init.block;
+package conductance.core.block;
 
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;

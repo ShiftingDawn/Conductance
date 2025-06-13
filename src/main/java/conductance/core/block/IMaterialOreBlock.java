@@ -1,4 +1,4 @@
-package conductance.init.block;
+package conductance.core.block;
 
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreType;
