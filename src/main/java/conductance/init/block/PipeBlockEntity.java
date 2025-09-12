@@ -38,16 +38,30 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 	@Synchronized
 	@Persisted
 	@RequireRenderUpdate
-	private int connections = 0;
-	@Getter
-	@Setter
-	@Synchronized
-	@Persisted
-	@RequireRenderUpdate
 	private int paintColor = -1;
 
 	public PipeBlockEntity(final BlockEntityType<?> type, final BlockPos pos, final BlockState state) {
 		super(type, pos, state);
+	}
+
+	@Override
+	public void setConnections(final int connections) {
+		BlockState state = this.getBlockState();
+		for (final Direction direction : Direction.values()) {
+			state = state.setValue(PipeBlock.CONNECTION_PROPS.get(direction), PipeNetHelper.isConnected(connections, direction));
+		}
+		this.level.setBlockAndUpdate(this.getBlockPos(), state);
+	}
+
+	@Override
+	public int getConnections() {
+		int connections = 0;
+		for (final Direction direction : Direction.values()) {
+			if (this.getBlockState().getValue(PipeBlock.CONNECTION_PROPS.get(direction))) {
+				connections = PipeNetHelper.setConnection(connections, direction, true);
+			}
+		}
+		return connections;
 	}
 
 	@Override

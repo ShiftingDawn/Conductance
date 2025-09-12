@@ -388,32 +388,38 @@ final class ConductanceMaterialTaggedSets {
 				.addTag("1x_wires/%s", "1x %s Wires")
 				.addTagUnformatted("1x_wires", "1x Wires")
 				.unitValue(CAPI.UNIT / 2)
-				.hasBlocks(true, false));
+				.hasBlocks(true, false)
+				.textureType(NCTextureTypes.WIRE_BASE));
 		WIRE_2X = event.register("2x_wire", "2x_%s_wire", builder -> builder
 				.addTag("2x_wires/%s", "2x %s Wires")
 				.addTagUnformatted("2x_wires", "2x Wires")
 				.unitValue(CAPI.UNIT)
-				.hasBlocks(true, false));
+				.hasBlocks(true, false)
+				.textureType(NCTextureTypes.WIRE_BASE));
 		WIRE_4X = event.register("4x_wire", "4x_%s_wire", builder -> builder
 				.addTag("4x_wires/%s", "4x %s Wires")
 				.addTagUnformatted("4x_wires", "4x Wires")
 				.unitValue(CAPI.UNIT * 2)
-				.hasBlocks(true, false));
+				.hasBlocks(true, false)
+				.textureType(NCTextureTypes.WIRE_BASE));
 		WIRE_8X = event.register("8x_wire", "8x_%s_wire", builder -> builder
 				.addTag("8x_wires/%s", "8x %s Wires")
 				.addTagUnformatted("8x_wires", "8x Wires")
 				.unitValue(CAPI.UNIT * 4)
-				.hasBlocks(true, false));
+				.hasBlocks(true, false)
+				.textureType(NCTextureTypes.WIRE_BASE));
 		WIRE_12X = event.register("12x_wire", "12x_%s_wire", builder -> builder
 				.addTag("12x_wires/%s", "12x %s Wires")
 				.addTagUnformatted("12x_wires", "12x Wires")
 				.unitValue(CAPI.UNIT * 6)
-				.hasBlocks(true, false));
+				.hasBlocks(true, false)
+				.textureType(NCTextureTypes.WIRE_BASE));
 		WIRE_16X = event.register("16x_wire", "16x_%s_wire", builder -> builder
 				.addTag("16x_wires/%s", "16x %s Wires")
 				.addTagUnformatted("16x_wires", "16x Wires")
 				.unitValue(CAPI.UNIT * 8)
-				.hasBlocks(true, false));
+				.hasBlocks(true, false)
+				.textureType(NCTextureTypes.WIRE_BASE));
 	}
 
 	private static String dustUnlocalizedNameGenerator(final Material material) {

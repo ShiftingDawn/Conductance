@@ -29,7 +29,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.render.BakedModelItemDefaults;
 import conductance.api.util.SafeOptional;
@@ -43,22 +42,14 @@ public class PipeModel {
 	public final Map<Direction, AABB> boxSides;
 
 	public Supplier<SafeOptional<ResourceLocation>> textureSide, textureEnd;
-	@Nullable
-	public Supplier<SafeOptional<ResourceLocation>> textureSideSecondary, textureEndSecondary;
-	@Setter
-	@Nullable
-	public SafeOptional<ResourceLocation> sideOverlayTexture, endOverlayTexture;
 
 	@OnlyIn(Dist.CLIENT)
 	@Nullable
 	private TextureAtlasSprite spriteSide, spriteEnd, spriteSideSecondary, spriteEndSecondary, spriteSideOverlay, spriteEndOverlay;
 
-	public PipeModel(final float thickness, final Supplier<SafeOptional<ResourceLocation>> textureSide, final Supplier<SafeOptional<ResourceLocation>> textureEnd,
-			@Nullable final Supplier<SafeOptional<ResourceLocation>> textureSideSecondary, @Nullable final Supplier<SafeOptional<ResourceLocation>> textureEndSecondary) {
+	public PipeModel(final float thickness, final Supplier<SafeOptional<ResourceLocation>> textureSide, final Supplier<SafeOptional<ResourceLocation>> textureEnd) {
 		this.textureSide = textureSide;
 		this.textureEnd = textureEnd;
-		this.textureSideSecondary = textureSideSecondary;
-		this.textureEndSecondary = textureEndSecondary;
 		this.thickness = thickness;
 		final double min = (1d - thickness) / 2;
 		final double max = min + thickness;
@@ -99,18 +90,6 @@ public class PipeModel {
 		}
 		if (this.spriteEnd == null) {
 			this.spriteEnd = ModelFactory.getBlockSprite(this.textureEnd.get().value());
-		}
-		if (this.textureSideSecondary != null && !this.textureSideSecondary.get().fallback() && this.spriteSideSecondary == null) {
-			this.spriteSideSecondary = ModelFactory.getBlockSprite(this.textureSideSecondary.get().value());
-		}
-		if (this.textureEndSecondary != null && !this.textureEndSecondary.get().fallback() && this.spriteEndSecondary == null) {
-			this.spriteEndSecondary = ModelFactory.getBlockSprite(this.textureEndSecondary.get().value());
-		}
-		if (this.sideOverlayTexture != null && this.spriteSideOverlay == null) {
-			this.spriteSideOverlay = ModelFactory.getBlockSprite(this.sideOverlayTexture.value());
-		}
-		if (this.endOverlayTexture != null && this.spriteEndOverlay == null) {
-			this.spriteEndOverlay = ModelFactory.getBlockSprite(this.endOverlayTexture.value());
 		}
 		if (side != null) {
 			if (this.thickness == 1) {
@@ -196,12 +175,6 @@ public class PipeModel {
 		this.itemModelCache.clear();
 		register.accept(this.textureSide.get().value());
 		register.accept(this.textureEnd.get().value());
-		if (this.sideOverlayTexture != null) {
-			register.accept(this.sideOverlayTexture.value());
-		}
-		if (this.endOverlayTexture != null) {
-			register.accept(this.endOverlayTexture.value());
-		}
 		this.spriteSide = null;
 		this.spriteEnd = null;
 		this.spriteEndOverlay = null;

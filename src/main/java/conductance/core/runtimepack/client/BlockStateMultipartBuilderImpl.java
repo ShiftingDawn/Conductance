@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.BlockStateModelDefiner;
 import conductance.api.resource.BlockStateMultipartBuilder;
 import conductance.api.resource.BlockStateMultipartWhenBuilder;
@@ -21,15 +22,17 @@ final class BlockStateMultipartBuilderImpl implements BlockStateMultipartBuilder
 	private final List<Multipart> parts = new ArrayList<>();
 
 	@Override
-	public BlockStateMultipartBuilder part(final Consumer<BlockStateMultipartWhenBuilder> whenBuilder, final Consumer<BlockStateModelDefiner> model) {
+	public BlockStateMultipartBuilder part(@Nullable final Consumer<BlockStateMultipartWhenBuilder> whenBuilder, final Consumer<BlockStateModelDefiner> model) {
 		final IdentityHashMap<Property<?>, Comparable<?>> when = new IdentityHashMap<>();
-		whenBuilder.accept(new BlockStateMultipartWhenBuilder() {
-			@Override
-			public <T extends Comparable<T>> BlockStateMultipartWhenBuilder when(final Property<T> property, final T value) {
-				when.put(property, value);
-				return this;
-			}
-		});
+		if (whenBuilder != null) {
+			whenBuilder.accept(new BlockStateMultipartWhenBuilder() {
+				@Override
+				public <T extends Comparable<T>> BlockStateMultipartWhenBuilder when(final Property<T> property, final T value) {
+					when.put(property, value);
+					return this;
+				}
+			});
+		}
 		final BlockStateModelPropsBuilderImpl[] modelHolder = new BlockStateModelPropsBuilderImpl[1];
 		model.accept(modelLocation -> Util.make(new BlockStateModelPropsBuilderImpl(modelLocation), m -> modelHolder[0] = m));
 		this.parts.add(new Multipart(when, modelHolder[0]));

@@ -1,6 +1,10 @@
 package conductance.init.block;
 
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +20,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -23,7 +30,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
+import net.neoforged.neoforge.common.util.Lazy;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -32,20 +39,38 @@ import conductance.api.cover.ICoverItem;
 import conductance.api.cover.ICoverable;
 import conductance.api.machine.IBlockEntityBlock;
 import conductance.api.util.world.WorldUtils;
+import conductance.init.ConductanceCreativeTabs;
 import conductance.lib.pipenet.INetworkNode;
 import conductance.lib.pipenet.LevelPipeNetwork;
-import conductance.lib.pipenet.PipeBlockRenderer;
-import conductance.lib.pipenet.PipeModel;
-import conductance.init.ConductanceCreativeTabs;
 
-public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEVELNET extends LevelPipeNetwork<NODE, DATA>> extends ConductanceBlock implements IBlockEntityBlock, IBlockRendererProvider {
+public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEVELNET extends LevelPipeNetwork<NODE, DATA>> extends ConductanceBlock implements IBlockEntityBlock {
 
+	public static final Map<Direction, BooleanProperty> CONNECTION_PROPS;
 	@Getter
 	private final ResourceLocation networkType;
+	private final Lazy<VoxelShape> baseShape = Lazy.of(this::makeBaseShape);
+	private final Lazy<Map<Direction, VoxelShape>> extensionShapes = Lazy.of(() -> Collections.unmodifiableMap(Util.make(new EnumMap<>(Direction.class), this::makeExtensionShapes)));
 
 	public PipeBlock(final Properties properties, final ResourceLocation networkType) {
 		super(properties);
 		this.networkType = networkType;
+		this.registerDefaultState(Util.make(() -> {
+			BlockState s = this.defaultBlockState();
+			for (final Direction d : Direction.values()) {
+				s = s.setValue(PipeBlock.CONNECTION_PROPS.get(d), false);
+			}
+			return s;
+		}));
+	}
+
+	protected abstract VoxelShape makeBaseShape();
+
+	protected abstract void makeExtensionShapes(Map<Direction, VoxelShape> map);
+
+	@Override
+	protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder) {
+		super.createBlockStateDefinition(builder);
+		builder.add(PipeBlock.CONNECTION_PROPS.values().toArray(Property[]::new));
 	}
 
 	@Override
@@ -64,12 +89,6 @@ public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEV
 		}
 		return null;
 	}
-
-	@Nullable
-	@Override
-	public abstract PipeBlockRenderer getRenderer(BlockState state);
-
-	protected abstract PipeModel getPipeModel();
 
 	@Override
 	public boolean isCollisionShapeFullBlock(final BlockState state, final BlockGetter level, final BlockPos pos) {
@@ -93,7 +112,7 @@ public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEV
 	public VoxelShape getShape(final BlockState state, final BlockGetter level, final BlockPos pos, final CollisionContext ctx) {
 		final NODE pipeNode = this.getPipeBlockEntity(level, pos);
 		if (pipeNode != null) {
-			VoxelShape shape = this.getPipeModel().getShapes(pipeNode.getConnections());
+			VoxelShape shape = PipeBlock.makeShapeFromConnections(state, this.baseShape.get(), this.extensionShapes.get());
 			shape = Shapes.or(shape, ((ICoverable) pipeNode).getCoverManager().getCoverCollisionShapes());
 			if (ctx instanceof final EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof final Player player) {
 				final ItemStack held = player.getMainHandItem();
@@ -108,7 +127,7 @@ public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEV
 			}
 			return shape;
 		}
-		return this.getPipeModel().getShapes(0);
+		return this.baseShape.get();
 	}
 
 	@Override
@@ -133,5 +152,23 @@ public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEV
 			}
 		}
 		return super.getDrops(state, builder);
+	}
+
+	public static VoxelShape makeShapeFromConnections(final BlockState state, final VoxelShape baseShape, final Map<Direction, VoxelShape> extensionShapes) {
+		VoxelShape result = baseShape;
+		for (final Direction direction : Direction.values()) {
+			if (state.getValue(PipeBlock.CONNECTION_PROPS.get(direction))) {
+				result = Shapes.or(result, extensionShapes.get(direction));
+			}
+		}
+		return result;
+	}
+
+	static {
+		CONNECTION_PROPS = Util.make(new EnumMap<>(Direction.class), map -> {
+			for (final Direction d : Direction.values()) {
+				map.put(d, BooleanProperty.create(d.getName()));
+			}
+		});
 	}
 }

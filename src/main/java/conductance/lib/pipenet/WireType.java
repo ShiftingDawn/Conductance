@@ -6,32 +6,31 @@ import conductance.api.NCTextureTypes;
 import conductance.api.material.Material;
 import conductance.api.material.TaggedMaterialSet;
 
+@Getter
 public enum WireType {
 
-	WIRE_1X(NCMaterialTaggedSets.WIRE_1X, .25f, 1),
-	WIRE_2X(NCMaterialTaggedSets.WIRE_2X, .375f, 2),
-	WIRE_4X(NCMaterialTaggedSets.WIRE_4X, .5f, 4),
-	WIRE_8X(NCMaterialTaggedSets.WIRE_8X, .625f, 8),
-	WIRE_12X(NCMaterialTaggedSets.WIRE_12X, .75f, 12),
-	WIRE_16X(NCMaterialTaggedSets.WIRE_16X, .875f, 16);
+	WIRE_1X(NCMaterialTaggedSets.WIRE_1X, 4, 1),
+	WIRE_2X(NCMaterialTaggedSets.WIRE_2X, 6, 2),
+	WIRE_4X(NCMaterialTaggedSets.WIRE_4X, 8, 4),
+	WIRE_8X(NCMaterialTaggedSets.WIRE_8X, 10, 8),
+	WIRE_12X(NCMaterialTaggedSets.WIRE_12X, 12, 12),
+	WIRE_16X(NCMaterialTaggedSets.WIRE_16X, 14, 16);
 
-	@Getter
 	private final TaggedMaterialSet materialTaggedSet;
-	private final float thickness;
-	@Getter
+	private final int voxels;
 	private final int amperage;
 
-	WireType(final TaggedMaterialSet taggedSet, final float thickness, final int amperage) {
+	WireType(final TaggedMaterialSet taggedSet, final int voxels, final int amperage) {
 		this.materialTaggedSet = taggedSet;
-		this.thickness = thickness;
+		this.voxels = voxels;
 		this.amperage = amperage;
 	}
 
 	public PipeModel createPipeModel(final Material material) {
-		return new PipeModel(this.thickness,
+		return new PipeModel(this.voxels / 16.0f,
 				() -> NCTextureTypes.WIRE_SIDE.getTexture(material.getTextureSet(), null, null),
-				() -> NCTextureTypes.WIRE_BASE.getTexture(material.getTextureSet(), null, null),
-				null, null);
+				() -> NCTextureTypes.WIRE_BASE.getTexture(material.getTextureSet(), null, null)
+		);
 	}
 
 	public WireData getPhysicalProperties(final WireData baseProps) {
