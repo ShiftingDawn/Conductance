@@ -1,5 +1,5 @@
-def registrate = "MC1.21-1.3.0+55" // Registrate https://maven.ithundxr.dev/#/snapshots/com/tterrag/registrate/Registrate
-def emi = "1.1.16+1.21.1"
+def registrate = "MC1.21-1.3.0+67" // Registrate https://maven.ithundxr.dev/#/snapshots/com/tterrag/registrate/Registrate
+def emi = "1.1.22+1.21.1" // EMI https://maven.terraformersmc.com/releases/dev/emi/emi-neoforge
 def ldlib = "1.0.35.a"
 
 def jGraphT = "1.5.2"
