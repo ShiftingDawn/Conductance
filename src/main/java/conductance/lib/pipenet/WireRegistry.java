@@ -10,7 +10,7 @@ import conductance.api.material.Material;
 import conductance.Conductance;
 import conductance.init.block.WireBlock;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public final class WireRegistry {
 
 	private static final Table<WireType, Material, BlockEntry<WireBlock>> REGISTRY = HashBasedTable.create();

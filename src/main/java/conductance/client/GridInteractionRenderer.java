@@ -32,7 +32,7 @@ import conductance.api.util.world.InteractionHelper;
 import conductance.Conductance;
 import static conductance.api.util.world.InteractionHelper.QUADRANT_SIZE;
 
-@EventBusSubscriber(value = Dist.CLIENT, modid = Conductance.MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(value = Dist.CLIENT, modid = Conductance.MODID)
 final class GridInteractionRenderer {
 
 	private static final Vector3f DOWN_VECTOR = new Vector3f(0, -1, 0);

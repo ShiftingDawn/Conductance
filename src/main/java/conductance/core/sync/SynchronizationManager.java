@@ -15,7 +15,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 
-@EventBusSubscriber(modid = CAPI.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = CAPI.MOD_ID)
 final class SynchronizationManager {
 
 	private static final WeakHashMap<ServerLevel, SynchronizationManager> MANAGERS = new WeakHashMap<>();

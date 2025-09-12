@@ -43,7 +43,7 @@ import conductance.api.resource.model.DelegatedBakedModel;
 import conductance.api.resource.model.ModelUtils;
 import conductance.Conductance;
 
-@EventBusSubscriber(value = Dist.CLIENT, modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(value = Dist.CLIENT, modid = Conductance.MODID)
 final class MachineModel {
 
 	public static final class MachineBakedModel extends DelegatedBakedModel<CompositeModel.Baked> {

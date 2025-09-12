@@ -7,7 +7,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import conductance.api.CAPI;
 import conductance.core.sync.S2CSyncPacket;
 
-@EventBusSubscriber(modid = CAPI.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = CAPI.MOD_ID)
 public final class PacketRegister {
 
 	@SubscribeEvent

@@ -15,7 +15,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import conductance.Conductance;
 
-@EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Conductance.MODID)
 public class RuntimeResourcePackHandler implements RepositorySource {
 
 	private static final String NAME = Conductance.MODID + ":runtime_resource_pack";

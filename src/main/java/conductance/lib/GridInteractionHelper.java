@@ -29,7 +29,7 @@ import conductance.Conductance;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
-@EventBusSubscriber(modid = Conductance.MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = Conductance.MODID)
 final class GridInteractionHelper {
 
 	@SubscribeEvent
