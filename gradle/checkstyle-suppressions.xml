@@ -15,10 +15,12 @@
     <suppress files=".+Builder\.java" checks="HiddenField"/>
     <suppress files=".+BuilderImpl\.java" checks="HiddenField"/>
 
-    <suppress files="Config\.java" checks="[a-zA-Z0-9]*"/>
-
+    <suppress files="Conductance.java" checks="VisibilityModifier"/>
+    <suppress files="Conductance.java" checks="StaticVariableName"/>
     <suppress files="NC.+\.java" checks="VisibilityModifier"/>
     <suppress files="NC.+\.java" checks="StaticVariableName"/>
+
+    <suppress files="ModConfig\.java" checks="[a-zA-Z0-9]*"/>
 
     <suppress files="DataAttachmentHelper\.java" checks="VisibilityModifier"/>
     <suppress files="DataAttachmentHelper\.java" checks="StaticVariableName"/>
