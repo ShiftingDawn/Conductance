@@ -1,6 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "conductance:block/casing/tiered/hv"
-  }
-}
