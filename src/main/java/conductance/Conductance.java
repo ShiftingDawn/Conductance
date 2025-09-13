@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import conductance.api.CAPI;
 import conductance.api.plugin.IConductancePluginEvent;
 import conductance.api.registry.RegistryProvider;
+import conductance.core.material.MaterialCore;
 import conductance.core.periodicelement.PeriodicElementCore;
 import conductance.lib.registry.RegistryProviderImpl;
 
@@ -49,6 +50,7 @@ public final class Conductance {
 			return;
 		}
 		PeriodicElementCore.initialize();
+		MaterialCore.initialize();
 	}
 
 	public static ResourceLocation id(final String path) {

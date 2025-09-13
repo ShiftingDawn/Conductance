@@ -15,19 +15,28 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+import conductance.api.material.Material;
+import conductance.api.material.MaterialFlag;
 import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.registry.RegistryProvider;
 import conductance.Conductance;
 
+@Accessors(fluent = true)
 public final class RegistryProviderImpl implements RegistryProvider {
 
 	private final Map<ResourceLocation, Registry<?>> loadOrder = new LinkedHashMap<>();
 	private final AtomicBoolean frozen = new AtomicBoolean(true);
 	private final Table<Registry<?>, ResourceLocation, Object> registerCache = HashBasedTable.create();
 
-	private final ResourceKey<Registry<PeriodicElement>> periodicElementRegistry = this.makeKey("periodic_element");
+	private final @Getter ResourceKey<Registry<PeriodicElement>> periodicElementRegistry = this.makeKey("periodic_element");
+	private final @Getter ResourceKey<Registry<MaterialFlag>> materialFlagRegistry = this.makeKey("material_flag");
+	private final @Getter ResourceKey<Registry<Material>> materialRegistry = this.makeKey("material");
 
-	private final Registry<PeriodicElement> periodicElements = this.makeRegistry(this.periodicElementRegistry);
+	private final @Getter Registry<PeriodicElement> periodicElements = this.makeRegistry(this.periodicElementRegistry);
+	private final @Getter Registry<MaterialFlag> materialFlags = this.makeRegistry(this.materialFlagRegistry);
+	private final @Getter Registry<Material> materials = this.makeRegistry(this.materialRegistry);
 
 	public RegistryProviderImpl(final IEventBus modEventBus) {
 		modEventBus.addListener(NewRegistryEvent.class, this::registerRegistries);
@@ -73,15 +82,5 @@ public final class RegistryProviderImpl implements RegistryProvider {
 
 	private void registerRegistries(final NewRegistryEvent event) {
 		this.loadOrder.values().forEach(event::register);
-	}
-
-	@Override
-	public ResourceKey<Registry<PeriodicElement>> periodicElementRegistry() {
-		return this.periodicElementRegistry;
-	}
-
-	@Override
-	public Registry<PeriodicElement> periodicElements() {
-		return this.periodicElements;
 	}
 }
