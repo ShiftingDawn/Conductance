@@ -1,10 +1,9 @@
 package conductance.api.registry;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import conductance.api.cover.CoverType;
 import conductance.api.machine.MachineType;
-import conductance.api.recipe.IRecipeElementType;
-import conductance.api.recipe.NCRecipeType;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialOreType;
@@ -12,31 +11,61 @@ import conductance.api.material.MaterialTextureType;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.TaggedMaterialSet;
 import conductance.api.periodicelement.PeriodicElement;
+import conductance.api.recipe.IRecipeElementType;
+import conductance.api.recipe.NCRecipeType;
 import conductance.api.tier.Tier;
 
 public interface RegistryProvider {
 
-	ConductanceRegistry<ResourceLocation, PeriodicElement> periodicElements();
+	//region resourcekeys
+	ResourceKey<Registry<PeriodicElement>> periodicElementRegistry();
 
-	ConductanceRegistry<ResourceLocation, MaterialTextureType> materialTextureTypes();
+	ResourceKey<Registry<MaterialTextureType>> materialTextureTypeRegistry();
 
-	ConductanceRegistry<ResourceLocation, MaterialTraitKey<?>> materialTraits();
+	ResourceKey<Registry<MaterialTraitKey<?>>> materialTraitRegistry();
 
-	ConductanceRegistry<ResourceLocation, MaterialFlag> materialFlags();
+	ResourceKey<Registry<MaterialFlag>> materialFlagRegistry();
 
-	ConductanceRegistry<ResourceLocation, MaterialOreType> materialOreTypes();
+	ResourceKey<Registry<MaterialOreType>> materialOreTypeRegistry();
 
-	ConductanceRegistry<String, TaggedMaterialSet> materialTaggedSets();
+	ResourceKey<Registry<TaggedMaterialSet>> materialTaggedSetRegistry();
 
-	ConductanceRegistry<ResourceLocation, Material> materials();
+	ResourceKey<Registry<Material>> materialRegistry();
 
-	ConductanceRegistry<ResourceLocation, IRecipeElementType<?>> recipeElementTypes();
+	ResourceKey<Registry<IRecipeElementType<?>>> recipeElementTypeRegistry();
 
-	ConductanceRegistry<ResourceLocation, NCRecipeType> recipeTypes();
+	ResourceKey<Registry<NCRecipeType>> recipeTypeRegistry();
 
-	ConductanceRegistry<String, Tier> tiers();
+	ResourceKey<Registry<Tier>> tierRegistry();
 
-	ConductanceRegistry<String, MachineType<?>> machines();
+	ResourceKey<Registry<MachineType<?>>> machineRegistry();
 
-	ConductanceRegistry<ResourceLocation, CoverType<?>> covers();
+	ResourceKey<Registry<CoverType<?>>> coverRegistry();
+	//endregion
+
+	//region registry
+	Registry<PeriodicElement> periodicElements();
+
+	Registry<MaterialTextureType> materialTextureTypes();
+
+	Registry<MaterialTraitKey<?>> materialTraits();
+
+	Registry<MaterialFlag> materialFlags();
+
+	Registry<MaterialOreType> materialOreTypes();
+
+	Registry<TaggedMaterialSet> materialTaggedSets();
+
+	Registry<Material> materials();
+
+	Registry<IRecipeElementType<?>> recipeElementTypes();
+
+	Registry<NCRecipeType> recipeTypes();
+
+	Registry<Tier> tiers();
+
+	Registry<MachineType<?>> machines();
+
+	Registry<CoverType<?>> covers();
+	//endregion
 }
