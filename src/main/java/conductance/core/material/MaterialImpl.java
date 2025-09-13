@@ -12,4 +12,9 @@ final class MaterialImpl implements Material {
 	MaterialImpl(final Set<MaterialFlag> flags) {
 		this.flags = Collections.unmodifiableSet(flags);
 	}
+
+	@Override
+	public boolean hasFlag(final MaterialFlag flag) {
+		return this.flags.contains(flag);
+	}
 }

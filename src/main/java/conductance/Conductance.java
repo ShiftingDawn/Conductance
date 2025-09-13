@@ -23,6 +23,9 @@ import conductance.api.plugin.IConductancePluginEvent;
 import conductance.api.registry.RegistryProvider;
 import conductance.core.material.MaterialCore;
 import conductance.core.periodicelement.PeriodicElementCore;
+import conductance.init.ConductanceBlocks;
+import conductance.init.ConductanceCreativeTabs;
+import conductance.init.ConductanceItems;
 import conductance.lib.registry.RegistryProviderImpl;
 
 @Mod(value = Conductance.MODID)
@@ -33,9 +36,11 @@ public final class Conductance {
 	public static final Logger LOGGER = LogUtils.getLogger();
 	public static RegistryProviderImpl REGISTRIES;
 	private static final AtomicBoolean HAS_REGISTERED = new AtomicBoolean(false);
+	private static IEventBus MODBUS;
 
 	public Conductance(final IEventBus modEventBus, final ModContainer modContainer) {
 		Conductance.LOGGER.info("Conductance is initializing on platform: NeoForge");
+		Conductance.MODBUS = modEventBus;
 		modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, ModConfig.SPEC);
 		modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
@@ -43,6 +48,8 @@ public final class Conductance {
 
 		Conductance.REGISTRIES = Util.make(new RegistryProviderImpl(modEventBus), regs -> Conductance.setApiValue(RegistryProvider.class, regs));
 		modEventBus.addListener(RegisterEvent.class, this::onRegister);
+
+		ConductanceCreativeTabs.initialize(modEventBus);
 	}
 
 	private void onRegister(final RegisterEvent event) {
@@ -51,6 +58,10 @@ public final class Conductance {
 		}
 		PeriodicElementCore.initialize();
 		MaterialCore.initialize();
+
+		ConductanceBlocks.initialize();
+
+		ConductanceItems.initialize(Conductance.MODBUS);
 	}
 
 	public static ResourceLocation id(final String path) {
