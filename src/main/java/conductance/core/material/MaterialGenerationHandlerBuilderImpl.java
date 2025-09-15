@@ -2,6 +2,7 @@ package conductance.core.material;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 
 	private final Set<ResourceLocation> groupTags = new HashSet<>();
 	private final Set<String> entryTags = new HashSet<>();
-	private final String unlocalizedNameFactory;
+	private final Function<Material, String> unlocalizedNameFactory;
 	private Predicate<Material> predicate = ignored -> true;
 	private boolean hasItem = false;
 	private boolean hasBlock = false;

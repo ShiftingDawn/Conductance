@@ -47,6 +47,7 @@ public final class Conductance {
 		PluginEventBus.initialize();
 
 		Conductance.REGISTRIES = Util.make(new RegistryProviderImpl(modEventBus), regs -> Conductance.setApiValue(RegistryProvider.class, regs));
+
 		modEventBus.addListener(RegisterEvent.class, this::onRegister);
 
 		ConductanceCreativeTabs.initialize(modEventBus);
@@ -97,5 +98,9 @@ public final class Conductance {
 				}
 			}
 		});
+	}
+
+	public static <T extends IConductancePluginEvent> void dispatchAll(final Class<T> eventClass, final T event) {
+		Conductance.dispatch(eventClass, ignored -> event);
 	}
 }
