@@ -8,5 +8,5 @@
     "maxShiftBy": 5
   },
   "mixins": [],
-  "client": ["LanguageManagerMixin"]
+  "client": ["LanguageManagerMixin", "ModelManagerMixin"]
 }

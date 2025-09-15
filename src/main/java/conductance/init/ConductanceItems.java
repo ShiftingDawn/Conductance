@@ -8,6 +8,7 @@ import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
+import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
 import conductance.api.util.TextHelper;
 import conductance.Conductance;
@@ -40,6 +41,15 @@ public final class ConductanceItems {
 			final MaterialItem materialItem = (MaterialItem) item;
 			final String name = materialItem.getHandler().getUnlocalizedName(materialItem.getMaterial());
 			event.add(materialItem.getDescriptionId(), TextHelper.lowerUnderscoreToEnglish(name));
+		});
+	}
+
+	@EventListener(priority = -100)
+	private static void addMaterialItemModels(final AddRuntimeModelEvent event) {
+		ConductanceItems.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(item -> item instanceof MaterialItem).forEach(item -> {
+			final MaterialItem materialItem = (MaterialItem) item;
+			event.addItemsModel(materialItem, model -> model.simple(item));
+			event.addItemModel(materialItem, model -> model.layer0("minecraft:item/iron_ingot"));
 		});
 	}
 
