@@ -15,4 +15,6 @@ public interface Material {
 	default String getName() {
 		return this.getId().getPath();
 	}
+
+	ResourceLocation getTextureSet();
 }

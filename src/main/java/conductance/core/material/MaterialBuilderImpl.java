@@ -2,7 +2,9 @@ package conductance.core.material;
 
 import java.util.HashSet;
 import java.util.Set;
+import net.minecraft.resources.ResourceLocation;
 import conductance.api.NCMaterialFlags;
+import conductance.api.NCMaterialTextureSets;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.event.MaterialBuilder;
@@ -10,6 +12,7 @@ import conductance.api.material.event.MaterialBuilder;
 final class MaterialBuilderImpl implements MaterialBuilder {
 
 	private final Set<MaterialFlag> flags = new HashSet<>();
+	private ResourceLocation textureSet = NCMaterialTextureSets.DULL;
 
 	@Override
 	public MaterialBuilder dust() {
@@ -26,12 +29,18 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 		return this.flag(NCMaterialFlags.GEM);
 	}
 
+	@Override
+	public MaterialBuilder textureSet(final ResourceLocation textureSet) {
+		this.textureSet = textureSet;
+		return this;
+	}
+
 	private MaterialBuilder flag(final MaterialFlag flag) {
 		this.flags.add(flag);
 		return this;
 	}
 
 	public Material build() {
-		return new MaterialImpl(this.flags);
+		return new MaterialImpl(this.flags, this.textureSet);
 	}
 }

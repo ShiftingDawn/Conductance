@@ -21,11 +21,13 @@ import org.slf4j.Logger;
 import conductance.api.CAPI;
 import conductance.api.plugin.IConductancePluginEvent;
 import conductance.api.registry.RegistryProvider;
+import conductance.api.resource.ResourceFinder;
 import conductance.core.material.MaterialCore;
 import conductance.core.periodicelement.PeriodicElementCore;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
 import conductance.init.ConductanceItems;
+import conductance.lib.ResourceFinderImpl;
 import conductance.lib.registry.RegistryProviderImpl;
 
 @Mod(value = Conductance.MODID)
@@ -47,6 +49,7 @@ public final class Conductance {
 		PluginEventBus.initialize();
 
 		Conductance.REGISTRIES = Util.make(new RegistryProviderImpl(modEventBus), regs -> Conductance.setApiValue(RegistryProvider.class, regs));
+		Conductance.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
 
 		modEventBus.addListener(RegisterEvent.class, this::onRegister);
 
