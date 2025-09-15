@@ -11,6 +11,7 @@ public final class ConductanceMaterials {
 	@EventListener(priority = -100)
 	private static void init(final RegisterMaterialEvent event) {
 		event.register("iron", b -> b.dust().ingot());
+		event.register("diamond", b -> b.dust().gem());
 	}
 
 	private ConductanceMaterials() {

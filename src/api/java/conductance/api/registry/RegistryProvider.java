@@ -4,6 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
+import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.periodicelement.PeriodicElement;
 
 public interface RegistryProvider {
@@ -14,9 +15,13 @@ public interface RegistryProvider {
 
 	ResourceKey<Registry<Material>> materialRegistry();
 
+	ResourceKey<Registry<MaterialGenerationHandler>> materialGenerationHandlerRegistry();
+
 	Registry<PeriodicElement> periodicElements();
 
 	Registry<MaterialFlag> materialFlags();
 
 	Registry<Material> materials();
+
+	Registry<MaterialGenerationHandler> materialGenerationHandlers();
 }

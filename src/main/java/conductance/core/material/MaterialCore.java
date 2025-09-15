@@ -3,8 +3,10 @@ package conductance.core.material;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import conductance.api.material.Material;
+import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.material.event.RegisterMaterialFlagEvent;
+import conductance.api.material.event.RegisterMaterialGenerationHandlerEvent;
 import conductance.Conductance;
 
 public final class MaterialCore {
@@ -12,6 +14,7 @@ public final class MaterialCore {
 	public static void initialize() {
 		MaterialCore.initFlags();
 		MaterialCore.initMaterials();
+		MaterialCore.initGenerationHandlers();
 	}
 
 	private static void initFlags() {
@@ -28,6 +31,15 @@ public final class MaterialCore {
 			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
 			final Material result = Util.make(new MaterialBuilderImpl(), builder).build();
 			Conductance.REGISTRIES.register(Conductance.REGISTRIES.materials(), registryKey, result);
+			return result;
+		}));
+	}
+
+	private static void initGenerationHandlers() {
+		Conductance.dispatch(RegisterMaterialGenerationHandlerEvent.class, modid -> new RegisterMaterialGenerationHandlerEventImpl((registryName, unlocalizedNameFactory, builder) -> {
+			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
+			final MaterialGenerationHandler result = Util.make(new MaterialGenerationHandlerBuilderImpl(unlocalizedNameFactory), builder).build();
+			Conductance.REGISTRIES.register(Conductance.REGISTRIES.materialGenerationHandlers(), registryKey, result);
 			return result;
 		}));
 	}
