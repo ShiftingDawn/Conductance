@@ -2,6 +2,7 @@ package conductance.api.material.event;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import conductance.api.material.MaterialProp;
 
 public interface MaterialBuilder {
 
@@ -10,6 +11,8 @@ public interface MaterialBuilder {
 	MaterialBuilder ingot();
 
 	MaterialBuilder gem();
+
+	<T> MaterialBuilder prop(MaterialProp<T> property, T value);
 
 	MaterialBuilder color(int rgb);
 

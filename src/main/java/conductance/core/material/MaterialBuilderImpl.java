@@ -1,6 +1,8 @@
 package conductance.core.material;
 
 import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -9,11 +11,13 @@ import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTextureSets;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
+import conductance.api.material.MaterialProp;
 import conductance.api.material.event.MaterialBuilder;
 
 final class MaterialBuilderImpl implements MaterialBuilder {
 
 	private final Set<MaterialFlag> flags = new HashSet<>();
+	private final Map<MaterialProp<?>, Object> props = new IdentityHashMap<>();
 	private ResourceLocation textureSet = NCMaterialTextureSets.DULL;
 	private @Nullable Integer color;
 
@@ -30,6 +34,12 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	@Override
 	public MaterialBuilder gem() {
 		return this.flag(NCMaterialFlags.GEM);
+	}
+
+	@Override
+	public <T> MaterialBuilder prop(final MaterialProp<T> property, final T value) {
+		this.props.put(property, value);
+		return this;
 	}
 
 	@Override
@@ -50,6 +60,6 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	public Material build() {
-		return new MaterialImpl(this.flags, this.color, this.textureSet);
+		return new MaterialImpl(this.flags, this.props, this.color, this.textureSet);
 	}
 }
