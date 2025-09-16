@@ -51,7 +51,7 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	@Override
 	public MaterialGenerationHandlerBuilder setHasBlock(final boolean hasBlock, final boolean autoGenerateBlock, final boolean shouldOccludeBlocks) {
 		this.hasBlock = hasBlock;
-		this.autoGenerateBlock = this.autoGenerateItem;
+		this.autoGenerateBlock = autoGenerateBlock;
 		this.shouldOccludeBlocks = shouldOccludeBlocks;
 		return this;
 	}

@@ -7,7 +7,6 @@ import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTextureSets;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
@@ -22,18 +21,9 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	private @Nullable Integer color;
 
 	@Override
-	public MaterialBuilder dust() {
-		return this.flag(NCMaterialFlags.DUST);
-	}
-
-	@Override
-	public MaterialBuilder ingot() {
-		return this.flag(NCMaterialFlags.INGOT);
-	}
-
-	@Override
-	public MaterialBuilder gem() {
-		return this.flag(NCMaterialFlags.GEM);
+	public MaterialBuilder flag(final MaterialFlag flag) {
+		this.flags.add(flag);
+		return this;
 	}
 
 	@Override
@@ -51,11 +41,6 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	@Override
 	public MaterialBuilder textureSet(final ResourceLocation textureSet) {
 		this.textureSet = textureSet;
-		return this;
-	}
-
-	private MaterialBuilder flag(final MaterialFlag flag) {
-		this.flags.add(flag);
 		return this;
 	}
 

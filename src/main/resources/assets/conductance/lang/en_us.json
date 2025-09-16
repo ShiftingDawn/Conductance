@@ -1,10 +1,4 @@
 {
   "itemGroup.conductance.general": "General (Conductance)",
-
-  "materialGenerationHandler.conductance.dust": "%s Dust",
-  "materialGenerationHandler.conductance.ingot": "%s Ingot",
-  "materialGenerationHandler.conductance.gem": "%s",
-
-  "material.conductance.iron": "Iron",
-  "material.conductance.diamond": "Diamond"
+  "itemGroup.conductance.material": "Material Items & Blocks (Conductance)"
 }

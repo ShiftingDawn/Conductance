@@ -18,6 +18,7 @@ final class RegisterMaterialOverridesEventImpl implements RegisterMaterialOverri
 	@Override
 	public void add(final Material material, final MaterialGenerationHandler handler, @Nullable final Block block) {
 		this.blockDelegate.accept(material, handler, block);
+		this.itemDelegate.accept(material, handler, block != null ? block.asItem() : null);
 	}
 
 	@Override

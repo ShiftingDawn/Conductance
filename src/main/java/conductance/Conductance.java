@@ -65,7 +65,7 @@ public final class Conductance {
 		PeriodicElementCore.initialize();
 		MaterialCore.initialize(Conductance.MODBUS);
 
-		ConductanceBlocks.initialize();
+		ConductanceBlocks.initialize(Conductance.MODBUS);
 
 		ConductanceItems.initialize(Conductance.MODBUS);
 	}

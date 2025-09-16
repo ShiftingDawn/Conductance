@@ -40,10 +40,7 @@ public interface AddRuntimeModelEvent extends IConductancePluginEvent {
 	}
 
 	default void addItemModelDelegate(final Block block) {
-		this.addItemModel(
-				BuiltInRegistries.ITEM.getKey(block.asItem()),
-				builder -> builder.parent(ModelLocationUtils.getModelLocation(block))
-		);
+		this.addItemsModel(block.asItem(), builder -> builder.simple(ModelLocationUtils.getModelLocation(block)));
 	}
 
 	void insertBlockState(ResourceLocation location, JsonElement data);

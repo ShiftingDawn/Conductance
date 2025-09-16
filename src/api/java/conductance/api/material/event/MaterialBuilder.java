@@ -2,15 +2,37 @@ package conductance.api.material.event;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import conductance.api.NCMaterialFlags;
+import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialProp;
 
 public interface MaterialBuilder {
 
-	MaterialBuilder dust();
+	MaterialBuilder flag(MaterialFlag flag);
 
-	MaterialBuilder ingot();
+	default MaterialBuilder dust() {
+		return this.flag(NCMaterialFlags.DUST);
+	}
 
-	MaterialBuilder gem();
+	default MaterialBuilder ingot() {
+		return this.flag(NCMaterialFlags.INGOT);
+	}
+
+	default MaterialBuilder gem() {
+		return this.flag(NCMaterialFlags.GEM);
+	}
+
+	default MaterialBuilder block() {
+		return this.flag(NCMaterialFlags.BLOCK);
+	}
+
+	default MaterialBuilder plate() {
+		return this.flag(NCMaterialFlags.PLATE);
+	}
+
+	default MaterialBuilder rod() {
+		return this.flag(NCMaterialFlags.ROD);
+	}
 
 	<T> MaterialBuilder prop(MaterialProp<T> property, T value);
 
