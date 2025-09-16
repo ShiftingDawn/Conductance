@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.event.MaterialGenerationHandlerBuilder;
@@ -25,6 +26,7 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	private boolean shouldOccludeBlocks = false;
 	private boolean hasFluid = false;
 	private boolean autoGenerateFluid = false;
+	private long unitValue = CAPI.UNIT;
 	private @Nullable ResourceLocation textureType;
 
 	@Override
@@ -62,6 +64,12 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	}
 
 	@Override
+	public MaterialGenerationHandlerBuilder unitValue(final long unitValue) {
+		this.unitValue = unitValue;
+		return this;
+	}
+
+	@Override
 	public MaterialGenerationHandlerBuilder predicate(final Predicate<Material> predicate) {
 		this.predicate = predicate;
 		return this;
@@ -79,6 +87,7 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 				this.hasItem, this.autoGenerateItem,
 				this.hasBlock, this.autoGenerateBlock, this.shouldOccludeBlocks,
 				this.hasFluid, this.autoGenerateFluid,
+				this.unitValue,
 				this.predicate,
 				this.textureType
 		);

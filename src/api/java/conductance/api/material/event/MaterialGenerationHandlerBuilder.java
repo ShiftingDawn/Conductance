@@ -17,6 +17,8 @@ public interface MaterialGenerationHandlerBuilder {
 
 	MaterialGenerationHandlerBuilder setHasFluid(boolean hasFluid, boolean autoGenerateFluid);
 
+	MaterialGenerationHandlerBuilder unitValue(long unitValue);
+
 	MaterialGenerationHandlerBuilder predicate(Predicate<Material> predicate);
 
 	default MaterialGenerationHandlerBuilder requiredFlag(final MaterialFlag requiredFlag) {

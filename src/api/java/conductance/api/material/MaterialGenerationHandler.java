@@ -18,6 +18,8 @@ public interface MaterialGenerationHandler {
 
 	boolean autoGenerateFluid();
 
+	long getUnitValue();
+
 	String getUnlocalizedName(Material material);
 
 	boolean test(Material material);

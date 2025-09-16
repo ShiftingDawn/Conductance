@@ -21,6 +21,7 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	private final boolean shouldOccludeBlocks;
 	private final boolean hasFluid;
 	private final boolean autoGenerateFluid;
+	private final long unitValue;
 	private final Predicate<Material> predicate;
 	private final @Nullable ResourceLocation textureType;
 
@@ -57,6 +58,11 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	@Override
 	public boolean autoGenerateFluid() {
 		return this.autoGenerateFluid;
+	}
+
+	@Override
+	public long getUnitValue() {
+		return this.unitValue;
 	}
 
 	@Override
