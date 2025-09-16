@@ -1,11 +1,16 @@
 package conductance.core.material;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import org.apache.commons.lang3.StringUtils;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
@@ -26,6 +31,7 @@ public final class MaterialCore {
 		MaterialCore.initMaterials();
 		MaterialCore.initGenerationHandlers();
 		MaterialCore.initOverrides();
+		modEventBus.addListener(FMLLoadCompleteEvent.class, ignored -> MaterialCore.validateMaterials());
 
 		modEventBus.addListener(EventPriority.HIGHEST, BuildCreativeModeTabContentsEvent.class, event -> {
 			if (event.getTabKey().location().equals(Conductance.id(CreativeTabHelper.Tabs.MATERIAL.getName()))) {
@@ -40,9 +46,9 @@ public final class MaterialCore {
 	}
 
 	private static void initFlags() {
-		Conductance.dispatch(RegisterMaterialFlagEvent.class, modid -> new RegisterMaterialFlagEventImpl((registryName, materialFlags) -> {
+		Conductance.dispatch(RegisterMaterialFlagEvent.class, modid -> new RegisterMaterialFlagEventImpl((registryName, materialFlags, validator) -> {
 			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
-			final MaterialFlagImpl result = new MaterialFlagImpl(materialFlags);
+			final MaterialFlagImpl result = new MaterialFlagImpl(materialFlags, validator);
 			Conductance.REGISTRIES.register(Conductance.REGISTRIES.materialFlags(), registryKey, result);
 			return result;
 		}));
@@ -70,6 +76,39 @@ public final class MaterialCore {
 		Conductance.dispatchAll(RegisterMaterialOverridesEvent.class, new RegisterMaterialOverridesEventImpl(
 				Conductance.MATERIALS::addOverride, Conductance.MATERIALS::addOverride
 		));
+	}
+
+	private static void validateMaterials() {
+		final Map<MaterialImpl, List<String>> allErrors = new LinkedHashMap<>();
+		for (final Material material : CAPI.regs().materials()) {
+			if (material instanceof final MaterialImpl mat) {
+				final List<String> errors = mat.validate();
+				if (!errors.isEmpty()) {
+					allErrors.put(mat, errors);
+				}
+			}
+		}
+		if (!allErrors.isEmpty()) {
+			if (allErrors.size() == 1) {
+				final Map.Entry<MaterialImpl, List<String>> entry = allErrors.entrySet().iterator().next();
+				if (entry.getValue().size() == 1) {
+					throw new IllegalStateException("Material validation failed for material %s. Reason: %s".formatted(
+							entry.getKey().getId(), entry.getValue().getFirst()
+					));
+				}
+			}
+			Conductance.LOGGER.error(StringUtils.repeat('=', 32));
+			Conductance.LOGGER.error("Material errors");
+			Conductance.LOGGER.error(StringUtils.repeat('=', 32));
+			allErrors.forEach((material, errors) -> {
+				Conductance.LOGGER.error(material.getId().toString());
+				errors.forEach(error -> Conductance.LOGGER.error("\t{}", error));
+			});
+			Conductance.LOGGER.error(StringUtils.repeat('=', 32));
+			Conductance.LOGGER.error("End of material errors");
+			Conductance.LOGGER.error(StringUtils.repeat('=', 32));
+			throw new IllegalStateException("Material validation failed. See the log above for all validation errors");
+		}
 	}
 
 	private MaterialCore() {

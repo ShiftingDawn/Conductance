@@ -1,6 +1,8 @@
 package conductance.core.material;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -67,5 +69,15 @@ final class MaterialImpl implements Material {
 
 	private int calcColor() {
 		return -1;
+	}
+
+	List<String> validate() {
+		final List<String> errors = new ArrayList<>();
+		for (final MaterialFlag flag : this.flags) {
+			if (flag instanceof final MaterialFlagImpl f) {
+				errors.addAll(f.validate(this));
+			}
+		}
+		return errors;
 	}
 }

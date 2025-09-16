@@ -66,6 +66,9 @@ final class PluginEventBus {
 						throw new RuntimeException(e);
 					} catch (final InvocationTargetException e) {
 						Conductance.LOGGER.error("An error occurred during the invocation of plugin event listener {} owned by {}", method, info.modid(), e.getCause());
+						if (e.getCause() instanceof final RuntimeException re) {
+							throw re;
+						}
 						throw new RuntimeException(e.getCause());
 					}
 				});
