@@ -16,5 +16,7 @@ public interface Material {
 		return this.getId().getPath();
 	}
 
+	int getColor();
+
 	ResourceLocation getTextureSet();
 }

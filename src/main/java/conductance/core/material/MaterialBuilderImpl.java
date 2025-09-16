@@ -3,6 +3,8 @@ package conductance.core.material;
 import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTextureSets;
 import conductance.api.material.Material;
@@ -13,6 +15,7 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 
 	private final Set<MaterialFlag> flags = new HashSet<>();
 	private ResourceLocation textureSet = NCMaterialTextureSets.DULL;
+	private @Nullable Integer color;
 
 	@Override
 	public MaterialBuilder dust() {
@@ -30,6 +33,12 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
+	public MaterialBuilder color(final int rgb) {
+		this.color = ARGB.opaque(rgb);
+		return this;
+	}
+
+	@Override
 	public MaterialBuilder textureSet(final ResourceLocation textureSet) {
 		this.textureSet = textureSet;
 		return this;
@@ -41,6 +50,6 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	public Material build() {
-		return new MaterialImpl(this.flags, this.textureSet);
+		return new MaterialImpl(this.flags, this.color, this.textureSet);
 	}
 }

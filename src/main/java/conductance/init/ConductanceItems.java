@@ -51,7 +51,7 @@ public final class ConductanceItems {
 			final MaterialItem materialItem = (MaterialItem) item;
 			final ResourceLocation model = CAPI.resourceFinder().getMaterialItemModel(materialItem.getMaterial().getTextureSet(), materialItem.getHandler().getTextureType(), null, null).value();
 			event.addItemsModel(materialItem, b -> b.model(model, b2 -> {
-				//TODO tint here
+				b2.tints(tints -> tints.constant(materialItem.getMaterial().getColor()));
 			}));
 		});
 	}
