@@ -5,6 +5,7 @@ import net.minecraft.util.RandomSource;
 import net.neoforged.fml.loading.FMLEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import conductance.api.material.MaterialRegistry;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.resource.ResourceFinder;
 
@@ -17,14 +18,19 @@ public final class CAPI {
 	public static final Gson GSON;
 
 	private static RegistryProvider registryProvider;
+	private static MaterialRegistry materialRegistry;
 	private static ResourceFinder resourceFinder;
 
 	public static RegistryProvider regs() {
 		return Objects.requireNonNull(CAPI.registryProvider, "CAPI::regs called too early!");
 	}
 
+	public static MaterialRegistry materials() {
+		return Objects.requireNonNull(CAPI.materialRegistry, "CAPI::materials called too early!");
+	}
+
 	public static ResourceFinder resourceFinder() {
-		return CAPI.resourceFinder;
+		return Objects.requireNonNull(CAPI.resourceFinder, "CAPI::resourceFinder called too early!");
 	}
 
 	public static boolean isClient() {

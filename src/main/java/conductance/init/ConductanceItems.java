@@ -13,7 +13,6 @@ import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
 import conductance.api.util.TextHelper;
 import conductance.Conductance;
-import conductance.core.CreativeTabHelper;
 import conductance.init.item.MaterialItem;
 
 @ConductancePluginListener(modid = Conductance.MODID)
@@ -28,10 +27,10 @@ public final class ConductanceItems {
 
 	private static void generateMaterial(final Material material) {
 		CAPI.regs().materialGenerationHandlers().stream()
-				.filter(handler -> handler.hasItem() && handler.autoGenerateItem() && handler.test(material))
+				.filter(handler -> handler.hasItem() && handler.autoGenerateItem() && handler.test(material) && !Conductance.MATERIALS.hasItemOverride(material, handler))
 				.forEach(handler -> {
 					ConductanceItems.REGISTRY.registerItem(handler.getUnlocalizedName(material), props -> Util.make(new MaterialItem(props, material, handler), item -> {
-						CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
+						Conductance.MATERIALS.register(material, handler, item);
 					}));
 				});
 	}

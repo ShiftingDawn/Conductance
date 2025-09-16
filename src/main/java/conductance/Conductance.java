@@ -23,6 +23,7 @@ import conductance.api.plugin.IConductancePluginEvent;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.resource.ResourceFinder;
 import conductance.core.material.MaterialCore;
+import conductance.core.material.MaterialRegistryImpl;
 import conductance.core.periodicelement.PeriodicElementCore;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
@@ -37,6 +38,7 @@ public final class Conductance {
 	public static final String MODID = "conductance";
 	public static final Logger LOGGER = LogUtils.getLogger();
 	public static RegistryProviderImpl REGISTRIES;
+	public static MaterialRegistryImpl MATERIALS;
 	private static final AtomicBoolean HAS_REGISTERED = new AtomicBoolean(false);
 	private static IEventBus MODBUS;
 
@@ -61,7 +63,7 @@ public final class Conductance {
 			return;
 		}
 		PeriodicElementCore.initialize();
-		MaterialCore.initialize();
+		MaterialCore.initialize(Conductance.MODBUS);
 
 		ConductanceBlocks.initialize();
 

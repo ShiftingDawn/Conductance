@@ -15,7 +15,8 @@ public final class CreativeTabHelper {
 
 	@RequiredArgsConstructor
 	public enum Tabs {
-		GENERAL(Items.IRON_INGOT::getDefaultInstance);
+		GENERAL(Items.IRON_INGOT::getDefaultInstance),
+		MATERIAL(Items.IRON_INGOT::getDefaultInstance);
 
 		private final @Getter String name = super.toString().toLowerCase(Locale.ROOT);
 		private final @Getter Supplier<ItemStack> icon;
@@ -28,7 +29,7 @@ public final class CreativeTabHelper {
 	}
 
 	public static List<ItemLike> getTabContent(final Tabs tab) {
-		return CreativeTabHelper.CONTENT_MAPPING.get(tab);
+		return CreativeTabHelper.CONTENT_MAPPING.getOrDefault(tab, List.of());
 	}
 
 	private CreativeTabHelper() {
