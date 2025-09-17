@@ -2,6 +2,7 @@ package conductance.init;
 
 import java.util.function.Supplier;
 import net.minecraft.Util;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -55,11 +56,29 @@ public final class ConductanceItems {
 
 	@EventListener(priority = -100)
 	private static void addItemTranslations(final AddTranslationEvent event) {
-		ConductanceItems.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(item -> item instanceof MaterialItem).forEach(item -> {
-			final MaterialItem materialItem = (MaterialItem) item;
-			final String name = materialItem.getHandler().getUnlocalizedName(materialItem.getMaterial());
-			event.add(materialItem, TextHelper.lowerUnderscoreToEnglish(name));
-		});
+//		ConductanceItems.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(item -> item instanceof MaterialItem).forEach(item -> {
+//			final MaterialItem materialItem = (MaterialItem) item;
+//			final String name = materialItem.getHandler().getUnlocalizedName(materialItem.getMaterial());
+//			event.add(materialItem, TextHelper.lowerUnderscoreToEnglish(name));
+//		});
+		Conductance.MATERIALS.getItemTable().rowMap().forEach((material, map) -> map.forEach((handler, item) -> {
+			handler.getGroupTagsAndTranslators(BuiltInRegistries.ITEM, material).forEach((tagKey, translator) -> {
+				if (translator != null) {
+					final String translation = translator.translate(material);
+					if (translation != null) {
+						event.add(tagKey, translation.formatted(material.getName()));
+					}
+				}
+			});
+			handler.getEntryTagsAndTranslators(BuiltInRegistries.ITEM, material).forEach((tagKey, translator) -> {
+				if (translator != null) {
+					final String translation = translator.translate(material);
+					if (translation != null) {
+						event.add(tagKey, translation.formatted(material.getName()));
+					}
+				}
+			});
+		}));
 		event.add(CAPI.TAG_HAMMERS, "Hammers");
 		event.add(CAPI.TAG_WIRE_CUTTERS, "Wire Cutters");
 	}

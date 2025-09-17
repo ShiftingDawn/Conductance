@@ -1,5 +1,7 @@
 package conductance.init.item;
 
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -19,7 +21,7 @@ public final class MaterialItem extends Item {
 	private final LazyInt burnValue;
 
 	public MaterialItem(final Properties properties, final Material material, final MaterialGenerationHandler handler) {
-		super(properties);
+		super(properties.component(DataComponents.ITEM_NAME, Component.translatable(handler.getDescriptionId(), Component.translatable(material.getDescriptionId()))));
 		this.material = material;
 		this.handler = handler;
 		this.burnValue = LazyInt.of(() -> {

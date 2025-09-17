@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.common.util.Lazy;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
@@ -20,6 +22,7 @@ final class MaterialImpl implements Material {
 	private final Map<MaterialProp<?>, Object> props;
 	private final @Getter ResourceLocation textureSet;
 	private final LazyInt color;
+	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("material", this.getId()));
 
 	MaterialImpl(final Set<MaterialFlag> flags, final Map<MaterialProp<?>, Object> props, @Nullable final Integer color, final ResourceLocation textureSet) {
 		this.flags = Collections.unmodifiableSet(flags);
@@ -60,6 +63,11 @@ final class MaterialImpl implements Material {
 			return fallback.get();
 		}
 		return (T) this.props.get(prop);
+	}
+
+	@Override
+	public String getDescriptionId() {
+		return this.descriptionId.get();
 	}
 
 	@Override

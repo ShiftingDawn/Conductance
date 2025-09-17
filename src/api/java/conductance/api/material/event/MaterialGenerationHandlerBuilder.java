@@ -2,14 +2,24 @@ package conductance.api.material.event;
 
 import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
+import conductance.api.material.TagTranslatorFactory;
 
 public interface MaterialGenerationHandlerBuilder {
 
-	MaterialGenerationHandlerBuilder groupTag(String tagName);
+	MaterialGenerationHandlerBuilder groupTag(String tagName, @Nullable TagTranslatorFactory translationFactory);
 
-	MaterialGenerationHandlerBuilder entryTag(String tagName);
+	default MaterialGenerationHandlerBuilder groupTag(final String tagName, @Nullable final String translationFactory) {
+		return this.groupTag(tagName, material -> translationFactory);
+	}
+
+	MaterialGenerationHandlerBuilder entryTag(String tagName, @Nullable TagTranslatorFactory translationFactory);
+
+	default MaterialGenerationHandlerBuilder entryTag(final String tagName, @Nullable final String translationFactory) {
+		return this.entryTag(tagName, material -> translationFactory);
+	}
 
 	MaterialGenerationHandlerBuilder setHasItem(boolean hasItem, boolean autoGenerateItem);
 

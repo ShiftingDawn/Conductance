@@ -70,4 +70,12 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		Objects.requireNonNull(handler, "handler cannot be null");
 		this.overriddenItems.put(material, handler, Optional.ofNullable(item));
 	}
+
+	public Table<Material, MaterialGenerationHandler, Block> getBlockTable() {
+		return this.blocks;
+	}
+
+	public Table<Material, MaterialGenerationHandler, Item> getItemTable() {
+		return this.items;
+	}
 }

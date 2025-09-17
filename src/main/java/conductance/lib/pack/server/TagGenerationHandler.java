@@ -14,6 +14,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import conductance.Conductance;
 
 final class TagGenerationHandler {
 
@@ -33,18 +35,32 @@ final class TagGenerationHandler {
 	}
 
 	private static void addItemEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
-//		MaterialRegistryImpl.INSTANCE.getItemTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, items) -> items.forEach(item -> {
-//			taggedSet.streamAllItemTags(material).forEach(tagKey -> {
-//				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
-//						.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.ITEM.getKey(item)), TagGenerationHandler.TAG_SOURCE));
-//			});
-//		})));
-//		MaterialRegistryImpl.INSTANCE.getBlockTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
-//			taggedSet.streamAllItemTags(material).forEach(tagKey -> {
-//				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
-//						.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.BLOCK.getKey(block)), TagGenerationHandler.TAG_SOURCE));
-//			});
-//		})));
+		Conductance.MATERIALS.getItemTable().rowMap().forEach((material, map) -> map.forEach((handler, item) -> {
+			final List<TagKey<Item>> entryTags = handler.getEntryTags(BuiltInRegistries.ITEM, material);
+			for (final TagKey<Item> entryTag : entryTags) {
+				tagMap.computeIfAbsent(entryTag.location(), k -> new ArrayList<>())
+						.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.ITEM.getKey(item)), TagGenerationHandler.TAG_SOURCE));
+			}
+			for (final TagKey<Item> groupTag : handler.getGroupTags(BuiltInRegistries.ITEM, material)) {
+				final List<TagLoader.EntryWithSource> list = tagMap.computeIfAbsent(groupTag.location(), k -> new ArrayList<>());
+				for (final TagKey<Item> entryTag : entryTags) {
+					list.add(new TagLoader.EntryWithSource(TagEntry.tag(entryTag.location()), TagGenerationHandler.TAG_SOURCE));
+				}
+			}
+		}));
+		Conductance.MATERIALS.getBlockTable().rowMap().forEach((material, map) -> map.forEach((handler, block) -> {
+			final List<TagKey<Item>> entryTags = handler.getEntryTags(BuiltInRegistries.ITEM, material);
+			for (final TagKey<Item> entryTag : entryTags) {
+				tagMap.computeIfAbsent(entryTag.location(), k -> new ArrayList<>())
+						.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.BLOCK.getKey(block)), TagGenerationHandler.TAG_SOURCE));
+			}
+			for (final TagKey<Item> groupTag : handler.getGroupTags(BuiltInRegistries.ITEM, material)) {
+				final List<TagLoader.EntryWithSource> list = tagMap.computeIfAbsent(groupTag.location(), k -> new ArrayList<>());
+				for (final TagKey<Item> entryTag : entryTags) {
+					list.add(new TagLoader.EntryWithSource(TagEntry.tag(entryTag.location()), TagGenerationHandler.TAG_SOURCE));
+				}
+			}
+		}));
 		TagGenerationHandler.CUSTOM_ITEM_TAGS.forEach((tagKey, items) -> {
 			final List<TagLoader.EntryWithSource> tags = tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>());
 			items.forEach(item -> tags.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.ITEM.getKey(item.asItem())), TagGenerationHandler.TAG_SOURCE)));
@@ -60,38 +76,48 @@ final class TagGenerationHandler {
 	}
 
 	private static void addBlockEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
-//		RegisterCore.REGISTRATE.getAll(Registries.BLOCK).forEach(blockEntry -> {
-//			if (blockEntry.get() instanceof final IConductanceBlock conductanceBlock) {
-//				tagMap.computeIfAbsent(conductanceBlock.getMiningToolTag().location(), k -> new ArrayList<>())
-//						.add(new TagLoader.EntryWithSource(TagEntry.element(blockEntry.getId()), TagGenerationHandler.TAG_SOURCE));
-//			}
-//		});
-//		MaterialRegistryImpl.INSTANCE.getBlockTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, blocks) -> blocks.forEach(block -> {
-//			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
-//			taggedSet.streamAllBlockTags(material).forEach(tagKey -> {
-//				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
-//						.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-//			});
-//			// Mining tool tags
-//			tagMap.computeIfAbsent(material.getBlockRequiredToolTag().location(), k -> new ArrayList<>())
-//					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-//			if (!((TaggedSetImpl<?>) taggedSet).getMiningTags().isEmpty()) {
-//				((TaggedSetImpl<?>) taggedSet).getMiningTags().forEach(tagKey -> {
-//					tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
-//							.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-//				});
-//			}
-//		})));
+		//TODO mining tool tags
+
+		//		RegisterCore.REGISTRATE.getAll(Registries.BLOCK).forEach(blockEntry -> {
+		//			if (blockEntry.get() instanceof final IConductanceBlock conductanceBlock) {
+		//				tagMap.computeIfAbsent(conductanceBlock.getMiningToolTag().location(), k -> new ArrayList<>())
+		//						.add(new TagLoader.EntryWithSource(TagEntry.element(blockEntry.getId()), TagGenerationHandler.TAG_SOURCE));
+		//			}
+		//		});
+		Conductance.MATERIALS.getBlockTable().rowMap().forEach((material, map) -> map.forEach((handler, block) -> {
+			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
+			final List<TagKey<Block>> entryTags = handler.getEntryTags(BuiltInRegistries.BLOCK, material);
+			for (final TagKey<Block> entryTag : entryTags) {
+				tagMap.computeIfAbsent(entryTag.location(), k -> new ArrayList<>())
+						.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			}
+			for (final TagKey<Block> groupTag : handler.getGroupTags(BuiltInRegistries.BLOCK, material)) {
+				final List<TagLoader.EntryWithSource> list = tagMap.computeIfAbsent(groupTag.location(), k -> new ArrayList<>());
+				for (final TagKey<Block> entryTag : entryTags) {
+					list.add(new TagLoader.EntryWithSource(TagEntry.tag(entryTag.location()), TagGenerationHandler.TAG_SOURCE));
+				}
+			}
+			//TODO  Mining tool tags
+
+			//			tagMap.computeIfAbsent(material.getBlockRequiredToolTag().location(), k -> new ArrayList<>())
+			//					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			//			if (!((TaggedSetImpl<?>) taggedSet).getMiningTags().isEmpty()) {
+			//				((TaggedSetImpl<?>) taggedSet).getMiningTags().forEach(tagKey -> {
+			//					tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
+			//							.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			//				});
+			//			}
+		}));
 	}
 
 	private static void addFluidEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
-//		MaterialRegistryImpl.INSTANCE.getFluidTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, fluids) -> fluids.forEach(fluid -> {
-//			final ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
-//			taggedSet.streamAllFluidTags(material).forEach(tagKey -> {
-//				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
-//						.add(new TagLoader.EntryWithSource(TagEntry.element(fluidId), TagGenerationHandler.TAG_SOURCE));
-//			});
-//		})));
+		//		MaterialRegistryImpl.INSTANCE.getFluidTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, fluids) -> fluids.forEach(fluid -> {
+		//			final ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
+		//			taggedSet.streamAllFluidTags(material).forEach(tagKey -> {
+		//				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
+		//						.add(new TagLoader.EntryWithSource(TagEntry.element(fluidId), TagGenerationHandler.TAG_SOURCE));
+		//			});
+		//		})));
 	}
 
 	private TagGenerationHandler() {

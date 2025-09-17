@@ -1,7 +1,8 @@
 package conductance.core.material;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
@@ -10,13 +11,14 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
+import conductance.api.material.TagTranslatorFactory;
 import conductance.api.material.event.MaterialGenerationHandlerBuilder;
 
 @RequiredArgsConstructor
 final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHandlerBuilder {
 
-	private final Set<ResourceLocation> groupTags = new HashSet<>();
-	private final Set<String> entryTags = new HashSet<>();
+	private final Map<String, TagTranslatorFactory> groupTags = new ConcurrentHashMap<>();
+	private final Map<String, TagTranslatorFactory> entryTags = new ConcurrentHashMap<>();
 	private final Function<Material, String> unlocalizedNameFactory;
 	private Predicate<Material> predicate = ignored -> true;
 	private boolean hasItem = false;
@@ -30,14 +32,14 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	private @Nullable ResourceLocation textureType;
 
 	@Override
-	public MaterialGenerationHandlerBuilder groupTag(final String tagName) {
-		this.groupTags.add(ResourceLocation.parse(tagName));
+	public MaterialGenerationHandlerBuilder groupTag(final String tagName, @Nullable final TagTranslatorFactory translationFactory) {
+		this.groupTags.put(tagName, translationFactory);
 		return this;
 	}
 
 	@Override
-	public MaterialGenerationHandlerBuilder entryTag(final String tagName) {
-		this.entryTags.add(tagName);
+	public MaterialGenerationHandlerBuilder entryTag(final String tagName, @Nullable final TagTranslatorFactory translationFactory) {
+		this.entryTags.put(tagName, translationFactory);
 		return this;
 	}
 
@@ -84,6 +86,7 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	public MaterialGenerationHandler build() {
 		return new MaterialGenerationHandlerImpl(
 				this.unlocalizedNameFactory,
+				Collections.unmodifiableMap(this.groupTags), Collections.unmodifiableMap(this.entryTags),
 				this.hasItem, this.autoGenerateItem,
 				this.hasBlock, this.autoGenerateBlock, this.shouldOccludeBlocks,
 				this.hasFluid, this.autoGenerateFluid,

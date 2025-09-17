@@ -1,6 +1,7 @@
 package conductance.init;
 
 import net.minecraft.Util;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
@@ -47,16 +48,34 @@ public final class ConductanceBlocks {
 	}
 
 	@EventListener(priority = -100)
-	private static void addMaterialBlockTranslations(final AddTranslationEvent event) {
+	private static void addBlockTranslations(final AddTranslationEvent event) {
 		ConductanceBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof MaterialBlock).forEach(block -> {
 			final MaterialBlock materialBlock = (MaterialBlock) block;
 			final String name = materialBlock.getHandler().getUnlocalizedName(materialBlock.getMaterial());
 			event.add(materialBlock.getDescriptionId(), TextHelper.lowerUnderscoreToEnglish(name));
 		});
+		Conductance.MATERIALS.getBlockTable().rowMap().forEach((material, map) -> map.forEach((handler, block) -> {
+			handler.getGroupTagsAndTranslators(BuiltInRegistries.BLOCK, material).forEach((tagKey, translator) -> {
+				if (translator != null) {
+					final String translation = translator.translate(material);
+					if (translation != null) {
+						event.add(tagKey, translation.formatted(material.getName()));
+					}
+				}
+			});
+			handler.getEntryTagsAndTranslators(BuiltInRegistries.BLOCK, material).forEach((tagKey, translator) -> {
+				if (translator != null) {
+					final String translation = translator.translate(material);
+					if (translation != null) {
+						event.add(tagKey, translation.formatted(material.getName()));
+					}
+				}
+			});
+		}));
 	}
 
 	@EventListener(priority = -100)
-	private static void addMaterialBlockModels(final AddRuntimeModelEvent event) {
+	private static void addBlockModels(final AddRuntimeModelEvent event) {
 		ConductanceBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof MaterialBlock).forEach(block -> {
 			final MaterialBlock materialBlock = (MaterialBlock) block;
 			final ResourceLocation model = CAPI.resourceFinder().getMaterialBlockModel(materialBlock.getMaterial().getTextureSet(), materialBlock.getHandler().getTextureType(), null, null).value();

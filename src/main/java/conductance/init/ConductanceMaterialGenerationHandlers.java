@@ -1,9 +1,12 @@
 package conductance.init;
 
+import conductance.api.CAPI;
 import conductance.api.NCMaterialFlags;
 import conductance.api.material.event.RegisterMaterialGenerationHandlerEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
+import conductance.api.resource.event.AddTranslationEvent;
+import conductance.api.util.TextHelper;
 import conductance.Conductance;
 import static conductance.api.NCMaterialGenerationHandlers.BLOCK;
 import static conductance.api.NCMaterialGenerationHandlers.DUST;
@@ -19,49 +22,57 @@ public final class ConductanceMaterialGenerationHandlers {
 	@EventListener(priority = -100)
 	private static void init(final RegisterMaterialGenerationHandlerEvent event) {
 		DUST = event.register("dust", b -> b
-				.groupTag("c:dusts")
-				.entryTag("c:dusts/%s")
+				.groupTag("c:dusts", (String) null) //translation handled by NeoForge
+				.entryTag("c:dusts/%s", "%s Dusts")
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.DUST)
 		);
 		INGOT = event.register("ingot", b -> b
-				.groupTag("c:ingots")
-				.entryTag("c:ingots/%s")
+				.groupTag("c:ingots", (String) null) //translation handled by NeoForge
+				.entryTag("c:ingots/%s", "%s Ingots")
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.INGOT)
 		);
 		GEM = event.register("gem", "%s", b -> b
-				.groupTag("c:gems")
-				.entryTag("c:gems/%s")
+				.groupTag("c:gems", (String) null) //translation handled by NeoForge
+				.entryTag("c:gems/%s", "%s Gems")
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.GEM)
 		);
 
-		BLOCK = event.register("block", "%s_block", b -> b
-				.groupTag("c:storage_blocks")
-				.entryTag("c:storage_blocks/%s")
+		BLOCK = event.register("block", b -> b
+				.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
+				.entryTag("c:storage_blocks/%s", "%s Storage Blocks")
 				.setHasBlock(true, true, true)
 				.requiredFlag(NCMaterialFlags.BLOCK)
 		);
-		NUGGET = event.register("nugget", "%s_nugget", b -> b
-				.groupTag("c:nuggets")
-				.entryTag("c:nuggets/%s")
+		NUGGET = event.register("nugget", b -> b
+				.groupTag("c:nuggets", (String) null) //translation handled by NeoForge
+				.entryTag("c:nuggets/%s", "%s Nuggets")
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.INGOT)
 		);
 
-		PLATE = event.register("plate", "%s_plate", b -> b
-				.groupTag("c:plates")
-				.entryTag("c:plates/%s")
+		PLATE = event.register("plate", b -> b
+				.groupTag("c:plates", "Plates")
+				.entryTag("c:plates/%s", "%s Plates")
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.PLATE)
 		);
-		ROD = event.register("rod", "%s_rod", b -> b
-				.groupTag("c:rods")
-				.entryTag("c:rods/%s")
+		ROD = event.register("rod", b -> b
+				.groupTag("c:rods", (String) null) //translation handled by NeoForge
+				.entryTag("c:rods/%s", "%s Rods")
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.ROD)
 		);
+	}
+
+	@EventListener(priority = -100)
+	private static void addTranslations(final AddTranslationEvent event) {
+		CAPI.regs().materialGenerationHandlers().forEach(handler -> {
+			final String key = handler.getId().getPath();
+			event.add(handler.getDescriptionId(), TextHelper.lowerUnderscoreToEnglish(key));
+		});
 	}
 
 	private ConductanceMaterialGenerationHandlers() {
