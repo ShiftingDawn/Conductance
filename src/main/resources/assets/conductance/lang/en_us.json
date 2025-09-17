@@ -1,4 +1,8 @@
 {
-  "itemGroup.conductance.general": "General (Conductance)",
-  "itemGroup.conductance.material": "Material Items & Blocks (Conductance)"
+	"itemGroup.conductance.general": "General (Conductance)",
+	"itemGroup.conductance.material": "Material Items & Blocks (Conductance)",
+
+	"item.conductance.wrench": "Wrench",
+	"item.conductance.hammer": "Hammer",
+	"item.conductance.wire_cutters": "Wire Cutters"
 }
