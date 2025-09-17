@@ -1,12 +1,12 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "conductance.lib.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "injectors": {
-    "defaultRequire": 1,
-    "maxShiftBy": 5
-  },
-  "mixins": [],
-  "client": ["LanguageManagerMixin", "ModelManagerMixin"]
+	"required": true,
+	"minVersion": "0.8",
+	"package": "conductance.lib.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"injectors": {
+		"defaultRequire": 1,
+		"maxShiftBy": 5
+	},
+	"mixins": ["ReloadableServerResourcesMixin", "TagLoaderMixin"],
+	"client": ["LanguageManagerMixin", "ModelManagerMixin"]
 }

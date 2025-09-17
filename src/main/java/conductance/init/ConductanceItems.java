@@ -5,6 +5,7 @@ import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import conductance.api.CAPI;
@@ -13,6 +14,7 @@ import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
+import conductance.api.resource.event.RegisterTagEvent;
 import conductance.api.util.TextHelper;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
@@ -52,12 +54,14 @@ public final class ConductanceItems {
 	}
 
 	@EventListener(priority = -100)
-	private static void addMaterialItemTranslations(final AddTranslationEvent event) {
+	private static void addItemTranslations(final AddTranslationEvent event) {
 		ConductanceItems.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(item -> item instanceof MaterialItem).forEach(item -> {
 			final MaterialItem materialItem = (MaterialItem) item;
 			final String name = materialItem.getHandler().getUnlocalizedName(materialItem.getMaterial());
-			event.add(materialItem.getDescriptionId(), TextHelper.lowerUnderscoreToEnglish(name));
+			event.add(materialItem, TextHelper.lowerUnderscoreToEnglish(name));
 		});
+		event.add(CAPI.TAG_HAMMERS, "Hammers");
+		event.add(CAPI.TAG_WIRE_CUTTERS, "Wire Cutters");
 	}
 
 	@EventListener(priority = -100)
@@ -72,6 +76,14 @@ public final class ConductanceItems {
 		event.addSimpleItem(ConductanceItems.WRENCH.get());
 		event.addSimpleItem(ConductanceItems.HAMMER.get());
 		event.addSimpleItem(ConductanceItems.WIRE_CUTTERS.get());
+	}
+
+	@EventListener
+	private static void addItemTags(final RegisterTagEvent event) {
+		event.tag(Tags.Items.TOOLS, CAPI.TAG_HAMMERS.location(), CAPI.TAG_WIRE_CUTTERS.location());
+		event.item(CAPI.TAG_WRENCHES, ConductanceItems.WRENCH.get());
+		event.item(CAPI.TAG_HAMMERS, ConductanceItems.HAMMER.get());
+		event.item(CAPI.TAG_WIRE_CUTTERS, ConductanceItems.WIRE_CUTTERS.get());
 	}
 
 	private ConductanceItems() {
