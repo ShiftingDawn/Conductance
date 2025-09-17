@@ -20,6 +20,7 @@ import lombok.experimental.Accessors;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialGenerationHandler;
+import conductance.api.material.MaterialTraitKey;
 import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.registry.RegistryProvider;
 import conductance.Conductance;
@@ -35,11 +36,13 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final @Getter ResourceKey<Registry<MaterialFlag>> materialFlagRegistry = this.makeKey("material_flag");
 	private final @Getter ResourceKey<Registry<Material>> materialRegistry = this.makeKey("material");
 	private final @Getter ResourceKey<Registry<MaterialGenerationHandler>> materialGenerationHandlerRegistry = this.makeKey("material_generation_handler");
+	private final @Getter ResourceKey<Registry<MaterialTraitKey<?>>> materialTraitRegistry = this.makeKey("material_trait");
 
 	private final @Getter Registry<PeriodicElement> periodicElements = this.makeRegistry(this.periodicElementRegistry);
 	private final @Getter Registry<MaterialFlag> materialFlags = this.makeRegistry(this.materialFlagRegistry);
 	private final @Getter Registry<Material> materials = this.makeRegistry(this.materialRegistry);
 	private final @Getter Registry<MaterialGenerationHandler> materialGenerationHandlers = this.makeRegistry(this.materialGenerationHandlerRegistry);
+	private final @Getter Registry<MaterialTraitKey<?>> materialTraits = this.makeRegistry(this.materialTraitRegistry);
 
 	public RegistryProviderImpl(final IEventBus modEventBus) {
 		modEventBus.addListener(NewRegistryEvent.class, this::registerRegistries);

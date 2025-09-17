@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import lombok.AccessLevel;
@@ -20,8 +21,10 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 
 	private final Table<Material, MaterialGenerationHandler, Block> blocks = HashBasedTable.create();
 	private final Table<Material, MaterialGenerationHandler, Item> items = HashBasedTable.create();
+	private final Table<Material, MaterialGenerationHandler, Fluid> fluids = HashBasedTable.create();
 	private final Table<Material, MaterialGenerationHandler, Optional<Block>> overriddenBlocks = HashBasedTable.create();
 	private final Table<Material, MaterialGenerationHandler, Optional<Item>> overriddenItems = HashBasedTable.create();
+	private final Table<Material, MaterialGenerationHandler, Optional<Fluid>> overriddenFluids = HashBasedTable.create();
 
 	public void register(final Material material, final MaterialGenerationHandler handler, final Block block) {
 		this.blocks.put(material, handler, block);
@@ -29,6 +32,10 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 
 	public void register(final Material material, final MaterialGenerationHandler handler, final Item item) {
 		this.items.put(material, handler, item);
+	}
+
+	public void register(final Material material, final MaterialGenerationHandler handler, final Fluid fluid) {
+		this.fluids.put(material, handler, fluid);
 	}
 
 	@Override
@@ -51,12 +58,25 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		}
 	}
 
+	@Override
+	public Fluid getFluid(final Material material, final MaterialGenerationHandler handler) {
+		if (this.hasFluidOverride(material, handler)) {
+			return this.overriddenFluids.get(material, handler).orElse(null);
+		} else {
+			return this.fluids.get(material, handler);
+		}
+	}
+
 	public boolean hasBlockOverride(final Material material, final MaterialGenerationHandler handler) {
 		return this.overriddenBlocks.contains(material, handler);
 	}
 
 	public boolean hasItemOverride(final Material material, final MaterialGenerationHandler handler) {
 		return this.overriddenItems.contains(material, handler);
+	}
+
+	public boolean hasFluidOverride(final Material material, final MaterialGenerationHandler handler) {
+		return this.overriddenFluids.contains(material, handler);
 	}
 
 	public void addOverride(final Material material, final MaterialGenerationHandler handler, @Nullable final Block block) {
@@ -71,11 +91,21 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		this.overriddenItems.put(material, handler, Optional.ofNullable(item));
 	}
 
+	public void addOverride(final Material material, final MaterialGenerationHandler handler, @Nullable final Fluid fluid) {
+		Objects.requireNonNull(material, "material cannot be null");
+		Objects.requireNonNull(handler, "handler cannot be null");
+		this.overriddenFluids.put(material, handler, Optional.ofNullable(fluid));
+	}
+
 	public Table<Material, MaterialGenerationHandler, Block> getBlockTable() {
 		return this.blocks;
 	}
 
 	public Table<Material, MaterialGenerationHandler, Item> getItemTable() {
 		return this.items;
+	}
+
+	public Table<Material, MaterialGenerationHandler, Fluid> getFluidTable() {
+		return this.fluids;
 	}
 }

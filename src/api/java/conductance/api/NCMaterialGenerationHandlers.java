@@ -20,6 +20,10 @@ public final class NCMaterialGenerationHandlers {
 	public static MaterialGenerationHandler BOLT;
 	public static MaterialGenerationHandler SCREW;
 
+	public static MaterialGenerationHandler LIQUID;
+	public static MaterialGenerationHandler GAS;
+	public static MaterialGenerationHandler PLASMA;
+
 	private NCMaterialGenerationHandlers() {
 	}
 }

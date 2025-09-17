@@ -14,18 +14,22 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialProp;
+import conductance.api.material.MaterialTrait;
+import conductance.api.material.MaterialTraitKey;
 import conductance.api.util.LazyInt;
 
 final class MaterialImpl implements Material {
 
 	private final Set<MaterialFlag> flags;
+	private final Map<MaterialTraitKey<?>, MaterialTrait<?>> traits;
 	private final Map<MaterialProp<?>, Object> props;
 	private final @Getter ResourceLocation textureSet;
 	private final LazyInt color;
 	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("material", this.getId()));
 
-	MaterialImpl(final Set<MaterialFlag> flags, final Map<MaterialProp<?>, Object> props, @Nullable final Integer color, final ResourceLocation textureSet) {
+	MaterialImpl(final Set<MaterialFlag> flags, final Map<MaterialTraitKey<?>, MaterialTrait<?>> traits, final Map<MaterialProp<?>, Object> props, @Nullable final Integer color, final ResourceLocation textureSet) {
 		this.flags = Collections.unmodifiableSet(flags);
+		this.traits = Collections.unmodifiableMap(traits);
 		this.props = Collections.unmodifiableMap(props);
 		this.textureSet = textureSet;
 		this.color = color != null ? LazyInt.of(color) : LazyInt.of(this::calcColor);
@@ -37,8 +41,19 @@ final class MaterialImpl implements Material {
 	}
 
 	@Override
+	public boolean hasTrait(final MaterialTraitKey<?> trait) {
+		return this.traits.containsKey(trait);
+	}
+
+	@Override
 	public boolean hasProp(final MaterialProp<?> prop) {
 		return this.props.containsKey(prop);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends MaterialTrait<T>> @Nullable T getTrait(final MaterialTraitKey<T> traitKey) {
+		return (T) this.traits.get(traitKey);
 	}
 
 	@SuppressWarnings("unchecked")

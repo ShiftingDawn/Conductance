@@ -2,6 +2,9 @@ package conductance.init;
 
 import conductance.api.CAPI;
 import conductance.api.NCMaterialFlags;
+import conductance.api.NCMaterialProps;
+import conductance.api.NCMaterialTraits;
+import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.event.RegisterMaterialGenerationHandlerEvent;
 import conductance.api.plugin.ConductancePluginListener;
@@ -14,10 +17,13 @@ import static conductance.api.NCMaterialGenerationHandlers.BOLT;
 import static conductance.api.NCMaterialGenerationHandlers.DENSE_PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.DOUBLE_PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.DUST;
+import static conductance.api.NCMaterialGenerationHandlers.GAS;
 import static conductance.api.NCMaterialGenerationHandlers.GEAR;
 import static conductance.api.NCMaterialGenerationHandlers.GEM;
 import static conductance.api.NCMaterialGenerationHandlers.INGOT;
+import static conductance.api.NCMaterialGenerationHandlers.LIQUID;
 import static conductance.api.NCMaterialGenerationHandlers.NUGGET;
+import static conductance.api.NCMaterialGenerationHandlers.PLASMA;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.ROD;
 import static conductance.api.NCMaterialGenerationHandlers.SCREW;
@@ -107,6 +113,22 @@ public final class ConductanceMaterialGenerationHandlers {
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.BOLT_AND_SCREW)
 		);
+
+		LIQUID = event.register("liquid", ConductanceMaterialGenerationHandlers::liquidUnlocalizedNameFactory, b -> b
+				.entryTag("c:%s", "%s")
+				.setHasFluid(true, true)
+				.requiredTrait(NCMaterialTraits.LIQUID)
+		);
+		GAS = event.register("gas", ConductanceMaterialGenerationHandlers::gasUnlocalizedNameFactory, b -> b
+				.entryTag("c:gases/%s", "%s Gases")
+				.setHasFluid(true, true)
+				.requiredTrait(NCMaterialTraits.GAS)
+		);
+		PLASMA = event.register("plasma", b -> b
+				.entryTag("c:plasmas/%s", "%s Plasmas")
+				.setHasFluid(true, true)
+				.requiredTrait(NCMaterialTraits.PLASMA)
+		);
 	}
 
 	@EventListener(priority = -100)
@@ -119,6 +141,23 @@ public final class ConductanceMaterialGenerationHandlers {
 		}
 		event.add(DOUBLE_PLATE.getDescriptionId() + ".factory", "Double %s Plate");
 		event.add(DENSE_PLATE.getDescriptionId() + ".factory", "Dense %s Plate");
+	}
+
+	private static String liquidUnlocalizedNameFactory(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.INGOT) || material.hasFlag(NCMaterialFlags.GEAR)) {
+			return "molten_%s";
+		}
+		if (material.getProp(NCMaterialProps.DEFAULT_FLUID) == NCMaterialTraits.GAS) {
+			return "liquid_%s";
+		}
+		return "%s";
+	}
+
+	private static String gasUnlocalizedNameFactory(final Material material) {
+		if (material.getProp(NCMaterialProps.DEFAULT_FLUID) == NCMaterialTraits.GAS) {
+			return "%s";
+		}
+		return "%s_gas";
 	}
 
 	private ConductanceMaterialGenerationHandlers() {

@@ -15,10 +15,13 @@ import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.MaterialRegistry;
+import conductance.api.material.MaterialTrait;
+import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.material.event.RegisterMaterialFlagEvent;
 import conductance.api.material.event.RegisterMaterialGenerationHandlerEvent;
 import conductance.api.material.event.RegisterMaterialOverridesEvent;
+import conductance.api.material.event.RegisterMaterialTraitEvent;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
 
@@ -28,6 +31,7 @@ public final class MaterialCore {
 		Conductance.MATERIALS = Util.make(new MaterialRegistryImpl(), reg -> Conductance.setApiValue(MaterialRegistry.class, reg));
 
 		MaterialCore.initFlags();
+		MaterialCore.initTraits();
 		MaterialCore.initMaterials();
 		MaterialCore.initGenerationHandlers();
 		MaterialCore.initOverrides();
@@ -54,10 +58,23 @@ public final class MaterialCore {
 		}));
 	}
 
+	private static void initTraits() {
+		Conductance.dispatch(RegisterMaterialTraitEvent.class, modid -> new RegisterMaterialTraitEventImpl(new RegisterMaterialTraitEventImpl.MaterialTraitRegister() {
+
+			@Override
+			public <T extends MaterialTrait<T>> MaterialTraitKey<T> apply(final String registryName, final Class<T> typeClass) {
+				final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
+				final MaterialTraitKey<T> result = new MaterialTraitKey<>(typeClass);
+				Conductance.REGISTRIES.register(Conductance.REGISTRIES.materialTraits(), registryKey, result);
+				return result;
+			}
+		}));
+	}
+
 	private static void initMaterials() {
 		Conductance.dispatch(RegisterMaterialEvent.class, modid -> new RegisterMaterialEventImpl((registryName, periodicElement, builder) -> {
 			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
-			final Material result = Util.make(new MaterialBuilderImpl(), builder).build();
+			final Material result = Util.make(new MaterialBuilderImpl(), builder).build(registryKey);
 			Conductance.REGISTRIES.register(Conductance.REGISTRIES.materials(), registryKey, result);
 			return result;
 		}));
@@ -74,7 +91,7 @@ public final class MaterialCore {
 
 	private static void initOverrides() {
 		Conductance.dispatchAll(RegisterMaterialOverridesEvent.class, new RegisterMaterialOverridesEventImpl(
-				Conductance.MATERIALS::addOverride, Conductance.MATERIALS::addOverride
+				Conductance.MATERIALS::addOverride, Conductance.MATERIALS::addOverride, Conductance.MATERIALS::addOverride
 		));
 	}
 

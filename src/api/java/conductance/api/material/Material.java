@@ -10,7 +10,11 @@ public interface Material {
 
 	boolean hasFlag(MaterialFlag flag);
 
+	boolean hasTrait(MaterialTraitKey<?> trait);
+
 	boolean hasProp(MaterialProp<?> prop);
+
+	<T extends MaterialTrait<T>> @Nullable T getTrait(MaterialTraitKey<T> traitKey);
 
 	<T> @Nullable T getProp(MaterialProp<T> prop);
 

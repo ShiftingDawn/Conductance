@@ -4,21 +4,33 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialProps;
 import conductance.api.NCMaterialTextureSets;
+import conductance.api.NCMaterialTraits;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialProp;
+import conductance.api.material.MaterialTrait;
+import conductance.api.material.MaterialTraitFluid;
+import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.event.MaterialBuilder;
+import conductance.Conductance;
 
 final class MaterialBuilderImpl implements MaterialBuilder {
 
+	@Getter(AccessLevel.PACKAGE)
 	private final Set<MaterialFlag> flags = new HashSet<>();
+	@Getter(AccessLevel.PACKAGE)
+	private final Map<MaterialTraitKey<?>, MaterialTrait<?>> traits = new IdentityHashMap<>();
+	@Getter(AccessLevel.PACKAGE)
 	private final Map<MaterialProp<?>, Object> props = new IdentityHashMap<>();
+
 	private ResourceLocation textureSet = NCMaterialTextureSets.DULL;
 	private @Nullable Integer color;
 
@@ -29,30 +41,30 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder liquid(final int temperature, final int density, final int viscosity) {
-		this.props.putIfAbsent(NCMaterialProps.DEFAULT_FLUID, NCMaterialProps.FluidType.LIQUID);
-		this.flag(NCMaterialFlags.LIQUID);
-		return this.prop(NCMaterialProps.LIQUID_TEMPERATURE, temperature)
-				.prop(NCMaterialProps.LIQUID_DENSITY, density)
-				.prop(NCMaterialProps.LIQUID_VISCOSITY, viscosity);
+	public <T extends MaterialTrait<T>> MaterialBuilder trait(final MaterialTraitKey<T> key, final T instance) {
+		this.traits.put(key, instance);
+		return this;
 	}
 
 	@Override
-	public MaterialBuilder gas(final int temperature, final int density, final int viscosity) {
-		this.props.putIfAbsent(NCMaterialProps.DEFAULT_FLUID, NCMaterialProps.FluidType.GAS);
-		this.flag(NCMaterialFlags.GAS);
-		return this.prop(NCMaterialProps.GAS_TEMPERATURE, temperature)
-				.prop(NCMaterialProps.GAS_DENSITY, density)
-				.prop(NCMaterialProps.GAS_VISCOSITY, viscosity);
+	public MaterialBuilder liquid(final Supplier<MaterialTraitFluid.Liquid> factory) {
+		this.props.putIfAbsent(NCMaterialProps.DEFAULT_FLUID, NCMaterialTraits.LIQUID);
+		this.trait(NCMaterialTraits.LIQUID, factory.get());
+		return this;
 	}
 
 	@Override
-	public MaterialBuilder plasma(final int temperature, final int density, final int viscosity) {
-		this.props.putIfAbsent(NCMaterialProps.DEFAULT_FLUID, NCMaterialProps.FluidType.PLASMA);
-		this.flag(NCMaterialFlags.PLASMA);
-		return this.prop(NCMaterialProps.PLASMA_TEMPERATURE, temperature)
-				.prop(NCMaterialProps.PLASMA_DENSITY, density)
-				.prop(NCMaterialProps.PLASMA_VISCOSITY, viscosity);
+	public MaterialBuilder gas(final Supplier<MaterialTraitFluid.Gas> factory) {
+		this.props.putIfAbsent(NCMaterialProps.DEFAULT_FLUID, NCMaterialTraits.GAS);
+		this.trait(NCMaterialTraits.GAS, factory.get());
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder plasma(final Supplier<MaterialTraitFluid.Plasma> factory) {
+		this.props.putIfAbsent(NCMaterialProps.DEFAULT_FLUID, NCMaterialTraits.PLASMA);
+		this.trait(NCMaterialTraits.PLASMA, factory.get());
+		return this;
 	}
 
 	@Override
@@ -73,7 +85,8 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 		return this;
 	}
 
-	public Material build() {
-		return new MaterialImpl(this.flags, this.props, this.color, this.textureSet);
+	public Material build(final ResourceLocation registryKey) {
+		Conductance.dispatchAll(ModifyMaterialEventImpl.class, new ModifyMaterialEventImpl(registryKey, this));
+		return new MaterialImpl(this.flags, this.traits, this.props, this.color, this.textureSet);
 	}
 }

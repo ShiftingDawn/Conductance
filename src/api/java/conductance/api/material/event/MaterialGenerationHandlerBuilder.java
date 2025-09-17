@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
+import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.TagTranslatorFactory;
 
 public interface MaterialGenerationHandlerBuilder {
@@ -36,6 +37,10 @@ public interface MaterialGenerationHandlerBuilder {
 
 	default MaterialGenerationHandlerBuilder requiredFlag(final MaterialFlag requiredFlag) {
 		return this.predicate(material -> material.hasFlag(requiredFlag));
+	}
+
+	default MaterialGenerationHandlerBuilder requiredTrait(final MaterialTraitKey<?> requiredTrait) {
+		return this.predicate(material -> material.hasTrait(requiredTrait));
 	}
 
 	MaterialGenerationHandlerBuilder textureType(ResourceLocation type);
