@@ -28,8 +28,10 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	private boolean shouldOccludeBlocks = false;
 	private boolean hasFluid = false;
 	private boolean autoGenerateFluid = false;
+	private @Nullable Function<Material, String> descriptionIdSuffixFactory;
 	private long unitValue = CAPI.UNIT;
 	private @Nullable ResourceLocation textureType;
+
 
 	@Override
 	public MaterialGenerationHandlerBuilder groupTag(final String tagName, @Nullable final TagTranslatorFactory translationFactory) {
@@ -66,6 +68,12 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	}
 
 	@Override
+	public MaterialGenerationHandlerBuilder setDescriptionIdSuffixFactory(final Function<Material, String> descriptionIdSuffixFactory) {
+		this.descriptionIdSuffixFactory = descriptionIdSuffixFactory;
+		return this;
+	}
+
+	@Override
 	public MaterialGenerationHandlerBuilder unitValue(final long unitValue) {
 		this.unitValue = unitValue;
 		return this;
@@ -86,6 +94,7 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	public MaterialGenerationHandler build() {
 		return new MaterialGenerationHandlerImpl(
 				this.unlocalizedNameFactory,
+				this.descriptionIdSuffixFactory,
 				Collections.unmodifiableMap(this.groupTags), Collections.unmodifiableMap(this.entryTags),
 				this.hasItem, this.autoGenerateItem,
 				this.hasBlock, this.autoGenerateBlock, this.shouldOccludeBlocks,

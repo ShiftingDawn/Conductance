@@ -1,15 +1,23 @@
 package conductance.api.material;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 
 public interface MaterialGenerationHandler {
+
+	String getDescriptionId();
+
+	@Nullable
+	Function<Material, String> getDescriptionIdSuffixFactory();
+
+	String makeDescriptionId(Material material);
 
 	<T> List<TagKey<T>> getGroupTags(Registry<T> registry, Material material);
 
@@ -35,9 +43,11 @@ public interface MaterialGenerationHandler {
 
 	long getUnitValue();
 
-	String getUnlocalizedName(Material material);
+	Function<Material, String> getUnlocalizedNameFactory();
 
-	String getDescriptionId();
+	default String getUnlocalizedName(final Material material) {
+		return this.getUnlocalizedNameFactory().apply(material).formatted(material.getName());
+	}
 
 	boolean test(Material material);
 

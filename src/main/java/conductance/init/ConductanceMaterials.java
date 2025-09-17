@@ -1,12 +1,16 @@
 package conductance.init;
 
+import conductance.api.CAPI;
 import conductance.api.NCMaterialProps;
 import conductance.api.NCMaterialTextureSets;
 import conductance.api.NCMaterials;
 import conductance.api.NCPeriodicElements;
+import conductance.api.material.Material;
 import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
+import conductance.api.resource.event.AddTranslationEvent;
+import conductance.api.util.TextHelper;
 import conductance.Conductance;
 
 @ConductancePluginListener(modid = Conductance.MODID)
@@ -40,6 +44,13 @@ public final class ConductanceMaterials {
 				.plate().rod()
 				.style(0x49ead6, NCMaterialTextureSets.DIAMOND)
 		);
+	}
+
+	@EventListener(priority = -100)
+	private static void addMaterialTranslations(final AddTranslationEvent event) {
+		for (final Material material : CAPI.regs().materials()) {
+			event.add(material, TextHelper.lowerUnderscoreToEnglish(material.getName()));
+		}
 	}
 
 	private ConductanceMaterials() {

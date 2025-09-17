@@ -16,7 +16,6 @@ import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
 import conductance.api.resource.event.RegisterTagEvent;
-import conductance.api.util.TextHelper;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
 import conductance.init.item.CraftingToolItem;
@@ -56,11 +55,6 @@ public final class ConductanceItems {
 
 	@EventListener(priority = -100)
 	private static void addItemTranslations(final AddTranslationEvent event) {
-//		ConductanceItems.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(item -> item instanceof MaterialItem).forEach(item -> {
-//			final MaterialItem materialItem = (MaterialItem) item;
-//			final String name = materialItem.getHandler().getUnlocalizedName(materialItem.getMaterial());
-//			event.add(materialItem, TextHelper.lowerUnderscoreToEnglish(name));
-//		});
 		Conductance.MATERIALS.getItemTable().rowMap().forEach((material, map) -> map.forEach((handler, item) -> {
 			handler.getGroupTagsAndTranslators(BuiltInRegistries.ITEM, material).forEach((tagKey, translator) -> {
 				if (translator != null) {
@@ -97,7 +91,7 @@ public final class ConductanceItems {
 		event.addSimpleItem(ConductanceItems.WIRE_CUTTERS.get());
 	}
 
-	@EventListener
+	@EventListener(priority = -100)
 	private static void addItemTags(final RegisterTagEvent event) {
 		event.tag(Tags.Items.TOOLS, CAPI.TAG_HAMMERS.location(), CAPI.TAG_WIRE_CUTTERS.location());
 		event.item(CAPI.TAG_WRENCHES, ConductanceItems.WRENCH.get());

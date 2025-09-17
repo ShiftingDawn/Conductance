@@ -21,7 +21,7 @@ public final class MaterialItem extends Item {
 	private final LazyInt burnValue;
 
 	public MaterialItem(final Properties properties, final Material material, final MaterialGenerationHandler handler) {
-		super(properties.component(DataComponents.ITEM_NAME, Component.translatable(handler.getDescriptionId(), Component.translatable(material.getDescriptionId()))));
+		super(properties.component(DataComponents.ITEM_NAME, Component.translatable(handler.makeDescriptionId(material), Component.translatable(material.getDescriptionId()))));
 		this.material = material;
 		this.handler = handler;
 		this.burnValue = LazyInt.of(() -> {

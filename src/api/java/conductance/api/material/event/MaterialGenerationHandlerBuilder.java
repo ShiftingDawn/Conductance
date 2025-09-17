@@ -1,5 +1,6 @@
 package conductance.api.material.event;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +27,8 @@ public interface MaterialGenerationHandlerBuilder {
 	MaterialGenerationHandlerBuilder setHasBlock(boolean hasBlock, boolean autoGenerateBlock, boolean shouldOccludeBlocks);
 
 	MaterialGenerationHandlerBuilder setHasFluid(boolean hasFluid, boolean autoGenerateFluid);
+
+	MaterialGenerationHandlerBuilder setDescriptionIdSuffixFactory(Function<Material, String> descriptionIdSuffixFactory);
 
 	MaterialGenerationHandlerBuilder unitValue(long unitValue);
 

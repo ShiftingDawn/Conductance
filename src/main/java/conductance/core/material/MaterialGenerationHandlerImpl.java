@@ -23,6 +23,7 @@ import conductance.api.material.TagTranslatorFactory;
 final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 
 	private final Function<Material, String> unlocalizedNameFactory;
+	private final @Nullable Function<Material, String> descriptionIdSuffixFactory;
 	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("materialGenerationHandler", this.getId()));
 	private final Map<String, TagTranslatorFactory> groupTags;
 	private final Map<String, TagTranslatorFactory> entryTags;
@@ -47,13 +48,20 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	}
 
 	@Override
-	public String getUnlocalizedName(final Material material) {
-		return this.unlocalizedNameFactory.apply(material);
+	public String getDescriptionId() {
+		return this.descriptionId.get();
 	}
 
 	@Override
-	public String getDescriptionId() {
-		return this.descriptionId.get();
+	@Nullable
+	public Function<Material, String> getDescriptionIdSuffixFactory() {
+		return this.descriptionIdSuffixFactory;
+	}
+
+	@Override
+	public String makeDescriptionId(final Material material) {
+		final String suffix = this.descriptionIdSuffixFactory == null ? "factory" : this.descriptionIdSuffixFactory.apply(material);
+		return this.getDescriptionId() + "." + suffix;
 	}
 
 	@Override
@@ -123,6 +131,11 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	@Override
 	public long getUnitValue() {
 		return this.unitValue;
+	}
+
+	@Override
+	public Function<Material, String> getUnlocalizedNameFactory() {
+		return this.unlocalizedNameFactory;
 	}
 
 	@Override

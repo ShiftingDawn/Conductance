@@ -2,6 +2,7 @@ package conductance.init;
 
 import conductance.api.CAPI;
 import conductance.api.NCMaterialFlags;
+import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.event.RegisterMaterialGenerationHandlerEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
@@ -68,11 +69,13 @@ public final class ConductanceMaterialGenerationHandlers {
 	}
 
 	@EventListener(priority = -100)
-	private static void addTranslations(final AddTranslationEvent event) {
-		CAPI.regs().materialGenerationHandlers().forEach(handler -> {
-			final String key = handler.getId().getPath();
-			event.add(handler.getDescriptionId(), TextHelper.lowerUnderscoreToEnglish(key));
-		});
+	private static void addMaterialGenerationHandlerTranslations(final AddTranslationEvent event) {
+		for (final MaterialGenerationHandler handler : CAPI.regs().materialGenerationHandlers()) {
+			event.add(handler.getDescriptionId(), TextHelper.lowerUnderscoreToEnglish(handler.getId().getPath()));
+			if (handler.getDescriptionIdSuffixFactory() == null) {
+				event.add(handler.getDescriptionId() + ".factory", "%s " + TextHelper.lowerUnderscoreToEnglish(handler.getId().getPath()));
+			}
+		}
 	}
 
 	private ConductanceMaterialGenerationHandlers() {
