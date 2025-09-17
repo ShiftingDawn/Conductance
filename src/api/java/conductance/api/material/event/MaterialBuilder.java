@@ -46,6 +46,36 @@ public interface MaterialBuilder {
 		return this.flag(NCMaterialFlags.BOLT_AND_SCREW);
 	}
 
+	MaterialBuilder liquid(int temperature, int density, int viscosity);
+
+	default MaterialBuilder liquid(final int temperature) {
+		return this.liquid(temperature, -1, -1);
+	}
+
+	default MaterialBuilder liquid() {
+		return this.liquid(-1, -1, -1);
+	}
+
+	MaterialBuilder gas(int temperature, int density, int viscosity);
+
+	default MaterialBuilder gas(final int temperature) {
+		return this.gas(temperature, -1, -1);
+	}
+
+	default MaterialBuilder gas() {
+		return this.gas(-1, -1, -1);
+	}
+
+	MaterialBuilder plasma(int temperature, int density, int viscosity);
+
+	default MaterialBuilder plasma(final int temperature) {
+		return this.gas(temperature, -1, -1);
+	}
+
+	default MaterialBuilder plasma() {
+		return this.gas(-1, -1, -1);
+	}
+
 	<T> MaterialBuilder prop(MaterialProp<T> property, T value);
 
 	MaterialBuilder color(int rgb);

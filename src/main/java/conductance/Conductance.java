@@ -27,6 +27,7 @@ import conductance.core.material.MaterialRegistryImpl;
 import conductance.core.periodicelement.PeriodicElementCore;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
+import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
 import conductance.lib.ResourceFinderImpl;
 import conductance.lib.registry.RegistryProviderImpl;
@@ -66,8 +67,8 @@ public final class Conductance {
 		MaterialCore.initialize(Conductance.MODBUS);
 
 		ConductanceBlocks.initialize(Conductance.MODBUS);
-
 		ConductanceItems.initialize(Conductance.MODBUS);
+		ConductanceFluids.initialize(Conductance.MODBUS);
 	}
 
 	public static ResourceLocation id(final String path) {
