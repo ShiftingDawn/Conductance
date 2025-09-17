@@ -34,6 +34,18 @@ public interface MaterialBuilder {
 		return this.flag(NCMaterialFlags.ROD);
 	}
 
+	default MaterialBuilder gear() {
+		return this.flag(NCMaterialFlags.GEAR);
+	}
+
+	default MaterialBuilder smallGear() {
+		return this.flag(NCMaterialFlags.SMALL_GEAR);
+	}
+
+	default MaterialBuilder boltAndScrew() {
+		return this.flag(NCMaterialFlags.BOLT_AND_SCREW);
+	}
+
 	<T> MaterialBuilder prop(MaterialProp<T> property, T value);
 
 	MaterialBuilder color(int rgb);

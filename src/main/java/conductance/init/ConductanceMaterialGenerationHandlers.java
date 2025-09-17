@@ -10,12 +10,18 @@ import conductance.api.resource.event.AddTranslationEvent;
 import conductance.api.util.TextHelper;
 import conductance.Conductance;
 import static conductance.api.NCMaterialGenerationHandlers.BLOCK;
+import static conductance.api.NCMaterialGenerationHandlers.BOLT;
+import static conductance.api.NCMaterialGenerationHandlers.DENSE_PLATE;
+import static conductance.api.NCMaterialGenerationHandlers.DOUBLE_PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.DUST;
+import static conductance.api.NCMaterialGenerationHandlers.GEAR;
 import static conductance.api.NCMaterialGenerationHandlers.GEM;
 import static conductance.api.NCMaterialGenerationHandlers.INGOT;
 import static conductance.api.NCMaterialGenerationHandlers.NUGGET;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.ROD;
+import static conductance.api.NCMaterialGenerationHandlers.SCREW;
+import static conductance.api.NCMaterialGenerationHandlers.SMALL_GEAR;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceMaterialGenerationHandlers {
@@ -40,7 +46,6 @@ public final class ConductanceMaterialGenerationHandlers {
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.GEM)
 		);
-
 		BLOCK = event.register("block", b -> b
 				.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
 				.entryTag("c:storage_blocks/%s", "%s Storage Blocks")
@@ -60,11 +65,47 @@ public final class ConductanceMaterialGenerationHandlers {
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.PLATE)
 		);
+		DOUBLE_PLATE = event.register("double_plate", "double_%s_plate", b -> b
+				.groupTag("c:double_plates", "Double Plates")
+				.entryTag("c:double_plates/%s", "Double %s Plates")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.PLATE)
+		);
+		DENSE_PLATE = event.register("dense_plate", "dense_%s_plate", b -> b
+				.groupTag("c:dense_plates", "Dense Plates")
+				.entryTag("c:dense_plates/%s", "Dense %s Plates")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.PLATE)
+		);
 		ROD = event.register("rod", b -> b
 				.groupTag("c:rods", (String) null) //translation handled by NeoForge
 				.entryTag("c:rods/%s", "%s Rods")
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.ROD)
+		);
+		GEAR = event.register("gear", b -> b
+				.groupTag("c:gears", "Gears")
+				.entryTag("c:gears/%s", "%s Gears")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.GEAR)
+		);
+		SMALL_GEAR = event.register("small_gear", b -> b
+				.groupTag("c:small_gears", "Small Gears")
+				.entryTag("c:small_gears/%s", "Small %s Gears")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.SMALL_GEAR)
+		);
+		BOLT = event.register("bolt", b -> b
+				.groupTag("c:bolts", "Bolts")
+				.entryTag("c:bolts/%s", "%s Bolts")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.BOLT_AND_SCREW)
+		);
+		SCREW = event.register("screw", b -> b
+				.groupTag("c:screws", "Screws")
+				.entryTag("c:screws/%s", "%s Screws")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.BOLT_AND_SCREW)
 		);
 	}
 
@@ -76,6 +117,8 @@ public final class ConductanceMaterialGenerationHandlers {
 				event.add(handler.getDescriptionId() + ".factory", "%s " + TextHelper.lowerUnderscoreToEnglish(handler.getId().getPath()));
 			}
 		}
+		event.add(DOUBLE_PLATE.getDescriptionId() + ".factory", "Double %s Plate");
+		event.add(DENSE_PLATE.getDescriptionId() + ".factory", "Dense %s Plate");
 	}
 
 	private ConductanceMaterialGenerationHandlers() {
