@@ -62,7 +62,7 @@ public final class MaterialTextureSetLoader {
 				Conductance.LOGGER.error("Could not generate material texture set {}.", set, e);
 			}
 		}, () -> {
-			Conductance.LOGGER.error("Could not generate material texture set{} because it does not exist.", set);
+			Conductance.LOGGER.error("Could not generate material texture set {} because it does not exist.", set);
 			Conductance.LOGGER.error("\tExpected path: {}", expectedPath);
 		});
 		loadingStack.removeLast();
