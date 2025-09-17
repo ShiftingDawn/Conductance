@@ -4,5 +4,9 @@
 
   "item.conductance.wrench": "Wrench",
   "item.conductance.hammer": "Hammer",
-  "item.conductance.wire_cutters": "Wire Cutters"
+  "item.conductance.wire_cutters": "Wire Cutters",
+
+  "tooltip.material_bucket.temperature": "§eTemperature: §r%sK",
+  "tooltip.material_bucket.density": "§eDensity: §r%s",
+  "tooltip.material_bucket.viscosity": "§eViscosity: §r%s"
 }
