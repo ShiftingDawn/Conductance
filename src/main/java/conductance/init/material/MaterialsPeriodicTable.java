@@ -7,6 +7,7 @@ import conductance.api.NCPeriodicElements;
 import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
+import conductance.api.resource.event.AddTranslationEvent;
 import conductance.Conductance;
 import static conductance.api.NCMaterialTextureSets.BRIGHT;
 import static conductance.api.NCMaterialTextureSets.METALLIC;
@@ -844,6 +845,13 @@ final class MaterialsPeriodicTable {
 				.gas()
 				.style(0x142D64, METALLIC)
 		);
+	}
+
+	@EventListener(priority = -99)
+	private static void addPeriodicTableMaterialTranslations(final AddTranslationEvent event) {
+		event.add(HELIUM_3, "Helium-3");
+		event.add(URANIUM_235, "Uranium-235");
+		event.add(PLUTONIUM_241, "Plutonium-241");
 	}
 
 	private MaterialsPeriodicTable() {

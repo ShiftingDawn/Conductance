@@ -1,5 +1,6 @@
 package conductance.init.block;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -14,7 +15,7 @@ public final class MaterialBlockItem extends BlockItem {
 	private final LazyInt burnValue;
 
 	public MaterialBlockItem(final MaterialBlock block, final Properties properties) {
-		super(block, properties);
+		super(block, properties.component(DataComponents.ITEM_NAME, block.getName()));
 		this.burnValue = LazyInt.of(() -> {
 			final int value = block.getMaterial().getProp(NCMaterialProps.BURN_TIME, 0);
 			if (value == 0) {
