@@ -7,8 +7,12 @@ import java.util.function.Function;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.material.event.MaterialGenerationHandlerBuilder;
 
 public interface MaterialGenerationHandler {
 
@@ -31,15 +35,27 @@ public interface MaterialGenerationHandler {
 
 	boolean autoGenerateItem();
 
+	@Nullable
+	MaterialGenerationHandlerBuilder.BuilderCallback<Item.Properties> getItemBuilderCallback();
+
 	boolean hasBlock();
 
 	boolean autoGenerateBlock();
 
 	boolean shouldOccludeBlocks();
 
+	@Nullable
+	MaterialGenerationHandlerBuilder.BuilderCallback<BlockBehaviour.Properties> getBlockBuilderCallback();
+
+	@Nullable
+	MaterialGenerationHandlerBuilder.BuilderCallback<Item.Properties> getBlockItemBuilderCallback();
+
 	boolean hasFluid();
 
 	boolean autoGenerateFluid();
+
+	@Nullable
+	MaterialGenerationHandlerBuilder.BuilderCallback<FluidType.Properties> getFluidBuilderCallback();
 
 	long getUnitValue();
 

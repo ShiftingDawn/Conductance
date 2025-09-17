@@ -11,6 +11,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
+import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
@@ -47,9 +48,14 @@ public final class ConductanceItems {
 		CAPI.regs().materialGenerationHandlers().stream()
 				.filter(handler -> handler.hasItem() && handler.autoGenerateItem() && handler.test(material) && !Conductance.MATERIALS.hasItemOverride(material, handler))
 				.forEach(handler -> {
-					ConductanceItems.REGISTRY.registerItem(handler.getUnlocalizedName(material), props -> Util.make(new MaterialItem(props, material, handler), item -> {
-						Conductance.MATERIALS.register(material, handler, item);
-					}));
+					ConductanceItems.REGISTRY.registerItem(handler.getUnlocalizedName(material), props -> {
+						if (handler.getItemBuilderCallback() != null) {
+							props = handler.getItemBuilderCallback().apply(material, props);
+						}
+						return Util.make(new MaterialItem(props, material, handler), item -> {
+							Conductance.MATERIALS.register(material, handler, item);
+						});
+					});
 				});
 	}
 

@@ -49,9 +49,13 @@ public final class ConductanceFluids {
 				.filter(handler -> handler.hasFluid() && handler.autoGenerateFluid() && handler.test(material) && !Conductance.MATERIALS.hasFluidOverride(material, handler))
 				.forEach(handler -> {
 					final String name = handler.getUnlocalizedName(material);
-					final Supplier<FluidType> fluidType = ConductanceFluids.REGISTRY.register(name, () -> new MaterialFluidType(
-							FluidType.Properties.create(), material, handler
-					));
+					final Supplier<FluidType> fluidType = ConductanceFluids.REGISTRY.register(name, () -> {
+						FluidType.Properties props = FluidType.Properties.create();
+						if (handler.getFluidBuilderCallback() != null) {
+							props = handler.getFluidBuilderCallback().apply(material, props);
+						}
+						return new MaterialFluidType(props, material, handler);
+					});
 					final Supplier<Fluid> fluid = ConductanceFluids.FLUIDS.register(name, () -> {
 						final ConductanceFluid result = new ConductanceFluid(fluidType, () -> CAPI.materials().getItem(material, handler), null);
 						Conductance.MATERIALS.register(material, handler, result);

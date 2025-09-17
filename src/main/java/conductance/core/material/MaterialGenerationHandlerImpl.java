@@ -11,13 +11,17 @@ import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.fluids.FluidType;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.TagTranslatorFactory;
+import conductance.api.material.event.MaterialGenerationHandlerBuilder;
 
 @RequiredArgsConstructor
 final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
@@ -29,11 +33,15 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	private final Map<String, TagTranslatorFactory> entryTags;
 	private final boolean hasItem;
 	private final boolean autoGenerateItem;
+	private final @Nullable MaterialGenerationHandlerBuilder.BuilderCallback<Item.Properties> itemBuilderCallback;
 	private final boolean hasBlock;
 	private final boolean autoGenerateBlock;
 	private final boolean shouldOccludeBlocks;
+	private final @Nullable MaterialGenerationHandlerBuilder.BuilderCallback<BlockBehaviour.Properties> blockBuilderCallback;
+	private final @Nullable MaterialGenerationHandlerBuilder.BuilderCallback<Item.Properties> blockItemBuilderCallback;
 	private final boolean hasFluid;
 	private final boolean autoGenerateFluid;
+	private final @Nullable MaterialGenerationHandlerBuilder.BuilderCallback<FluidType.Properties> fluidBuilderCallback;
 	private final long unitValue;
 	private final Predicate<Material> predicate;
 	private final @Nullable ResourceLocation textureType;
@@ -104,6 +112,12 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	}
 
 	@Override
+	@Nullable
+	public MaterialGenerationHandlerBuilder.BuilderCallback<Item.Properties> getItemBuilderCallback() {
+		return this.itemBuilderCallback;
+	}
+
+	@Override
 	public boolean hasBlock() {
 		return this.hasBlock;
 	}
@@ -119,6 +133,18 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	}
 
 	@Override
+	@Nullable
+	public MaterialGenerationHandlerBuilder.BuilderCallback<BlockBehaviour.Properties> getBlockBuilderCallback() {
+		return this.blockBuilderCallback;
+	}
+
+	@Override
+	@Nullable
+	public MaterialGenerationHandlerBuilder.BuilderCallback<Item.Properties> getBlockItemBuilderCallback() {
+		return this.blockItemBuilderCallback;
+	}
+
+	@Override
 	public boolean hasFluid() {
 		return this.hasFluid;
 	}
@@ -126,6 +152,12 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	@Override
 	public boolean autoGenerateFluid() {
 		return this.autoGenerateFluid;
+	}
+
+	@Override
+	@Nullable
+	public MaterialGenerationHandlerBuilder.BuilderCallback<FluidType.Properties> getFluidBuilderCallback() {
+		return this.fluidBuilderCallback;
 	}
 
 	@Override

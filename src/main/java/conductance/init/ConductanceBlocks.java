@@ -38,12 +38,22 @@ public final class ConductanceBlocks {
 				.filter(handler -> handler.hasBlock() && handler.autoGenerateBlock() && handler.test(material) && !Conductance.MATERIALS.hasBlockOverride(material, handler))
 				.forEach(handler -> {
 					final String name = handler.getUnlocalizedName(material);
-					final DeferredBlock<MaterialBlock> holder = ConductanceBlocks.REGISTRY.registerBlock(name, props -> Util.make(new MaterialBlock(props, material, handler), block -> {
-						Conductance.MATERIALS.register(material, handler, block);
-					}));
-					ConductanceBlocks.ITEMS.registerItem(name, props -> Util.make(new MaterialBlockItem(holder.value(), props.useBlockDescriptionPrefix()), item -> {
-						Conductance.MATERIALS.register(material, handler, item);
-					}));
+					final DeferredBlock<MaterialBlock> holder = ConductanceBlocks.REGISTRY.registerBlock(name, props -> {
+						if (handler.getBlockBuilderCallback() != null) {
+							props = handler.getBlockBuilderCallback().apply(material, props);
+						}
+						return Util.make(new MaterialBlock(props, material, handler), block -> {
+							Conductance.MATERIALS.register(material, handler, block);
+						});
+					});
+					ConductanceBlocks.ITEMS.registerItem(name, props -> {
+						if (handler.getBlockItemBuilderCallback() != null) {
+							props = handler.getBlockItemBuilderCallback().apply(material, props);
+						}
+						return Util.make(new MaterialBlockItem(holder.value(), props.useBlockDescriptionPrefix()), item -> {
+							Conductance.MATERIALS.register(material, handler, item);
+						});
+					});
 				});
 	}
 

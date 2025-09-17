@@ -6,6 +6,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.neoforge.fluids.FluidType;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
@@ -23,15 +26,18 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	private Predicate<Material> predicate = ignored -> true;
 	private boolean hasItem = false;
 	private boolean autoGenerateItem = false;
+	private @Nullable BuilderCallback<Item.Properties> itemBuilderCallback;
 	private boolean hasBlock = false;
 	private boolean autoGenerateBlock = false;
 	private boolean shouldOccludeBlocks = false;
+	private @Nullable BuilderCallback<BlockBehaviour.Properties> blockBuilderCallback;
+	private @Nullable BuilderCallback<Item.Properties> blockItemBuilderCallback;
 	private boolean hasFluid = false;
 	private boolean autoGenerateFluid = false;
+	private @Nullable BuilderCallback<FluidType.Properties> fluidBuilderCallback;
 	private @Nullable Function<Material, String> descriptionIdSuffixFactory;
 	private long unitValue = CAPI.UNIT;
 	private @Nullable ResourceLocation textureType;
-
 
 	@Override
 	public MaterialGenerationHandlerBuilder groupTag(final String tagName, @Nullable final TagTranslatorFactory translationFactory) {
@@ -46,24 +52,29 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	}
 
 	@Override
-	public MaterialGenerationHandlerBuilder setHasItem(final boolean hasItem, final boolean autoGenerateItem) {
+	public MaterialGenerationHandlerBuilder setHasItem(final boolean hasItem, final boolean autoGenerateItem, @Nullable final BuilderCallback<Item.Properties> builderCallback) {
 		this.hasItem = hasItem;
 		this.autoGenerateItem = autoGenerateItem;
+		this.itemBuilderCallback = builderCallback;
 		return this;
 	}
 
 	@Override
-	public MaterialGenerationHandlerBuilder setHasBlock(final boolean hasBlock, final boolean autoGenerateBlock, final boolean shouldOccludeBlocks) {
+	public MaterialGenerationHandlerBuilder setHasBlock(final boolean hasBlock, final boolean autoGenerateBlock, final boolean shouldOccludeBlocks,
+			@Nullable final BuilderCallback<BlockBehaviour.Properties> blockBuilderCallback, @Nullable final BuilderCallback<Item.Properties> itemBuilderCallback) {
 		this.hasBlock = hasBlock;
 		this.autoGenerateBlock = autoGenerateBlock;
 		this.shouldOccludeBlocks = shouldOccludeBlocks;
+		this.blockBuilderCallback = blockBuilderCallback;
+		this.blockItemBuilderCallback = itemBuilderCallback;
 		return this;
 	}
 
 	@Override
-	public MaterialGenerationHandlerBuilder setHasFluid(final boolean hasFluid, final boolean autoGenerateFluid) {
+	public MaterialGenerationHandlerBuilder setHasFluid(final boolean hasFluid, final boolean autoGenerateFluid, @Nullable final BuilderCallback<FluidType.Properties> builderCallback) {
 		this.hasFluid = hasFluid;
 		this.autoGenerateFluid = autoGenerateFluid;
+		this.fluidBuilderCallback = builderCallback;
 		return this;
 	}
 
@@ -96,9 +107,9 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 				this.unlocalizedNameFactory,
 				this.descriptionIdSuffixFactory,
 				Collections.unmodifiableMap(this.groupTags), Collections.unmodifiableMap(this.entryTags),
-				this.hasItem, this.autoGenerateItem,
-				this.hasBlock, this.autoGenerateBlock, this.shouldOccludeBlocks,
-				this.hasFluid, this.autoGenerateFluid,
+				this.hasItem, this.autoGenerateItem, this.itemBuilderCallback,
+				this.hasBlock, this.autoGenerateBlock, this.shouldOccludeBlocks, this.blockBuilderCallback, this.blockItemBuilderCallback,
+				this.hasFluid, this.autoGenerateFluid, this.fluidBuilderCallback,
 				this.unitValue,
 				this.predicate,
 				this.textureType

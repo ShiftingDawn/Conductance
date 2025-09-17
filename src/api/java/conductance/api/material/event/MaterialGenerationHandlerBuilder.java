@@ -3,6 +3,9 @@ package conductance.api.material.event;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
@@ -10,6 +13,11 @@ import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.TagTranslatorFactory;
 
 public interface MaterialGenerationHandlerBuilder {
+
+	interface BuilderCallback<T> {
+
+		T apply(Material material, T properties);
+	}
 
 	MaterialGenerationHandlerBuilder groupTag(String tagName, @Nullable TagTranslatorFactory translationFactory);
 
@@ -23,11 +31,24 @@ public interface MaterialGenerationHandlerBuilder {
 		return this.entryTag(tagName, material -> translationFactory);
 	}
 
-	MaterialGenerationHandlerBuilder setHasItem(boolean hasItem, boolean autoGenerateItem);
+	MaterialGenerationHandlerBuilder setHasItem(boolean hasItem, boolean autoGenerateItem, @Nullable BuilderCallback<Item.Properties> builderCallback);
 
-	MaterialGenerationHandlerBuilder setHasBlock(boolean hasBlock, boolean autoGenerateBlock, boolean shouldOccludeBlocks);
+	default MaterialGenerationHandlerBuilder setHasItem(final boolean hasItem, final boolean autoGenerateItem) {
+		return this.setHasItem(true, autoGenerateItem, null);
+	}
 
-	MaterialGenerationHandlerBuilder setHasFluid(boolean hasFluid, boolean autoGenerateFluid);
+	MaterialGenerationHandlerBuilder setHasBlock(boolean hasBlock, boolean autoGenerateBlock, boolean shouldOccludeBlocks, @Nullable BuilderCallback<BlockBehaviour.Properties> blockBuilderCallback,
+			@Nullable BuilderCallback<Item.Properties> itemBuilderCallback);
+
+	default MaterialGenerationHandlerBuilder setHasBlock(final boolean hasBlock, final boolean autoGenerateBlock, final boolean shouldOccludeBlocks) {
+		return this.setHasBlock(hasBlock, autoGenerateBlock, shouldOccludeBlocks, null, null);
+	}
+
+	MaterialGenerationHandlerBuilder setHasFluid(boolean hasFluid, boolean autoGenerateFluid, @Nullable BuilderCallback<FluidType.Properties> builderCallback);
+
+	default MaterialGenerationHandlerBuilder setHasFluid(final boolean hasFluid, final boolean autoGenerateFluid) {
+		return this.setHasFluid(hasFluid, autoGenerateFluid, null);
+	}
 
 	MaterialGenerationHandlerBuilder setDescriptionIdSuffixFactory(Function<Material, String> descriptionIdSuffixFactory);
 
