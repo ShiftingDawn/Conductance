@@ -56,7 +56,7 @@ public final class ConductanceMaterialGenerationHandlers {
 				.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
 				.entryTag("c:storage_blocks/%s", "%s Storage Blocks")
 				.setHasBlock(true, true, true)
-				.requiredFlag(NCMaterialFlags.BLOCK)
+				.predicate(material -> material.hasFlag(NCMaterialFlags.DUST) || material.hasFlag(NCMaterialFlags.INGOT) || material.hasFlag(NCMaterialFlags.GEAR))
 		);
 		NUGGET = event.register("nugget", b -> b
 				.groupTag("c:nuggets", (String) null) //translation handled by NeoForge
@@ -124,12 +124,12 @@ public final class ConductanceMaterialGenerationHandlers {
 				.entryTag("c:gases/%s", "%s Gases")
 				.setHasFluid(true, true)
 				.requiredTrait(NCMaterialTraits.GAS)
+				.setDescriptionIdSuffixFactory(ConductanceMaterialGenerationHandlers::gasDescriptionIdSuffixFactory)
 		);
 		PLASMA = event.register("plasma", b -> b
 				.entryTag("c:plasmas/%s", "%s Plasmas")
 				.setHasFluid(true, true)
 				.requiredTrait(NCMaterialTraits.PLASMA)
-				.setDescriptionIdSuffixFactory(ConductanceMaterialGenerationHandlers::gasDescriptionIdSuffixFactory)
 		);
 	}
 

@@ -6,8 +6,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -38,6 +41,7 @@ public final class ConductanceFluids {
 		ConductanceFluids.BUCKETS.register(modEventBus);
 		CAPI.regs().materials().forEach(ConductanceFluids::generateMaterial);
 		modEventBus.addListener(RegisterClientExtensionsEvent.class, ConductanceFluids::onRegisterClientExtensions);
+		modEventBus.addListener(RegisterCapabilitiesEvent.class, ConductanceFluids::onRegisterCapabilities);
 	}
 
 	private static void generateMaterial(final Material material) {
@@ -97,6 +101,14 @@ public final class ConductanceFluids {
 					}))
 			));
 		});
+	}
+
+	private static void onRegisterCapabilities(final RegisterCapabilitiesEvent event) {
+		ConductanceFluids.BUCKETS.getEntries().stream().map(DeferredHolder::get)
+				.filter(item -> item instanceof MaterialBucketItem)
+				.forEach(item -> {
+					event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidBucketWrapper(stack), item);
+				});
 	}
 
 	private ConductanceFluids() {

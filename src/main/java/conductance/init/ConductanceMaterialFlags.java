@@ -8,7 +8,6 @@ import conductance.api.material.event.RegisterMaterialFlagEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.Conductance;
-import static conductance.api.NCMaterialFlags.BLOCK;
 import static conductance.api.NCMaterialFlags.BOLT_AND_SCREW;
 import static conductance.api.NCMaterialFlags.DUST;
 import static conductance.api.NCMaterialFlags.GEAR;
@@ -26,7 +25,6 @@ public final class ConductanceMaterialFlags {
 		DUST = event.register("dust");
 		INGOT = event.register("ingot", Set.of(DUST), ConductanceMaterialFlags::validateIngotOrGem);
 		GEM = event.register("gem", Set.of(DUST));
-		BLOCK = event.register("storage_block", ConductanceMaterialFlags::validateBlock);
 
 		PLATE = event.register("plate", ConductanceMaterialFlags::validatePlate);
 		ROD = event.register("rod", ConductanceMaterialFlags::validateRod);
@@ -47,14 +45,6 @@ public final class ConductanceMaterialFlags {
 	private static List<String> validatePlate(final Material material) {
 		if (!material.hasFlag(INGOT) && !material.hasFlag(DUST)) {
 			return List.of("Plate flag requires either ingot or dust flag to be present");
-		}
-		return null;
-	}
-
-	@Nullable
-	private static List<String> validateBlock(final Material material) {
-		if (!material.hasFlag(INGOT) && !material.hasFlag(GEM) && !material.hasFlag(DUST)) {
-			return List.of("Block flag requires either ingot, gem or dust flag to be present");
 		}
 		return null;
 	}

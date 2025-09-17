@@ -24,12 +24,6 @@ public final class ConductanceMaterialOverrides {
 		event.add(NCMaterials.GOLD, NCMaterialGenerationHandlers.INGOT, Items.GOLD_INGOT);
 		event.add(NCMaterials.GOLD, NCMaterialGenerationHandlers.NUGGET, Items.GOLD_NUGGET);
 		event.add(NCMaterials.GOLD, NCMaterialGenerationHandlers.BLOCK, Blocks.GOLD_BLOCK);
-
-		event.add(NCMaterials.COAL, NCMaterialGenerationHandlers.GEM, Items.COAL);
-		event.add(NCMaterials.COAL, NCMaterialGenerationHandlers.BLOCK, Blocks.COAL_BLOCK);
-
-		event.add(NCMaterials.DIAMOND, NCMaterialGenerationHandlers.GEM, Items.DIAMOND);
-		event.add(NCMaterials.DIAMOND, NCMaterialGenerationHandlers.BLOCK, Blocks.DIAMOND_BLOCK);
 	}
 
 	private ConductanceMaterialOverrides() {

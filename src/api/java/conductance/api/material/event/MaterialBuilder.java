@@ -26,10 +26,6 @@ public interface MaterialBuilder {
 		return this.flag(NCMaterialFlags.GEM);
 	}
 
-	default MaterialBuilder block() {
-		return this.flag(NCMaterialFlags.BLOCK);
-	}
-
 	default MaterialBuilder plate() {
 		return this.flag(NCMaterialFlags.PLATE);
 	}
@@ -46,8 +42,34 @@ public interface MaterialBuilder {
 		return this.flag(NCMaterialFlags.SMALL_GEAR);
 	}
 
+	default MaterialBuilder foil() {
+		return this.flag(NCMaterialFlags.FOIL);
+	}
+
 	default MaterialBuilder boltAndScrew() {
 		return this.flag(NCMaterialFlags.BOLT_AND_SCREW);
+	}
+
+	default MaterialBuilder metalDefault() {
+		this.dust();
+		this.ingot();
+		this.plate();
+		return this;
+	}
+
+	default MaterialBuilder metalExtra() {
+		this.metalDefault();
+		this.gear();
+		this.rod();
+		this.foil();
+		return this;
+	}
+
+	default MaterialBuilder metalAll() {
+		this.metalExtra();
+		this.smallGear();
+		this.boltAndScrew();
+		return this;
 	}
 
 	<T extends MaterialTrait<T>> MaterialBuilder trait(MaterialTraitKey<T> key, T instance);
