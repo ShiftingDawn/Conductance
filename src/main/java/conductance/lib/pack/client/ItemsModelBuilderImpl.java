@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import conductance.api.resource.ItemsModelBuilder;
 import conductance.api.resource.ItemsModelCompositeBuilder;
 import conductance.api.resource.ItemsModelConditionBuilder;
+import conductance.api.resource.ItemsModelCustomModelBuilder;
 import conductance.api.resource.ItemsModelModelBuilder;
 import conductance.api.resource.ItemsModelRangeDispatchBuilder;
 import conductance.api.resource.ItemsModelSelectBuilder;
@@ -64,6 +65,11 @@ final class ItemsModelBuilderImpl implements ItemsModelBuilder {
 				json.addProperty("type", ResourceLocation.withDefaultNamespace("empty").toString());
 			}
 		};
+	}
+
+	@Override
+	public void custom(final ResourceLocation type, final Consumer<ItemsModelCustomModelBuilder> builder) {
+		this.model = Util.make(new ItemsModelCustomModelBuilderImpl(type), builder);
 	}
 
 	public JsonObject build() {

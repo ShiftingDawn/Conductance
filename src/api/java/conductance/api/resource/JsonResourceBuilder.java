@@ -1,6 +1,7 @@
 package conductance.api.resource;
 
 import net.minecraft.resources.ResourceLocation;
+import com.google.gson.JsonElement;
 
 public interface JsonResourceBuilder<BUILDER extends JsonResourceBuilder<BUILDER>> {
 
@@ -15,4 +16,6 @@ public interface JsonResourceBuilder<BUILDER extends JsonResourceBuilder<BUILDER
 	default BUILDER addProperty(final String propertyKey, final ResourceLocation propertyValue) {
 		return this.addProperty(propertyKey, propertyValue.toString());
 	}
+
+	BUILDER addProperty(String propertyKey, JsonElement propertyValue);
 }

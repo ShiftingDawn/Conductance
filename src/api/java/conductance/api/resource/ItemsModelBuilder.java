@@ -48,4 +48,6 @@ public interface ItemsModelBuilder {
 	}
 
 	void empty();
+
+	void custom(ResourceLocation type, Consumer<ItemsModelCustomModelBuilder> builder);
 }

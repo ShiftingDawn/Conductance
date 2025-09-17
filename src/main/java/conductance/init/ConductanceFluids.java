@@ -1,31 +1,36 @@
 package conductance.init;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import com.google.gson.JsonObject;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
+import conductance.api.resource.event.AddRuntimeModelEvent;
+import conductance.api.resource.event.AddTranslationEvent;
 import conductance.Conductance;
-import conductance.init.fluid.ConductanceBucketItem;
 import conductance.init.fluid.ConductanceFluid;
+import conductance.init.fluid.MaterialBucketItem;
 import conductance.init.fluid.MaterialClientFluidTypeExtensions;
 import conductance.init.fluid.MaterialFluidType;
 
+@ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceFluids {
 
 	private static final DeferredRegister<FluidType> REGISTRY = DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, Conductance.MODID);
 	private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID, Conductance.MODID);
 	private static final DeferredRegister.Items BUCKETS = DeferredRegister.createItems(Conductance.MODID);
-	private static final Map<Supplier<FluidType>, Supplier<Item>> BUCKET_ITEMS = new ConcurrentHashMap<>();
 
 	public static void initialize(final IEventBus modEventBus) {
 		ConductanceFluids.REGISTRY.register(modEventBus);
@@ -43,9 +48,14 @@ public final class ConductanceFluids {
 					final Supplier<FluidType> fluidType = ConductanceFluids.REGISTRY.register(name, () -> new MaterialFluidType(
 							FluidType.Properties.create(), material, handler
 					));
-					final Supplier<Fluid> fluid = ConductanceFluids.FLUIDS.register(name, () -> new ConductanceFluid(fluidType, () -> ConductanceFluids.BUCKET_ITEMS.get(fluidType).get(), null));
-					final Supplier<Item> bucket = ConductanceFluids.BUCKETS.registerItem(name + "_bucket", props -> new ConductanceBucketItem(fluid.get(), props));
-					ConductanceFluids.BUCKET_ITEMS.put(fluidType, bucket);
+					final Supplier<Fluid> fluid = ConductanceFluids.FLUIDS.register(name, () -> {
+						final ConductanceFluid result = new ConductanceFluid(fluidType, () -> CAPI.materials().getItem(material, handler), null);
+						Conductance.MATERIALS.register(material, handler, result);
+						return result;
+					});
+					ConductanceFluids.BUCKETS.registerItem(name + "_bucket", props -> Util.make(new MaterialBucketItem(fluid.get(), props, material, handler), bucketItem -> {
+						Conductance.MATERIALS.register(material, handler, bucketItem);
+					}));
 				});
 	}
 
@@ -55,6 +65,38 @@ public final class ConductanceFluids {
 				event.registerFluidType(new MaterialClientFluidTypeExtensions(type), type);
 			}
 		}
+	}
+
+	@EventListener(priority = -100)
+	private static void addFluidTranslations(final AddTranslationEvent event) {
+		Conductance.MATERIALS.getFluidTable().rowMap().forEach((material, map) -> map.forEach((handler, fluid) -> {
+			handler.getGroupTagsAndTranslators(BuiltInRegistries.FLUID, material).forEach((tagKey, translator) -> {
+				if (translator != null) {
+					final String translation = translator.translate(material);
+					if (translation != null) {
+						event.add(tagKey, translation.formatted(material.getName()));
+					}
+				}
+			});
+		}));
+	}
+
+	@EventListener(priority = -100)
+	private static void addFluidModels(final AddRuntimeModelEvent event) {
+		ConductanceFluids.BUCKETS.getEntries().stream().map(DeferredHolder::get).filter(item -> item instanceof MaterialBucketItem).forEach(item -> {
+			final MaterialBucketItem bucket = (MaterialBucketItem) item;
+			event.addItemsModel(bucket, b -> b.custom(ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "fluid_container"), b2 -> b2
+					.addProperty("fluid", BuiltInRegistries.FLUID.getKey(bucket.content))
+					.addProperty("flip_gas", true)
+					.addProperty("cover_is_mask", true)
+					.addProperty("textures", Util.make(new JsonObject(), json -> {
+						json.addProperty("particle", ResourceLocation.withDefaultNamespace("item/bucket").toString());
+						json.addProperty("base", ResourceLocation.withDefaultNamespace("item/bucket").toString());
+						json.addProperty("fluid", ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/mask/bucket_fluid").toString());
+						json.addProperty("cover", ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/mask/bucket_fluid_cover").toString());
+					}))
+			));
+		});
 	}
 
 	private ConductanceFluids() {

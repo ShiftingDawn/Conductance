@@ -118,6 +118,7 @@ public final class ConductanceMaterialGenerationHandlers {
 				.entryTag("c:%s", "%s")
 				.setHasFluid(true, true)
 				.requiredTrait(NCMaterialTraits.LIQUID)
+				.setDescriptionIdSuffixFactory(ConductanceMaterialGenerationHandlers::liquidDescriptionIdSuffixFactory)
 		);
 		GAS = event.register("gas", ConductanceMaterialGenerationHandlers::gasUnlocalizedNameFactory, b -> b
 				.entryTag("c:gases/%s", "%s Gases")
@@ -128,6 +129,7 @@ public final class ConductanceMaterialGenerationHandlers {
 				.entryTag("c:plasmas/%s", "%s Plasmas")
 				.setHasFluid(true, true)
 				.requiredTrait(NCMaterialTraits.PLASMA)
+				.setDescriptionIdSuffixFactory(ConductanceMaterialGenerationHandlers::gasDescriptionIdSuffixFactory)
 		);
 	}
 
@@ -141,6 +143,13 @@ public final class ConductanceMaterialGenerationHandlers {
 		}
 		event.add(DOUBLE_PLATE.getDescriptionId() + ".factory", "Double %s Plate");
 		event.add(DENSE_PLATE.getDescriptionId() + ".factory", "Dense %s Plate");
+		event.add(LIQUID.getDescriptionId() + ".molten", "Molten %s");
+		event.add(LIQUID.getDescriptionId() + ".liquid", "Liquid %s");
+		event.add(LIQUID.getDescriptionId() + ".bucket", "%s Bucket");
+		event.add(GAS.getDescriptionId() + ".gas", "%s Gas");
+		event.add(GAS.getDescriptionId() + ".factory", "%s");
+		event.add(GAS.getDescriptionId() + ".bucket", "%s Bucket");
+		event.add(PLASMA.getDescriptionId() + ".bucket", "%s Bucket");
 	}
 
 	private static String liquidUnlocalizedNameFactory(final Material material) {
@@ -153,11 +162,28 @@ public final class ConductanceMaterialGenerationHandlers {
 		return "%s";
 	}
 
+	private static String liquidDescriptionIdSuffixFactory(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.INGOT) || material.hasFlag(NCMaterialFlags.GEAR)) {
+			return "molten";
+		}
+		if (material.getProp(NCMaterialProps.DEFAULT_FLUID) == NCMaterialTraits.GAS) {
+			return "liquid";
+		}
+		return "factory";
+	}
+
 	private static String gasUnlocalizedNameFactory(final Material material) {
 		if (material.getProp(NCMaterialProps.DEFAULT_FLUID) == NCMaterialTraits.GAS) {
 			return "%s";
 		}
 		return "%s_gas";
+	}
+
+	private static String gasDescriptionIdSuffixFactory(final Material material) {
+		if (material.getProp(NCMaterialProps.DEFAULT_FLUID) == NCMaterialTraits.GAS) {
+			return "factory";
+		}
+		return "gas";
 	}
 
 	private ConductanceMaterialGenerationHandlers() {

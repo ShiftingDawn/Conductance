@@ -3,6 +3,7 @@ package conductance.api.resource.event;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.fluids.FluidType;
 import conductance.api.material.Material;
 import conductance.api.plugin.IConductancePluginEvent;
 
@@ -16,6 +17,10 @@ public interface AddTranslationEvent extends IConductancePluginEvent {
 
 	default void add(final Item item, final String value) {
 		this.add(item.getDescriptionId(), value);
+	}
+
+	default void add(final FluidType fluid, final String value) {
+		this.add(fluid.getDescriptionId(), value);
 	}
 
 	default void add(final Material material, final String value) {
