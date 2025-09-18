@@ -1,4 +1,4 @@
-package conductance.lib.registry;
+package conductance.lib;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package conductance.lib;
+package conductance.core.material;
 
 import net.minecraft.resources.ResourceLocation;
 import conductance.api.CAPI;

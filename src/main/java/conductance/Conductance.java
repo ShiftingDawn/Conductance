@@ -29,8 +29,8 @@ import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
 import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
+import conductance.lib.RegistryProviderImpl;
 import conductance.lib.ResourceFinderImpl;
-import conductance.lib.registry.RegistryProviderImpl;
 
 @Mod(value = Conductance.MODID)
 @SuppressWarnings("NotNullFieldNotInitialized")

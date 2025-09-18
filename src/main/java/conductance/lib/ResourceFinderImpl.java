@@ -11,6 +11,7 @@ import conductance.api.NCMaterialTextureSets;
 import conductance.api.material.Material;
 import conductance.api.resource.ResourceFinder;
 import conductance.api.util.SafeOptional;
+import conductance.core.material.MaterialTextureSetLoader;
 
 @SuppressWarnings({"ConstantValue", "DataFlowIssue"})
 public final class ResourceFinderImpl implements ResourceFinder {

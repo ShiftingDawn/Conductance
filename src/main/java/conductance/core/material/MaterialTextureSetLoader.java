@@ -1,4 +1,4 @@
-package conductance.lib;
+package conductance.core.material;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
