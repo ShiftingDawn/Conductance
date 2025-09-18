@@ -117,4 +117,6 @@ public interface MaterialBuilder {
 	default MaterialBuilder style(final int rgb, final ResourceLocation textureSet) {
 		return this.color(rgb).textureSet(textureSet);
 	}
+
+	MaterialBuilder chemicalFormula(String formula);
 }

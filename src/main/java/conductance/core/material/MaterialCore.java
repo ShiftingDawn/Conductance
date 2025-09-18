@@ -74,7 +74,7 @@ public final class MaterialCore {
 	private static void initMaterials() {
 		Conductance.dispatch(RegisterMaterialEvent.class, modid -> new RegisterMaterialEventImpl((registryName, periodicElement, builder) -> {
 			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
-			final Material result = Util.make(new MaterialBuilderImpl(), builder).build(registryKey);
+			final Material result = Util.make(new MaterialBuilderImpl(periodicElement), builder).build(registryKey);
 			Conductance.REGISTRIES.register(Conductance.REGISTRIES.materials(), registryKey, result);
 			return result;
 		}));

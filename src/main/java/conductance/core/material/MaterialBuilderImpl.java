@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCMaterialProps;
 import conductance.api.NCMaterialTextureSets;
@@ -20,8 +21,10 @@ import conductance.api.material.MaterialTrait;
 import conductance.api.material.MaterialTraitFluid;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.event.MaterialBuilder;
+import conductance.api.periodicelement.PeriodicElement;
 import conductance.Conductance;
 
+@RequiredArgsConstructor
 final class MaterialBuilderImpl implements MaterialBuilder {
 
 	@Getter(AccessLevel.PACKAGE)
@@ -31,8 +34,10 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<MaterialProp<?>, Object> props = new IdentityHashMap<>();
 
+	private final @Nullable PeriodicElement periodicElement;
 	private ResourceLocation textureSet = NCMaterialTextureSets.DULL;
 	private @Nullable Integer color;
+	private @Nullable String chemicalFormula;
 
 	@Override
 	public MaterialBuilder flag(final MaterialFlag flag) {
@@ -85,8 +90,14 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 		return this;
 	}
 
+	@Override
+	public MaterialBuilder chemicalFormula(final String formula) {
+		this.chemicalFormula = formula;
+		return this;
+	}
+
 	public Material build(final ResourceLocation registryKey) {
 		Conductance.dispatchAll(ModifyMaterialEventImpl.class, new ModifyMaterialEventImpl(registryKey, this));
-		return new MaterialImpl(this.flags, this.traits, this.props, this.color, this.textureSet);
+		return new MaterialImpl(this.periodicElement, this.flags, this.traits, this.props, this.color, this.textureSet, this.chemicalFormula);
 	}
 }

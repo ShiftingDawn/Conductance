@@ -1,6 +1,7 @@
 package conductance.init.fluid;
 
 import java.util.function.Consumer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BucketItem;
@@ -14,8 +15,11 @@ import conductance.api.material.MaterialGenerationHandler;
 
 public final class MaterialBucketItem extends BucketItem {
 
+	private final Material material;
+
 	public MaterialBucketItem(final Fluid content, final Properties properties, final Material material, final MaterialGenerationHandler handler) {
 		super(content, properties.component(DataComponents.ITEM_NAME, MaterialBucketItem.makeItemName(material, handler)));
+		this.material = material;
 	}
 
 	private static Component makeItemName(final Material material, final MaterialGenerationHandler handler) {
@@ -26,7 +30,7 @@ public final class MaterialBucketItem extends BucketItem {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void appendHoverText(final ItemStack stack, final TooltipContext context, final TooltipDisplay tooltipDisplay, final Consumer<Component> tooltipAdder, final TooltipFlag flag) {
-		super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+		tooltipAdder.accept(Component.literal(this.material.getChemicalFormula()).withStyle(ChatFormatting.AQUA));
 		final FluidType type = this.content.getFluidType();
 		tooltipAdder.accept(Component.translatable("tooltip.material_bucket.temperature", type.getTemperature()));
 		tooltipAdder.accept(Component.translatable("tooltip.material_bucket.density", type.getDensity()));

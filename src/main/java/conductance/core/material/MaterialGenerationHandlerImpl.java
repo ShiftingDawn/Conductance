@@ -13,7 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidType;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +21,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.TagTranslatorFactory;
 import conductance.api.material.event.MaterialGenerationHandlerBuilder;
+import conductance.api.util.Lazy;
 
 @RequiredArgsConstructor
 final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {

@@ -5,8 +5,12 @@ import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.periodicelement.PeriodicElement;
 
 public interface Material {
+
+	@Nullable
+	PeriodicElement getPeriodicElement();
 
 	boolean hasFlag(MaterialFlag flag);
 
@@ -35,4 +39,6 @@ public interface Material {
 	int getColor();
 
 	ResourceLocation getTextureSet();
+
+	String getChemicalFormula();
 }
