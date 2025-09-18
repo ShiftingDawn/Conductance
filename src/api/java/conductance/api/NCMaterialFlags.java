@@ -12,9 +12,13 @@ public final class NCMaterialFlags {
 	public static MaterialFlag PLATE;
 	public static MaterialFlag ROD;
 	public static MaterialFlag GEAR;
-	public static MaterialFlag SMALL_GEAR;
+	public static MaterialFlag GEAR_SMALL;
 	public static MaterialFlag FOIL;
 	public static MaterialFlag BOLT_AND_SCREW;
+	public static MaterialFlag RING;
+	public static MaterialFlag ROTOR;
+	public static MaterialFlag FINE_WIRE;
+	public static MaterialFlag FRAME_BOX;
 
 	private NCMaterialFlags() {
 	}

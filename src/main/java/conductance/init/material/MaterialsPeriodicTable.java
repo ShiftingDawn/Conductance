@@ -219,13 +219,13 @@ final class MaterialsPeriodicTable {
 		);
 
 		MAGNESIUM = event.register("magnesium", NCPeriodicElements.MAGNESIUM, b -> b
-				.dust()
+				.dust().ingot()
 				.liquid(923)
 				.color(0xFFC8C8)
 		);
 
 		ALUMINIUM = event.register("aluminium", NCPeriodicElements.ALUMINIUM, b -> b
-				.metalAll()
+				.metalAll().fineWire()
 				.liquid(933)
 				// .ore()
 				.color(0x80C8F0)
@@ -275,7 +275,7 @@ final class MaterialsPeriodicTable {
 		);
 
 		TITANIUM = event.register("titanium", NCPeriodicElements.TITANIUM, b -> b
-				.metalAll()
+				.metalAll().fineWire()
 				.liquid()
 				.style(0xDCA0F0, METALLIC)
 				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_DIAMOND_TOOL)
@@ -295,20 +295,20 @@ final class MaterialsPeriodicTable {
 		);
 
 		MANGANESE = event.register("manganese", NCPeriodicElements.MANGANESE, b -> b
-				.metalDefault().foil()
+				.metalDefault().foil().fineWire()
 				.liquid(1519)
 				.color(0xFAFAFA)
 		);
 
 		IRON = event.register("iron", NCPeriodicElements.IRON, b -> b
-				.metalAll()
+				.metalAll().fineWire()
 				.liquid(1811).plasma()
 				// .ore()
 				.style(0xC8C8C8, METALLIC)
 		);
 
 		COBALT = event.register("cobalt", NCPeriodicElements.COBALT, b -> b
-				.metalDefault()
+				.metalDefault().fineWire()
 				.liquid(1768)
 				// .ore()
 				.style(0x5050FA, METALLIC)
@@ -322,7 +322,7 @@ final class MaterialsPeriodicTable {
 		);
 
 		COPPER = event.register("copper", NCPeriodicElements.COPPER, b -> b
-				.metalAll()
+				.metalAll().fineWire()
 				.liquid(1358)
 				// .ore()
 				.style(0xFF6400, SHINY)
@@ -335,7 +335,7 @@ final class MaterialsPeriodicTable {
 		);
 
 		GALLIUM = event.register("gallium", NCPeriodicElements.GALLIUM, b -> b
-				.metalDefault().foil()
+				.metalDefault().foil().fineWire()
 				.liquid(303)
 				.style(0xDCDCFF, SHINY)
 		);
@@ -388,20 +388,20 @@ final class MaterialsPeriodicTable {
 		);
 
 		NIOBIUM = event.register("niobium", NCPeriodicElements.NIOBIUM, b -> b
-				.metalDefault()
+				.metalDefault().foil().fineWire()
 				.liquid()
 				.style(0xBEB4C8, METALLIC)
 		);
 
 		MOLYBDENUM = event.register("molybdenum", NCPeriodicElements.MOLYBDENUM, b -> b
-				.metalDefault()
+				.metalDefault().foil()
 				.liquid(2896)
 				// .ore()
 				.style(0xB4B4DC, SHINY)
 		);
 
 		TECHNETIUM = event.register("technetium", NCPeriodicElements.TECHNETIUM, b -> b
-				.metalDefault()
+				.metalAll().fineWire()
 				.style(0xD7FCE2, SHINY)
 		);
 
@@ -418,14 +418,14 @@ final class MaterialsPeriodicTable {
 		);
 
 		PALLADIUM = event.register("palladium", NCPeriodicElements.PALLADIUM, b -> b
-				.metalExtra()
+				.metalExtra().fineWire()
 				.liquid()
 				// .ore()
 				.style(0x808080, SHINY)
 		);
 
 		SILVER = event.register("silver", NCPeriodicElements.SILVER, b -> b
-				.metalExtra()
+				.metalExtra().fineWire()
 				.liquid(1235)
 				// .ore()
 				.style(0xDCDCFF, SHINY)
@@ -437,13 +437,13 @@ final class MaterialsPeriodicTable {
 		);
 
 		INDIUM = event.register("indium", NCPeriodicElements.INDIUM, b -> b
-				.dust().ingot()
+				.dust()
 				.liquid(430)
 				.style(0x400080, SHINY)
 		);
 
 		TIN = event.register("tin", NCPeriodicElements.TIN, b -> b
-				.metalExtra()
+				.metalAll().fineWire()
 				.liquid(505)
 				// .ore()
 				.color(0xDCDCDC)
@@ -493,12 +493,12 @@ final class MaterialsPeriodicTable {
 		);
 
 		PRASEODYMIUM = event.register("praseodymium", NCPeriodicElements.PRASEODYMIUM, b -> b
-				.dust().ingot()
+				.dust().ingot().rod().fineWire()
 				.style(0x75D681, METALLIC)
 		);
 
 		NEODYMIUM = event.register("neodymium", NCPeriodicElements.NEODYMIUM, b -> b
-				.dust().ingot().rod()
+				.dust().ingot().rod().fineWire()
 				.liquid()
 				// .ore()
 				.style(0x646464, METALLIC)
@@ -511,14 +511,14 @@ final class MaterialsPeriodicTable {
 		);
 
 		SAMARIUM = event.register("samarium", NCPeriodicElements.SAMARIUM, b -> b
-				.dust().ingot().rod()
+				.dust().ingot().rod().fineWire()
 				.liquid(1345)
 				// .ore()
 				.style(0xFFFFCC, METALLIC)
 		);
 
 		EUROPIUM = event.register("europium", NCPeriodicElements.EUROPIUM, b -> b
-				.metalDefault()
+				.metalDefault().foil().fineWire()
 				.liquid(1099).plasma()
 				.style(0xF6B5FF, METALLIC)
 		);
@@ -570,13 +570,13 @@ final class MaterialsPeriodicTable {
 		);
 
 		TANTALUM = event.register("tantalum", NCPeriodicElements.TANTALUM, b -> b
-				.metalDefault().foil()
+				.metalDefault().foil().fineWire()
 				.liquid(3290)
 				.style(0x69B7FF, METALLIC)
 		);
 
 		TUNGSTEN = event.register("tungsten", NCPeriodicElements.TUNGSTEN, b -> b
-				.metalAll()
+				.metalAll().fineWire()
 				.liquid(3695)
 				.style(0x323232, METALLIC)
 				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_DIAMOND_TOOL)
@@ -588,14 +588,14 @@ final class MaterialsPeriodicTable {
 		);
 
 		OSMIUM = event.register("osmium", NCPeriodicElements.OSMIUM, b -> b
-				.metalAll()
+				.metalAll().fineWire()
 				.liquid(3306)
 				.style(0x3232FF, METALLIC)
 				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_DIAMOND_TOOL)
 		);
 
 		IRIDIUM = event.register("iridium", NCPeriodicElements.IRIDIUM, b -> b
-				.metalAll()
+				.metalAll().fineWire()
 				.liquid(2719)
 				// .ore()
 				.style(0xF0F0F5, METALLIC)
@@ -603,14 +603,14 @@ final class MaterialsPeriodicTable {
 		);
 
 		PLATINUM = event.register("platinum", NCPeriodicElements.PLATINUM, b -> b
-				.metalAll()
+				.metalAll().fineWire()
 				.liquid(2041)
 				// .ore()
 				.style(0xFFFFC8, SHINY)
 		);
 
 		GOLD = event.register("gold", NCPeriodicElements.GOLD, b -> b
-				.metalDefault()
+				.metalExtra().fineWire()
 				.liquid(1337)
 				// .ore()
 				.style(0xFFFF1E, SHINY)
@@ -627,7 +627,7 @@ final class MaterialsPeriodicTable {
 		);
 
 		LEAD = event.register("lead", NCPeriodicElements.LEAD, b -> b
-				.metalExtra()
+				.metalExtra().fineWire()
 				.liquid(600)
 				// .ore()
 				.color(0x8C648C)
@@ -717,7 +717,7 @@ final class MaterialsPeriodicTable {
 		);
 
 		AMERICIUM = event.register("americium", NCPeriodicElements.AMERICIUM, b -> b
-				.metalExtra()
+				.metalExtra().fineWire()
 				.liquid(1449).plasma()
 				.style(0xC8C8C8, METALLIC)
 				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_IRON_TOOL)

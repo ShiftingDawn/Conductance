@@ -16,22 +16,30 @@ import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddTranslationEvent;
 import conductance.api.util.TextHelper;
 import conductance.Conductance;
-import static conductance.api.NCMaterialGenerationHandlers.BLOCK;
 import static conductance.api.NCMaterialGenerationHandlers.BOLT;
-import static conductance.api.NCMaterialGenerationHandlers.DENSE_PLATE;
-import static conductance.api.NCMaterialGenerationHandlers.DOUBLE_PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.DUST;
+import static conductance.api.NCMaterialGenerationHandlers.FINE_WIRE;
+import static conductance.api.NCMaterialGenerationHandlers.FOIL;
+import static conductance.api.NCMaterialGenerationHandlers.FRAME_BOX;
 import static conductance.api.NCMaterialGenerationHandlers.GAS;
 import static conductance.api.NCMaterialGenerationHandlers.GEAR;
+import static conductance.api.NCMaterialGenerationHandlers.GEAR_SMALL;
 import static conductance.api.NCMaterialGenerationHandlers.GEM;
+import static conductance.api.NCMaterialGenerationHandlers.GEM_EXQUISITE;
+import static conductance.api.NCMaterialGenerationHandlers.GEM_FLAWED;
+import static conductance.api.NCMaterialGenerationHandlers.GEM_FLAWLESS;
 import static conductance.api.NCMaterialGenerationHandlers.INGOT;
 import static conductance.api.NCMaterialGenerationHandlers.LIQUID;
 import static conductance.api.NCMaterialGenerationHandlers.NUGGET;
 import static conductance.api.NCMaterialGenerationHandlers.PLASMA;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE;
+import static conductance.api.NCMaterialGenerationHandlers.PLATE_DENSE;
+import static conductance.api.NCMaterialGenerationHandlers.PLATE_DOUBLE;
+import static conductance.api.NCMaterialGenerationHandlers.RING;
 import static conductance.api.NCMaterialGenerationHandlers.ROD;
+import static conductance.api.NCMaterialGenerationHandlers.ROTOR;
 import static conductance.api.NCMaterialGenerationHandlers.SCREW;
-import static conductance.api.NCMaterialGenerationHandlers.SMALL_GEAR;
+import static conductance.api.NCMaterialGenerationHandlers.STORAGE_BLOCK;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceMaterialGenerationHandlers {
@@ -44,23 +52,18 @@ public final class ConductanceMaterialGenerationHandlers {
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.DUST)
 		);
+		STORAGE_BLOCK = event.register("storage_block", b -> b
+				.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
+				.entryTag("c:storage_blocks/%s", "%s Storage Blocks")
+				.setHasBlock(true, true, true)
+				.predicate(material -> material.hasFlag(NCMaterialFlags.DUST) || material.hasFlag(NCMaterialFlags.INGOT) || material.hasFlag(NCMaterialFlags.GEAR))
+		);
+
 		INGOT = event.register("ingot", b -> b
 				.groupTag("c:ingots", (String) null) //translation handled by NeoForge
 				.entryTag("c:ingots/%s", "%s Ingots")
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.INGOT)
-		);
-		GEM = event.register("gem", "%s", b -> b
-				.groupTag("c:gems", (String) null) //translation handled by NeoForge
-				.entryTag("c:gems/%s", "%s Gems")
-				.setHasItem(true, true)
-				.requiredFlag(NCMaterialFlags.GEM)
-		);
-		BLOCK = event.register("block", b -> b
-				.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
-				.entryTag("c:storage_blocks/%s", "%s Storage Blocks")
-				.setHasBlock(true, true, true)
-				.predicate(material -> material.hasFlag(NCMaterialFlags.DUST) || material.hasFlag(NCMaterialFlags.INGOT) || material.hasFlag(NCMaterialFlags.GEAR))
 		);
 		NUGGET = event.register("nugget", b -> b
 				.groupTag("c:nuggets", (String) null) //translation handled by NeoForge
@@ -69,19 +72,44 @@ public final class ConductanceMaterialGenerationHandlers {
 				.requiredFlag(NCMaterialFlags.INGOT)
 		);
 
+		GEM = event.register("gem", "%s", b -> b
+				.groupTag("c:gems", (String) null) //translation handled by NeoForge
+				.entryTag("c:gems/%s", "%s Gems")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.GEM)
+		);
+		GEM_FLAWED = event.register("flawed_gem", "flawed_%s", b -> b
+				.groupTag("c:flawed_gems", "Flawed Gems")
+				.entryTag("c:flawed_gems/%s", "Flawed %s Gems")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.GEM)
+		);
+		GEM_FLAWLESS = event.register("flawless_gem", "flawless_%s", b -> b
+				.groupTag("c:flawless_gems", "Flawless Gems")
+				.entryTag("c:flawless_gems/%s", "Flawless %s Gems")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.GEM)
+		);
+		GEM_EXQUISITE = event.register("exquisite_gem", "exquisite_%s", b -> b
+				.groupTag("c:exquisite_gems", "Exquisite Gems")
+				.entryTag("c:exquisite_gems/%s", "Exquisite %s Gems")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.GEM)
+		);
+
 		PLATE = event.register("plate", b -> b
 				.groupTag("c:plates", "Plates")
 				.entryTag("c:plates/%s", "%s Plates")
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.PLATE)
 		);
-		DOUBLE_PLATE = event.register("double_plate", "double_%s_plate", b -> b
+		PLATE_DOUBLE = event.register("double_plate", "double_%s_plate", b -> b
 				.groupTag("c:double_plates", "Double Plates")
 				.entryTag("c:double_plates/%s", "Double %s Plates")
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.PLATE)
 		);
-		DENSE_PLATE = event.register("dense_plate", "dense_%s_plate", b -> b
+		PLATE_DENSE = event.register("dense_plate", "dense_%s_plate", b -> b
 				.groupTag("c:dense_plates", "Dense Plates")
 				.entryTag("c:dense_plates/%s", "Dense %s Plates")
 				.setHasItem(true, true)
@@ -99,11 +127,17 @@ public final class ConductanceMaterialGenerationHandlers {
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.GEAR)
 		);
-		SMALL_GEAR = event.register("small_gear", b -> b
+		GEAR_SMALL = event.register("small_gear", b -> b
 				.groupTag("c:small_gears", "Small Gears")
 				.entryTag("c:small_gears/%s", "Small %s Gears")
 				.setHasItem(true, true)
-				.requiredFlag(NCMaterialFlags.SMALL_GEAR)
+				.requiredFlag(NCMaterialFlags.GEAR_SMALL)
+		);
+		FOIL = event.register("foil", b -> b
+				.groupTag("c:foils", "Foils")
+				.entryTag("c:foils/%s", "%s Foil")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.FOIL)
 		);
 		BOLT = event.register("bolt", b -> b
 				.groupTag("c:bolts", "Bolts")
@@ -116,6 +150,30 @@ public final class ConductanceMaterialGenerationHandlers {
 				.entryTag("c:screws/%s", "%s Screws")
 				.setHasItem(true, true)
 				.requiredFlag(NCMaterialFlags.BOLT_AND_SCREW)
+		);
+		RING = event.register("ring", b -> b
+				.groupTag("c:rings", "Rings")
+				.entryTag("c:rings/%s", "%s Rings")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.RING)
+		);
+		ROTOR = event.register("rotor", b -> b
+				.groupTag("c:rotors", "Rotors")
+				.entryTag("c:rotors/%s", "%s Rotors")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.ROD)
+		);
+		FINE_WIRE = event.register("fine_wire", b -> b
+				.groupTag("c:fine_wires", "Fine Wires")
+				.entryTag("c:fine_wires/%s", "Fine %s Wires")
+				.setHasItem(true, true)
+				.requiredFlag(NCMaterialFlags.FINE_WIRE)
+		);
+		FRAME_BOX = event.register("frame_box", b -> b
+				.groupTag("c:frame_boxes", "Frame Boxes")
+				.entryTag("c:frame_boxes/%s", "%s Frame Boxes")
+				.setHasBlock(true, true, false)
+				.requiredFlag(NCMaterialFlags.FRAME_BOX)
 		);
 
 		LIQUID = event.register("liquid", ConductanceMaterialGenerationHandlers::liquidUnlocalizedNameFactory, b -> b
@@ -145,8 +203,11 @@ public final class ConductanceMaterialGenerationHandlers {
 				event.add(handler.getDescriptionId() + ".factory", "%s " + TextHelper.lowerUnderscoreToEnglish(handler.getId().getPath()));
 			}
 		}
-		event.add(DOUBLE_PLATE.getDescriptionId() + ".factory", "Double %s Plate");
-		event.add(DENSE_PLATE.getDescriptionId() + ".factory", "Dense %s Plate");
+		event.add(STORAGE_BLOCK.getDescriptionId() + ".factory", "Block of %s");
+		event.add(PLATE_DOUBLE.getDescriptionId() + ".factory", "Double %s Plate");
+		event.add(PLATE_DENSE.getDescriptionId() + ".factory", "Dense %s Plate");
+		event.add(GEAR_SMALL.getDescriptionId() + ".factory", "Small %s Gear");
+		event.add(FINE_WIRE.getDescriptionId() + ".factory", "Fine %s Wire");
 		event.add(LIQUID.getDescriptionId() + ".factory", "%s");
 		event.add(LIQUID.getDescriptionId() + ".molten", "Molten %s");
 		event.add(LIQUID.getDescriptionId() + ".liquid", "Liquid %s");

@@ -16,14 +16,14 @@ public final class ConductanceMaterialOverrides {
 	private static void init(final RegisterMaterialOverridesEvent event) {
 		event.add(NCMaterials.IRON, NCMaterialGenerationHandlers.INGOT, Items.IRON_INGOT);
 		event.add(NCMaterials.IRON, NCMaterialGenerationHandlers.NUGGET, Items.IRON_NUGGET);
-		event.add(NCMaterials.IRON, NCMaterialGenerationHandlers.BLOCK, Blocks.IRON_BLOCK);
+		event.add(NCMaterials.IRON, NCMaterialGenerationHandlers.STORAGE_BLOCK, Blocks.IRON_BLOCK);
 
 		event.add(NCMaterials.COPPER, NCMaterialGenerationHandlers.INGOT, Items.COPPER_INGOT);
-		event.add(NCMaterials.COPPER, NCMaterialGenerationHandlers.BLOCK, Blocks.COPPER_BLOCK);
+		event.add(NCMaterials.COPPER, NCMaterialGenerationHandlers.STORAGE_BLOCK, Blocks.COPPER_BLOCK);
 
 		event.add(NCMaterials.GOLD, NCMaterialGenerationHandlers.INGOT, Items.GOLD_INGOT);
 		event.add(NCMaterials.GOLD, NCMaterialGenerationHandlers.NUGGET, Items.GOLD_NUGGET);
-		event.add(NCMaterials.GOLD, NCMaterialGenerationHandlers.BLOCK, Blocks.GOLD_BLOCK);
+		event.add(NCMaterials.GOLD, NCMaterialGenerationHandlers.STORAGE_BLOCK, Blocks.GOLD_BLOCK);
 	}
 
 	private ConductanceMaterialOverrides() {

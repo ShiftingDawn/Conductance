@@ -38,8 +38,8 @@ public interface MaterialBuilder {
 		return this.flag(NCMaterialFlags.GEAR);
 	}
 
-	default MaterialBuilder smallGear() {
-		return this.flag(NCMaterialFlags.SMALL_GEAR);
+	default MaterialBuilder gearSmall() {
+		return this.flag(NCMaterialFlags.GEAR_SMALL);
 	}
 
 	default MaterialBuilder foil() {
@@ -48,6 +48,22 @@ public interface MaterialBuilder {
 
 	default MaterialBuilder boltAndScrew() {
 		return this.flag(NCMaterialFlags.BOLT_AND_SCREW);
+	}
+
+	default MaterialBuilder ring() {
+		return this.flag(NCMaterialFlags.RING);
+	}
+
+	default MaterialBuilder rotor() {
+		return this.flag(NCMaterialFlags.ROTOR);
+	}
+
+	default MaterialBuilder fineWire() {
+		return this.flag(NCMaterialFlags.FINE_WIRE);
+	}
+
+	default MaterialBuilder frameBox() {
+		return this.flag(NCMaterialFlags.FRAME_BOX);
 	}
 
 	default MaterialBuilder metalDefault() {
@@ -62,13 +78,16 @@ public interface MaterialBuilder {
 		this.gear();
 		this.rod();
 		this.foil();
+		this.ring();
+		this.frameBox();
 		return this;
 	}
 
 	default MaterialBuilder metalAll() {
 		this.metalExtra();
-		this.smallGear();
+		this.gearSmall();
 		this.boltAndScrew();
+		this.rotor();
 		return this;
 	}
 

@@ -10,12 +10,17 @@ import conductance.api.plugin.EventListener;
 import conductance.Conductance;
 import static conductance.api.NCMaterialFlags.BOLT_AND_SCREW;
 import static conductance.api.NCMaterialFlags.DUST;
+import static conductance.api.NCMaterialFlags.FINE_WIRE;
+import static conductance.api.NCMaterialFlags.FOIL;
+import static conductance.api.NCMaterialFlags.FRAME_BOX;
 import static conductance.api.NCMaterialFlags.GEAR;
+import static conductance.api.NCMaterialFlags.GEAR_SMALL;
 import static conductance.api.NCMaterialFlags.GEM;
 import static conductance.api.NCMaterialFlags.INGOT;
 import static conductance.api.NCMaterialFlags.PLATE;
+import static conductance.api.NCMaterialFlags.RING;
 import static conductance.api.NCMaterialFlags.ROD;
-import static conductance.api.NCMaterialFlags.SMALL_GEAR;
+import static conductance.api.NCMaterialFlags.ROTOR;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceMaterialFlags {
@@ -29,8 +34,13 @@ public final class ConductanceMaterialFlags {
 		PLATE = event.register("plate", ConductanceMaterialFlags::validatePlate);
 		ROD = event.register("rod", ConductanceMaterialFlags::validateRod);
 		GEAR = event.register("gear", ConductanceMaterialFlags::validateGear);
-		SMALL_GEAR = event.register("small_gear", ConductanceMaterialFlags::validateSmallGear);
-		BOLT_AND_SCREW = event.register("bolt_and_screw", ConductanceMaterialFlags::validateBoltAndScrew);
+		GEAR_SMALL = event.register("small_gear", ConductanceMaterialFlags::validateSmallGear);
+		FOIL = event.register("foil", Set.of(PLATE));
+		BOLT_AND_SCREW = event.register("bolt_and_screw", Set.of(ROD));
+		RING = event.register("ring", Set.of(ROD));
+		ROTOR = event.register("rotor", Set.of(INGOT));
+		FINE_WIRE = event.register("fine_wire", Set.of(DUST));
+		FRAME_BOX = event.register("frame_box", Set.of(ROD));
 	}
 
 	@Nullable
@@ -69,14 +79,6 @@ public final class ConductanceMaterialFlags {
 	private static List<String> validateSmallGear(final Material material) {
 		if (!material.hasFlag(PLATE) && !material.hasFlag(ROD)) {
 			return List.of("Small gear flag requires plate and rod flags to be present");
-		}
-		return null;
-	}
-
-	@Nullable
-	private static List<String> validateBoltAndScrew(final Material material) {
-		if (!material.hasFlag(ROD)) {
-			return List.of("Bolt and screw flag requires rod flag to be present");
 		}
 		return null;
 	}

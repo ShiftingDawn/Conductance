@@ -10,13 +10,16 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import conductance.api.CAPI;
+import conductance.api.NCMaterialGenerationHandlers;
+import conductance.api.NCMaterials;
 
 public final class CreativeTabHelper {
 
 	@RequiredArgsConstructor
 	public enum Tabs {
 		GENERAL(Items.IRON_INGOT::getDefaultInstance),
-		MATERIAL(Items.IRON_INGOT::getDefaultInstance);
+		MATERIAL(() -> CAPI.materials().getItem(NCMaterials.ALUMINIUM, NCMaterialGenerationHandlers.INGOT, 1));
 
 		private final @Getter String name = super.toString().toLowerCase(Locale.ROOT);
 		private final @Getter Supplier<ItemStack> icon;

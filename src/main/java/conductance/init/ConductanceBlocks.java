@@ -39,6 +39,9 @@ public final class ConductanceBlocks {
 				.forEach(handler -> {
 					final String name = handler.getUnlocalizedName(material);
 					final DeferredBlock<MaterialBlock> holder = ConductanceBlocks.REGISTRY.registerBlock(name, props -> {
+						if (!handler.shouldOccludeBlocks()) {
+							props = props.noOcclusion();
+						}
 						if (handler.getBlockBuilderCallback() != null) {
 							props = handler.getBlockBuilderCallback().apply(material, props);
 						}
