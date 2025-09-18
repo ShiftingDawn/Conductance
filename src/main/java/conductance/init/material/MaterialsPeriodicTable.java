@@ -205,7 +205,7 @@ final class MaterialsPeriodicTable {
 
 		FLUORINE = event.register("fluorine", NCPeriodicElements.FLUORINE, b -> b
 				.gas()
-				.color(0xFFFFFF)
+				.color(0x61A0D8)
 		);
 
 		NEON = event.register("neon", NCPeriodicElements.NEON, b -> b
@@ -250,7 +250,7 @@ final class MaterialsPeriodicTable {
 
 		CHLORINE = event.register("chlorine", NCPeriodicElements.CHLORINE, b -> b
 				.gas()
-				.color(0xFFFFFF)
+				.color(0x246D6D)
 		);
 
 		ARGON = event.register("argon", NCPeriodicElements.ARGON, b -> b
