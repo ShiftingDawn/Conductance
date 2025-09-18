@@ -4,12 +4,24 @@ import conductance.api.CAPI;
 import conductance.api.NCMaterialFlags;
 import conductance.api.material.Material;
 import conductance.api.recipe.event.RegisterRecipeEvent;
+import static conductance.api.CAPI.TAG_HAMMERS;
+import static conductance.api.CAPI.TAG_WIRE_CUTTERS;
 import static conductance.api.CAPI.materials;
+import static conductance.api.NCMaterialGenerationHandlers.BOLT;
+import static conductance.api.NCMaterialGenerationHandlers.FINE_WIRE;
+import static conductance.api.NCMaterialGenerationHandlers.FOIL;
+import static conductance.api.NCMaterialGenerationHandlers.FRAME_BOX;
+import static conductance.api.NCMaterialGenerationHandlers.GEAR;
+import static conductance.api.NCMaterialGenerationHandlers.GEAR_SMALL;
 import static conductance.api.NCMaterialGenerationHandlers.GEM;
 import static conductance.api.NCMaterialGenerationHandlers.INGOT;
 import static conductance.api.NCMaterialGenerationHandlers.NUGGET;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE_DOUBLE;
+import static conductance.api.NCMaterialGenerationHandlers.RING;
+import static conductance.api.NCMaterialGenerationHandlers.ROD;
+import static conductance.api.NCMaterialGenerationHandlers.ROTOR;
+import static conductance.api.NCMaterialGenerationHandlers.SCREW;
 import static conductance.api.NCMaterialGenerationHandlers.STORAGE_BLOCK;
 
 final class MaterialDynamicRecipeHandler {
@@ -55,6 +67,68 @@ final class MaterialDynamicRecipeHandler {
 			}
 			//Gem <-> plate will be handles by cutting machine later
 			//Dust <-> plate will be handles by compressor machine later
+		}
+		if (GEAR.test(material)) {
+			//TODO ingot -> extruder
+			if (PLATE.test(material) && ROD.test(material)) {
+				event.shaped("%s_gear".formatted(material.getName()), materials().getItem(material, GEAR),
+						b -> b.pattern("aba", "bWb", "aba").key('a', ROD, material).key('b', PLATE, material));
+			}
+		}
+		if (GEAR_SMALL.test(material)) {
+			//TODO ingot -> extruder
+			if (PLATE.test(material) && ROD.test(material)) {
+				event.shaped("small_%s_gear".formatted(material.getName()), materials().getItem(material, GEAR_SMALL),
+						b -> b.pattern(" a ", "XbH", " a ").key('a', ROD, material).key('b', PLATE, material));
+			}
+		}
+		if (BOLT.test(material)) {
+			//TODO ingot -> extruder
+			if (ROD.test(material)) {
+				event.shapeless("%s_bolt".formatted(material.getName()), materials().getItem(material, BOLT, 2),
+						b -> b.add(TAG_WIRE_CUTTERS).add(ROD, material));
+			}
+		}
+		if (SCREW.test(material)) {
+			//TODO ingot -> extruder
+			if (BOLT.test(material)) {
+				event.shapeless("%s_screw".formatted(material.getName()), materials().getItem(material, SCREW),
+						b -> b.add(TAG_HAMMERS).add(BOLT, material));
+			}
+		}
+		if (FOIL.test(material)) {
+			//TODO ingot -> extruder
+			if (PLATE.test(material)) {
+				event.shapeless("%s_foil".formatted(material.getName()), materials().getItem(material, FOIL),
+						b -> b.add(TAG_HAMMERS).add(PLATE, material));
+			}
+		}
+		if (RING.test(material)) {
+			//TODO ingot -> extruder
+			if (ROD.test(material)) {
+				event.shapeless("%s_ring".formatted(material.getName()), materials().getItem(material, RING),
+						b -> b.add(TAG_HAMMERS).add(ROD, material));
+			}
+		}
+		if (ROTOR.test(material)) {
+			//TODO ingot -> extruder
+			if (PLATE.test(material) && RING.test(material) && SCREW.test(material)) {
+				event.shaped("%s_rotor".formatted(material.getName()), materials().getItem(material, ROTOR),
+						b -> b.pattern("aWa", "bcH", "aXa").key('a', PLATE, material).key('b', SCREW, material).key('c', RING, material));
+			}
+		}
+		if (FINE_WIRE.test(material)) {
+			//TODO ingot -> extruder
+			if (FOIL.test(material)) {
+				event.shapeless("fine_%s_wire".formatted(material.getName()), materials().getItem(material, FINE_WIRE),
+						b -> b.add(TAG_WIRE_CUTTERS).add(FOIL, material));
+			}
+		}
+		if (FRAME_BOX.test(material)) {
+			if (ROD.test(material)) {
+				event.shaped("%s_frame_box".formatted(material.getName()), materials().getItem(material, FRAME_BOX, 2),
+						b -> b.pattern("aaa", "aWa", "aaa").key('a', ROD, material));
+			}
 		}
 	}
 

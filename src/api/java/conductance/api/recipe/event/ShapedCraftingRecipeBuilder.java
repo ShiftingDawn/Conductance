@@ -6,6 +6,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import conductance.api.material.Material;
+import conductance.api.material.MaterialGenerationHandler;
 
 public interface ShapedCraftingRecipeBuilder extends RecipeBuilder<ShapedCraftingRecipeBuilder> {
 
@@ -28,4 +30,6 @@ public interface ShapedCraftingRecipeBuilder extends RecipeBuilder<ShapedCraftin
 	ShapedCraftingRecipeBuilder key(char c, TagKey<Item> tag);
 
 	ShapedCraftingRecipeBuilder key(char c, ResourceLocation tag);
+
+	ShapedCraftingRecipeBuilder key(char c, MaterialGenerationHandler handler, Material material);
 }

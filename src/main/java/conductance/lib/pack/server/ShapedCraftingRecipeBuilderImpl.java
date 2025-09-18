@@ -14,6 +14,8 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import org.apache.http.util.TextUtils;
 import conductance.api.CAPI;
+import conductance.api.material.Material;
+import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.recipe.event.ShapedCraftingRecipeBuilder;
 
 final class ShapedCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<ShapedCraftingRecipeBuilder> implements ShapedCraftingRecipeBuilder {
@@ -71,6 +73,11 @@ final class ShapedCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<Shaped
 	public ShapedCraftingRecipeBuilder key(final char c, final ResourceLocation tag) {
 		this.keys.put(c, this.encode(tag));
 		return this;
+	}
+
+	@Override
+	public ShapedCraftingRecipeBuilder key(final char c, final MaterialGenerationHandler handler, final Material material) {
+		return this.key(c, CAPI.materials().getItem(material, handler));
 	}
 
 	@Override

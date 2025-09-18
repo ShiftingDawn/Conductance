@@ -6,6 +6,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import conductance.api.material.Material;
+import conductance.api.material.MaterialGenerationHandler;
 
 public interface ShapelessCraftingRecipeBuilder extends RecipeBuilder<ShapelessCraftingRecipeBuilder> {
 
@@ -18,6 +20,8 @@ public interface ShapelessCraftingRecipeBuilder extends RecipeBuilder<ShapelessC
 	ShapelessCraftingRecipeBuilder add(TagKey<Item> tag, int amount);
 
 	ShapelessCraftingRecipeBuilder add(ResourceLocation tag, int amount);
+
+	ShapelessCraftingRecipeBuilder add(MaterialGenerationHandler handler, Material material, int amount);
 
 	default ShapelessCraftingRecipeBuilder add(final Ingredient ingredient) {
 		return this.add(ingredient, 1);
@@ -37,5 +41,9 @@ public interface ShapelessCraftingRecipeBuilder extends RecipeBuilder<ShapelessC
 
 	default ShapelessCraftingRecipeBuilder add(final ResourceLocation tag) {
 		return this.add(tag, 1);
+	}
+
+	default ShapelessCraftingRecipeBuilder add(final MaterialGenerationHandler handler, final Material material) {
+		return this.add(handler, material, 1);
 	}
 }

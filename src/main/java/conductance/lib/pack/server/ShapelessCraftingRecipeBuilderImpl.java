@@ -12,6 +12,9 @@ import net.minecraft.world.level.ItemLike;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import conductance.api.CAPI;
+import conductance.api.material.Material;
+import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.recipe.event.ShapelessCraftingRecipeBuilder;
 
 final class ShapelessCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<ShapelessCraftingRecipeBuilder> implements ShapelessCraftingRecipeBuilder {
@@ -65,6 +68,11 @@ final class ShapelessCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<Sha
 			this.ingredients.add(json);
 		}
 		return this;
+	}
+
+	@Override
+	public ShapelessCraftingRecipeBuilder add(final MaterialGenerationHandler handler, final Material material, final int amount) {
+		return this.add(CAPI.materials().getItem(material, handler), amount);
 	}
 
 	@Override
