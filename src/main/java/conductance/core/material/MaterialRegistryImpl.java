@@ -67,14 +67,17 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		}
 	}
 
+	@Override
 	public boolean hasBlockOverride(final Material material, final MaterialGenerationHandler handler) {
 		return this.overriddenBlocks.contains(material, handler);
 	}
 
+	@Override
 	public boolean hasItemOverride(final Material material, final MaterialGenerationHandler handler) {
 		return this.overriddenItems.contains(material, handler);
 	}
 
+	@Override
 	public boolean hasFluidOverride(final Material material, final MaterialGenerationHandler handler) {
 		return this.overriddenFluids.contains(material, handler);
 	}

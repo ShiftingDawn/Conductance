@@ -1,5 +1,8 @@
 package conductance.api.material;
 
+import java.util.List;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -18,11 +21,23 @@ public interface MaterialRegistry {
 	}
 
 	@UnknownNullability
+	default TagKey<Block> getBlockTag(final Material material, final MaterialGenerationHandler handler) {
+		final List<TagKey<Block>> tags = handler.getEntryTags(BuiltInRegistries.BLOCK, material);
+		return !tags.isEmpty() ? tags.getFirst() : null;
+	}
+
+	@UnknownNullability
 	Item getItem(Material material, MaterialGenerationHandler handler);
 
 	default ItemStack getItem(final Material material, final MaterialGenerationHandler handler, final int count) {
 		final Item item = this.getItem(material, handler);
 		return item != null ? new ItemStack(item, count) : ItemStack.EMPTY;
+	}
+
+	@UnknownNullability
+	default TagKey<Item> getItemTag(final Material material, final MaterialGenerationHandler handler) {
+		final List<TagKey<Item>> tags = handler.getEntryTags(BuiltInRegistries.ITEM, material);
+		return !tags.isEmpty() ? tags.getFirst() : null;
 	}
 
 	@UnknownNullability
@@ -32,4 +47,16 @@ public interface MaterialRegistry {
 		final Fluid fluid = this.getFluid(material, handler);
 		return fluid != null ? new FluidStack(fluid, amount) : FluidStack.EMPTY;
 	}
+
+	@UnknownNullability
+	default TagKey<Fluid> getFluidTag(final Material material, final MaterialGenerationHandler handler) {
+		final List<TagKey<Fluid>> tags = handler.getEntryTags(BuiltInRegistries.FLUID, material);
+		return !tags.isEmpty() ? tags.getFirst() : null;
+	}
+
+	boolean hasBlockOverride(Material material, MaterialGenerationHandler handler);
+
+	boolean hasItemOverride(Material material, MaterialGenerationHandler handler);
+
+	boolean hasFluidOverride(Material material, MaterialGenerationHandler handler);
 }

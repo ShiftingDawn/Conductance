@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +12,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import conductance.api.recipe.event.RegisterRecipeEvent;
+import conductance.api.recipe.event.RemoveRecipeEvent;
 import conductance.api.resource.event.RegisterTagEvent;
 import conductance.Conductance;
 
@@ -20,10 +21,24 @@ public final class RuntimeDataPackBridge {
 
 	private static final RegisterTagEventImpl.TagRegister TAG_REGISTER;
 
-	public static void reload(final HolderLookup.Provider provider) {
+	public static void reload() {
 		final long sysTime = System.currentTimeMillis();
 
+		RuntimeDataPackBridge.loadRecipes();
+
 		Conductance.LOGGER.info("Conductance reloaded RuntimeDataPack in {}ms", System.currentTimeMillis() - sysTime);
+	}
+
+	private static void loadRecipes() {
+		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, RuntimeDataPack::addRecipe));
+	}
+
+	public static void removeRecipes(final Map<ResourceLocation, ?> recipeMap) {
+		Conductance.dispatchAll(RemoveRecipeEvent.class, new RemoveRecipeEventImpl(id -> {
+			if (recipeMap.remove(id) == null) {
+				Conductance.LOGGER.warn("Trying to remove non-existing recipe: {}", id);
+			}
+		}));
 	}
 
 	public static void generateTags(final ResourceKey<? extends Registry<?>> registry, final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {

@@ -20,9 +20,11 @@ import conductance.lib.pack.server.RuntimeDataPackBridge;
 public abstract class ReloadableServerResourcesMixin {
 
 	@Inject(method = "loadResources", at = @At("HEAD"))
-	private static void conductance$loadResources(final ResourceManager resourceManager, final LayeredRegistryAccess<RegistryLayer> registryAccess, final List<Registry.PendingTags<?>> postponedTags,
-			final FeatureFlagSet enabledFeatures, final Commands.CommandSelection commandSelection, final int functionCompilationLevel, final Executor backgroundExecutor, final Executor gameExecutor,
-			final CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
-		RuntimeDataPackBridge.reload(registryAccess.compositeAccess());
+	private static void conductance$loadResources(
+			final ResourceManager resourceManager, final LayeredRegistryAccess<RegistryLayer> registryAccess, final List<Registry.PendingTags<?>> postponedTags, final FeatureFlagSet enabledFeatures,
+			final Commands.CommandSelection commandSelection, final int functionCompilationLevel, final Executor backgroundExecutor, final Executor gameExecutor,
+			final CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir
+	) {
+		RuntimeDataPackBridge.reload();
 	}
 }

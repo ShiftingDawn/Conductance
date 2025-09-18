@@ -1,5 +1,6 @@
 package conductance.lib.pack.server;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +25,20 @@ final class RuntimeDataPack extends AbstractRuntimePack {
 	@Override
 	protected Map<ResourceLocation, byte[]> getAllData() {
 		return RuntimeDataPack.DATA;
+	}
+
+	static void addRecipe(final ResourceLocation recipeId, final JsonElement recipe) {
+		final ResourceLocation recipeLocation = RuntimeDataPack.getRecipeLocation(recipeId);
+		RuntimeDataPack.writeJson(recipeLocation, recipe);
+		RuntimeDataPack.DATA.put(recipeLocation, recipe.toString().getBytes(StandardCharsets.UTF_8));
+	}
+
+	private static ResourceLocation getRecipeLocation(final ResourceLocation recipeId) {
+		return ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "recipe/%s.json".formatted(recipeId.getPath()));
+	}
+
+	private static ResourceLocation getAdvancementLocation(final ResourceLocation advancementId) {
+		return ResourceLocation.fromNamespaceAndPath(advancementId.getNamespace(), "advancement/%s.json".formatted(advancementId.getPath()));
 	}
 
 	private static boolean shouldDumpAssets() {

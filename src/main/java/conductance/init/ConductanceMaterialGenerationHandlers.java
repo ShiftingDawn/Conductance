@@ -56,7 +56,7 @@ public final class ConductanceMaterialGenerationHandlers {
 				.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
 				.entryTag("c:storage_blocks/%s", "%s Storage Blocks")
 				.setHasBlock(true, true, true)
-				.predicate(material -> material.hasFlag(NCMaterialFlags.DUST) || material.hasFlag(NCMaterialFlags.INGOT) || material.hasFlag(NCMaterialFlags.GEAR))
+				.predicate(material -> material.hasFlag(NCMaterialFlags.INGOT) || material.hasFlag(NCMaterialFlags.GEM))
 		);
 
 		INGOT = event.register("ingot", b -> b
