@@ -8,6 +8,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
@@ -66,6 +67,8 @@ public interface MaterialGenerationHandler {
 	}
 
 	boolean test(Material material);
+
+	List<TagKey<Block>> getMiningToolTypeTags();
 
 	ResourceLocation getTextureType();
 

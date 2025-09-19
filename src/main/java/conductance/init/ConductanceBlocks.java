@@ -4,6 +4,8 @@ import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -48,7 +50,7 @@ public final class ConductanceBlocks {
 						return Util.make(new MaterialBlock(props, material, handler), block -> {
 							Conductance.MATERIALS.register(material, handler, block);
 						});
-					});
+					}, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
 					ConductanceBlocks.ITEMS.registerItem(name, props -> {
 						if (handler.getBlockItemBuilderCallback() != null) {
 							props = handler.getBlockItemBuilderCallback().apply(material, props);

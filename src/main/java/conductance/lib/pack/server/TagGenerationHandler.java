@@ -9,12 +9,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import conductance.api.NCMaterialProps;
 import conductance.Conductance;
 
 final class TagGenerationHandler {
@@ -36,6 +38,9 @@ final class TagGenerationHandler {
 
 	private static void addItemEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
 		Conductance.MATERIALS.getItemTable().rowMap().forEach((material, map) -> map.forEach((handler, item) -> {
+			if (handler == null || item == null) {
+				return;
+			}
 			final List<TagKey<Item>> entryTags = handler.getEntryTags(BuiltInRegistries.ITEM, material);
 			for (final TagKey<Item> entryTag : entryTags) {
 				tagMap.computeIfAbsent(entryTag.location(), k -> new ArrayList<>())
@@ -49,6 +54,9 @@ final class TagGenerationHandler {
 			}
 		}));
 		Conductance.MATERIALS.getBlockTable().rowMap().forEach((material, map) -> map.forEach((handler, block) -> {
+			if (handler == null || block == null) {
+				return;
+			}
 			final List<TagKey<Item>> entryTags = handler.getEntryTags(BuiltInRegistries.ITEM, material);
 			for (final TagKey<Item> entryTag : entryTags) {
 				tagMap.computeIfAbsent(entryTag.location(), k -> new ArrayList<>())
@@ -85,6 +93,9 @@ final class TagGenerationHandler {
 		//			}
 		//		});
 		Conductance.MATERIALS.getBlockTable().rowMap().forEach((material, map) -> map.forEach((handler, block) -> {
+			if (handler == null || block == null) {
+				return;
+			}
 			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
 			final List<TagKey<Block>> entryTags = handler.getEntryTags(BuiltInRegistries.BLOCK, material);
 			for (final TagKey<Block> entryTag : entryTags) {
@@ -97,16 +108,12 @@ final class TagGenerationHandler {
 					list.add(new TagLoader.EntryWithSource(TagEntry.tag(entryTag.location()), TagGenerationHandler.TAG_SOURCE));
 				}
 			}
-			//TODO  Mining tool tags
-
-			//			tagMap.computeIfAbsent(material.getBlockRequiredToolTag().location(), k -> new ArrayList<>())
-			//					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-			//			if (!((TaggedSetImpl<?>) taggedSet).getMiningTags().isEmpty()) {
-			//				((TaggedSetImpl<?>) taggedSet).getMiningTags().forEach(tagKey -> {
-			//					tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
-			//							.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
-			//				});
-			//			}
+			tagMap.computeIfAbsent(material.getProp(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_STONE_TOOL).location(), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			handler.getMiningToolTypeTags().forEach(tagKey -> {
+				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
+						.add(new TagLoader.EntryWithSource(TagEntry.element(blockId), TagGenerationHandler.TAG_SOURCE));
+			});
 		}));
 	}
 

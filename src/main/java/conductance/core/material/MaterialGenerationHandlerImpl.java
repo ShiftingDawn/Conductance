@@ -12,8 +12,10 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.fluids.FluidType;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
@@ -31,6 +33,7 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("materialGenerationHandler", this.getId()));
 	private final Map<String, TagTranslatorFactory> groupTags;
 	private final Map<String, TagTranslatorFactory> entryTags;
+	private final @Getter List<TagKey<Block>> miningToolTypeTags;
 	private final boolean hasItem;
 	private final boolean autoGenerateItem;
 	private final @Nullable MaterialGenerationHandlerBuilder.BuilderCallback<Item.Properties> itemBuilderCallback;

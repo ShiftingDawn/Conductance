@@ -1,5 +1,6 @@
 package conductance.init;
 
+import net.minecraft.tags.BlockTags;
 import net.neoforged.neoforge.fluids.FluidType;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialFlags;
@@ -55,7 +56,7 @@ public final class ConductanceMaterialGenerationHandlers {
 		STORAGE_BLOCK = event.register("storage_block", b -> b
 				.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
 				.entryTag("c:storage_blocks/%s", "%s Storage Blocks")
-				.setHasBlock(true, true, true)
+				.setHasBlock(true, true, true, BlockTags.MINEABLE_WITH_PICKAXE)
 				.predicate(material -> material.hasFlag(NCMaterialFlags.INGOT) || material.hasFlag(NCMaterialFlags.GEM))
 		);
 
@@ -172,7 +173,7 @@ public final class ConductanceMaterialGenerationHandlers {
 		FRAME_BOX = event.register("frame_box", b -> b
 				.groupTag("c:frame_boxes", "Frame Boxes")
 				.entryTag("c:frame_boxes/%s", "%s Frame Boxes")
-				.setHasBlock(true, true, false)
+				.setHasBlock(true, true, false, BlockTags.MINEABLE_WITH_PICKAXE)
 				.requiredFlag(NCMaterialFlags.FRAME_BOX)
 		);
 

@@ -278,7 +278,7 @@ final class MaterialsPeriodicTable {
 				.metalAll().fineWire()
 				.liquid()
 				.style(0xDCA0F0, METALLIC)
-				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_DIAMOND_TOOL)
+				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
 		);
 
 		VANADIUM = event.register("vanadium", NCPeriodicElements.VANADIUM, b -> b
@@ -291,7 +291,7 @@ final class MaterialsPeriodicTable {
 				.metalAll()
 				.liquid(2180)
 				.style(0xFFE6E6, SHINY)
-				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_IRON_TOOL)
+				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
 
 		MANGANESE = event.register("manganese", NCPeriodicElements.MANGANESE, b -> b
@@ -579,7 +579,7 @@ final class MaterialsPeriodicTable {
 				.metalAll().fineWire()
 				.liquid(3695)
 				.style(0x323232, METALLIC)
-				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_DIAMOND_TOOL)
+				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
 		);
 
 		RHENIUM = event.register("thenium", NCPeriodicElements.RHENIUM, b -> b
@@ -591,7 +591,7 @@ final class MaterialsPeriodicTable {
 				.metalAll().fineWire()
 				.liquid(3306)
 				.style(0x3232FF, METALLIC)
-				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_DIAMOND_TOOL)
+				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
 		);
 
 		IRIDIUM = event.register("iridium", NCPeriodicElements.IRIDIUM, b -> b
@@ -599,7 +599,7 @@ final class MaterialsPeriodicTable {
 				.liquid(2719)
 				// .ore()
 				.style(0xF0F0F5, METALLIC)
-				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_DIAMOND_TOOL)
+				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
 		);
 
 		PLATINUM = event.register("platinum", NCPeriodicElements.PLATINUM, b -> b
@@ -685,14 +685,14 @@ final class MaterialsPeriodicTable {
 				.metalDefault()
 				.liquid(1405).plasma()
 				.style(0x32F032, METALLIC)
-				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_IRON_TOOL)
+				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
 
 		URANIUM_235 = event.register("uranium_235", NCPeriodicElements.URANIUM_235, b -> b
 				.metalDefault()
 				.liquid(1405).plasma()
 				.style(0x46FA46, SHINY)
-				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_IRON_TOOL)
+				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
 
 		NEPTUNIUM = event.register("neptunium", NCPeriodicElements.NEPTUNIUM, b -> b
@@ -706,21 +706,21 @@ final class MaterialsPeriodicTable {
 				.liquid(913).plasma()
 				//.ore(true)
 				.style(0xF03232, METALLIC)
-				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_IRON_TOOL)
+				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
 
 		PLUTONIUM_241 = event.register("plutonium_241", NCPeriodicElements.PLUTONIUM_241, b -> b
 				.metalDefault()
 				.liquid(913).plasma()
 				.style(0xFA4646, SHINY)
-				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_IRON_TOOL)
+				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
 
 		AMERICIUM = event.register("americium", NCPeriodicElements.AMERICIUM, b -> b
 				.metalExtra().fineWire()
 				.liquid(1449).plasma()
 				.style(0xC8C8C8, METALLIC)
-				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_IRON_TOOL)
+				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
 
 		CURIUM = event.register("curium", NCPeriodicElements.CURIUM, b -> b
@@ -803,7 +803,7 @@ final class MaterialsPeriodicTable {
 				.metalExtra()
 				.liquid()
 				.color(0x578062)
-				.prop(NCMaterialProps.MINING_TOOL, BlockTags.NEEDS_IRON_TOOL)
+				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
 
 		ROENTGENIUM = event.register("roentgenium", NCPeriodicElements.ROENTGENIUM, b -> b

@@ -3,7 +3,9 @@ package conductance.api.material.event;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
@@ -37,11 +39,12 @@ public interface MaterialGenerationHandlerBuilder {
 		return this.setHasItem(true, autoGenerateItem, null);
 	}
 
-	MaterialGenerationHandlerBuilder setHasBlock(boolean hasBlock, boolean autoGenerateBlock, boolean shouldOccludeBlocks, @Nullable BuilderCallback<BlockBehaviour.Properties> blockBuilderCallback,
+	MaterialGenerationHandlerBuilder setHasBlock(
+			boolean hasBlock, boolean autoGenerateBlock, boolean shouldOccludeBlocks, TagKey<Block> requiredToolTypeTag, @Nullable BuilderCallback<BlockBehaviour.Properties> blockBuilderCallback,
 			@Nullable BuilderCallback<Item.Properties> itemBuilderCallback);
 
-	default MaterialGenerationHandlerBuilder setHasBlock(final boolean hasBlock, final boolean autoGenerateBlock, final boolean shouldOccludeBlocks) {
-		return this.setHasBlock(hasBlock, autoGenerateBlock, shouldOccludeBlocks, null, null);
+	default MaterialGenerationHandlerBuilder setHasBlock(final boolean hasBlock, final boolean autoGenerateBlock, final boolean shouldOccludeBlocks, final TagKey<Block> requiredToolTypeTag) {
+		return this.setHasBlock(hasBlock, autoGenerateBlock, shouldOccludeBlocks, requiredToolTypeTag, null, null);
 	}
 
 	MaterialGenerationHandlerBuilder setHasFluid(boolean hasFluid, boolean autoGenerateFluid, @Nullable BuilderCallback<FluidType.Properties> builderCallback);
@@ -63,6 +66,8 @@ public interface MaterialGenerationHandlerBuilder {
 	default MaterialGenerationHandlerBuilder requiredTrait(final MaterialTraitKey<?> requiredTrait) {
 		return this.predicate(material -> material.hasTrait(requiredTrait));
 	}
+
+	MaterialGenerationHandlerBuilder addMiningToolType(TagKey<Block> miningToolTag);
 
 	MaterialGenerationHandlerBuilder textureType(ResourceLocation type);
 }

@@ -1,12 +1,16 @@
 package conductance.core.material;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.fluids.FluidType;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 
 	private final Map<String, TagTranslatorFactory> groupTags = new ConcurrentHashMap<>();
 	private final Map<String, TagTranslatorFactory> entryTags = new ConcurrentHashMap<>();
+	private final List<TagKey<Block>> miningToolTypeTags = new ArrayList<>();
 	private final Function<Material, String> unlocalizedNameFactory;
 	private Predicate<Material> predicate = ignored -> true;
 	private boolean hasItem = false;
@@ -60,11 +65,13 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	}
 
 	@Override
-	public MaterialGenerationHandlerBuilder setHasBlock(final boolean hasBlock, final boolean autoGenerateBlock, final boolean shouldOccludeBlocks,
+	public MaterialGenerationHandlerBuilder setHasBlock(
+			final boolean hasBlock, final boolean autoGenerateBlock, final boolean shouldOccludeBlocks, final TagKey<Block> requiredToolTypeTag,
 			@Nullable final BuilderCallback<BlockBehaviour.Properties> blockBuilderCallback, @Nullable final BuilderCallback<Item.Properties> itemBuilderCallback) {
 		this.hasBlock = hasBlock;
 		this.autoGenerateBlock = autoGenerateBlock;
 		this.shouldOccludeBlocks = shouldOccludeBlocks;
+		this.addMiningToolType(requiredToolTypeTag);
 		this.blockBuilderCallback = blockBuilderCallback;
 		this.blockItemBuilderCallback = itemBuilderCallback;
 		return this;
@@ -97,6 +104,12 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	}
 
 	@Override
+	public MaterialGenerationHandlerBuilder addMiningToolType(final TagKey<Block> miningToolTag) {
+		this.miningToolTypeTags.add(miningToolTag);
+		return this;
+	}
+
+	@Override
 	public MaterialGenerationHandlerBuilder textureType(final ResourceLocation type) {
 		this.textureType = type;
 		return this;
@@ -106,7 +119,7 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 		return new MaterialGenerationHandlerImpl(
 				this.unlocalizedNameFactory,
 				this.descriptionIdSuffixFactory,
-				Collections.unmodifiableMap(this.groupTags), Collections.unmodifiableMap(this.entryTags),
+				Collections.unmodifiableMap(this.groupTags), Collections.unmodifiableMap(this.entryTags), Collections.unmodifiableList(this.miningToolTypeTags),
 				this.hasItem, this.autoGenerateItem, this.itemBuilderCallback,
 				this.hasBlock, this.autoGenerateBlock, this.shouldOccludeBlocks, this.blockBuilderCallback, this.blockItemBuilderCallback,
 				this.hasFluid, this.autoGenerateFluid, this.fluidBuilderCallback,
