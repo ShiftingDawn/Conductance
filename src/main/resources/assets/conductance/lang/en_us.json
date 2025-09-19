@@ -1,6 +1,7 @@
 {
   "itemGroup.conductance.general": "General (Conductance)",
-  "itemGroup.conductance.material": "Materials (Conductance)",
+	"itemGroup.conductance.material": "Materials (Conductance)",
+	"itemGroup.conductance.ore": "Ores (Conductance)",
 
   "item.conductance.wrench": "Wrench",
   "item.conductance.hammer": "Hammer",

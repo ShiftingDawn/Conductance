@@ -16,6 +16,22 @@ public final class NCMaterialGenerationHandlers {
 	public static MaterialGenerationHandler GEM_FLAWLESS;
 	public static MaterialGenerationHandler GEM_EXQUISITE;
 
+	public static MaterialGenerationHandler ORE_STONE;
+	public static MaterialGenerationHandler ORE_GRANITE;
+	public static MaterialGenerationHandler ORE_DIORITE;
+	public static MaterialGenerationHandler ORE_ANDESITE;
+	public static MaterialGenerationHandler ORE_TUFF;
+	public static MaterialGenerationHandler ORE_DEEPSLATE;
+	public static MaterialGenerationHandler ORE_NETHERRACK;
+	public static MaterialGenerationHandler ORE_BASALT;
+	public static MaterialGenerationHandler ORE_BLACKSTONE;
+	public static MaterialGenerationHandler ORE_END_STONE;
+	public static MaterialGenerationHandler ORE_GRAVEL;
+	public static MaterialGenerationHandler ORE_SAND;
+	public static MaterialGenerationHandler ORE_RED_SAND;
+	public static MaterialGenerationHandler RAW_ORE;
+	public static MaterialGenerationHandler RAW_ORE_BLOCK;
+
 	public static MaterialGenerationHandler PLATE;
 	public static MaterialGenerationHandler PLATE_DOUBLE;
 	public static MaterialGenerationHandler PLATE_DENSE;

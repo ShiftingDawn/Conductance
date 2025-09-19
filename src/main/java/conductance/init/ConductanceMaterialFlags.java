@@ -23,7 +23,7 @@ import static conductance.api.NCMaterialFlags.ROD;
 import static conductance.api.NCMaterialFlags.ROTOR;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductanceMaterialFlags {
+final class ConductanceMaterialFlags {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterMaterialFlagEvent event) {

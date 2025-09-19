@@ -14,7 +14,7 @@ import conductance.api.util.TextHelper;
 import conductance.Conductance;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-public final class ConductanceMaterials {
+final class ConductanceMaterials {
 
 	@EventListener(priority = -100)
 	private static void addMaterialTranslations(final AddTranslationEvent event) {

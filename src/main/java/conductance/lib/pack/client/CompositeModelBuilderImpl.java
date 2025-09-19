@@ -1,7 +1,7 @@
 package conductance.lib.pack.client;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +12,7 @@ import conductance.api.resource.ModelBuilder;
 
 final class CompositeModelBuilderImpl implements CompositeModelBuilder {
 
-	private final Map<String, ModelBuilderImpl> children = new ConcurrentHashMap<>();
+	private final Map<String, ModelBuilderImpl> children = new LinkedHashMap<>();
 	private String[] renderOrder = new String[0];
 
 	@Override

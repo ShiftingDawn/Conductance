@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
+import conductance.api.material.MaterialOreBearer;
 import conductance.api.material.TagTranslatorFactory;
 import conductance.api.material.event.MaterialGenerationHandlerBuilder;
 
@@ -28,6 +29,7 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	private final Map<String, TagTranslatorFactory> entryTags = new ConcurrentHashMap<>();
 	private final List<TagKey<Block>> miningToolTypeTags = new ArrayList<>();
 	private final Function<Material, String> unlocalizedNameFactory;
+	private final @Nullable MaterialOreBearer oreBearer;
 	private Predicate<Material> predicate = ignored -> true;
 	private boolean hasItem = false;
 	private boolean autoGenerateItem = false;
@@ -125,6 +127,7 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 				this.hasFluid, this.autoGenerateFluid, this.fluidBuilderCallback,
 				this.unitValue,
 				this.predicate,
+				this.oreBearer,
 				this.textureType
 		);
 	}

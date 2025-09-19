@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
+import conductance.api.material.MaterialOreBearer;
 import conductance.api.material.TagTranslatorFactory;
 import conductance.api.material.event.MaterialGenerationHandlerBuilder;
 import conductance.api.util.Lazy;
@@ -47,6 +48,7 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	private final @Nullable MaterialGenerationHandlerBuilder.BuilderCallback<FluidType.Properties> fluidBuilderCallback;
 	private final long unitValue;
 	private final Predicate<Material> predicate;
+	private final @Nullable MaterialOreBearer oreBearer;
 	private final @Nullable ResourceLocation textureType;
 
 	private <T> List<TagKey<T>> getTags(final Map<String, TagTranslatorFactory> map, final Registry<T> registry, final Material material) {
@@ -176,6 +178,12 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	@Override
 	public boolean test(final Material material) {
 		return this.predicate.test(material);
+	}
+
+	@Override
+	@Nullable
+	public MaterialOreBearer getOreBearer() {
+		return this.oreBearer;
 	}
 
 	@Override

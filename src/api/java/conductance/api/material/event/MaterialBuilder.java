@@ -3,12 +3,16 @@ package conductance.api.material.event;
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.NCMaterialFlags;
+import conductance.api.NCMaterialTraits;
+import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialProp;
 import conductance.api.material.MaterialTrait;
 import conductance.api.material.MaterialTraitFluid;
 import conductance.api.material.MaterialTraitKey;
+import conductance.api.material.MaterialTraitOre;
 
 public interface MaterialBuilder {
 
@@ -121,6 +125,34 @@ public interface MaterialBuilder {
 
 	default MaterialBuilder plasma() {
 		return this.plasma(-1);
+	}
+
+	default MaterialBuilder ore(final int dropMultiplier, final int byproductMultiplier, final boolean emissive, @Nullable final Supplier<Material> smeltResult, @Nullable final Supplier<Material> pulverizeResult) {
+		return this.trait(NCMaterialTraits.ORE, new MaterialTraitOre(dropMultiplier, byproductMultiplier, emissive, smeltResult, pulverizeResult));
+	}
+
+	default MaterialBuilder ore(final boolean emissive, @Nullable final Supplier<Material> smeltResult, @Nullable final Supplier<Material> pulverizeResult) {
+		return this.ore(1, 1, emissive, smeltResult, pulverizeResult);
+	}
+
+	default MaterialBuilder ore(@Nullable final Supplier<Material> smeltResult, @Nullable final Supplier<Material> pulverizeResult) {
+		return this.ore(false, smeltResult, pulverizeResult);
+	}
+
+	default MaterialBuilder ore(final int dropMultiplier, final int byproductMultiplier, final boolean emissive) {
+		return this.ore(dropMultiplier, byproductMultiplier, emissive, null, null);
+	}
+
+	default MaterialBuilder ore(final int dropMultiplier, final int byproductMultiplier) {
+		return this.ore(dropMultiplier, byproductMultiplier, false);
+	}
+
+	default MaterialBuilder ore(final boolean emissive) {
+		return this.ore(1, 1, emissive);
+	}
+
+	default MaterialBuilder ore() {
+		return this.ore(1, 1, false);
 	}
 
 	<T> MaterialBuilder prop(MaterialProp<T> property, T value);

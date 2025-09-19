@@ -6,8 +6,9 @@ import net.minecraft.world.level.block.Block;
 import lombok.Getter;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
+import conductance.core.block.IMaterialBlock;
 
-public final class MaterialBlock extends Block {
+public final class MaterialBlock extends Block implements IMaterialBlock {
 
 	private final @Getter Material material;
 	private final @Getter MaterialGenerationHandler handler;

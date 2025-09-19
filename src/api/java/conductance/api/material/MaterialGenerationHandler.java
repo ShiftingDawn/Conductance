@@ -70,6 +70,9 @@ public interface MaterialGenerationHandler {
 
 	List<TagKey<Block>> getMiningToolTypeTags();
 
+	@Nullable
+	MaterialOreBearer getOreBearer();
+
 	ResourceLocation getTextureType();
 
 	default ResourceLocation getId() {

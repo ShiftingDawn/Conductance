@@ -19,7 +19,8 @@ public final class CreativeTabHelper {
 	@RequiredArgsConstructor
 	public enum Tabs {
 		GENERAL(Items.IRON_INGOT::getDefaultInstance),
-		MATERIAL(() -> CAPI.materials().getItem(NCMaterials.ALUMINIUM, NCMaterialGenerationHandlers.INGOT, 1));
+		MATERIAL(() -> CAPI.materials().getItem(NCMaterials.ALUMINIUM, NCMaterialGenerationHandlers.INGOT, 1)),
+		ORE(Items.DIAMOND_ORE::getDefaultInstance);
 
 		private final @Getter String name = super.toString().toLowerCase(Locale.ROOT);
 		private final @Getter Supplier<ItemStack> icon;

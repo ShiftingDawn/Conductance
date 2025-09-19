@@ -5,6 +5,7 @@ import net.minecraft.world.level.block.Block;
 import conductance.api.material.MaterialProp;
 import conductance.api.material.MaterialTraitKey;
 
+@SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCMaterialProps {
 
 	public static final MaterialProp<TagKey<Block>> REQUIRED_TOOL_LEVEL = new MaterialProp<>();
