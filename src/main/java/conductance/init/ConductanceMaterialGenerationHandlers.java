@@ -125,28 +125,28 @@ final class ConductanceMaterialGenerationHandlers {
 		);
 		ORE_GRANITE = event.register("granite_ore", "granite_%s_ore", NCMaterialOreBearers.GRANITE, b -> b
 			.groupTag("c:ores", (String) null) //translation handled by NeoForge
-			.groupTag("c:ores_in_ground/granite", "Granite Ores In Ground") //translation handled by NeoForge
+			.groupTag("c:ores_in_ground/granite", "Granite Ores In Ground")
 			.entryTag("c:ores/%s", (String) null) //translation handled by ORE_STONE handler above
 			.setHasBlock(true, false, true, BlockTags.MINEABLE_WITH_PICKAXE)
 			.requiredTrait(NCMaterialTraits.ORE)
 		);
 		ORE_DIORITE = event.register("diorite_ore", "diorite_%s_ore", NCMaterialOreBearers.DIORITE, b -> b
 			.groupTag("c:ores", (String) null) //translation handled by NeoForge
-			.groupTag("c:ores_in_ground/diorite", "Diorite Ores In Ground") //translation handled by NeoForge
+			.groupTag("c:ores_in_ground/diorite", "Diorite Ores In Ground")
 			.entryTag("c:ores/%s", (String) null) //translation handled by ORE_STONE handler above
 			.setHasBlock(true, false, true, BlockTags.MINEABLE_WITH_PICKAXE)
 			.requiredTrait(NCMaterialTraits.ORE)
 		);
 		ORE_ANDESITE = event.register("andesite_ore", "andesite_%s_ore", NCMaterialOreBearers.ANDESITE, b -> b
 			.groupTag("c:ores", (String) null) //translation handled by NeoForge
-			.groupTag("c:ores_in_ground/andesite", "Andesite Ores In Ground") //translation handled by NeoForge
+			.groupTag("c:ores_in_ground/andesite", "Andesite Ores In Ground")
 			.entryTag("c:ores/%s", (String) null) //translation handled by ORE_STONE handler above
 			.setHasBlock(true, false, true, BlockTags.MINEABLE_WITH_PICKAXE)
 			.requiredTrait(NCMaterialTraits.ORE)
 		);
 		ORE_TUFF = event.register("tuff_ore", "tuff_%s_ore", NCMaterialOreBearers.TUFF, b -> b
 			.groupTag("c:ores", (String) null) //translation handled by NeoForge
-			.groupTag("c:ores_in_ground/tuff", "Tuff Ores In Ground") //translation handled by NeoForge
+			.groupTag("c:ores_in_ground/tuff", "Tuff Ores In Ground")
 			.entryTag("c:ores/%s", (String) null) //translation handled by ORE_STONE handler above
 			.setHasBlock(true, false, true, BlockTags.MINEABLE_WITH_PICKAXE)
 			.requiredTrait(NCMaterialTraits.ORE)

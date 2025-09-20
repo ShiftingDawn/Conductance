@@ -18,6 +18,9 @@ final class CookingRecipeBuilderImpl extends AbstractRecipeBuilder<CookingRecipe
 
 	CookingRecipeBuilderImpl(final ResourceLocation recipeType, final ItemStack result) {
 		super(recipeType, result);
+		if (recipeType.getPath().equals("blasting") || recipeType.getPath().equals("smoking")) {
+			this.cookingTime = 100;
+		}
 	}
 
 	@Override

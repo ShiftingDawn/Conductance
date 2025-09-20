@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import conductance.api.CAPI;
 import conductance.api.periodicelement.PeriodicElement;
 
@@ -18,9 +19,9 @@ public interface Material {
 
 	boolean hasProp(MaterialProp<?> prop);
 
-	<T extends MaterialTrait<T>> @Nullable T getTrait(MaterialTraitKey<T> traitKey);
+	<T extends MaterialTrait<T>> @UnknownNullability T getTrait(MaterialTraitKey<T> traitKey);
 
-	<T> @Nullable T getProp(MaterialProp<T> prop);
+	<T> @UnknownNullability T getProp(MaterialProp<T> prop);
 
 	<T> T getProp(MaterialProp<T> prop, T fallback);
 
