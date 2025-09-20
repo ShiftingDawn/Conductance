@@ -23,7 +23,7 @@ final class MaterialFlagImpl implements MaterialFlag {
 		final List<String> errors = new ArrayList<>();
 		for (final MaterialFlag requiredFlag : this.requiredFlags) {
 			if (!material.hasFlag(requiredFlag)) {
-				errors.add("Missing required flag " + requiredFlag.getId());
+				errors.add("Missing required flag %s (required by flag %s)".formatted(requiredFlag.getId(), this.getId()));
 			}
 		}
 		if (this.validator != null) {

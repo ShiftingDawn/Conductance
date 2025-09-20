@@ -95,6 +95,19 @@ public interface MaterialBuilder {
 		return this;
 	}
 
+	default MaterialBuilder gemDefault() {
+		this.dust();
+		this.gem();
+		this.plate();
+		return this;
+	}
+
+	default MaterialBuilder gemExtra() {
+		this.gemDefault();
+		this.rod();
+		return this;
+	}
+
 	<T extends MaterialTrait<T>> MaterialBuilder trait(MaterialTraitKey<T> key, T instance);
 
 	MaterialBuilder liquid(Supplier<MaterialTraitFluid.Liquid> factory);
@@ -170,4 +183,6 @@ public interface MaterialBuilder {
 	}
 
 	MaterialBuilder chemicalFormula(String formula);
+
+	MaterialBuilder components(Object... components);
 }

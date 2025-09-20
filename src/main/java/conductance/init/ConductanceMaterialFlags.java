@@ -12,6 +12,7 @@ import static conductance.api.NCMaterialFlags.BOLT_AND_SCREW;
 import static conductance.api.NCMaterialFlags.DUST;
 import static conductance.api.NCMaterialFlags.FINE_WIRE;
 import static conductance.api.NCMaterialFlags.FOIL;
+import static conductance.api.NCMaterialFlags.FORCE_BLOCK;
 import static conductance.api.NCMaterialFlags.FRAME_BOX;
 import static conductance.api.NCMaterialFlags.GEAR;
 import static conductance.api.NCMaterialFlags.GEAR_SMALL;
@@ -32,7 +33,7 @@ final class ConductanceMaterialFlags {
 		GEM = event.register("gem", Set.of(DUST));
 
 		PLATE = event.register("plate", ConductanceMaterialFlags::validatePlate);
-		ROD = event.register("rod", ConductanceMaterialFlags::validateRod);
+		ROD = event.register("rod", Set.of(DUST));
 		GEAR = event.register("gear", ConductanceMaterialFlags::validateGear);
 		GEAR_SMALL = event.register("small_gear", ConductanceMaterialFlags::validateSmallGear);
 		FOIL = event.register("foil", Set.of(PLATE));
@@ -41,6 +42,8 @@ final class ConductanceMaterialFlags {
 		ROTOR = event.register("rotor", Set.of(INGOT));
 		FINE_WIRE = event.register("fine_wire", Set.of(DUST));
 		FRAME_BOX = event.register("frame_box", Set.of(ROD));
+
+		FORCE_BLOCK = event.register("force_block");
 	}
 
 	@Nullable
@@ -55,14 +58,6 @@ final class ConductanceMaterialFlags {
 	private static List<String> validatePlate(final Material material) {
 		if (!material.hasFlag(INGOT) && !material.hasFlag(DUST)) {
 			return List.of("Plate flag requires either ingot or dust flag to be present");
-		}
-		return null;
-	}
-
-	@Nullable
-	private static List<String> validateRod(final Material material) {
-		if (!material.hasFlag(INGOT) && !material.hasFlag(GEM)) {
-			return List.of("Rod flag requires either ingot or gem flag to be present");
 		}
 		return null;
 	}

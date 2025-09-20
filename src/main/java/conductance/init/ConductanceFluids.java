@@ -46,25 +46,25 @@ public final class ConductanceFluids {
 
 	private static void generateMaterial(final Material material) {
 		CAPI.regs().materialGenerationHandlers().stream()
-				.filter(handler -> handler.hasFluid() && handler.autoGenerateFluid() && handler.test(material) && !Conductance.MATERIALS.hasFluidOverride(material, handler))
-				.forEach(handler -> {
-					final String name = handler.getUnlocalizedName(material);
-					final Supplier<FluidType> fluidType = ConductanceFluids.REGISTRY.register(name, () -> {
-						FluidType.Properties props = FluidType.Properties.create();
-						if (handler.getFluidBuilderCallback() != null) {
-							props = handler.getFluidBuilderCallback().apply(material, props);
-						}
-						return new MaterialFluidType(props, material, handler);
-					});
-					final Supplier<Fluid> fluid = ConductanceFluids.FLUIDS.register(name, () -> {
-						final ConductanceFluid result = new ConductanceFluid(fluidType, () -> CAPI.materials().getItem(material, handler), null);
-						Conductance.MATERIALS.register(material, handler, result);
-						return result;
-					});
-					ConductanceFluids.BUCKETS.registerItem(name + "_bucket", props -> Util.make(new MaterialBucketItem(fluid.get(), props, material, handler), bucketItem -> {
-						Conductance.MATERIALS.register(material, handler, bucketItem);
-					}));
+			.filter(handler -> handler.hasFluid() && handler.autoGenerateFluid() && handler.test(material) && !Conductance.MATERIALS.hasFluidOverride(material, handler))
+			.forEach(handler -> {
+				final String name = handler.getUnlocalizedName(material);
+				final Supplier<FluidType> fluidType = ConductanceFluids.REGISTRY.register(name, () -> {
+					FluidType.Properties props = FluidType.Properties.create();
+					if (handler.getFluidBuilderCallback() != null) {
+						props = handler.getFluidBuilderCallback().apply(material, props);
+					}
+					return new MaterialFluidType(props, material, handler);
 				});
+				final Supplier<Fluid> fluid = ConductanceFluids.FLUIDS.register(name, () -> {
+					final ConductanceFluid result = new ConductanceFluid(fluidType, () -> CAPI.materials().getItem(material, handler), null);
+					Conductance.MATERIALS.register(material, handler, result);
+					return result;
+				});
+				ConductanceFluids.BUCKETS.registerItem(name + "_bucket", props -> Util.make(new MaterialBucketItem(fluid.get(), props, material, handler), bucketItem -> {
+					Conductance.MATERIALS.register(material, handler, bucketItem);
+				}));
+			});
 	}
 
 	private static void onRegisterClientExtensions(final RegisterClientExtensionsEvent event) {
@@ -78,6 +78,9 @@ public final class ConductanceFluids {
 	@EventListener(priority = -100)
 	private static void addFluidTranslations(final AddTranslationEvent event) {
 		Conductance.MATERIALS.getFluidTable().rowMap().forEach((material, map) -> map.forEach((handler, fluid) -> {
+			if (material == null || handler == null || fluid == null) {
+				return;
+			}
 			handler.getGroupTagsAndTranslators(BuiltInRegistries.FLUID, material).forEach((tagKey, translator) -> {
 				if (translator != null) {
 					final String translation = translator.translate(material);
@@ -94,25 +97,25 @@ public final class ConductanceFluids {
 		ConductanceFluids.BUCKETS.getEntries().stream().map(DeferredHolder::get).filter(item -> item instanceof MaterialBucketItem).forEach(item -> {
 			final MaterialBucketItem bucket = (MaterialBucketItem) item;
 			event.addItemsModel(bucket, b -> b.custom(ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "fluid_container"), b2 -> b2
-					.addProperty("fluid", BuiltInRegistries.FLUID.getKey(bucket.content))
-					.addProperty("flip_gas", true)
-					.addProperty("cover_is_mask", true)
-					.addProperty("textures", Util.make(new JsonObject(), json -> {
-						json.addProperty("particle", ResourceLocation.withDefaultNamespace("item/bucket").toString());
-						json.addProperty("base", ResourceLocation.withDefaultNamespace("item/bucket").toString());
-						json.addProperty("fluid", ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/mask/bucket_fluid").toString());
-						json.addProperty("cover", ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/mask/bucket_fluid_cover").toString());
-					}))
+				.addProperty("fluid", BuiltInRegistries.FLUID.getKey(bucket.content))
+				.addProperty("flip_gas", true)
+				.addProperty("cover_is_mask", true)
+				.addProperty("textures", Util.make(new JsonObject(), json -> {
+					json.addProperty("particle", ResourceLocation.withDefaultNamespace("item/bucket").toString());
+					json.addProperty("base", ResourceLocation.withDefaultNamespace("item/bucket").toString());
+					json.addProperty("fluid", ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/mask/bucket_fluid").toString());
+					json.addProperty("cover", ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/mask/bucket_fluid_cover").toString());
+				}))
 			));
 		});
 	}
 
 	private static void onRegisterCapabilities(final RegisterCapabilitiesEvent event) {
 		ConductanceFluids.BUCKETS.getEntries().stream().map(DeferredHolder::get)
-				.filter(item -> item instanceof MaterialBucketItem)
-				.forEach(item -> {
-					event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidBucketWrapper(stack), item);
-				});
+			.filter(item -> item instanceof MaterialBucketItem)
+			.forEach(item -> {
+				event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidBucketWrapper(stack), item);
+			});
 	}
 
 	private ConductanceFluids() {

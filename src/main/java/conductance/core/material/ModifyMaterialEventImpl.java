@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.UnknownNullability;
+import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialProp;
 import conductance.api.material.MaterialTrait;
@@ -73,5 +74,35 @@ final class ModifyMaterialEventImpl implements ModifyMaterialEvent {
 	@Override
 	public void removeProp(final MaterialProp<?> prop) {
 		this.builder.getProps().remove(prop);
+	}
+
+	@Override
+	public boolean hasComponent(final Material material) {
+		return this.builder.getComponents().containsKey(material);
+	}
+
+	@Override
+	public boolean hasComponent(final Material material, final int minCount) {
+		return this.getComponentCount(material) >= minCount;
+	}
+
+	@Override
+	public int getComponentCount(final Material material) {
+		return this.builder.getComponents().getInt(material);
+	}
+
+	@Override
+	public void removeComponent(final Material material) {
+		this.builder.getComponents().removeInt(material);
+	}
+
+	@Override
+	public void addComponent(final Material material, final int count) {
+		this.setComponent(material, this.getComponentCount(material) + count);
+	}
+
+	@Override
+	public void setComponent(final Material material, final int count) {
+		this.builder.getComponents().put(material, count);
 	}
 }

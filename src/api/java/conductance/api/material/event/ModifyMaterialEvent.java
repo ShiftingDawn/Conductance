@@ -2,6 +2,7 @@ package conductance.api.material.event;
 
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.UnknownNullability;
+import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialProp;
 import conductance.api.material.MaterialTrait;
@@ -35,4 +36,16 @@ public interface ModifyMaterialEvent extends IConductancePluginEvent {
 	<T> T getProp(MaterialProp<T> prop);
 
 	void removeProp(MaterialProp<?> prop);
+
+	boolean hasComponent(Material material);
+
+	boolean hasComponent(Material material, int minCount);
+
+	int getComponentCount(Material material);
+
+	void removeComponent(Material material);
+
+	void addComponent(Material material, int count);
+
+	void setComponent(Material material, int count);
 }

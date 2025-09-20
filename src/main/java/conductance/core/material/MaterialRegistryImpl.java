@@ -82,21 +82,21 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		return this.overriddenFluids.contains(material, handler);
 	}
 
-	public void addOverride(final Material material, final MaterialGenerationHandler handler, @Nullable final Block block) {
-		Objects.requireNonNull(material, "material cannot be null");
+	public void addOverride(final MaterialGenerationHandler handler, final Material material, @Nullable final Block block) {
 		Objects.requireNonNull(handler, "handler cannot be null");
+		Objects.requireNonNull(material, "material cannot be null");
 		this.overriddenBlocks.put(material, handler, Optional.ofNullable(block));
 	}
 
-	public void addOverride(final Material material, final MaterialGenerationHandler handler, @Nullable final Item item) {
-		Objects.requireNonNull(material, "material cannot be null");
+	public void addOverride(final MaterialGenerationHandler handler, final Material material, @Nullable final Item item) {
 		Objects.requireNonNull(handler, "handler cannot be null");
+		Objects.requireNonNull(material, "material cannot be null");
 		this.overriddenItems.put(material, handler, Optional.ofNullable(item));
 	}
 
-	public void addOverride(final Material material, final MaterialGenerationHandler handler, @Nullable final Fluid fluid) {
-		Objects.requireNonNull(material, "material cannot be null");
+	public void addOverride(final MaterialGenerationHandler handler, final Material material, @Nullable final Fluid fluid) {
 		Objects.requireNonNull(handler, "handler cannot be null");
+		Objects.requireNonNull(material, "material cannot be null");
 		this.overriddenFluids.put(material, handler, Optional.ofNullable(fluid));
 	}
 

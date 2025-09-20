@@ -1,22 +1,30 @@
 package conductance.core.material;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
 import conductance.api.NCMaterialProps;
 import conductance.api.NCMaterialTextureSets;
 import conductance.api.NCMaterialTraits;
+import conductance.api.NCMaterials;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialProp;
+import conductance.api.material.MaterialStack;
 import conductance.api.material.MaterialTrait;
 import conductance.api.material.MaterialTraitFluid;
 import conductance.api.material.MaterialTraitKey;
@@ -33,6 +41,8 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	private final Map<MaterialTraitKey<?>, MaterialTrait<?>> traits = new IdentityHashMap<>();
 	@Getter(AccessLevel.PACKAGE)
 	private final Map<MaterialProp<?>, Object> props = new IdentityHashMap<>();
+	@Getter(AccessLevel.PACKAGE)
+	private final Object2IntMap<Material> components = new Object2IntArrayMap<>();
 
 	private final @Nullable PeriodicElement periodicElement;
 	private ResourceLocation textureSet = NCMaterialTextureSets.DULL;
@@ -91,6 +101,28 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
+	public MaterialBuilder components(final Object... components) {
+		for (int i = 0; i < components.length; ++i) {
+			final Material material = components[i] instanceof final CharSequence str
+				? CAPI.regs().materials().getOptional(ResourceLocation.parse(str.toString())).orElse(NCMaterials.AIR)
+				: (Material) components[i];
+			int count = 1;
+			if (i < components.length - 1 && components[i + 1] instanceof final Number num) {
+				count = num.intValue();
+				++i;
+			}
+			if (material != null) {
+				if (this.components.containsKey(material)) {
+					this.components.put(material, this.components.getInt(material) + count);
+				} else {
+					this.components.put(material, count);
+				}
+			}
+		}
+		return this;
+	}
+
+	@Override
 	public MaterialBuilder chemicalFormula(final String formula) {
 		this.chemicalFormula = formula;
 		return this;
@@ -98,6 +130,7 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 
 	public Material build(final ResourceLocation registryKey) {
 		Conductance.dispatchAll(ModifyMaterialEventImpl.class, new ModifyMaterialEventImpl(registryKey, this));
-		return new MaterialImpl(this.periodicElement, this.flags, this.traits, this.props, this.color, this.textureSet, this.chemicalFormula);
+		final List<MaterialStack> componentList = Util.make(new ArrayList<>(), list -> this.components.forEach((mat, count) -> list.add(new MaterialStack(mat, count))));
+		return new MaterialImpl(this.periodicElement, this.flags, this.traits, this.props, this.color, this.textureSet, componentList, this.chemicalFormula);
 	}
 }

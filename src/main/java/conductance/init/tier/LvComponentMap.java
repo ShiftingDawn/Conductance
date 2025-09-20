@@ -13,8 +13,7 @@ class LvComponentMap extends TieredComponentMap {
 
 	@Override
 	public Material getMagneticMaterial() {
-		//TODO magnetic ironn
-		return NCMaterials.IRON;
+		return NCMaterials.MAGNETIC_IRON;
 	}
 
 	@Override
@@ -24,7 +23,6 @@ class LvComponentMap extends TieredComponentMap {
 
 	@Override
 	public Material getRubberMaterial() {
-		//TODO rubber
-		return NCMaterials.COPPER;
+		return NCMaterials.RUBBER;
 	}
 }

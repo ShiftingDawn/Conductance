@@ -13,23 +13,23 @@ import conductance.api.material.event.RegisterMaterialOverridesEvent;
 @RequiredArgsConstructor
 final class RegisterMaterialOverridesEventImpl implements RegisterMaterialOverridesEvent {
 
-	private final TriConsumer<Material, MaterialGenerationHandler, Block> blockDelegate;
-	private final TriConsumer<Material, MaterialGenerationHandler, Item> itemDelegate;
-	private final TriConsumer<Material, MaterialGenerationHandler, Fluid> fluidDelegate;
+	private final TriConsumer<MaterialGenerationHandler, Material, Block> blockDelegate;
+	private final TriConsumer<MaterialGenerationHandler, Material, Item> itemDelegate;
+	private final TriConsumer<MaterialGenerationHandler, Material, Fluid> fluidDelegate;
 
 	@Override
-	public void add(final Material material, final MaterialGenerationHandler handler, @Nullable final Block block) {
-		this.blockDelegate.accept(material, handler, block);
-		this.itemDelegate.accept(material, handler, block != null ? block.asItem() : null);
+	public void add(final MaterialGenerationHandler handler, final Material material, @Nullable final Block block) {
+		this.blockDelegate.accept(handler, material, block);
+		this.itemDelegate.accept(handler, material, block != null ? block.asItem() : null);
 	}
 
 	@Override
-	public void add(final Material material, final MaterialGenerationHandler handler, @Nullable final Item item) {
-		this.itemDelegate.accept(material, handler, item);
+	public void add(final MaterialGenerationHandler handler, final Material material, @Nullable final Item item) {
+		this.itemDelegate.accept(handler, material, item);
 	}
 
 	@Override
-	public void add(final Material material, final MaterialGenerationHandler handler, @Nullable final Fluid fluid) {
-		this.fluidDelegate.accept(material, handler, fluid);
+	public void add(final MaterialGenerationHandler handler, final Material material, @Nullable final Fluid fluid) {
+		this.fluidDelegate.accept(handler, material, fluid);
 	}
 }

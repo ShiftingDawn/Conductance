@@ -71,6 +71,9 @@ import static conductance.api.NCMaterials.LITHIUM;
 import static conductance.api.NCMaterials.LIVERMORIUM;
 import static conductance.api.NCMaterials.LUTETIUM;
 import static conductance.api.NCMaterials.MAGNESIUM;
+import static conductance.api.NCMaterials.MAGNETIC_IRON;
+import static conductance.api.NCMaterials.MAGNETIC_NEODYMIUM;
+import static conductance.api.NCMaterials.MAGNETIC_SAMARIUM;
 import static conductance.api.NCMaterials.MANGANESE;
 import static conductance.api.NCMaterials.MEITNERIUM;
 import static conductance.api.NCMaterials.MENDELEVIUM;
@@ -137,713 +140,594 @@ import static conductance.api.NCMaterials.ZINC;
 import static conductance.api.NCMaterials.ZIRCONIUM;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-final class MaterialsPeriodicTable {
+final class MaterialLoader0 {
 
 	@EventListener(priority = -100)
 	private static void initialize(final RegisterMaterialEvent event) {
 		HYDROGEN = event.register("hydrogen", NCPeriodicElements.HYDROGEN, b -> b
-				.gas()
-				.color(0x0000FF)
+			.gas()
+			.color(0x0000FF)
 		);
-
 		TRITIUM = event.register("tritium", NCPeriodicElements.TRITIUM, b -> b
-				.gas()
-				.color(0xFF0000)
+			.gas()
+			.color(0xFF0000)
 		);
-
 		DEUTERIUM = event.register("deuterium", NCPeriodicElements.DEUTERIUM, b -> b
-				.gas()
-				.color(0xFFFF00)
+			.gas()
+			.color(0xFFFF00)
 		);
-
 		HELIUM = event.register("helium", NCPeriodicElements.HELIUM, b -> b
-				.liquid().gas().plasma()
-				.color(0xFFFF00)
-				.prop(NCMaterialProps.DEFAULT_FLUID, NCMaterialTraits.GAS)
+			.liquid().gas().plasma()
+			.color(0xFFFF00)
+			.prop(NCMaterialProps.DEFAULT_FLUID, NCMaterialTraits.GAS)
 		);
-
 		HELIUM_3 = event.register("helium_3", NCPeriodicElements.HELIUM_3, b -> b
-				.gas()
-				.color(0xFFFF00)
+			.gas()
+			.color(0xFFFF00)
 		);
-
 		LITHIUM = event.register("lithium", NCPeriodicElements.LITHIUM, b -> b
-				.dust()
-				.liquid()
-				.ore()
-				.color(0xE1DCFF)
+			.dust()
+			.liquid()
+			.ore()
+			.color(0xE1DCFF)
 		);
-
 		BERYLLIUM = event.register("beryllium", NCPeriodicElements.BERYLLIUM, b -> b
-				.dust().ingot()
-				.liquid(1560)
-				.ore()
-				.color(0x64B464)
+			.dust().ingot()
+			.liquid(1560)
+			.ore()
+			.color(0x64B464)
 		);
-
 		BORON = event.register("boron", NCPeriodicElements.BORON, b -> b
-				.dust()
-				.color(0xD2FAD2)
+			.dust()
+			.color(0xD2FAD2)
 		);
-
 		CARBON = event.register("carbon", NCPeriodicElements.CARBON, b -> b
-				.dust()
-				.liquid(4600)
-				.color(0x141414)
+			.dust()
+			.liquid(4600)
+			.color(0x141414)
 		);
-
 		NITROGEN = event.register("nitrogen", NCPeriodicElements.NITROGEN, b -> b
-				.gas().plasma()
-				.color(0x0096C8)
+			.gas().plasma()
+			.color(0x0096C8)
 		);
-
 		OXYGEN = event.register("oxygen", NCPeriodicElements.OXYGEN, b -> b
-				.liquid(85).gas().plasma()
-				.color(0x0064C8)
-				.prop(NCMaterialProps.DEFAULT_FLUID, NCMaterialTraits.GAS)
+			.liquid(85).gas().plasma()
+			.color(0x0064C8)
+			.prop(NCMaterialProps.DEFAULT_FLUID, NCMaterialTraits.GAS)
 		);
-
 		FLUORINE = event.register("fluorine", NCPeriodicElements.FLUORINE, b -> b
-				.gas()
-				.color(0x61A0D8)
+			.gas()
+			.color(0x61A0D8)
 		);
-
 		NEON = event.register("neon", NCPeriodicElements.NEON, b -> b
-				.gas()
-				.color(0xFAB4B4)
+			.gas()
+			.color(0xFAB4B4)
 		);
-
 		SODIUM = event.register("sodium", NCPeriodicElements.SODIUM, b -> b
-				.dust()
-				.color(0x000096)
+			.dust()
+			.color(0x000096)
 		);
-
 		MAGNESIUM = event.register("magnesium", NCPeriodicElements.MAGNESIUM, b -> b
-				.dust().ingot()
-				.liquid(923)
-				.color(0xFFC8C8)
+			.dust().ingot()
+			.liquid(923)
+			.color(0xFFC8C8)
 		);
-
 		ALUMINIUM = event.register("aluminium", NCPeriodicElements.ALUMINIUM, b -> b
-				.metalAll().fineWire()
-				.liquid(933)
-				.ore()
-				.color(0x80C8F0)
+			.metalAll().fineWire()
+			.liquid(933)
+			.ore()
+			.color(0x80C8F0)
 		);
-
 		SILICON = event.register("silicon", NCPeriodicElements.SILICON, b -> b
-				.metalDefault()
-				.liquid().plasma()
-				.style(0x3C3C50, METALLIC)
+			.metalDefault()
+			.liquid().plasma()
+			.style(0x3C3C50, METALLIC)
 		);
-
 		PHOSPHORUS = event.register("phosphorus", NCPeriodicElements.PHOSPHORUS, b -> b
-				.dust()
-				.color(0xFFFF00)
+			.dust()
+			.color(0xFFFF00)
 		);
-
 		SULFUR = event.register("sulfur", NCPeriodicElements.SULFUR, b -> b
-				.dust()
-				.ore()
-				.color(0xC8C800)
+			.dust()
+			.ore()
+			.color(0xC8C800)
 		);
-
 		CHLORINE = event.register("chlorine", NCPeriodicElements.CHLORINE, b -> b
-				.gas()
-				.color(0x246D6D)
+			.gas()
+			.color(0x246D6D)
 		);
-
 		ARGON = event.register("argon", NCPeriodicElements.ARGON, b -> b
-				.gas().plasma()
-				.color(0x00FF00)
+			.gas().plasma()
+			.color(0x00FF00)
 		);
-
 		POTASSIUM = event.register("potassium", NCPeriodicElements.POTASSIUM, b -> b
-				.dust()
-				.liquid(337)
-				.style(0x9AACDF, METALLIC)
+			.dust()
+			.liquid(337)
+			.style(0x9AACDF, METALLIC)
 		);
-
 		CALCIUM = event.register("calcium", NCPeriodicElements.CALCIUM, b -> b
-				.dust()
-				.style(0xFFF5F5, METALLIC)
+			.dust()
+			.style(0xFFF5F5, METALLIC)
 		);
-
 		SCANDIUM = event.register("scandium", NCPeriodicElements.SCANDIUM, b -> b
-				.dust()
-				.style(0xCCCCCC, METALLIC)
+			.dust()
+			.style(0xCCCCCC, METALLIC)
 		);
-
 		TITANIUM = event.register("titanium", NCPeriodicElements.TITANIUM, b -> b
-				.metalAll().fineWire()
-				.liquid()
-				.style(0xDCA0F0, METALLIC)
-				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
+			.metalAll().fineWire()
+			.liquid()
+			.style(0xDCA0F0, METALLIC)
+			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
 		);
-
 		VANADIUM = event.register("vanadium", NCPeriodicElements.VANADIUM, b -> b
-				.dust().ingot()
-				.liquid()
-				.style(0x323232, METALLIC)
+			.dust().ingot()
+			.liquid()
+			.style(0x323232, METALLIC)
 		);
-
 		CHROMIUM = event.register("chromium", NCPeriodicElements.CHROMIUM, b -> b
-				.metalAll()
-				.liquid(2180)
-				.style(0xFFE6E6, SHINY)
-				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
+			.metalAll()
+			.liquid(2180)
+			.style(0xFFE6E6, SHINY)
+			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
-
 		MANGANESE = event.register("manganese", NCPeriodicElements.MANGANESE, b -> b
-				.metalDefault().foil().fineWire()
-				.liquid(1519)
-				.color(0xFAFAFA)
+			.metalDefault().foil().fineWire()
+			.liquid(1519)
+			.color(0xFAFAFA)
 		);
-
 		IRON = event.register("iron", NCPeriodicElements.IRON, b -> b
-				.metalAll().fineWire()
-				.liquid(1811).plasma()
-				.ore()
-				.style(0xC8C8C8, METALLIC)
+			.metalAll().fineWire()
+			.liquid(1811).plasma()
+			.ore()
+			.style(0xC8C8C8, METALLIC)
+			.prop(NCMaterialProps.MAGNETIZED_FORM, () -> MAGNETIC_IRON)
 		);
-
 		COBALT = event.register("cobalt", NCPeriodicElements.COBALT, b -> b
-				.metalDefault().fineWire()
-				.liquid(1768)
-				.ore()
-				.style(0x5050FA, METALLIC)
+			.metalDefault().fineWire()
+			.liquid(1768)
+			.ore()
+			.style(0x5050FA, METALLIC)
 		);
-
 		NICKEL = event.register("nickel", NCPeriodicElements.NICKEL, b -> b
-				.metalDefault()
-				.liquid(1728).plasma()
-				.ore()
-				.style(0xC8C8FA, METALLIC)
+			.metalDefault()
+			.liquid(1728).plasma()
+			.ore()
+			.style(0xC8C8FA, METALLIC)
 		);
-
 		COPPER = event.register("copper", NCPeriodicElements.COPPER, b -> b
-				.metalAll().fineWire()
-				.liquid(1358)
-				.ore()
-				.style(0xFF6400, SHINY)
+			.metalAll().fineWire()
+			.liquid(1358)
+			.ore()
+			.style(0xFF6400, SHINY)
 		);
-
 		ZINC = event.register("zinc", NCPeriodicElements.ZINC, b -> b
-				.metalDefault().foil()
-				.liquid(693)
-				.style(0xFAF0F0, METALLIC)
+			.metalDefault().foil()
+			.liquid(693)
+			.style(0xFAF0F0, METALLIC)
 		);
-
 		GALLIUM = event.register("gallium", NCPeriodicElements.GALLIUM, b -> b
-				.metalDefault().foil().fineWire()
-				.liquid(303)
-				.style(0xDCDCFF, SHINY)
+			.metalDefault().foil().fineWire()
+			.liquid(303)
+			.style(0xDCDCFF, SHINY)
 		);
-
 		GERMANIUM = event.register("germanium", NCPeriodicElements.GERMANIUM, b -> b
-				.dust()
-				.style(0x6A6248, SHINY)
+			.dust()
+			.style(0x6A6248, SHINY)
 		);
-
 		ARSENIC = event.register("arsenic", NCPeriodicElements.ARSENIC, b -> b
-				.dust()
-				.gas(887)
-				.color(0xFFFFFF)
+			.dust()
+			.gas(887)
+			.color(0xFFFFFF)
 		);
-
 		SELENIUM = event.register("selenium", NCPeriodicElements.SELENIUM, b -> b
-				.dust()
-				.style(0x401B24, SHINY)
+			.dust()
+			.style(0x401B24, SHINY)
 		);
-
 		BROMINE = event.register("bromine", NCPeriodicElements.BROMINE, b -> b
-				.liquid(59)
-				.style(0x080101, SHINY)
+			.liquid(59)
+			.style(0x080101, SHINY)
 		);
-
 		KRYPTON = event.register("krypton", NCPeriodicElements.KRYPTON, b -> b
-				.gas()
-				.color(0x80FF80)
+			.gas()
+			.color(0x80FF80)
 		);
-
 		RUBIDIUM = event.register("rubidium", NCPeriodicElements.RUBIDIUM, b -> b
-				.dust()
-				.style(0xF01E1E, SHINY)
+			.dust()
+			.style(0xF01E1E, SHINY)
 		);
-
 		STRONTIUM = event.register("strontium", NCPeriodicElements.STRONTIUM, b -> b
-				.dust()
-				.style(0xC8C8C8, METALLIC)
+			.dust()
+			.style(0xC8C8C8, METALLIC)
 		);
-
 		YTTRIUM = event.register("yttrium", NCPeriodicElements.YTTRIUM, b -> b
-				.metalDefault()
-				.liquid()
-				.style(0xDCFADC, METALLIC)
+			.metalDefault()
+			.liquid()
+			.style(0xDCFADC, METALLIC)
 		);
-
 		ZIRCONIUM = event.register("zirconium", NCPeriodicElements.ZIRCONIUM, b -> b
-				.dust()
-				.style(0x271813, METALLIC)
+			.dust()
+			.style(0x271813, METALLIC)
 		);
-
 		NIOBIUM = event.register("niobium", NCPeriodicElements.NIOBIUM, b -> b
-				.metalDefault().foil().fineWire()
-				.liquid()
-				.style(0xBEB4C8, METALLIC)
+			.metalDefault().foil().fineWire()
+			.liquid()
+			.style(0xBEB4C8, METALLIC)
 		);
-
 		MOLYBDENUM = event.register("molybdenum", NCPeriodicElements.MOLYBDENUM, b -> b
-				.metalDefault().foil()
-				.liquid(2896)
-				.ore()
-				.style(0xB4B4DC, SHINY)
+			.metalDefault().foil()
+			.liquid(2896)
+			.ore()
+			.style(0xB4B4DC, SHINY)
 		);
-
 		TECHNETIUM = event.register("technetium", NCPeriodicElements.TECHNETIUM, b -> b
-				.metalAll().fineWire()
-				.style(0xD7FCE2, SHINY)
+			.metalAll().fineWire()
+			.style(0xD7FCE2, SHINY)
 		);
-
 		RUTHENIUM = event.register("ruthenium", NCPeriodicElements.RUTHENIUM, b -> b
-				.metalExtra()
-				.liquid()
-				.style(0x3C7285, SHINY)
+			.metalExtra()
+			.liquid()
+			.style(0x3C7285, SHINY)
 		);
-
 		RHODIUM = event.register("rhodium", NCPeriodicElements.RHODIUM, b -> b
-				.metalExtra()
-				.liquid()
-				.style(0xDC0C58, BRIGHT)
+			.metalExtra()
+			.liquid()
+			.style(0xDC0C58, BRIGHT)
 		);
-
 		PALLADIUM = event.register("palladium", NCPeriodicElements.PALLADIUM, b -> b
-				.metalExtra().fineWire()
-				.liquid()
-				.ore()
-				.style(0x808080, SHINY)
+			.metalExtra().fineWire()
+			.liquid()
+			.ore()
+			.style(0x808080, SHINY)
 		);
-
 		SILVER = event.register("silver", NCPeriodicElements.SILVER, b -> b
-				.metalExtra().fineWire()
-				.liquid(1235)
-				.ore()
-				.style(0xDCDCFF, SHINY)
+			.metalExtra().fineWire()
+			.liquid(1235)
+			.ore()
+			.style(0xDCDCFF, SHINY)
 		);
-
 		CADMIUM = event.register("cadmium", NCPeriodicElements.CADMIUM, b -> b
-				.dust()
-				.style(0x32323C, SHINY)
+			.dust()
+			.style(0x32323C, SHINY)
 		);
-
 		INDIUM = event.register("indium", NCPeriodicElements.INDIUM, b -> b
-				.dust()
-				.liquid(430)
-				.style(0x400080, SHINY)
+			.dust()
+			.liquid(430)
+			.style(0x400080, SHINY)
 		);
-
 		TIN = event.register("tin", NCPeriodicElements.TIN, b -> b
-				.metalAll().fineWire()
-				.liquid(505)
-				.ore()
-				.color(0xDCDCDC)
+			.metalAll().fineWire()
+			.liquid(505)
+			.ore()
+			.color(0xDCDCDC)
 		);
-
 		ANTIMONY = event.register("antimony", NCPeriodicElements.ANTIMONY, b -> b
-				.dust().ingot()
-				.liquid(904)
-				.style(0xDCDCF0, SHINY)
+			.dust().ingot()
+			.liquid(904)
+			.style(0xDCDCF0, SHINY)
 		);
-
 		TELLURIUM = event.register("tellurium", NCPeriodicElements.TELLURIUM, b -> b
-				.dust()
-				.style(0xCEF456, METALLIC)
+			.dust()
+			.style(0xCEF456, METALLIC)
 		);
-
 		IODINE = event.register("iodine", NCPeriodicElements.IODINE, b -> b
-				.dust()
-				.style(0x773000, SHINY)
+			.dust()
+			.style(0x773000, SHINY)
 		);
-
 		XENON = event.register("xenon", NCPeriodicElements.XENON, b -> b
-				.gas()
-				.color(0x00FFFF)
+			.gas()
+			.color(0x00FFFF)
 		);
-
 		CAESIUM = event.register("caesium", NCPeriodicElements.CAESIUM, b -> b
-				.dust()
-				.style(0xB0C4DE, METALLIC)
+			.dust()
+			.style(0xB0C4DE, METALLIC)
 		);
-
 		BARIUM = event.register("barium", NCPeriodicElements.BARIUM, b -> b
-				.dust()
-				.style(0xFFFFFF, METALLIC)
+			.dust()
+			.style(0xFFFFFF, METALLIC)
 		);
-
 		LANTHANUM = event.register("lanthanum", NCPeriodicElements.LANTHANUM, b -> b
-				.dust()
-				.liquid(1193)
-				.style(0x8A8A8A, METALLIC)
+			.dust()
+			.liquid(1193)
+			.style(0x8A8A8A, METALLIC)
 		);
-
 		CERIUM = event.register("cerium", NCPeriodicElements.CERIUM, b -> b
-				.dust()
-				.liquid(1608)
-				.style(0x7BD490, METALLIC)
+			.dust()
+			.liquid(1608)
+			.style(0x7BD490, METALLIC)
 		);
-
 		PRASEODYMIUM = event.register("praseodymium", NCPeriodicElements.PRASEODYMIUM, b -> b
-				.dust().ingot().rod().fineWire()
-				.style(0x75D681, METALLIC)
+			.dust().ingot().rod().fineWire()
+			.style(0x75D681, METALLIC)
 		);
-
 		NEODYMIUM = event.register("neodymium", NCPeriodicElements.NEODYMIUM, b -> b
-				.dust().ingot().rod().fineWire()
-				.liquid()
-				.ore()
-				.style(0x646464, METALLIC)
+			.dust().ingot().rod().fineWire()
+			.liquid()
+			.ore()
+			.style(0x646464, METALLIC)
+			.prop(NCMaterialProps.MAGNETIZED_FORM, () -> MAGNETIC_NEODYMIUM)
 		);
-
 		PROMETHIUM = event.register("promethium", NCPeriodicElements.PROMETHIUM, b -> b
-				.dust()
-				.color(0x24B535)
-				.textureSet(METALLIC)
+			.dust()
+			.color(0x24B535)
+			.textureSet(METALLIC)
 		);
-
 		SAMARIUM = event.register("samarium", NCPeriodicElements.SAMARIUM, b -> b
-				.dust().ingot().rod().fineWire()
-				.liquid(1345)
-				.ore()
-				.style(0xFFFFCC, METALLIC)
+			.dust().ingot().rod().fineWire()
+			.liquid(1345)
+			.ore()
+			.style(0xFFFFCC, METALLIC)
+			.prop(NCMaterialProps.MAGNETIZED_FORM, () -> MAGNETIC_SAMARIUM)
 		);
-
 		EUROPIUM = event.register("europium", NCPeriodicElements.EUROPIUM, b -> b
-				.metalDefault().foil().fineWire()
-				.liquid(1099).plasma()
-				.style(0xF6B5FF, METALLIC)
+			.metalDefault().foil().fineWire()
+			.liquid(1099).plasma()
+			.style(0xF6B5FF, METALLIC)
 		);
-
 		GADOLINIUM = event.register("gadolinium", NCPeriodicElements.GADOLINIUM, b -> b
-				.dust()
-				.style(0x3BBA1C, METALLIC)
+			.dust()
+			.style(0x3BBA1C, METALLIC)
 		);
-
 		TERBIUM = event.register("terbium", NCPeriodicElements.TERBIUM, b -> b
-				.dust()
-				.style(0xFFFFFF, METALLIC)
+			.dust()
+			.style(0xFFFFFF, METALLIC)
 		);
-
 		DYSPROSIUM = event.register("dysprosium", NCPeriodicElements.DYSPROSIUM, b -> b
-				.dust()
-				.style(0x69D150, METALLIC)
+			.dust()
+			.style(0x69D150, METALLIC)
 		);
-
 		HOLMIUM = event.register("holmium", NCPeriodicElements.HOLMIUM, b -> b
-				.dust()
-				.style(0x1608A6, METALLIC)
+			.dust()
+			.style(0x1608A6, METALLIC)
 		);
-
 		ERBIUM = event.register("erbium", NCPeriodicElements.ERBIUM, b -> b
-				.dust()
-				.style(0xB09851, METALLIC)
+			.dust()
+			.style(0xB09851, METALLIC)
 		);
-
 		THULIUM = event.register("thulium", NCPeriodicElements.THULIUM, b -> b
-				.dust()
-				.style(0x596BC2, METALLIC)
+			.dust()
+			.style(0x596BC2, METALLIC)
 		);
-
 		YTTERBIUM = event.register("ytterbium", NCPeriodicElements.YTTERBIUM, b -> b
-				.dust()
-				.style(0x2CC750, METALLIC)
+			.dust()
+			.style(0x2CC750, METALLIC)
 		);
-
 		LUTETIUM = event.register("lutetium", NCPeriodicElements.LUTETIUM, b -> b
-				.dust()
-				.liquid(1925)
-				.style(0xBC3EC7, METALLIC)
+			.dust()
+			.liquid(1925)
+			.style(0xBC3EC7, METALLIC)
 		);
-
 		HAFNIUM = event.register("hafnium", NCPeriodicElements.HAFNIUM, b -> b
-				.dust()
-				.style(0x2B4A3A, SHINY)
+			.dust()
+			.style(0x2B4A3A, SHINY)
 		);
-
 		TANTALUM = event.register("tantalum", NCPeriodicElements.TANTALUM, b -> b
-				.metalDefault().foil().fineWire()
-				.liquid(3290)
-				.style(0x69B7FF, METALLIC)
+			.metalDefault().foil().fineWire()
+			.liquid(3290)
+			.style(0x69B7FF, METALLIC)
 		);
-
 		TUNGSTEN = event.register("tungsten", NCPeriodicElements.TUNGSTEN, b -> b
-				.metalAll().fineWire()
-				.liquid(3695)
-				.style(0x323232, METALLIC)
-				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
+			.metalAll().fineWire()
+			.liquid(3695)
+			.style(0x323232, METALLIC)
+			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
 		);
-
 		RHENIUM = event.register("thenium", NCPeriodicElements.RHENIUM, b -> b
-				.dust()
-				.style(0x37393D, SHINY)
+			.dust()
+			.style(0x37393D, SHINY)
 		);
-
 		OSMIUM = event.register("osmium", NCPeriodicElements.OSMIUM, b -> b
-				.metalAll().fineWire()
-				.liquid(3306)
-				.style(0x3232FF, METALLIC)
-				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
+			.metalAll().fineWire()
+			.liquid(3306)
+			.style(0x3232FF, METALLIC)
+			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
 		);
-
 		IRIDIUM = event.register("iridium", NCPeriodicElements.IRIDIUM, b -> b
-				.metalAll().fineWire()
-				.liquid(2719)
-				.ore()
-				.style(0xF0F0F5, METALLIC)
-				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
+			.metalAll().fineWire()
+			.liquid(2719)
+			.ore()
+			.style(0xF0F0F5, METALLIC)
+			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_DIAMOND_TOOL)
 		);
-
 		PLATINUM = event.register("platinum", NCPeriodicElements.PLATINUM, b -> b
-				.metalAll().fineWire()
-				.liquid(2041)
-				.ore()
-				.style(0xFFFFC8, SHINY)
+			.metalAll().fineWire()
+			.liquid(2041)
+			.ore()
+			.style(0xFFFFC8, SHINY)
 		);
-
 		GOLD = event.register("gold", NCPeriodicElements.GOLD, b -> b
-				.metalExtra().fineWire()
-				.liquid(1337)
-				.ore()
-				.style(0xFFFF1E, SHINY)
+			.metalExtra().fineWire()
+			.liquid(1337)
+			.ore()
+			.style(0xFFFF1E, SHINY)
 		);
-
 		MERCURY = event.register("mercury", NCPeriodicElements.MERCURY, b -> b
-				.liquid()
-				.color(0xFFDCDC)
+			.liquid()
+			.color(0xFFDCDC)
 		);
-
 		THALLIUM = event.register("thallium", NCPeriodicElements.THALLIUM, b -> b
-				.dust()
-				.style(0x1E576A, SHINY)
+			.dust()
+			.style(0x1E576A, SHINY)
 		);
-
 		LEAD = event.register("lead", NCPeriodicElements.LEAD, b -> b
-				.metalExtra().fineWire()
-				.liquid(600)
-				.ore()
-				.color(0x8C648C)
+			.metalExtra().fineWire()
+			.liquid(600)
+			.ore()
+			.color(0x8C648C)
 		);
-
 		BISMUTH = event.register("bismuth", NCPeriodicElements.BISMUTH, b -> b
-				.dust().ingot()
-				.liquid(545)
-				.style(0x64A0A0, METALLIC)
+			.dust().ingot()
+			.liquid(545)
+			.style(0x64A0A0, METALLIC)
 		);
-
 		POLONIUM = event.register("polonium", NCPeriodicElements.POLONIUM, b -> b
-				.dust()
-				.color(0xC9D47E)
+			.dust()
+			.color(0xC9D47E)
 		);
-
 		ASTATINE = event.register("astatine", NCPeriodicElements.ASTATINE, b -> b
-				.dust()
-				.color(0x17212B)
+			.dust()
+			.color(0x17212B)
 		);
-
 		RADON = event.register("radon", NCPeriodicElements.RADON, b -> b
-				.gas()
-				.color(0xFF00FF)
+			.gas()
+			.color(0xFF00FF)
 		);
-
 		FRANCIUM = event.register("francium", NCPeriodicElements.FRANCIUM, b -> b
-				.dust()
-				.style(0x0000FF, SHINY)
+			.dust()
+			.style(0x0000FF, SHINY)
 		);
-
 		RADIUM = event.register("radium", NCPeriodicElements.RADIUM, b -> b
-				.dust()
-				.style(0x90FF2D, SHINY)
+			.dust()
+			.style(0x90FF2D, SHINY)
 		);
-
 		ACTINIUM = event.register("actinium", NCPeriodicElements.ACTINIUM, b -> b
-				.dust()
-				.style(0x353D41, METALLIC)
+			.dust()
+			.style(0x353D41, METALLIC)
 		);
-
 		THORIUM = event.register("thorium", NCPeriodicElements.THORIUM, b -> b
-				.metalDefault()
-				.liquid(2023).plasma()
-				.ore()
-				.style(0x001E00, SHINY)
+			.metalDefault()
+			.liquid(2023).plasma()
+			.ore()
+			.style(0x001E00, SHINY)
 		);
-
 		PROTACTINIUM = event.register("protactinium", NCPeriodicElements.PROTACTINIUM, b -> b
-				.dust()
-				.style(0xA78B6D, METALLIC)
+			.dust()
+			.style(0xA78B6D, METALLIC)
 		);
-
 		URANIUM_238 = event.register("uranium", NCPeriodicElements.URANIUM_238, b -> b
-				.metalDefault()
-				.liquid(1405).plasma()
-				.style(0x32F032, METALLIC)
-				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
+			.metalDefault()
+			.liquid(1405).plasma()
+			.style(0x32F032, METALLIC)
+			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
-
 		URANIUM_235 = event.register("uranium_235", NCPeriodicElements.URANIUM_235, b -> b
-				.metalDefault()
-				.liquid(1405).plasma()
-				.style(0x46FA46, SHINY)
-				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
+			.metalDefault()
+			.liquid(1405).plasma()
+			.style(0x46FA46, SHINY)
+			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
-
 		NEPTUNIUM = event.register("neptunium", NCPeriodicElements.NEPTUNIUM, b -> b
-				.dust()
-				.plasma()
-				.style(0x284D7B, METALLIC)
+			.dust()
+			.plasma()
+			.style(0x284D7B, METALLIC)
 		);
-
 		PLUTONIUM_239 = event.register("plutonium", NCPeriodicElements.PLUTONIUM_239, b -> b
-				.metalDefault()
-				.liquid(913).plasma()
-				.ore(true)
-				.style(0xF03232, METALLIC)
-				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
+			.metalDefault()
+			.liquid(913).plasma()
+			.ore(true)
+			.style(0xF03232, METALLIC)
+			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
-
 		PLUTONIUM_241 = event.register("plutonium_241", NCPeriodicElements.PLUTONIUM_241, b -> b
-				.metalDefault()
-				.liquid(913).plasma()
-				.style(0xFA4646, SHINY)
-				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
+			.metalDefault()
+			.liquid(913).plasma()
+			.style(0xFA4646, SHINY)
+			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
-
 		AMERICIUM = event.register("americium", NCPeriodicElements.AMERICIUM, b -> b
-				.metalExtra().fineWire()
-				.liquid(1449).plasma()
-				.style(0xC8C8C8, METALLIC)
-				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
+			.metalExtra().fineWire()
+			.liquid(1449).plasma()
+			.style(0xC8C8C8, METALLIC)
+			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
-
 		CURIUM = event.register("curium", NCPeriodicElements.CURIUM, b -> b
-				.dust()
-				.plasma()
-				.style(0x7B544E, METALLIC)
+			.dust()
+			.plasma()
+			.style(0x7B544E, METALLIC)
 		);
-
 		BERKELIUM = event.register("berkelium", NCPeriodicElements.BERKELIUM, b -> b
-				.dust()
-				.plasma()
-				.style(0x645A88, METALLIC)
+			.dust()
+			.plasma()
+			.style(0x645A88, METALLIC)
 		);
-
 		CALIFORNIUM = event.register("californium", NCPeriodicElements.CALIFORNIUM, b -> b
-				.dust()
-				.plasma()
-				.style(0xA85A12, METALLIC)
+			.dust()
+			.plasma()
+			.style(0xA85A12, METALLIC)
 		);
-
 		EINSTEINIUM = event.register("einsteinium", NCPeriodicElements.EINSTEINIUM, b -> b
-				.dust()
-				.plasma()
-				.style(0xCE9F00, METALLIC)
+			.dust()
+			.plasma()
+			.style(0xCE9F00, METALLIC)
 		);
-
 		FERMIUM = event.register("fermium", NCPeriodicElements.FERMIUM, b -> b
-				.dust()
-				.plasma()
-				.style(0x3e0022, METALLIC)
+			.dust()
+			.plasma()
+			.style(0x3e0022, METALLIC)
 		);
-
 		MENDELEVIUM = event.register("mendelevium", NCPeriodicElements.MENDELEVIUM, b -> b
-				.dust()
-				.plasma()
-				.style(0x1D4ACF, METALLIC)
+			.dust()
+			.plasma()
+			.style(0x1D4ACF, METALLIC)
 		);
-
 		NOBELIUM = event.register("nobelium", NCPeriodicElements.NOBELIUM, b -> b
-				.dust()
-				.style(0x43deff, SHINY)
+			.dust()
+			.style(0x43deff, SHINY)
 		);
-
 		LAWRENCIUM = event.register("lawrencium", NCPeriodicElements.LAWRENCIUM, b -> b
-				.dust()
-				.style(0x5D7575, METALLIC)
+			.dust()
+			.style(0x5D7575, METALLIC)
 		);
-
 		RUTHERFORDIUM = event.register("rutherfordium", NCPeriodicElements.RUTHERFORDIUM, b -> b
-				.dust()
-				.style(0xFFF6A1, SHINY)
+			.dust()
+			.style(0xFFF6A1, SHINY)
 		);
-
 		DUBNIUM = event.register("dubnium", NCPeriodicElements.DUBNIUM, b -> b
-				.dust()
-				.style(0x00F3FF, SHINY)
+			.dust()
+			.style(0x00F3FF, SHINY)
 		);
-
 		SEABORGIUM = event.register("seaborgium", NCPeriodicElements.SEABORGIUM, b -> b
-				.dust()
-				.style(0x19C5FF, SHINY)
+			.dust()
+			.style(0x19C5FF, SHINY)
 		);
-
 		BOHRIUM = event.register("bohrium", NCPeriodicElements.BOHRIUM, b -> b
-				.dust()
-				.style(0xDC57FF, SHINY)
+			.dust()
+			.style(0xDC57FF, SHINY)
 		);
-
 		HASSIUM = event.register("hassium", NCPeriodicElements.HASSIUM, b -> b
-				.dust()
-				.color(0xDDDDDD)
+			.dust()
+			.color(0xDDDDDD)
 		);
-
 		MEITNERIUM = event.register("meitnerium", NCPeriodicElements.MEITNERIUM, b -> b
-				.dust()
-				.style(0x6E90FF, SHINY)
+			.dust()
+			.style(0x6E90FF, SHINY)
 		);
-
 		DARMSTADTIUM = event.register("darmstadtium", NCPeriodicElements.DARMSTADTIUM, b -> b
-				.metalExtra()
-				.liquid()
-				.color(0x578062)
-				.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
+			.metalExtra()
+			.liquid()
+			.color(0x578062)
+			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, BlockTags.NEEDS_IRON_TOOL)
 		);
-
 		ROENTGENIUM = event.register("roentgenium", NCPeriodicElements.ROENTGENIUM, b -> b
-				.dust()
-				.style(0xE3FDEC, SHINY)
+			.dust()
+			.style(0xE3FDEC, SHINY)
 		);
-
 		COPERNICIUM = event.register("copernium", NCPeriodicElements.COPERNICIUM, b -> b
-				.dust()
-				.color(0xFFFEFF)
+			.dust()
+			.color(0xFFFEFF)
 		);
-
 		NIHONIUM = event.register("nohinium", NCPeriodicElements.NIHONIUM, b -> b
-				.dust()
-				.style(0xA68BFF, SHINY)
+			.dust()
+			.style(0xA68BFF, SHINY)
 		);
-
 		FLEROVIUM = event.register("flerovium", NCPeriodicElements.FLEROVIUM, b -> b
-				.dust()
-				.style(0xD2FF00, SHINY)
+			.dust()
+			.style(0xD2FF00, SHINY)
 		);
-
 		MOSCOVIUM = event.register("moscovium", NCPeriodicElements.MOSCOVIUM, b -> b
-				.dust()
-				.style(0xBD91FF, SHINY)
+			.dust()
+			.style(0xBD91FF, SHINY)
 		);
-
 		LIVERMORIUM = event.register("livermorium", NCPeriodicElements.LIVERMORIUM, b -> b
-				.dust()
-				.style(0xFF8B8B, SHINY)
+			.dust()
+			.style(0xFF8B8B, SHINY)
 		);
-
 		TENNESSINE = event.register("tennessine", NCPeriodicElements.TENNESSINE, b -> b
-				.dust()
-				.style(0xBCA3FF, SHINY)
+			.dust()
+			.style(0xBCA3FF, SHINY)
 		);
-
 		OGANESSON = event.register("oganesson", NCPeriodicElements.OGANESSON, b -> b
-				.gas()
-				.style(0x142D64, METALLIC)
+			.gas()
+			.style(0x142D64, METALLIC)
 		);
 	}
 
@@ -854,6 +738,6 @@ final class MaterialsPeriodicTable {
 		event.add(PLUTONIUM_241, "Plutonium-241");
 	}
 
-	private MaterialsPeriodicTable() {
+	private MaterialLoader0() {
 	}
 }

@@ -1,5 +1,6 @@
 package conductance.api.material;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
@@ -40,6 +41,8 @@ public interface Material {
 	int getColor();
 
 	ResourceLocation getTextureSet();
+
+	List<MaterialStack> getComponents();
 
 	String getChemicalFormula();
 }

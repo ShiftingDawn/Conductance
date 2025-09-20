@@ -133,6 +133,152 @@ public final class NCMaterials {
 	public static Material OGANESSON;
 	//endregion
 
+	//region First Order Materials
+	public static Material MAGNETIC_IRON;
+	public static Material ALMANDINE;
+	public static Material ANDRADITE;
+	public static Material POTASSIUM_FELDSPAR;
+	public static Material ALBITE_FELDSPAR;
+	public static Material ANORTHITE_FELDSPAR;
+	public static Material PYRITE;
+	public static Material BRONZE;
+	public static Material STEEL;
+	public static Material MAGNETIC_STEEL;
+	public static Material WROUGHT_IRON;
+	public static Material STAINLESS_STEEL;
+	public static Material DIAMOND;
+	public static Material ELECTRUM;
+	public static Material EMERALD;
+	public static Material GALENA;
+	public static Material GARNIERITE;
+	public static Material GREEN_SAPPHIRE;
+	public static Material GROSSULAR;
+	public static Material ILMENITE;
+	public static Material RUTILE;
+	public static Material BAUXITE;
+	public static Material INVAR;
+	public static Material LAZURITE;
+	public static Material MAGNETITE;
+	public static Material MAGNESITE;
+	public static Material MOLYBDENITE;
+	public static Material OBSIDIAN;
+	public static Material WATER;
+	public static Material DISTILLED_WATER;
+	public static Material ICE;
+	public static Material STEAM;
+	public static Material SILICON_DIOXIDE;
+	public static Material PHOSPHATE;
+	public static Material STERLING_SILVER;
+	public static Material ROSE_GOLD;
+	public static Material BISMUTH_BRONZE;
+	public static Material BLACK_BRONZE;
+	public static Material PYROLUSITE;
+	public static Material PYROPE;
+	public static Material ROCK_SALT;
+	public static Material SALT;
+	public static Material RURIDIT;
+	public static Material SALTPETER;
+	public static Material SAPPHIRE;
+	public static Material SODALITE;
+	public static Material SCHEELITE;
+	public static Material TANTALITE;
+	public static Material COAL;
+	public static Material CHARCOAL;
+	public static Material COAL_COKE;
+	public static Material SOLDERING_ALLOY;
+	public static Material SPESSARTINE;
+	public static Material SPHALERITE;
+	public static Material STIBNITE;
+	public static Material TETRAHEDRITE;
+	public static Material TOPAZ;
+	public static Material TUNGSTATE;
+	public static Material URANINITE;
+	public static Material WULFENITE;
+	public static Material NETHER_QUARTZ;
+	public static Material CERTUS_QUARTZ;
+	public static Material CHARGED_CERTUS_QUARTZ;
+	public static Material QUARTZITE;
+	public static Material GRAPHITE;
+	public static Material GRAPHENE;
+	public static Material TUNGSTIC_ACID;
+	public static Material OSMIRIDIUM;
+	public static Material CHALCOCITE;
+	public static Material CHALCOPYRITE;
+	public static Material CUPRONICKEL;
+	public static Material YELLOW_LIMONITE;
+	public static Material BROWN_LIMONITE;
+	public static Material MICA;
+	public static Material KYANITE;
+	public static Material SOAPSTONE;
+	public static Material TALC;
+	public static Material CASSITERITE;
+	public static Material CASSITERITE_SAND;
+	public static Material ASBESTOS;
+	public static Material HEMATITE;
+	public static Material SPODUMENE;
+	public static Material LEPIDOLITE;
+	public static Material CALCITE;
+	public static Material UVAROVITE;
+	public static Material KANTHAL;
+	public static Material BRASS;
+	public static Material ENDER_PEARL;
+	public static Material PRECIOUS_METAL;
+	public static Material GOLD_LEACH;
+	public static Material PRECIOUS_METAL_RESIDUE;
+	public static Material MAGNETIC_NEODYMIUM;
+	public static Material MAGNETIC_SAMARIUM;
+	public static Material NICHROME;
+	public static Material TPV_ALLOY;
+	public static Material CINNABAR;
+	public static Material PENTLANDITE;
+	public static Material GLAUCONITE;
+	public static Material LIGNITE_COAL;
+	public static Material APATITE;
+	public static Material TRICALCIUM_PHOSPHATE;
+	public static Material PYROCHLORE;
+	public static Material BIOTITE;
+	public static Material BONE;
+	//endregion
+
+	//region Second Order Materials
+	public static Material TUNGSTENSTEEL;
+	public static Material RUBY;
+	public static Material FLINT;
+	public static Material CLAY;
+	public static Material GARNET_SAND;
+	public static Material LAPIS_LAZULI;
+	public static Material COBALT_BRASS;
+	public static Material BLAZE;
+	public static Material EYE_OF_ENDER;
+	public static Material AMETHYST;
+	public static Material DEEPSLATE;
+	//endregion
+
+	//region Third Order Materials
+	public static Material REDSTONE;
+	public static Material BRICK;
+	public static Material DIATOMITE;
+	public static Material HSS_G;
+	//endregion
+
+	//region Higher Order Materials
+	public static Material RED_ALLOY;
+	//endregion
+
+	//region Vanilla Materials
+	public static Material WOOD;
+	public static Material STONE;
+	public static Material GLASS;
+	public static Material NETHER_STAR;
+	//endregion
+
+	//region Simple Chemistry
+	public static Material RUBBER;
+	public static Material GLUE;
+	public static Material CREOSOTE_OIL;
+	public static Material LUBRICANT;
+	//endregion
+
 	private NCMaterials() {
 	}
 }

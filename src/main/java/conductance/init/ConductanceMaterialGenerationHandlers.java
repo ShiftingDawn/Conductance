@@ -75,7 +75,7 @@ final class ConductanceMaterialGenerationHandlers {
 			.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
 			.entryTag("c:storage_blocks/%s", "%s Storage Blocks")
 			.setHasBlock(true, true, true, BlockTags.MINEABLE_WITH_PICKAXE)
-			.predicate(material -> material.hasFlag(NCMaterialFlags.INGOT) || material.hasFlag(NCMaterialFlags.GEM))
+			.predicate(material -> material.hasFlag(NCMaterialFlags.FORCE_BLOCK) || material.hasFlag(NCMaterialFlags.INGOT) || material.hasFlag(NCMaterialFlags.GEM))
 		);
 
 		INGOT = event.register("ingot", b -> b
@@ -284,7 +284,7 @@ final class ConductanceMaterialGenerationHandlers {
 			.groupTag("c:rotors", "Rotors")
 			.entryTag("c:rotors/%s", "%s Rotors")
 			.setHasItem(true, true)
-			.requiredFlag(NCMaterialFlags.ROD)
+			.requiredFlag(NCMaterialFlags.ROTOR)
 		);
 		FINE_WIRE = event.register("fine_wire", b -> b
 			.groupTag("c:fine_wires", "Fine Wires")
@@ -326,6 +326,10 @@ final class ConductanceMaterialGenerationHandlers {
 				event.add(handler.getDescriptionId() + ".factory", "%s " + TextHelper.lowerUnderscoreToEnglish(handler.getId().getPath()));
 			}
 		}
+		event.add(GEM.getDescriptionId() + ".factory", "%s");
+		event.add(GEM_FLAWED.getDescriptionId() + ".factory", "Flawed %s");
+		event.add(GEM_FLAWLESS.getDescriptionId() + ".factory", "Flawless %s");
+		event.add(GEM_EXQUISITE.getDescriptionId() + ".factory", "Exquisite %s");
 		event.add(STORAGE_BLOCK.getDescriptionId() + ".factory", "Block of %s");
 		event.add(ORE_STONE.getDescriptionId() + ".factory", "%s Ore");
 		event.add(ORE_GRANITE.getDescriptionId() + ".factory", "Granite %s Ore");

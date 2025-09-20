@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialProp;
+import conductance.api.material.MaterialStack;
 import conductance.api.material.MaterialTrait;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.periodicelement.PeriodicElement;
@@ -27,13 +28,15 @@ final class MaterialImpl implements Material {
 	private final Map<MaterialProp<?>, Object> props;
 	private final @Getter ResourceLocation textureSet;
 	private final LazyInt color;
+	private final List<MaterialStack> components;
 	private final Lazy<String> chemicalFormula;
 	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("material", this.getId()));
 
 	MaterialImpl(
-			@Nullable final PeriodicElement periodicElement, final Set<MaterialFlag> flags, final Map<MaterialTraitKey<?>, MaterialTrait<?>> traits, final Map<MaterialProp<?>, Object> props,
-			@Nullable final Integer color,
-			final ResourceLocation textureSet, @Nullable final String chemicalFormula
+		@Nullable final PeriodicElement periodicElement,
+		final Set<MaterialFlag> flags, final Map<MaterialTraitKey<?>, MaterialTrait<?>> traits, final Map<MaterialProp<?>, Object> props,
+		@Nullable final Integer color, final ResourceLocation textureSet,
+		final List<MaterialStack> components, @Nullable final String chemicalFormula
 	) {
 		this.periodicElement = periodicElement;
 		this.flags = Collections.unmodifiableSet(flags);
@@ -41,6 +44,7 @@ final class MaterialImpl implements Material {
 		this.props = Collections.unmodifiableMap(props);
 		this.textureSet = textureSet;
 		this.color = color != null ? LazyInt.of(color) : LazyInt.of(this::calcColor);
+		this.components = Collections.unmodifiableList(components);
 		this.chemicalFormula = chemicalFormula != null ? Lazy.of(chemicalFormula) : Lazy.of(this::calcChemicalFormula);
 	}
 
@@ -102,6 +106,11 @@ final class MaterialImpl implements Material {
 	@Override
 	public int getColor() {
 		return this.color.getAsInt();
+	}
+
+	@Override
+	public List<MaterialStack> getComponents() {
+		return this.components;
 	}
 
 	@Override
