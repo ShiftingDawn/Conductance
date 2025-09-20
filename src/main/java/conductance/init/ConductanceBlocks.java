@@ -176,7 +176,7 @@ public final class ConductanceBlocks {
 			.toArray(Block[]::new);
 		event.register((blockState, blockAndTintGetter, blockPos, i) -> {
 			final MaterialBlock block = (MaterialBlock) blockState.getBlock();
-			return i == 1 ? block.getMaterial().getColor() : -1;
+			return i == 0 ? block.getMaterial().getColor() : -1;
 		}, materialBlocks);
 	}
 
