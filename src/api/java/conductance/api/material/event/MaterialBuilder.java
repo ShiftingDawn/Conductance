@@ -18,16 +18,44 @@ public interface MaterialBuilder {
 
 	MaterialBuilder flag(MaterialFlag flag);
 
+	MaterialBuilder removeFlag(MaterialFlag... flagsToRemove);
+
 	default MaterialBuilder dust() {
 		return this.flag(NCMaterialFlags.DUST);
 	}
 
+	default MaterialBuilder ingot(final boolean generateBlock, final boolean generateNugget) {
+		this.flag(NCMaterialFlags.INGOT);
+		if (generateBlock) {
+			this.flag(NCMaterialFlags.BLOCK);
+		}
+		if (generateNugget) {
+			this.flag(NCMaterialFlags.NUGGET);
+		}
+		return this;
+	}
+
 	default MaterialBuilder ingot() {
-		return this.flag(NCMaterialFlags.INGOT);
+		return this.ingot(true, true);
+	}
+
+	default MaterialBuilder gem(final boolean generateBlock, final boolean generateHighQuality, final boolean generateLowQuality) {
+		this.flag(NCMaterialFlags.GEM);
+		if (generateBlock) {
+			this.flag(NCMaterialFlags.BLOCK);
+		}
+		if (generateHighQuality) {
+			this.flag(NCMaterialFlags.GEM_EXQUISITE);
+			this.flag(NCMaterialFlags.GEM_FLAWLESS);
+		}
+		if (generateLowQuality) {
+			this.flag(NCMaterialFlags.GEM_FLAWED);
+		}
+		return this;
 	}
 
 	default MaterialBuilder gem() {
-		return this.flag(NCMaterialFlags.GEM);
+		return this.gem(true, true, true);
 	}
 
 	default MaterialBuilder plate() {
@@ -110,6 +138,8 @@ public interface MaterialBuilder {
 
 	<T extends MaterialTrait<T>> MaterialBuilder trait(MaterialTraitKey<T> key, T instance);
 
+	<T extends MaterialTrait<T>> MaterialBuilder removeTrait(MaterialTraitKey<T> traitToRemove);
+
 	MaterialBuilder liquid(Supplier<MaterialTraitFluid.Liquid> factory);
 
 	default MaterialBuilder liquid(final int temperature) {
@@ -169,6 +199,8 @@ public interface MaterialBuilder {
 	}
 
 	<T> MaterialBuilder prop(MaterialProp<T> property, T value);
+
+	<T> MaterialBuilder removeProp(MaterialProp<T> propToRemove);
 
 	MaterialBuilder color(int rgb);
 

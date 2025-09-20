@@ -79,14 +79,14 @@ final class ConductanceMaterialOverrides {
 		event.add(NUGGET, IRON, Items.IRON_NUGGET);
 		event.add(NUGGET, GOLD, Items.GOLD_NUGGET);
 
-		event.regularGemOnly(FLINT, Items.FLINT);
-		event.regularGemOnly(COAL, Items.COAL);
-		event.regularGemOnly(CHARCOAL, Items.CHARCOAL);
-		event.regularGemOnly(LAPIS_LAZULI, Items.LAPIS_LAZULI);
-		event.regularGemOnly(ENDER_PEARL, Items.ENDER_PEARL);
-		event.regularGemOnly(EYE_OF_ENDER, Items.ENDER_EYE);
-		event.regularGemOnly(AMETHYST, Items.AMETHYST_SHARD);
-		event.regularGemOnly(NETHER_STAR, Items.NETHER_STAR);
+		event.add(GEM, COAL, Items.COAL);
+		event.add(GEM, CHARCOAL, Items.CHARCOAL);
+		event.add(GEM, FLINT, Items.FLINT);
+		event.add(GEM, LAPIS_LAZULI, Items.LAPIS_LAZULI);
+		event.add(GEM, ENDER_PEARL, Items.ENDER_PEARL);
+		event.add(GEM, EYE_OF_ENDER, Items.ENDER_EYE);
+		event.add(GEM, AMETHYST, Items.AMETHYST_SHARD);
+		event.add(GEM, NETHER_STAR, Items.NETHER_STAR);
 		event.add(GEM, DIAMOND, Items.DIAMOND);
 		event.add(GEM, EMERALD, Items.EMERALD);
 

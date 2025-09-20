@@ -36,7 +36,7 @@ public final class MaterialLoader3 {
 			.components(SILICON, PYRITE, 5, RUBY, MERCURY)
 		);
 		BRICK = event.register("brick", b -> b
-			.dust().ingot()
+			.dust().ingot(true, false)
 			.style(0x9B5643, ROUGH)
 			.components(CLAY, 1)
 		);

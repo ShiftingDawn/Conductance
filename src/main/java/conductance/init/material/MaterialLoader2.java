@@ -1,12 +1,18 @@
 package conductance.init.material;
 
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import conductance.api.CAPI;
+import conductance.api.NCMaterialFlags;
+import conductance.api.NCMaterialGenerationHandlers;
 import conductance.api.NCMaterialProps;
 import conductance.api.NCMaterialTextureSets;
 import conductance.api.NCMaterials;
 import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
+import conductance.api.resource.event.RegisterTagEvent;
 import conductance.Conductance;
 import static net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL;
 import static conductance.api.NCMaterialTextureSets.FINE;
@@ -27,12 +33,14 @@ import static conductance.api.NCMaterials.COBALT_BRASS;
 import static conductance.api.NCMaterials.DEEPSLATE;
 import static conductance.api.NCMaterials.ENDER_PEARL;
 import static conductance.api.NCMaterials.EYE_OF_ENDER;
+import static conductance.api.NCMaterials.FLINT;
 import static conductance.api.NCMaterials.GARNET_SAND;
 import static conductance.api.NCMaterials.GROSSULAR;
 import static conductance.api.NCMaterials.IRON;
 import static conductance.api.NCMaterials.LAPIS_LAZULI;
 import static conductance.api.NCMaterials.LAZURITE;
 import static conductance.api.NCMaterials.LITHIUM;
+import static conductance.api.NCMaterials.NETHER_STAR;
 import static conductance.api.NCMaterials.OXYGEN;
 import static conductance.api.NCMaterials.PYRITE;
 import static conductance.api.NCMaterials.PYROPE;
@@ -67,8 +75,8 @@ public final class MaterialLoader2 {
 			.style(0xFF6464, NCMaterialTextureSets.AMETHYST)
 			.components(CHROMIUM, ALUMINIUM, 2, OXYGEN, 3)
 		);
-		NCMaterials.FLINT = event.register("flint", b -> b
-			.dust().gem()
+		FLINT = event.register("flint", b -> b
+			.dust().gem(true, false, false)
 			.style(0x002040, NCMaterialTextureSets.FLINT)
 			.components(SILICON_DIOXIDE)
 		);
@@ -85,6 +93,7 @@ public final class MaterialLoader2 {
 		);
 		LAPIS_LAZULI = event.register("lapis_lazuli", b -> b
 			.gemExtra()
+			.removeFlag(NCMaterialFlags.GEM_FLAWED, NCMaterialFlags.GEM_FLAWLESS, NCMaterialFlags.GEM_EXQUISITE)
 			.ore(6, 4)
 			.style(0x4646DC, NCMaterialTextureSets.LAPIS)
 			.components(LAZURITE, 12, SODALITE, 2, PYRITE, CALCIUM)
@@ -102,6 +111,7 @@ public final class MaterialLoader2 {
 		);
 		EYE_OF_ENDER = event.register("eye_of_ender", b -> b
 			.gemExtra()
+			.removeFlag(NCMaterialFlags.GEM_FLAWED, NCMaterialFlags.GEM_FLAWLESS, NCMaterialFlags.GEM_EXQUISITE)
 			.color(160, 250, 230).textureSet(SHINY)
 			.components(ENDER_PEARL, BLAZE)
 		);
@@ -117,6 +127,11 @@ public final class MaterialLoader2 {
 			.style(0x2F2F37, ROUGH)
 			.components(SILICON_DIOXIDE, 4, BIOTITE)
 		);
+	}
+
+	@EventListener(priority = -100)
+	private static void addCustomTags(final RegisterTagEvent event) {
+		event.item(CAPI.materials().getItemTag(AMETHYST, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.AMETHYST_BLOCK);
 	}
 
 	private MaterialLoader2() {

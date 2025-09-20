@@ -56,8 +56,22 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
+	public MaterialBuilder removeFlag(final MaterialFlag... flagsToRemove) {
+		for (final MaterialFlag flag : flagsToRemove) {
+			this.flags.remove(flag);
+		}
+		return this;
+	}
+
+	@Override
 	public <T extends MaterialTrait<T>> MaterialBuilder trait(final MaterialTraitKey<T> key, final T instance) {
 		this.traits.put(key, instance);
+		return this;
+	}
+
+	@Override
+	public <T extends MaterialTrait<T>> MaterialBuilder removeTrait(final MaterialTraitKey<T> traitToRemove) {
+		this.traits.remove(traitToRemove);
 		return this;
 	}
 
@@ -85,6 +99,12 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	@Override
 	public <T> MaterialBuilder prop(final MaterialProp<T> property, final T value) {
 		this.props.put(property, value);
+		return this;
+	}
+
+	@Override
+	public <T> MaterialBuilder removeProp(final MaterialProp<T> propToRemove) {
+		this.props.remove(propToRemove);
 		return this;
 	}
 

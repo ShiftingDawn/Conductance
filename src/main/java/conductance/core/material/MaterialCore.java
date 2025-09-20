@@ -36,8 +36,8 @@ public final class MaterialCore {
 		MaterialCore.initFlags();
 		MaterialCore.initTraits();
 		MaterialCore.initOreBearers();
-		MaterialCore.initMaterials();
 		MaterialCore.initGenerationHandlers();
+		MaterialCore.initMaterials();
 		MaterialCore.initOverrides();
 		modEventBus.addListener(FMLLoadCompleteEvent.class, ignored -> MaterialCore.validateMaterials());
 

@@ -1,10 +1,16 @@
 package conductance.init.material;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Items;
+import conductance.api.CAPI;
+import conductance.api.NCMaterialGenerationHandlers;
 import conductance.api.NCMaterialProps;
 import conductance.api.NCMaterialTextureSets;
 import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
+import conductance.api.resource.event.RegisterTagEvent;
 import conductance.Conductance;
 import static net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL;
 import static conductance.api.NCMaterialTextureSets.FINE;
@@ -33,11 +39,16 @@ public final class MaterialLoader5 {
 			.style(0xFAFAFA, FINE)
 		);
 		NETHER_STAR = event.register("nether_star", b -> b
-			.dust().gem().plate().rod().boltAndScrew().gear().gearSmall()
+			.dust().gem(true, false, false).plate().rod().boltAndScrew().gear().gearSmall()
 			.ore()
 			.style(0xFFFFFF, NCMaterialTextureSets.NETHER_STAR)
 			.prop(NCMaterialProps.REQUIRED_TOOL_LEVEL, NEEDS_DIAMOND_TOOL)
 		);
+	}
+
+	@EventListener(priority = -100)
+	private static void addCustomTags(final RegisterTagEvent event) {
+		event.item(CAPI.materials().getItemTag(NETHER_STAR, NCMaterialGenerationHandlers.GEM), Items.NETHER_STAR);
 	}
 
 	private MaterialLoader5() {

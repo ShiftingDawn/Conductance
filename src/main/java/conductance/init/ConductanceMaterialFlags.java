@@ -8,16 +8,20 @@ import conductance.api.material.event.RegisterMaterialFlagEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.Conductance;
+import static conductance.api.NCMaterialFlags.BLOCK;
 import static conductance.api.NCMaterialFlags.BOLT_AND_SCREW;
 import static conductance.api.NCMaterialFlags.DUST;
 import static conductance.api.NCMaterialFlags.FINE_WIRE;
 import static conductance.api.NCMaterialFlags.FOIL;
-import static conductance.api.NCMaterialFlags.FORCE_BLOCK;
 import static conductance.api.NCMaterialFlags.FRAME_BOX;
 import static conductance.api.NCMaterialFlags.GEAR;
 import static conductance.api.NCMaterialFlags.GEAR_SMALL;
 import static conductance.api.NCMaterialFlags.GEM;
+import static conductance.api.NCMaterialFlags.GEM_EXQUISITE;
+import static conductance.api.NCMaterialFlags.GEM_FLAWED;
+import static conductance.api.NCMaterialFlags.GEM_FLAWLESS;
 import static conductance.api.NCMaterialFlags.INGOT;
+import static conductance.api.NCMaterialFlags.NUGGET;
 import static conductance.api.NCMaterialFlags.PLATE;
 import static conductance.api.NCMaterialFlags.RING;
 import static conductance.api.NCMaterialFlags.ROD;
@@ -29,8 +33,15 @@ final class ConductanceMaterialFlags {
 	@EventListener(priority = -100)
 	private static void init(final RegisterMaterialFlagEvent event) {
 		DUST = event.register("dust");
+		BLOCK = event.register("block", ConductanceMaterialFlags::validateBlock);
+
 		INGOT = event.register("ingot", Set.of(DUST), ConductanceMaterialFlags::validateIngotOrGem);
+		NUGGET = event.register("nugget", Set.of(INGOT));
+
 		GEM = event.register("gem", Set.of(DUST));
+		GEM_FLAWED = event.register("flawed_gem", Set.of(GEM));
+		GEM_FLAWLESS = event.register("flawless_gem", Set.of(GEM));
+		GEM_EXQUISITE = event.register("exquisite_gem", Set.of(GEM));
 
 		PLATE = event.register("plate", ConductanceMaterialFlags::validatePlate);
 		ROD = event.register("rod", Set.of(DUST));
@@ -42,8 +53,14 @@ final class ConductanceMaterialFlags {
 		ROTOR = event.register("rotor", Set.of(INGOT));
 		FINE_WIRE = event.register("fine_wire", Set.of(DUST));
 		FRAME_BOX = event.register("frame_box", Set.of(ROD));
+	}
 
-		FORCE_BLOCK = event.register("force_block");
+	@Nullable
+	private static List<String> validateBlock(final Material material) {
+		if (!material.hasFlag(DUST) && !material.hasFlag(INGOT) && !material.hasFlag(GEM)) {
+			return List.of("Block flag requires either dust, ingot or gem flag to be present");
+		}
+		return null;
 	}
 
 	@Nullable

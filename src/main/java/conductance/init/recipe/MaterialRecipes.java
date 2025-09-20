@@ -53,7 +53,7 @@ final class MaterialRecipes {
 				} else if (material.hasFlag(NCMaterialFlags.GEM)) {
 					event.shapeless("%s_block".formatted(material.getName()), materials().getItem(material, STORAGE_BLOCK),
 						b -> b.add(materials().getItemTag(material, GEM), 9));
-					event.shapeless("%s_ingot_from_block".formatted(material.getName()), materials().getItem(material, GEM, 9),
+					event.shapeless("%s_from_block".formatted(material.getName()), materials().getItem(material, GEM, 9),
 						b -> b.add(materials().getItemTag(material, STORAGE_BLOCK)));
 				}
 			}

@@ -1,14 +1,19 @@
 package conductance.init.material;
 
+import net.minecraft.world.item.Items;
+import conductance.api.CAPI;
+import conductance.api.NCMaterialFlags;
+import conductance.api.NCMaterialGenerationHandlers;
 import conductance.api.NCMaterialTextureSets;
 import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddTranslationEvent;
+import conductance.api.resource.event.RegisterTagEvent;
 import conductance.Conductance;
 import static net.minecraft.tags.BlockTags.NEEDS_DIAMOND_TOOL;
 import static net.minecraft.tags.BlockTags.NEEDS_IRON_TOOL;
-import static conductance.api.NCMaterialFlags.FORCE_BLOCK;
+import static conductance.api.NCMaterialFlags.BLOCK;
 import static conductance.api.NCMaterialProps.BURN_TIME;
 import static conductance.api.NCMaterialProps.DEMAGNETIZED_FORM;
 import static conductance.api.NCMaterialProps.MAGNETIZED_FORM;
@@ -65,6 +70,7 @@ import static conductance.api.NCMaterials.DISTILLED_WATER;
 import static conductance.api.NCMaterials.ELECTRUM;
 import static conductance.api.NCMaterials.EMERALD;
 import static conductance.api.NCMaterials.ENDER_PEARL;
+import static conductance.api.NCMaterials.EYE_OF_ENDER;
 import static conductance.api.NCMaterials.FLUORINE;
 import static conductance.api.NCMaterials.GALENA;
 import static conductance.api.NCMaterials.GARNIERITE;
@@ -261,7 +267,7 @@ public final class MaterialLoader1 {
 			.components(HYDROGEN, 2, OXYGEN)
 		);
 		ICE = event.register("ice", b -> b
-			.dust().flag(FORCE_BLOCK)
+			.dust().flag(BLOCK)
 			.color(0xD2F5FE)
 			.components(HYDROGEN, 2, OXYGEN)
 		);
@@ -370,8 +376,7 @@ public final class MaterialLoader1 {
 			.components(MOLYBDENUM, SULFUR, 2)
 		);
 		OBSIDIAN = event.register("obsidian", b -> b
-			.dust().plate()
-			.flag(FORCE_BLOCK)
+			.dust().flag(BLOCK).plate()
 			.style(0x503264, SHINY)
 			.prop(REQUIRED_TOOL_LEVEL, NEEDS_DIAMOND_TOOL)
 			.components(MAGNESIUM, IRON, SILICON, 2, OXYGEN, 4)
@@ -476,7 +481,7 @@ public final class MaterialLoader1 {
 			.components(CARBON)
 		);
 		CHARCOAL = event.register("charcoal", b -> b
-			.dust().gem()
+			.dust().gem(true, false, false)
 			.style(0x7D6F58, FINE)
 			.prop(BURN_TIME, 1600)
 			.components(CARBON)
@@ -687,9 +692,8 @@ public final class MaterialLoader1 {
 			.components(POTASSIUM, LITHIUM, 3, ALUMINIUM, 4, FLUORINE, 2, OXYGEN, 10)
 		);
 		CALCITE = event.register("calcite", b -> b
-			.dust()
+			.dust().flag(BLOCK)
 			.ore()
-			.flag(FORCE_BLOCK)
 			.color(0xFAE6DC)
 			.components(CALCIUM, CARBON, OXYGEN, 3)
 		);
@@ -707,6 +711,7 @@ public final class MaterialLoader1 {
 		);
 		ENDER_PEARL = event.register("ender_pearl", b -> b
 			.gemExtra()
+			.removeFlag(NCMaterialFlags.GEM_FLAWED, NCMaterialFlags.GEM_FLAWLESS, NCMaterialFlags.GEM_EXQUISITE)
 			.color(0x6CDCC8).textureSet(SHINY)
 			.components(BERYLLIUM, POTASSIUM, 4, NITROGEN, 5)
 		);
@@ -794,8 +799,7 @@ public final class MaterialLoader1 {
 			.components(POTASSIUM, MAGNESIUM, 3, ALUMINIUM, 3, FLUORINE, 3, SILICON, 4, OXYGEN, 8)
 		);
 		BONE = event.register("bone", b -> b
-			.dust().rod()
-			.flag(FORCE_BLOCK)
+			.dust().rod().flag(BLOCK)
 			.color(0xFAFAFA)
 			.components(CALCIUM)
 		);
@@ -804,6 +808,13 @@ public final class MaterialLoader1 {
 	@EventListener(priority = -99)
 	private static void addPeriodicTableMaterialTranslations(final AddTranslationEvent event) {
 		event.add(TPV_ALLOY, "TPV-Alloy");
+	}
+
+	@EventListener
+	private static void addCustomTags(final RegisterTagEvent event) {
+		event.item(CAPI.materials().getItemTag(CHARCOAL, NCMaterialGenerationHandlers.GEM), Items.CHARCOAL);
+		event.item(CAPI.materials().getItemTag(ENDER_PEARL, NCMaterialGenerationHandlers.GEM), Items.ENDER_PEARL);
+		event.item(CAPI.materials().getItemTag(EYE_OF_ENDER, NCMaterialGenerationHandlers.GEM), Items.ENDER_EYE);
 	}
 
 	private MaterialLoader1() {

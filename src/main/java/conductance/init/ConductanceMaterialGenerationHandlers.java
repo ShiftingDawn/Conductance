@@ -75,7 +75,7 @@ final class ConductanceMaterialGenerationHandlers {
 			.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
 			.entryTag("c:storage_blocks/%s", "%s Storage Blocks")
 			.setHasBlock(true, true, true, BlockTags.MINEABLE_WITH_PICKAXE)
-			.predicate(material -> material.hasFlag(NCMaterialFlags.FORCE_BLOCK) || material.hasFlag(NCMaterialFlags.INGOT) || material.hasFlag(NCMaterialFlags.GEM))
+			.requiredFlag(NCMaterialFlags.BLOCK)
 		);
 
 		INGOT = event.register("ingot", b -> b
@@ -88,7 +88,7 @@ final class ConductanceMaterialGenerationHandlers {
 			.groupTag("c:nuggets", (String) null) //translation handled by NeoForge
 			.entryTag("c:nuggets/%s", "%s Nuggets")
 			.setHasItem(true, true)
-			.requiredFlag(NCMaterialFlags.INGOT)
+			.requiredFlag(NCMaterialFlags.NUGGET)
 		);
 
 		GEM = event.register("gem", "%s", b -> b
@@ -101,19 +101,19 @@ final class ConductanceMaterialGenerationHandlers {
 			.groupTag("c:flawed_gems", "Flawed Gems")
 			.entryTag("c:flawed_gems/%s", "Flawed %s Gems")
 			.setHasItem(true, true)
-			.requiredFlag(NCMaterialFlags.GEM)
+			.requiredFlag(NCMaterialFlags.GEM_FLAWED)
 		);
 		GEM_FLAWLESS = event.register("flawless_gem", "flawless_%s", b -> b
 			.groupTag("c:flawless_gems", "Flawless Gems")
 			.entryTag("c:flawless_gems/%s", "Flawless %s Gems")
 			.setHasItem(true, true)
-			.requiredFlag(NCMaterialFlags.GEM)
+			.requiredFlag(NCMaterialFlags.GEM_FLAWLESS)
 		);
 		GEM_EXQUISITE = event.register("exquisite_gem", "exquisite_%s", b -> b
 			.groupTag("c:exquisite_gems", "Exquisite Gems")
 			.entryTag("c:exquisite_gems/%s", "Exquisite %s Gems")
 			.setHasItem(true, true)
-			.requiredFlag(NCMaterialFlags.GEM)
+			.requiredFlag(NCMaterialFlags.GEM_EXQUISITE)
 		);
 
 		ORE_STONE = event.register("stone_ore", "%s_ore", NCMaterialOreBearers.STONE, b -> b
