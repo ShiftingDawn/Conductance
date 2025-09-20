@@ -2,8 +2,8 @@ package conductance.init;
 
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.function.Supplier;
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -32,20 +32,17 @@ import conductance.init.item.TieredItem;
 public final class ConductanceItems {
 
 	private static final DeferredRegister.Items REGISTRY = DeferredRegister.createItems(Conductance.MODID);
-	private static Supplier<Item> WRENCH;
-	private static Supplier<Item> HAMMER;
-	private static Supplier<Item> WIRE_CUTTERS;
 
 	public static void initialize(final IEventBus modEventBus) {
 		ConductanceItems.REGISTRY.register(modEventBus);
 		CAPI.regs().materials().forEach(ConductanceItems::generateMaterial);
-		ConductanceItems.WRENCH = ConductanceItems.REGISTRY.registerItem("wrench", props -> Util.make(new CraftingToolItem(props), item -> {
+		NCItems.WRENCH = ConductanceItems.REGISTRY.registerItem("wrench", props -> Util.make(new CraftingToolItem(props), item -> {
 			CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
 		}));
-		ConductanceItems.HAMMER = ConductanceItems.REGISTRY.registerItem("hammer", props -> Util.make(new CraftingToolItem(props), item -> {
+		NCItems.HAMMER = ConductanceItems.REGISTRY.registerItem("hammer", props -> Util.make(new CraftingToolItem(props), item -> {
 			CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
 		}));
-		ConductanceItems.WIRE_CUTTERS = ConductanceItems.REGISTRY.registerItem("wire_cutters", props -> Util.make(new CraftingToolItem(props), item -> {
+		NCItems.WIRE_CUTTERS = ConductanceItems.REGISTRY.registerItem("wire_cutters", props -> Util.make(new CraftingToolItem(props), item -> {
 			CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
 		}));
 		ConductanceItems.generateTiered();
@@ -70,10 +67,10 @@ public final class ConductanceItems {
 		NCItems.TIERED = Tables.unmodifiableTable(Util.make(Tables.newCustomTable(new EnumMap<>(TieredItemType.class), HashMap::new), table -> {
 			for (final Tier tier : CAPI.tiers().getTiers()) {
 				for (final TieredItemType itemType : TieredItemType.values()) {
-					ConductanceItems.REGISTRY.registerItem(itemType.getUnlocalizedName(tier), props -> Util.make(new TieredItem(props, itemType, tier), item -> {
+					final Holder<Item> generatedItem = ConductanceItems.REGISTRY.registerItem(itemType.getUnlocalizedName(tier), props -> Util.make(new TieredItem(props, itemType, tier), item -> {
 						CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
-						table.put(itemType, tier, item);
 					}));
+					table.put(itemType, tier, generatedItem);
 				}
 			}
 		}));
@@ -121,17 +118,17 @@ public final class ConductanceItems {
 				b2.tints(tints -> tints.constant(tieredItem.getTier().getColor()));
 			}));
 		});
-		event.addSimpleItem(ConductanceItems.WRENCH.get());
-		event.addSimpleItem(ConductanceItems.HAMMER.get());
-		event.addSimpleItem(ConductanceItems.WIRE_CUTTERS.get());
+		event.addSimpleItem(NCItems.WRENCH.value());
+		event.addSimpleItem(NCItems.HAMMER.value());
+		event.addSimpleItem(NCItems.WIRE_CUTTERS.value());
 	}
 
 	@EventListener(priority = -100)
 	private static void addItemTags(final RegisterTagEvent event) {
 		event.tag(Tags.Items.TOOLS, CAPI.TAG_HAMMERS.location(), CAPI.TAG_WIRE_CUTTERS.location());
-		event.item(CAPI.TAG_WRENCHES, ConductanceItems.WRENCH.get());
-		event.item(CAPI.TAG_HAMMERS, ConductanceItems.HAMMER.get());
-		event.item(CAPI.TAG_WIRE_CUTTERS, ConductanceItems.WIRE_CUTTERS.get());
+		event.item(CAPI.TAG_WRENCHES, NCItems.WRENCH.value());
+		event.item(CAPI.TAG_HAMMERS, NCItems.HAMMER.value());
+		event.item(CAPI.TAG_WIRE_CUTTERS, NCItems.WIRE_CUTTERS.value());
 	}
 
 	private ConductanceItems() {
