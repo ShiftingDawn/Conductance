@@ -4,6 +4,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,17 @@ final class TierImpl implements Tier {
 	@Override
 	public Component getName() {
 		return this.description.get();
+	}
+
+	@Override
+	public ResourceLocation getId() {
+		if (this.isEmpty()) {
+			return Conductance.id("empty");
+		}
+		if (this.isMax()) {
+			return Conductance.id("max");
+		}
+		return Tier.super.getId();
 	}
 
 	@Override

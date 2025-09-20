@@ -23,7 +23,8 @@ final class ConductanceRecipeLoader {
 
 	@EventListener(priority = -100)
 	private static void addRecipes(final RegisterRecipeEvent event) {
-		MaterialDynamicRecipeHandler.add(event);
+		MaterialRecipes.add(event);
+		TierRecipes.add(event);
 	}
 
 	private ConductanceRecipeLoader() {

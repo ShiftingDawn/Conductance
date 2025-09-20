@@ -15,9 +15,6 @@ public final class TierCore {
 	public static void initialize() {
 		Conductance.TIERS = Util.make(new TierRegistryImpl(), reg -> Conductance.setApiValue(TierRegistry.class, reg));
 
-		Conductance.REGISTRIES.register(CAPI.regs().tiers(), Conductance.id("empty"), Conductance.TIERS.empty());
-		Conductance.REGISTRIES.register(CAPI.regs().tiers(), Conductance.id("max"), Conductance.TIERS.max());
-
 		Conductance.dispatch(RegisterTierEvent.class, modid -> new RegisterTierEventImpl(((registryName, tierColor, componentMapFactory, previousTier) -> {
 			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
 			final TierImpl result = new TierImpl(ARGB.opaque(tierColor), Lazy.of(componentMapFactory));

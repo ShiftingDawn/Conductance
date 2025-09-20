@@ -31,13 +31,13 @@ import static conductance.api.NCMaterialGenerationHandlers.ROTOR;
 import static conductance.api.NCMaterialGenerationHandlers.SCREW;
 import static conductance.api.NCMaterialGenerationHandlers.STORAGE_BLOCK;
 
-final class MaterialDynamicRecipeHandler {
+final class MaterialRecipes {
 
 	public static void add(final RegisterRecipeEvent event) {
 		for (final Material material : CAPI.regs().materials()) {
-			MaterialDynamicRecipeHandler.addAllRecipes(event, material);
+			MaterialRecipes.addAllRecipes(event, material);
 			if (material.hasTrait(NCMaterialTraits.ORE)) {
-				MaterialDynamicRecipeHandler.addOreRecipes(event, material, material.getTrait(NCMaterialTraits.ORE));
+				MaterialRecipes.addOreRecipes(event, material, material.getTrait(NCMaterialTraits.ORE));
 			}
 		}
 	}
@@ -174,6 +174,6 @@ final class MaterialDynamicRecipeHandler {
 		blastMaker.accept(RAW_ORE_BLOCK, 9 * trait.getDropMultiplier());
 	}
 
-	private MaterialDynamicRecipeHandler() {
+	private MaterialRecipes() {
 	}
 }

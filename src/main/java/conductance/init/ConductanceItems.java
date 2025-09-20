@@ -1,5 +1,7 @@
 package conductance.init;
 
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.function.Supplier;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -9,7 +11,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import com.google.common.collect.Tables;
 import conductance.api.CAPI;
+import conductance.api.NCItems;
 import conductance.api.material.Material;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
@@ -44,7 +48,7 @@ public final class ConductanceItems {
 		ConductanceItems.WIRE_CUTTERS = ConductanceItems.REGISTRY.registerItem("wire_cutters", props -> Util.make(new CraftingToolItem(props), item -> {
 			CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
 		}));
-		CAPI.regs().tiers().forEach(ConductanceItems::generateTiered);
+		ConductanceItems.generateTiered();
 	}
 
 	private static void generateMaterial(final Material material) {
@@ -62,15 +66,17 @@ public final class ConductanceItems {
 			});
 	}
 
-	private static void generateTiered(final Tier tier) {
-		if (tier.isEmpty() || tier.isMax()) {
-			return;
-		}
-		for (final TieredItemType itemType : TieredItemType.values()) {
-			ConductanceItems.REGISTRY.registerItem(itemType.getUnlocalizedName(tier), props -> Util.make(new TieredItem(props, itemType, tier), item -> {
-				CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
-			}));
-		}
+	private static void generateTiered() {
+		NCItems.TIERED = Tables.unmodifiableTable(Util.make(Tables.newCustomTable(new EnumMap<>(TieredItemType.class), HashMap::new), table -> {
+			for (final Tier tier : CAPI.tiers().getTiers()) {
+				for (final TieredItemType itemType : TieredItemType.values()) {
+					ConductanceItems.REGISTRY.registerItem(itemType.getUnlocalizedName(tier), props -> Util.make(new TieredItem(props, itemType, tier), item -> {
+						CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
+						table.put(itemType, tier, item);
+					}));
+				}
+			}
+		}));
 	}
 
 	@EventListener(priority = -100)
