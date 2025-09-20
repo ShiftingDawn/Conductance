@@ -16,10 +16,13 @@ import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
 import conductance.api.resource.event.RegisterTagEvent;
+import conductance.api.tier.Tier;
+import conductance.api.tier.TieredItemType;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
 import conductance.init.item.CraftingToolItem;
 import conductance.init.item.MaterialItem;
+import conductance.init.item.TieredItem;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceItems {
@@ -41,26 +44,41 @@ public final class ConductanceItems {
 		ConductanceItems.WIRE_CUTTERS = ConductanceItems.REGISTRY.registerItem("wire_cutters", props -> Util.make(new CraftingToolItem(props), item -> {
 			CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
 		}));
+		CAPI.regs().tiers().forEach(ConductanceItems::generateTiered);
 	}
 
 	private static void generateMaterial(final Material material) {
 		CAPI.regs().materialGenerationHandlers().stream()
-				.filter(handler -> handler.hasItem() && handler.autoGenerateItem() && handler.test(material) && !Conductance.MATERIALS.hasItemOverride(material, handler))
-				.forEach(handler -> {
-					ConductanceItems.REGISTRY.registerItem(handler.getUnlocalizedName(material), props -> {
-						if (handler.getItemBuilderCallback() != null) {
-							props = handler.getItemBuilderCallback().apply(material, props);
-						}
-						return Util.make(new MaterialItem(props, material, handler), item -> {
-							Conductance.MATERIALS.register(material, handler, item);
-						});
+			.filter(handler -> handler.hasItem() && handler.autoGenerateItem() && handler.test(material) && !Conductance.MATERIALS.hasItemOverride(material, handler))
+			.forEach(handler -> {
+				ConductanceItems.REGISTRY.registerItem(handler.getUnlocalizedName(material), props -> {
+					if (handler.getItemBuilderCallback() != null) {
+						props = handler.getItemBuilderCallback().apply(material, props);
+					}
+					return Util.make(new MaterialItem(props, material, handler), item -> {
+						Conductance.MATERIALS.register(material, handler, item);
 					});
 				});
+			});
+	}
+
+	private static void generateTiered(final Tier tier) {
+		if (tier.isEmpty() || tier.isMax()) {
+			return;
+		}
+		for (final TieredItemType itemType : TieredItemType.values()) {
+			ConductanceItems.REGISTRY.registerItem(itemType.getUnlocalizedName(tier), props -> Util.make(new TieredItem(props, itemType, tier), item -> {
+				CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
+			}));
+		}
 	}
 
 	@EventListener(priority = -100)
 	private static void addItemTranslations(final AddTranslationEvent event) {
 		Conductance.MATERIALS.getItemTable().rowMap().forEach((material, map) -> map.forEach((handler, item) -> {
+			if (material == null || handler == null) {
+				return;
+			}
 			handler.getGroupTagsAndTranslators(BuiltInRegistries.ITEM, material).forEach((tagKey, translator) -> {
 				if (translator != null) {
 					final String translation = translator.translate(material);
@@ -89,6 +107,12 @@ public final class ConductanceItems {
 			final ResourceLocation model = CAPI.resourceFinder().getMaterialItemModel(materialItem.getMaterial().getTextureSet(), materialItem.getHandler().getTextureType(), null, null).value();
 			event.addItemsModel(materialItem, b -> b.model(model, b2 -> {
 				b2.tints(tints -> tints.constant(materialItem.getMaterial().getColor()));
+			}));
+		});
+		ConductanceItems.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(item -> item instanceof TieredItem).forEach(item -> {
+			final TieredItem tieredItem = (TieredItem) item;
+			event.addItemsModel(tieredItem, b -> b.model(Conductance.id("item/tier/%s".formatted(tieredItem.getType())), b2 -> {
+				b2.tints(tints -> tints.constant(tieredItem.getTier().getColor()));
 			}));
 		});
 		event.addSimpleItem(ConductanceItems.WRENCH.get());

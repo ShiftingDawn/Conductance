@@ -5,6 +5,8 @@ import conductance.api.material.Material;
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCMaterials {
 
+	public static Material AIR;
+
 	//region Periodic Table Materials
 	public static Material HYDROGEN;
 	public static Material TRITIUM;

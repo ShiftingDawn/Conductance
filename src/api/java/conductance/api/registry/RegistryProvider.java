@@ -8,6 +8,7 @@ import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.MaterialOreBearer;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.periodicelement.PeriodicElement;
+import conductance.api.tier.Tier;
 
 public interface RegistryProvider {
 
@@ -23,6 +24,8 @@ public interface RegistryProvider {
 
 	ResourceKey<Registry<MaterialGenerationHandler>> materialGenerationHandlerRegistry();
 
+	ResourceKey<Registry<Tier>> tierRegistry();
+
 	Registry<PeriodicElement> periodicElements();
 
 	Registry<MaterialFlag> materialFlags();
@@ -34,4 +37,6 @@ public interface RegistryProvider {
 	Registry<Material> materials();
 
 	Registry<MaterialGenerationHandler> materialGenerationHandlers();
+
+	Registry<Tier> tiers();
 }

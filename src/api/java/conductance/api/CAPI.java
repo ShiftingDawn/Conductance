@@ -13,6 +13,7 @@ import com.google.gson.GsonBuilder;
 import conductance.api.material.MaterialRegistry;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.resource.ResourceFinder;
+import conductance.api.tier.TierRegistry;
 
 @SuppressWarnings({"unused", "NotNullFieldNotInitialized"})
 public final class CAPI {
@@ -27,6 +28,7 @@ public final class CAPI {
 
 	private static RegistryProvider registryProvider;
 	private static MaterialRegistry materialRegistry;
+	private static TierRegistry tierRegistry;
 	private static ResourceFinder resourceFinder;
 
 	public static RegistryProvider regs() {
@@ -35,6 +37,10 @@ public final class CAPI {
 
 	public static MaterialRegistry materials() {
 		return Objects.requireNonNull(CAPI.materialRegistry, "CAPI::materials called too early!");
+	}
+
+	public static TierRegistry tiers() {
+		return Objects.requireNonNull(CAPI.tierRegistry, "CAPI::tiers called too early!");
 	}
 
 	public static ResourceFinder resourceFinder() {

@@ -24,6 +24,7 @@ import conductance.api.material.MaterialOreBearer;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.registry.RegistryProvider;
+import conductance.api.tier.Tier;
 import conductance.Conductance;
 
 @Accessors(fluent = true)
@@ -39,6 +40,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final @Getter ResourceKey<Registry<MaterialOreBearer>> materialOreBearerRegistry = this.makeKey("material_ore_bearer");
 	private final @Getter ResourceKey<Registry<Material>> materialRegistry = this.makeKey("material");
 	private final @Getter ResourceKey<Registry<MaterialGenerationHandler>> materialGenerationHandlerRegistry = this.makeKey("material_generation_handler");
+	private final @Getter ResourceKey<Registry<Tier>> tierRegistry = this.makeKey("tier");
 
 	private final @Getter Registry<PeriodicElement> periodicElements = this.makeRegistry(this.periodicElementRegistry);
 	private final @Getter Registry<MaterialFlag> materialFlags = this.makeRegistry(this.materialFlagRegistry);
@@ -46,6 +48,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final @Getter Registry<MaterialOreBearer> materialOreBearers = this.makeRegistry(this.materialOreBearerRegistry);
 	private final @Getter Registry<Material> materials = this.makeRegistry(this.materialRegistry);
 	private final @Getter Registry<MaterialGenerationHandler> materialGenerationHandlers = this.makeRegistry(this.materialGenerationHandlerRegistry);
+	private final @Getter Registry<Tier> tiers = this.makeRegistry(this.tierRegistry);
 
 	public RegistryProviderImpl(final IEventBus modEventBus) {
 		modEventBus.addListener(NewRegistryEvent.class, this::registerRegistries);

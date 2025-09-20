@@ -1,0 +1,198 @@
+package conductance.api.tier;
+
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import conductance.api.CAPI;
+import conductance.api.material.Material;
+import static conductance.api.NCMaterialGenerationHandlers.FINE_WIRE;
+import static conductance.api.NCMaterialGenerationHandlers.GEAR_SMALL;
+import static conductance.api.NCMaterialGenerationHandlers.PLATE;
+import static conductance.api.NCMaterialGenerationHandlers.RING;
+import static conductance.api.NCMaterialGenerationHandlers.ROD;
+import static conductance.api.NCMaterialGenerationHandlers.ROTOR;
+
+@SuppressWarnings("CheckStyle")
+public abstract class TieredComponentMap {
+
+	public abstract Material getPrimaryMaterial();
+
+	public abstract Material getMagneticMaterial();
+
+	public abstract Material getWireMaterial();
+
+	public abstract Material getRubberMaterial();
+
+	//region Casing
+	protected Material getMachineCasingPlateMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getMachineCasingPlateItem() {
+		return CAPI.materials().getItemTag(this.getMachineCasingPlateMaterial(), PLATE);
+	}
+	//endregion
+
+	//region Hull
+	protected Material getMachineHullPlateMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getMachineHullPlateItem() {
+		return CAPI.materials().getItemTag(this.getMachineHullPlateMaterial(), PLATE);
+	}
+
+	protected Material getMachineHullWireMaterial() {
+		return this.getWireMaterial();
+	}
+
+	public TagKey<Item> getMachineHullWireItem() {
+		return CAPI.materials().getItemTag(this.getMachineHullWireMaterial(), FINE_WIRE);
+	}
+	//endregion
+
+	//region Motor
+	protected Material getElectricMotorRodMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getElectricMotorRodItem() {
+		return CAPI.materials().getItemTag(this.getElectricMotorRodMaterial(), ROD);
+	}
+
+	protected Material getElectricMotorMagneticRodMaterial() {
+		return this.getMagneticMaterial();
+	}
+
+	public TagKey<Item> getElectricMotorMagneticRodItem() {
+		return CAPI.materials().getItemTag(this.getElectricMotorMagneticRodMaterial(), ROD);
+	}
+
+	protected Material getElectricMotorWireMaterial() {
+		return this.getWireMaterial();
+	}
+
+	public TagKey<Item> getElectricMotorWireItem() {
+		return CAPI.materials().getItemTag(this.getElectricMotorWireMaterial(), FINE_WIRE);
+	}
+	//endregion
+
+	//region Piston
+	protected Material getElectricPistonRodMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getElectricPistonRodItem() {
+		return CAPI.materials().getItemTag(this.getElectricPistonRodMaterial(), ROD);
+	}
+
+	protected Material getElectricPistonPlateMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getElectricPistonPlateItem() {
+		return CAPI.materials().getItemTag(this.getElectricPistonPlateMaterial(), PLATE);
+	}
+
+	protected Material getElectricPistonWireMaterial() {
+		return this.getWireMaterial();
+	}
+
+	public TagKey<Item> getElectricPistonWireItem() {
+		return CAPI.materials().getItemTag(this.getElectricPistonWireMaterial(), FINE_WIRE);
+	}
+
+	protected Material getElectricPistonSmallGearMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getElectricPistonSmallGearItem() {
+		return CAPI.materials().getItemTag(this.getElectricPistonSmallGearMaterial(), GEAR_SMALL);
+	}
+	//endregion
+
+	//region Conveyor
+	protected Material getConveyorModulePlateMaterial() {
+		return this.getRubberMaterial();
+	}
+
+	public TagKey<Item> getConveyorModulePlateItem() {
+		return CAPI.materials().getItemTag(this.getConveyorModulePlateMaterial(), PLATE);
+	}
+
+	protected Material getConveyorModuleWireMaterial() {
+		return this.getWireMaterial();
+	}
+
+	public TagKey<Item> getConveyorModuleWireItem() {
+		return CAPI.materials().getItemTag(this.getConveyorModuleWireMaterial(), FINE_WIRE);
+	}
+	//endregion
+
+	//region Pump
+	protected Material getElectricPumpPlateMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getElectricPumpPlateItem() {
+		return CAPI.materials().getItemTag(this.getElectricPumpPlateMaterial(), PLATE);
+	}
+
+	protected Material getElectricPumpRingMaterial() {
+		return this.getRubberMaterial();
+	}
+
+	public TagKey<Item> getElectricPumpRingItem() {
+		return CAPI.materials().getItemTag(this.getElectricPumpRingMaterial(), RING);
+	}
+
+	protected Material getElectricPumpRotorMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getElectricPumpRotorItem() {
+		return CAPI.materials().getItemTag(this.getElectricPumpRotorMaterial(), ROTOR);
+	}
+
+	protected Material getElectricPumpWireMaterial() {
+		return this.getWireMaterial();
+	}
+
+	public TagKey<Item> getElectricPumpWireItem() {
+		return CAPI.materials().getItemTag(this.getElectricPumpWireMaterial(), FINE_WIRE);
+	}
+	//endregion
+
+	//region Arm
+	protected Material getRobotArmWireMaterial() {
+		return this.getWireMaterial();
+	}
+
+	public TagKey<Item> getRobotArmWireItem() {
+		return CAPI.materials().getItemTag(this.getRobotArmWireMaterial(), FINE_WIRE);
+	}
+
+	protected Material getRobotArmRodMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getRobotArmRodItem() {
+		return CAPI.materials().getItemTag(this.getRobotArmRodMaterial(), ROD);
+	}
+
+	protected Material getRobotArmPlateMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getRobotArmPlateItem() {
+		return CAPI.materials().getItemTag(this.getRobotArmPlateMaterial(), PLATE);
+	}
+
+	protected Material getRobotArmGearMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getRobotArmGearItem() {
+		return CAPI.materials().getItemTag(this.getRobotArmGearMaterial(), GEAR_SMALL);
+	}
+	//endregion
+}
