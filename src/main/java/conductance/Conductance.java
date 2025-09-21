@@ -22,6 +22,7 @@ import conductance.api.CAPI;
 import conductance.api.plugin.IConductancePluginEvent;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.resource.ResourceFinder;
+import conductance.core.machine.MachineCore;
 import conductance.core.material.MaterialCore;
 import conductance.core.material.MaterialRegistryImpl;
 import conductance.core.periodicelement.PeriodicElementCore;
@@ -70,6 +71,7 @@ public final class Conductance {
 		MaterialCore.initialize(Conductance.MODBUS);
 
 		TierCore.initialize();
+		MachineCore.initialize(Conductance.MODBUS);
 
 		ConductanceBlocks.initialize(Conductance.MODBUS);
 		ConductanceItems.initialize(Conductance.MODBUS);

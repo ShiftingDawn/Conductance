@@ -17,6 +17,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import conductance.api.machine.MachineType;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialGenerationHandler;
@@ -41,6 +42,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final @Getter ResourceKey<Registry<Material>> materialRegistry = this.makeKey("material");
 	private final @Getter ResourceKey<Registry<MaterialGenerationHandler>> materialGenerationHandlerRegistry = this.makeKey("material_generation_handler");
 	private final @Getter ResourceKey<Registry<Tier>> tierRegistry = this.makeKey("tier");
+	private final @Getter ResourceKey<Registry<MachineType<?>>> machineRegistry = this.makeKey("machine");
 
 	private final @Getter Registry<PeriodicElement> periodicElements = this.makeRegistry(this.periodicElementRegistry);
 	private final @Getter Registry<MaterialFlag> materialFlags = this.makeRegistry(this.materialFlagRegistry);
@@ -49,6 +51,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final @Getter Registry<Material> materials = this.makeRegistry(this.materialRegistry);
 	private final @Getter Registry<MaterialGenerationHandler> materialGenerationHandlers = this.makeRegistry(this.materialGenerationHandlerRegistry);
 	private final @Getter Registry<Tier> tiers = this.makeRegistry(this.tierRegistry);
+	private final @Getter Registry<MachineType<?>> machines = this.makeRegistry(this.machineRegistry);
 
 	public RegistryProviderImpl(final IEventBus modEventBus) {
 		modEventBus.addListener(NewRegistryEvent.class, this::registerRegistries);
@@ -63,7 +66,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 
 	private <T> Registry<T> makeRegistry(final ResourceKey<Registry<T>> key, final boolean doSync) {
 		return Util.make(new RegistryBuilder<>(key).sync(doSync).create(),
-				registry -> this.loadOrder.put(key.location(), registry));
+			registry -> this.loadOrder.put(key.location(), registry));
 	}
 
 	private <T> Registry<T> makeRegistry(final ResourceKey<Registry<T>> key) {

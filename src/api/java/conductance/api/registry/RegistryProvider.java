@@ -2,6 +2,7 @@ package conductance.api.registry;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import conductance.api.machine.MachineType;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialGenerationHandler;
@@ -26,6 +27,8 @@ public interface RegistryProvider {
 
 	ResourceKey<Registry<Tier>> tierRegistry();
 
+	ResourceKey<Registry<MachineType<?>>> machineRegistry();
+
 	Registry<PeriodicElement> periodicElements();
 
 	Registry<MaterialFlag> materialFlags();
@@ -39,4 +42,6 @@ public interface RegistryProvider {
 	Registry<MaterialGenerationHandler> materialGenerationHandlers();
 
 	Registry<Tier> tiers();
+
+	Registry<MachineType<?>> machines();
 }
