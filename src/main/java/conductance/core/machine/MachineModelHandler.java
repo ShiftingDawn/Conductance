@@ -51,13 +51,13 @@ final class MachineModelHandler {
 	private static void createStandardModel(
 		final AddRuntimeModelEvent event, final MachineType<?> machineType, final MachineBlock<?> block, final ResourceLocation particleTexture, final Consumer<ModelBuilder> casingCallback
 	) {
-		event.addBlockModel(block, model -> model.particle(particleTexture).composite(composite -> composite
+		event.addBlockModel(block, model -> model.particle(particleTexture).renderType("cutout_mipped").composite(composite -> composite
 			.child("casing", casingCallback)
-			.child("overlay", child -> child.renderType("cutout_mipped").element(element -> {
+			.child("overlay", child -> child.element(element -> {
 				element.from(0, 0, 0).to(16, 16, 16);
 				MachineModelHandler.addSides(child, element, machineType.getId(), null, false);
 			}, true), true)
-			.child("overlay2", child -> child.renderType("cutout_mipped").element(element -> {
+			.child("overlay2", child -> child.element(element -> {
 				element.from(0, 0, 0).to(16, 16, 16);
 				MachineModelHandler.addSides(child, element, machineType.getId(), "_emissive", true);
 			}, true), true)
