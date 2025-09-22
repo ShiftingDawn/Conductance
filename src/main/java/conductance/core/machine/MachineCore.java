@@ -46,7 +46,7 @@ public final class MachineCore {
 		final Supplier<MenuType<MachineMenu>> menuType = MachineCore.MENU_TYPES.register("machine", () -> IMenuTypeExtension.create(
 			(containerId, inventory, registryFriendlyByteBuf) -> {
 				final MachineType<?> machineType = CAPI.regs().machines().get(registryFriendlyByteBuf.readResourceLocation()).orElseThrow().value();
-				return new MachineMenu(machineType, containerId, ContainerLevelAccess.NULL);
+				return new MachineMenu(machineType, containerId, ContainerLevelAccess.NULL, inventory);
 			}
 		));
 		modEventBus.addListener(RegisterMenuScreensEvent.class, event -> {

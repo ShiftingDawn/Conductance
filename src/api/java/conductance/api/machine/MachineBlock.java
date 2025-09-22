@@ -30,7 +30,7 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block {
 		//TODO only open gui when machine has a gui
 		if (player instanceof final ServerPlayer serverPlayer) {
 			serverPlayer.openMenu(new SimpleMenuProvider(
-				(containerId, playerInventory, plr) -> new MachineMenu(this.machineType, containerId, ContainerLevelAccess.create(level, pos)),
+				(containerId, playerInventory, plr) -> new MachineMenu(this.machineType, containerId, ContainerLevelAccess.create(level, pos), plr.getInventory()),
 				Component.translatable(Util.makeDescriptionId("machine", this.machineType.getId()))
 			), buffer -> buffer.writeResourceLocation(this.machineType.getId()));
 		}

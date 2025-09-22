@@ -1,14 +1,17 @@
 package conductance.api.machine.gui;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
+import lombok.Getter;
 import conductance.api.CAPI;
 
 public class GuiTheme {
 
-	public static final GuiTheme THEME_DEFAULT = new GuiTheme("default");
-	public static final GuiTheme THEME_BRONZE = new GuiTheme("bronze");
+	public static final GuiTheme THEME_DEFAULT = new GuiTheme("default", 0xD2D2D2);
+	public static final GuiTheme THEME_BRONZE = new GuiTheme("bronze", 0xDEC6B7);
 
 	private final String themeName;
+	private final @Getter int textColor;
 	private final Later<GuiDrawable> textureBackground = new Later<>();
 	private final Later<GuiDrawable> texturePlayerInventory = new Later<>();
 	private final Later<GuiDrawable> texturePlayerHotbar = new Later<>();
@@ -33,8 +36,9 @@ public class GuiTheme {
 	private final Later<GuiDrawable> textureEnergyBar = new Later<>();
 	private final Later<GuiDrawable> textureEnergyBarOverlay = new Later<>();
 
-	public GuiTheme(final String themeName) {
+	public GuiTheme(final String themeName, final int textColor) {
 		this.themeName = themeName;
+		this.textColor = ARGB.opaque(textColor);
 	}
 
 	public GuiDrawable getBackground() {
