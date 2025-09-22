@@ -1,6 +1,7 @@
 package conductance.init.material;
 
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialGenerationHandlers;
@@ -812,6 +813,11 @@ public final class MaterialLoader1 {
 
 	@EventListener
 	private static void addCustomTags(final RegisterTagEvent event) {
+		event.item(CAPI.materials().getItemTag(ICE, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.ICE);
+		event.item(CAPI.materials().getItemTag(OBSIDIAN, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.OBSIDIAN);
+		event.item(CAPI.materials().getItemTag(CALCITE, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.CALCITE);
+		event.item(CAPI.materials().getItemTag(BONE, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.BONE_BLOCK);
+		event.item(CAPI.materials().getItemTag(BONE, NCMaterialGenerationHandlers.DUST), Items.BONE_MEAL);
 		event.item(CAPI.materials().getItemTag(CHARCOAL, NCMaterialGenerationHandlers.GEM), Items.CHARCOAL);
 		event.item(CAPI.materials().getItemTag(ENDER_PEARL, NCMaterialGenerationHandlers.GEM), Items.ENDER_PEARL);
 		event.item(CAPI.materials().getItemTag(EYE_OF_ENDER, NCMaterialGenerationHandlers.GEM), Items.ENDER_EYE);

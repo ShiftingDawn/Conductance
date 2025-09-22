@@ -1,14 +1,13 @@
 package conductance.init.material;
 
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialGenerationHandlers;
 import conductance.api.NCMaterialProps;
 import conductance.api.NCMaterialTextureSets;
-import conductance.api.NCMaterials;
 import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
@@ -40,7 +39,6 @@ import static conductance.api.NCMaterials.IRON;
 import static conductance.api.NCMaterials.LAPIS_LAZULI;
 import static conductance.api.NCMaterials.LAZURITE;
 import static conductance.api.NCMaterials.LITHIUM;
-import static conductance.api.NCMaterials.NETHER_STAR;
 import static conductance.api.NCMaterials.OXYGEN;
 import static conductance.api.NCMaterials.PYRITE;
 import static conductance.api.NCMaterials.PYROPE;
@@ -131,6 +129,7 @@ public final class MaterialLoader2 {
 
 	@EventListener(priority = -100)
 	private static void addCustomTags(final RegisterTagEvent event) {
+		event.tag(CAPI.materials().getItemTag(LAPIS_LAZULI, NCMaterialGenerationHandlers.STORAGE_BLOCK), Tags.Items.STORAGE_BLOCKS_LAPIS.location());
 		event.item(CAPI.materials().getItemTag(AMETHYST, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.AMETHYST_BLOCK);
 	}
 

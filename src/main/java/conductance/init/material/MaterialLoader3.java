@@ -1,8 +1,12 @@
 package conductance.init.material;
 
+import net.minecraft.world.level.block.Blocks;
+import conductance.api.CAPI;
+import conductance.api.NCMaterialGenerationHandlers;
 import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
+import conductance.api.resource.event.RegisterTagEvent;
 import conductance.Conductance;
 import static conductance.api.NCMaterialTextureSets.METALLIC;
 import static conductance.api.NCMaterialTextureSets.ROUGH;
@@ -51,6 +55,11 @@ public final class MaterialLoader3 {
 			.style(0x999900, METALLIC)
 			.components(TUNGSTENSTEEL, 5, CHROMIUM, MOLYBDENUM, 2, VANADIUM)
 		);
+	}
+
+	@EventListener(priority = -100)
+	private static void addCustomTags(final RegisterTagEvent event) {
+		event.item(CAPI.materials().getItemTag(BRICK, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.BRICKS);
 	}
 
 	private MaterialLoader3() {

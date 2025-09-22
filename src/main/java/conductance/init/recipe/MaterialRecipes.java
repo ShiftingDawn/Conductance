@@ -69,7 +69,7 @@ final class MaterialRecipes {
 			}
 		}
 		if (PLATE.test(material)) {
-			if (material.hasFlag(NCMaterialFlags.INGOT)) {
+			if (INGOT.test(material)) {
 				event.shaped("%s_plate".formatted(material.getName()), materials().getItem(material, PLATE),
 					b -> b.pattern("H", "a", "a").key('a', materials().getItemTag(material, INGOT)));
 				event.shaped("double_%s_plate".formatted(material.getName()), materials().getItem(material, PLATE_DOUBLE),
