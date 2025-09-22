@@ -5,11 +5,15 @@ import java.util.function.Supplier;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import conductance.api.CAPI;
 import conductance.api.machine.MachineBlock;
@@ -21,6 +25,8 @@ import conductance.api.machine.event.MachineBlockFactory;
 import conductance.api.machine.event.MachineBlockItemFactory;
 import conductance.api.machine.event.MachineBuilder;
 import conductance.api.machine.event.RegisterMachineEvent;
+import conductance.api.machine.gui.MachineMenu;
+import conductance.api.machine.gui.MachineScreen;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.Conductance;
 
@@ -29,13 +35,26 @@ public final class MachineCore {
 	private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Conductance.MODID);
 	private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Conductance.MODID);
 	private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, Conductance.MODID);
+	private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(BuiltInRegistries.MENU, Conductance.MODID);
 
 	public static void initialize(final IEventBus modEventBus) {
 		MachineCore.BLOCKS.register(modEventBus);
 		MachineCore.ITEMS.register(modEventBus);
 		MachineCore.BLOCK_ENTITIES.register(modEventBus);
+		MachineCore.MENU_TYPES.register(modEventBus);
+
+		final Supplier<MenuType<MachineMenu>> menuType = MachineCore.MENU_TYPES.register("machine", () -> IMenuTypeExtension.create(
+			(containerId, inventory, registryFriendlyByteBuf) -> {
+				final MachineType<?> machineType = CAPI.regs().machines().get(registryFriendlyByteBuf.readResourceLocation()).orElseThrow().value();
+				return new MachineMenu(machineType, containerId, ContainerLevelAccess.NULL);
+			}
+		));
+		modEventBus.addListener(RegisterMenuScreensEvent.class, event -> {
+			event.register(menuType.get(), MachineScreen::new);
+		});
 
 		Conductance.dispatch(RegisterMachineEvent.class, modid -> new RegisterMachineEventImpl(new RegisterMachineEventImpl.Delegate() {
+
 			@Override
 			public <T extends MachineBlockEntity<T>> MachineType<T> apply(final String registryName, final MachineBlockEntityFactory<T> blockEntityFactory, final Consumer<MachineBuilder<T>> builder) {
 				final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
