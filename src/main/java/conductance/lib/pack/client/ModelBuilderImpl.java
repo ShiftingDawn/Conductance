@@ -98,9 +98,12 @@ final class ModelBuilderImpl extends JsonResourceBuilderImpl<ModelBuilder> imple
 		return this;
 	}
 
+	boolean isEmpty() {
+		return this.elements.isEmpty();
+	}
+
 	@Override
 	protected void populateJson(final JsonObject json) {
-
 		json.addProperty("parent", this.parent.toString());
 		if (this.loader != null) {
 			json.addProperty("loader", this.loader.toString());

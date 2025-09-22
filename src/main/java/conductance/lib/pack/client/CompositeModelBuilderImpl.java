@@ -16,10 +16,12 @@ final class CompositeModelBuilderImpl implements CompositeModelBuilder {
 	private String[] renderOrder = new String[0];
 
 	@Override
-	public CompositeModelBuilder child(final String name, final Consumer<ModelBuilder> childBuilder) {
+	public CompositeModelBuilder child(final String name, final Consumer<ModelBuilder> childBuilder, final boolean ignoreWhenEmpty) {
 		final ModelBuilderImpl b = new ModelBuilderImpl(ResourceLocation.withDefaultNamespace("block/block"));
 		childBuilder.accept(b);
-		this.children.put(name, b);
+		if (!(b.isEmpty() && ignoreWhenEmpty)) {
+			this.children.put(name, b);
+		}
 		return this;
 	}
 
@@ -36,7 +38,9 @@ final class CompositeModelBuilderImpl implements CompositeModelBuilder {
 		if (this.renderOrder.length > 0) {
 			json.add("item_render_order", Util.make(new JsonArray(), arr -> {
 				for (final String item : this.renderOrder) {
-					arr.add(item);
+					if (this.children.containsKey(item)) {
+						arr.add(item);
+					}
 				}
 			}));
 		}

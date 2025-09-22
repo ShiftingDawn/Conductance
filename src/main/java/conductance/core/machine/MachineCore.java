@@ -21,6 +21,7 @@ import conductance.api.machine.event.MachineBlockFactory;
 import conductance.api.machine.event.MachineBlockItemFactory;
 import conductance.api.machine.event.MachineBuilder;
 import conductance.api.machine.event.RegisterMachineEvent;
+import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.Conductance;
 
 public final class MachineCore {
@@ -43,6 +44,10 @@ public final class MachineCore {
 				return result;
 			}
 		}));
+	}
+
+	public static void generateModels(final AddRuntimeModelEvent event) {
+		MachineModelHandler.generate(event);
 	}
 
 	static <T extends MachineBlockEntity<T>> Supplier<MachineBlock<T>> createBlock(final String registryName, final MachineTypeImpl<T> machineType, final MachineBlockFactory<T> blockFactory) {

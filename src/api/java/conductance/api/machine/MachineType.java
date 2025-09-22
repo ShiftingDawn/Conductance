@@ -1,7 +1,10 @@
 package conductance.api.machine;
 
+import java.util.Objects;
 import java.util.function.Supplier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import conductance.api.CAPI;
 
 public interface MachineType<T extends MachineBlockEntity<T>> {
 
@@ -10,4 +13,8 @@ public interface MachineType<T extends MachineBlockEntity<T>> {
 	Supplier<MachineBlockItem<T>> getItem();
 
 	Supplier<BlockEntityType<T>> getBlockEntityType();
+
+	default ResourceLocation getId() {
+		return Objects.requireNonNull(CAPI.regs().machines().getKey(this), "Unregistered machine type");
+	}
 }
