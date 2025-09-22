@@ -5,17 +5,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import conductance.api.recipe.event.RegisterRecipeEvent;
 import conductance.api.recipe.event.RemoveRecipeEvent;
 import conductance.api.resource.event.RegisterTagEvent;
 import conductance.Conductance;
+import conductance.core.recipe.MachineRecipeBuilderImpl;
 
 public final class RuntimeDataPackBridge {
 
@@ -23,14 +27,20 @@ public final class RuntimeDataPackBridge {
 
 	public static void reload() {
 		final long sysTime = System.currentTimeMillis();
-
 		RuntimeDataPackBridge.loadRecipes();
-
 		Conductance.LOGGER.info("Conductance reloaded RuntimeDataPack in {}ms", System.currentTimeMillis() - sysTime);
 	}
 
+	public static void insertRecipes(final HolderLookup.Provider registries, final Map<ResourceLocation, Recipe<?>> recipeMap) {
+		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, (resourceLocation, jsonElement) -> {
+		}, (recipeId, recipeType, builder) -> {
+			recipeMap.put(recipeId, Util.make(new MachineRecipeBuilderImpl(recipeType, registries), builder).build());
+		}));
+	}
+
 	private static void loadRecipes() {
-		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, RuntimeDataPack::addRecipe));
+		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, RuntimeDataPack::addRecipe, (a, b, c) -> {
+		}));
 	}
 
 	public static void removeRecipes(final Map<ResourceLocation, ?> recipeMap) {

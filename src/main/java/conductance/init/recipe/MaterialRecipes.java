@@ -4,6 +4,7 @@ import java.util.function.BiConsumer;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTraits;
+import conductance.api.NCRecipeTypes;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.MaterialTraitOre;
@@ -56,6 +57,10 @@ final class MaterialRecipes {
 					event.shapeless("%s_from_block".formatted(material.getName()), materials().getItem(material, GEM, 9),
 						b -> b.add(materials().getItemTag(material, STORAGE_BLOCK)));
 				}
+			}
+			if (DUST.test(material)) {
+				event.create("%s_dust_from_block".formatted(material.getName()), NCRecipeTypes.PULVERIZER,
+					b -> b.in(material, STORAGE_BLOCK).out(material, DUST, 9));
 			}
 		}
 		if (NUGGET.test(material)) {
@@ -152,7 +157,7 @@ final class MaterialRecipes {
 				b -> b.add(RAW_ORE_BLOCK, material));
 		}
 		final Material smeltInto = trait.getSmeltResult() != null ? trait.getSmeltResult().get() : material;
-		final MaterialGenerationHandler smeltType = material.hasFlag(NCMaterialFlags.INGOT) ? INGOT : material.hasFlag(NCMaterialFlags.GEM) ? GEM : DUST;
+		final MaterialGenerationHandler smeltType = INGOT.test(material) ? INGOT : GEM.test(material) ? GEM : DUST;
 		final BiConsumer<MaterialGenerationHandler, Integer> smeltMaker = (handler, multiplier) ->
 			event.smelting("%s_from_%s".formatted(smeltType.getUnlocalizedName(smeltInto), handler.getUnlocalizedName(material)), smeltType, smeltInto, multiplier,
 				b -> b.ingredient(materials().getItem(material, handler)).experience(0.3f * multiplier));

@@ -8,12 +8,19 @@ import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.plugin.IConductancePluginEvent;
+import conductance.api.recipe.MachineRecipeType;
 
 public interface RegisterRecipeEvent extends IConductancePluginEvent {
 
 	ResourceLocation id(String recipeType, String recipePath);
 
 	ResourceLocation id(String recipePath);
+
+	void create(ResourceLocation recipeId, MachineRecipeType type, Consumer<MachineRecipeBuilder> builder);
+
+	default void create(final String recipeId, final MachineRecipeType type, final Consumer<MachineRecipeBuilder> builder) {
+		this.create(this.id(type.getId().getPath(), recipeId), type, builder);
+	}
 
 	void shaped(ResourceLocation recipeId, ItemStack result, Consumer<ShapedCraftingRecipeBuilder> builder);
 

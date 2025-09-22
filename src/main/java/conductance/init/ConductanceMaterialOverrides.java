@@ -58,7 +58,6 @@ final class ConductanceMaterialOverrides {
 		event.add(STORAGE_BLOCK, WOOD, (Block) null);
 		event.add(STORAGE_BLOCK, CLAY, Blocks.CLAY);
 		event.add(STORAGE_BLOCK, BRICK, Blocks.BRICKS);
-		event.add(STORAGE_BLOCK, FLINT, (Block) null);
 		event.add(STORAGE_BLOCK, ICE, Blocks.ICE);
 		event.add(STORAGE_BLOCK, OBSIDIAN, Blocks.OBSIDIAN);
 		event.add(STORAGE_BLOCK, DIAMOND, Blocks.DIAMOND_BLOCK);

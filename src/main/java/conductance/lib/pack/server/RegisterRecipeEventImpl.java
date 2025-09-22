@@ -8,7 +8,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import com.google.gson.JsonElement;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.function.TriConsumer;
+import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.event.CookingRecipeBuilder;
+import conductance.api.recipe.event.MachineRecipeBuilder;
 import conductance.api.recipe.event.RegisterRecipeEvent;
 import conductance.api.recipe.event.ShapedCraftingRecipeBuilder;
 import conductance.api.recipe.event.ShapelessCraftingRecipeBuilder;
@@ -21,6 +24,7 @@ final class RegisterRecipeEventImpl implements RegisterRecipeEvent {
 
 	private final String modid;
 	private final BiConsumer<ResourceLocation, JsonElement> output;
+	private final TriConsumer<ResourceLocation, MachineRecipeType, Consumer<MachineRecipeBuilder>> output2;
 
 	@Override
 	public ResourceLocation id(final String recipeType, final String recipePath) {
@@ -30,6 +34,12 @@ final class RegisterRecipeEventImpl implements RegisterRecipeEvent {
 	@Override
 	public ResourceLocation id(final String recipePath) {
 		return ResourceLocation.fromNamespaceAndPath(this.modid, recipePath);
+	}
+
+	@Override
+	public void create(final ResourceLocation recipeId, final MachineRecipeType type, final Consumer<MachineRecipeBuilder> builder) {
+		//TODO implement
+		this.output2.accept(recipeId, type, builder);
 	}
 
 	@Override
