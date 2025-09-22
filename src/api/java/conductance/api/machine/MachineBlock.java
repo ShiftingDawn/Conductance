@@ -1,10 +1,9 @@
 package conductance.api.machine;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -26,13 +25,21 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block {
 	}
 
 	@Override
+	protected MenuProvider getMenuProvider(final BlockState state, final Level level, final BlockPos pos) {
+		return new SimpleMenuProvider(
+			(containerId, playerInventory, plr) -> new MachineMenu(this.machineType, containerId, ContainerLevelAccess.create(level, pos), plr.getInventory()),
+			this.machineType.getName()
+		);
+	}
+
+	@Override
 	protected InteractionResult useWithoutItem(final BlockState state, final Level level, final BlockPos pos, final Player player, final BlockHitResult hitResult) {
 		//TODO only open gui when machine has a gui
-		if (player instanceof final ServerPlayer serverPlayer) {
-			serverPlayer.openMenu(new SimpleMenuProvider(
-				(containerId, playerInventory, plr) -> new MachineMenu(this.machineType, containerId, ContainerLevelAccess.create(level, pos), plr.getInventory()),
-				Component.translatable(Util.makeDescriptionId("machine", this.machineType.getId()))
-			), buffer -> buffer.writeResourceLocation(this.machineType.getId()));
+		if (!player.isCrouching()) {
+			if (player instanceof final ServerPlayer serverPlayer) {
+				serverPlayer.openMenu(state.getMenuProvider(level, pos), buffer -> buffer.writeResourceLocation(this.machineType.getId()));
+			}
+			return InteractionResult.SUCCESS;
 		}
 		return super.useWithoutItem(state, level, pos, player, hitResult);
 	}
