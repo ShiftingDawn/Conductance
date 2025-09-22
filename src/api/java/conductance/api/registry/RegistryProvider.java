@@ -9,6 +9,8 @@ import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.MaterialOreBearer;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.periodicelement.PeriodicElement;
+import conductance.api.recipe.MachineRecipeType;
+import conductance.api.recipe.RecipeElementType;
 import conductance.api.tier.Tier;
 
 public interface RegistryProvider {
@@ -27,6 +29,10 @@ public interface RegistryProvider {
 
 	ResourceKey<Registry<Tier>> tierRegistry();
 
+	ResourceKey<Registry<RecipeElementType<?>>> recipeElementTypeRegistry();
+
+	ResourceKey<Registry<MachineRecipeType>> recipeTypeRegistry();
+
 	ResourceKey<Registry<MachineType<?>>> machineRegistry();
 
 	Registry<PeriodicElement> periodicElements();
@@ -42,6 +48,10 @@ public interface RegistryProvider {
 	Registry<MaterialGenerationHandler> materialGenerationHandlers();
 
 	Registry<Tier> tiers();
+
+	Registry<RecipeElementType<?>> recipeElementTypes();
+
+	Registry<MachineRecipeType> recipeTypes();
 
 	Registry<MachineType<?>> machines();
 }

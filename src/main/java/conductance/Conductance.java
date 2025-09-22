@@ -26,6 +26,7 @@ import conductance.core.machine.MachineCore;
 import conductance.core.material.MaterialCore;
 import conductance.core.material.MaterialRegistryImpl;
 import conductance.core.periodicelement.PeriodicElementCore;
+import conductance.core.recipe.RecipeCore;
 import conductance.core.tier.TierCore;
 import conductance.core.tier.TierRegistryImpl;
 import conductance.init.ConductanceBlocks;
@@ -71,6 +72,7 @@ public final class Conductance {
 		MaterialCore.initialize(Conductance.MODBUS);
 
 		TierCore.initialize();
+		RecipeCore.initialize();
 		MachineCore.initialize(Conductance.MODBUS);
 
 		ConductanceBlocks.initialize(Conductance.MODBUS);

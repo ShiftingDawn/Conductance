@@ -24,6 +24,8 @@ import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.MaterialOreBearer;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.periodicelement.PeriodicElement;
+import conductance.api.recipe.MachineRecipeType;
+import conductance.api.recipe.RecipeElementType;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.tier.Tier;
 import conductance.Conductance;
@@ -42,6 +44,8 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final @Getter ResourceKey<Registry<Material>> materialRegistry = this.makeKey("material");
 	private final @Getter ResourceKey<Registry<MaterialGenerationHandler>> materialGenerationHandlerRegistry = this.makeKey("material_generation_handler");
 	private final @Getter ResourceKey<Registry<Tier>> tierRegistry = this.makeKey("tier");
+	private final @Getter ResourceKey<Registry<RecipeElementType<?>>> recipeElementTypeRegistry = this.makeKey("recipe_element_type");
+	private final @Getter ResourceKey<Registry<MachineRecipeType>> recipeTypeRegistry = this.makeKey("recipe_type");
 	private final @Getter ResourceKey<Registry<MachineType<?>>> machineRegistry = this.makeKey("machine");
 
 	private final @Getter Registry<PeriodicElement> periodicElements = this.makeRegistry(this.periodicElementRegistry);
@@ -51,6 +55,8 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final @Getter Registry<Material> materials = this.makeRegistry(this.materialRegistry);
 	private final @Getter Registry<MaterialGenerationHandler> materialGenerationHandlers = this.makeRegistry(this.materialGenerationHandlerRegistry);
 	private final @Getter Registry<Tier> tiers = this.makeRegistry(this.tierRegistry);
+	private final @Getter Registry<RecipeElementType<?>> recipeElementTypes = this.makeRegistry(this.recipeElementTypeRegistry);
+	private final @Getter Registry<MachineRecipeType> recipeTypes = this.makeRegistry(this.recipeTypeRegistry);
 	private final @Getter Registry<MachineType<?>> machines = this.makeRegistry(this.machineRegistry);
 
 	public RegistryProviderImpl(final IEventBus modEventBus) {
