@@ -19,6 +19,7 @@ public final class CreativeTabHelper {
 	@RequiredArgsConstructor
 	public enum Tabs {
 		GENERAL(Items.IRON_INGOT::getDefaultInstance),
+		MACHINE(Items.FURNACE::getDefaultInstance),
 		MATERIAL(() -> CAPI.materials().getItem(NCMaterials.ALUMINIUM, NCMaterialGenerationHandlers.INGOT, 1)),
 		ORE(Items.DIAMOND_ORE::getDefaultInstance);
 

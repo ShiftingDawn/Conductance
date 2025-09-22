@@ -29,6 +29,7 @@ import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.gui.MachineScreen;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.Conductance;
+import conductance.core.CreativeTabHelper;
 
 public final class MachineCore {
 
@@ -79,7 +80,7 @@ public final class MachineCore {
 	static <T extends MachineBlockEntity<T>> Supplier<MachineBlockItem<T>> createItem(final String registryName, final Supplier<MachineBlock<T>> block, final MachineBlockItemFactory<T> itemFactory) {
 		return MachineCore.ITEMS.registerItem(registryName, props -> {
 			//TODO builder callback here
-			return itemFactory.apply(block.get(), props);
+			return Util.make(itemFactory.apply(block.get(), props), item -> CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.MACHINE));
 		}, new Item.Properties());
 	}
 
