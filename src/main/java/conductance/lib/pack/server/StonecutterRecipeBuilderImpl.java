@@ -1,59 +1,66 @@
 package conductance.lib.pack.server;
 
+import java.util.Objects;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.SingleItemRecipeBuilder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.recipe.event.StonecutterRecipeBuilder;
 
 final class StonecutterRecipeBuilderImpl extends AbstractRecipeBuilder<StonecutterRecipeBuilder> implements StonecutterRecipeBuilder {
 
-	private JsonElement ingredient;
+	private final ItemStack result;
+	private @Nullable Ingredient ingredient;
 
-	StonecutterRecipeBuilderImpl(final ItemStack result) {
-		super(ResourceLocation.withDefaultNamespace("stonecutting"), result);
+	StonecutterRecipeBuilderImpl(final HolderLookup.Provider registries, final ItemStack result) {
+		super(registries);
+		this.result = result;
 	}
 
 	@Override
 	public StonecutterRecipeBuilder ingredient(final Ingredient ingredient) {
-		this.ingredient = this.encode(ingredient);
+		this.ingredient = ingredient;
 		return this;
 	}
 
 	@Override
 	public StonecutterRecipeBuilder ingredient(final ItemStack stack) {
-		this.ingredient = this.encode(stack);
-		return this;
+		return this.ingredient(Ingredient.of(stack.getItem()));
 	}
 
 	@Override
 	public StonecutterRecipeBuilder ingredient(final ItemLike item) {
-		this.ingredient = this.encode(item);
-		return this;
+		return this.ingredient(Ingredient.of(item));
 	}
 
 	@Override
 	public StonecutterRecipeBuilder ingredient(final TagKey<Item> tag) {
-		this.ingredient = this.encode(tag);
-		return this;
+		return this.ingredient(Ingredient.of(this.getHolderGetter().getOrThrow(tag)));
 	}
 
 	@Override
 	public StonecutterRecipeBuilder ingredient(final ResourceLocation tag) {
-		this.ingredient = this.encode(tag);
-		return this;
+		return this.ingredient(TagKey.create(Registries.ITEM, tag));
 	}
 
-	@SuppressWarnings("ConstantValue")
 	@Override
-	protected void populateJson(final JsonObject json) {
-		if (this.ingredient == null) {
-			throw new IllegalStateException("No ingredient set");
-		}
-		json.add("ingredient", this.ingredient);
+	protected void build(final ResourceKey<Recipe<?>> recipeId, final RecipeOutput output) {
+		Objects.requireNonNull(this.ingredient, "Ingredient has not been set.");
+		SingleItemRecipeBuilder.stonecutting(this.ingredient, RecipeCategory.MISC, this.result.getItem(), this.result.getCount())
+			//TODO implement this properly
+			.unlockedBy("dummy", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
+			.save(output, recipeId);
 	}
 }

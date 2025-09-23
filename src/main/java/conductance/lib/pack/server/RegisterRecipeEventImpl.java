@@ -1,12 +1,20 @@
 package conductance.lib.pack.server;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.BlastingRecipe;
+import net.minecraft.world.item.crafting.CampfireCookingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.level.ItemLike;
-import com.google.gson.JsonElement;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.function.TriConsumer;
 import conductance.api.recipe.MachineRecipeType;
@@ -23,8 +31,9 @@ import conductance.api.recipe.event.TransmuteCraftingRecipeBuilder;
 final class RegisterRecipeEventImpl implements RegisterRecipeEvent {
 
 	private final String modid;
-	private final BiConsumer<ResourceLocation, JsonElement> output;
-	private final TriConsumer<ResourceLocation, MachineRecipeType, Consumer<MachineRecipeBuilder>> output2;
+	private final HolderLookup.Provider registries;
+	private final RecipeOutput recipeOutput;
+	private final TriConsumer<ResourceLocation, MachineRecipeType, Consumer<MachineRecipeBuilder>> machineOutput;
 
 	@Override
 	public ResourceLocation id(final String recipeType, final String recipePath) {
@@ -38,68 +47,97 @@ final class RegisterRecipeEventImpl implements RegisterRecipeEvent {
 
 	@Override
 	public void create(final ResourceLocation recipeId, final MachineRecipeType type, final Consumer<MachineRecipeBuilder> builder) {
-		//TODO implement
-		this.output2.accept(recipeId, type, builder);
+		this.machineOutput.accept(recipeId, type, builder);
 	}
 
 	@Override
 	public void shaped(final ResourceLocation recipeId, final ItemStack result, final Consumer<ShapedCraftingRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new ShapedCraftingRecipeBuilderImpl(this.stack(result)), builder).build());
+		Util.make(new ShapedCraftingRecipeBuilderImpl(this.registries, this.stack(result)), builder).build(this.key(recipeId), this.recipeOutput);
 	}
 
 	@Override
 	public void shaped(final ResourceLocation recipeId, final ItemLike result, final Consumer<ShapedCraftingRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new ShapedCraftingRecipeBuilderImpl(this.stack(result)), builder).build());
+		this.shaped(recipeId, this.stack(result), builder);
 	}
 
 	@Override
 	public void shapeless(final ResourceLocation recipeId, final ItemStack result, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new ShapelessCraftingRecipeBuilderImpl(this.stack(result)), builder).build());
+		Util.make(new ShapelessCraftingRecipeBuilderImpl(this.registries, this.stack(result)), builder).build(this.key(recipeId), this.recipeOutput);
 	}
 
 	@Override
 	public void shapeless(final ResourceLocation recipeId, final ItemLike result, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new ShapelessCraftingRecipeBuilderImpl(this.stack(result)), builder).build());
+		this.shapeless(recipeId, this.stack(result), builder);
 	}
 
 	@Override
 	public void transmute(final ResourceLocation recipeId, final ItemStack result, final Consumer<TransmuteCraftingRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new TransmuteCraftingRecipeBuilderImpl(this.stack(result)), builder).build());
+		Util.make(new TransmuteCraftingRecipeBuilderImpl(this.registries, this.stack(result)), builder).build(this.key(recipeId), this.recipeOutput);
 	}
 
 	@Override
 	public void transmute(final ResourceLocation recipeId, final ItemLike result, final Consumer<TransmuteCraftingRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new TransmuteCraftingRecipeBuilderImpl(this.stack(result)), builder).build());
+		this.transmute(recipeId, this.stack(result), builder);
 	}
 
 	@Override
-	public void cooking(final ResourceLocation recipeType, final ResourceLocation recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new CookingRecipeBuilderImpl(recipeType, this.stack(result)), builder).build());
+	public void smelting(final ResourceLocation recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
+		Util.make(new CookingRecipeBuilderImpl<>(this.registries, result, SmeltingRecipe::new, RecipeSerializer.SMELTING_RECIPE), builder).build(this.key(recipeId), this.recipeOutput);
 	}
 
 	@Override
-	public void cooking(final ResourceLocation recipeType, final ResourceLocation recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new CookingRecipeBuilderImpl(recipeType, this.stack(result)), builder).build());
+	public void smelting(final ResourceLocation recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smelting(recipeId, this.stack(result), builder);
+	}
+
+	@Override
+	public void blasting(final ResourceLocation recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
+		Util.make(new CookingRecipeBuilderImpl<>(this.registries, result, BlastingRecipe::new, RecipeSerializer.BLASTING_RECIPE), builder).build(this.key(recipeId), this.recipeOutput);
+	}
+
+	@Override
+	public void blasting(final ResourceLocation recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
+		this.blasting(recipeId, this.stack(result), builder);
+	}
+
+	@Override
+	public void smoking(final ResourceLocation recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
+		Util.make(new CookingRecipeBuilderImpl<>(this.registries, result, SmokingRecipe::new, RecipeSerializer.SMOKING_RECIPE), builder).build(this.key(recipeId), this.recipeOutput);
+	}
+
+	@Override
+	public void smoking(final ResourceLocation recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smoking(recipeId, this.stack(result), builder);
+	}
+
+	@Override
+	public void campfire(final ResourceLocation recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
+		Util.make(new CookingRecipeBuilderImpl<>(this.registries, result, CampfireCookingRecipe::new, RecipeSerializer.CAMPFIRE_COOKING_RECIPE), builder).build(this.key(recipeId), this.recipeOutput);
+	}
+
+	@Override
+	public void campfire(final ResourceLocation recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
+		this.campfire(recipeId, this.stack(result), builder);
 	}
 
 	@Override
 	public void stonecutting(final ResourceLocation recipeId, final ItemStack result, final Consumer<StonecutterRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new StonecutterRecipeBuilderImpl(this.stack(result)), builder).build());
+		Util.make(new StonecutterRecipeBuilderImpl(this.registries, this.stack(result)), builder).build(this.key(recipeId), this.recipeOutput);
 	}
 
 	@Override
 	public void stonecutting(final ResourceLocation recipeId, final ItemLike result, final Consumer<StonecutterRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new StonecutterRecipeBuilderImpl(this.stack(result)), builder).build());
+		this.stonecutting(recipeId, this.stack(result), builder);
 	}
 
 	@Override
 	public void smithingTransform(final ResourceLocation recipeId, final ItemStack result, final Consumer<SmithingRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new SmithingRecipeBuilderImpl(this.stack(result)), builder).build());
+		Util.make(new SmithingRecipeBuilderImpl(this.registries, this.stack(result)), builder).build(this.key(recipeId), this.recipeOutput);
 	}
 
 	@Override
 	public void smithingTransform(final ResourceLocation recipeId, final ItemLike result, final Consumer<SmithingRecipeBuilder> builder) {
-		this.output.accept(recipeId, Util.make(new SmithingRecipeBuilderImpl(this.stack(result)), builder).build());
+		this.smithingTransform(recipeId, this.stack(result), builder);
 	}
 
 	private ItemStack stack(final ItemStack stack) {
@@ -108,5 +146,9 @@ final class RegisterRecipeEventImpl implements RegisterRecipeEvent {
 
 	private ItemStack stack(final ItemLike item) {
 		return new ItemStack(item);
+	}
+
+	private ResourceKey<Recipe<?>> key(final ResourceLocation recipeId) {
+		return ResourceKey.create(Registries.RECIPE, recipeId);
 	}
 }

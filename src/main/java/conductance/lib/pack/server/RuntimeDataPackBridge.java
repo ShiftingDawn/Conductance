@@ -8,6 +8,7 @@ import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -27,19 +28,13 @@ public final class RuntimeDataPackBridge {
 
 	public static void reload() {
 		final long sysTime = System.currentTimeMillis();
-		RuntimeDataPackBridge.loadRecipes();
 		Conductance.LOGGER.info("Conductance reloaded RuntimeDataPack in {}ms", System.currentTimeMillis() - sysTime);
 	}
 
 	public static void insertRecipes(final HolderLookup.Provider registries, final Map<ResourceLocation, Recipe<?>> recipeMap) {
-		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, (resourceLocation, jsonElement) -> {
-		}, (recipeId, recipeType, builder) -> {
+		final RecipeOutput recipeOutput = new RuntimeRecipeOutput(registries);
+		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, registries, recipeOutput, (recipeId, recipeType, builder) -> {
 			recipeMap.put(recipeId, Util.make(new MachineRecipeBuilderImpl(recipeType, registries), builder).build());
-		}));
-	}
-
-	private static void loadRecipes() {
-		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, RuntimeDataPack::addRecipe, (a, b, c) -> {
 		}));
 	}
 
@@ -59,6 +54,7 @@ public final class RuntimeDataPackBridge {
 
 	static {
 		TAG_REGISTER = new RegisterTagEventImpl.TagRegister() {
+
 			@Override
 			public void item(final TagKey<Item> tag, final ItemLike value, final ItemLike... moreValues) {
 				final List<ItemLike> list = TagGenerationHandler.CUSTOM_ITEM_TAGS.computeIfAbsent(tag, k -> Collections.synchronizedList(new ArrayList<>()));

@@ -1,94 +1,94 @@
 package conductance.lib.pack.server;
 
+import java.util.Objects;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.TransmuteRecipeBuilder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.recipe.event.TransmuteCraftingRecipeBuilder;
 
 final class TransmuteCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<TransmuteCraftingRecipeBuilder> implements TransmuteCraftingRecipeBuilder {
 
-	private JsonElement input;
-	private JsonElement material;
+	private final ItemStack result;
+	private @Nullable Ingredient input;
+	private @Nullable Ingredient material;
 
-	TransmuteCraftingRecipeBuilderImpl(final ItemStack result) {
-		super(ResourceLocation.withDefaultNamespace("crafting_transmute"), result);
+	TransmuteCraftingRecipeBuilderImpl(final HolderLookup.Provider registries, final ItemStack result) {
+		super(registries);
+		this.result = result;
 	}
 
 	@Override
 	public TransmuteCraftingRecipeBuilder input(final Ingredient ingredient) {
-		this.input = this.encode(ingredient);
+		this.input = ingredient;
 		return this;
 	}
 
 	@Override
 	public TransmuteCraftingRecipeBuilder input(final ItemStack stack) {
-		this.input = this.encode(stack);
-		return this;
+		return this.input(Ingredient.of(stack.getItem()));
 	}
 
 	@Override
 	public TransmuteCraftingRecipeBuilder input(final ItemLike item) {
-		this.input = this.encode(item);
-		return this;
+		return this.input(Ingredient.of(item));
 	}
 
 	@Override
 	public TransmuteCraftingRecipeBuilder input(final TagKey<Item> tag) {
-		this.input = this.encode(tag);
-		return this;
+		return this.input(Ingredient.of(this.getHolderGetter().getOrThrow(tag)));
 	}
 
 	@Override
 	public TransmuteCraftingRecipeBuilder input(final ResourceLocation tag) {
-		this.input = this.encode(tag);
-		return this;
+		return this.input(TagKey.create(Registries.ITEM, tag));
 	}
 
 	@Override
 	public TransmuteCraftingRecipeBuilder material(final Ingredient ingredient) {
-		this.material = this.encode(ingredient);
+		this.material = ingredient;
 		return this;
 	}
 
 	@Override
 	public TransmuteCraftingRecipeBuilder material(final ItemStack stack) {
-		this.material = this.encode(stack);
-		return this;
+		return this.material(Ingredient.of(stack.getItem()));
 	}
 
 	@Override
 	public TransmuteCraftingRecipeBuilder material(final ItemLike item) {
-		this.material = this.encode(item);
-		return this;
+		return this.material(Ingredient.of(item));
 	}
 
 	@Override
 	public TransmuteCraftingRecipeBuilder material(final TagKey<Item> tag) {
-		this.material = this.encode(tag);
-		return this;
+		return this.material(Ingredient.of(this.getHolderGetter().getOrThrow(tag)));
 	}
 
 	@Override
 	public TransmuteCraftingRecipeBuilder material(final ResourceLocation tag) {
-		this.material = this.encode(tag);
-		return this;
+		return this.material(TagKey.create(Registries.ITEM, tag));
 	}
 
-	@SuppressWarnings("ConstantValue")
 	@Override
-	protected void populateJson(final JsonObject json) {
-		if (this.input == null) {
-			throw new IllegalStateException("No input set");
-		}
-		if (this.material == null) {
-			throw new IllegalStateException("No input set");
-		}
-		json.add("input", this.input);
-		json.add("material", this.material);
+	protected void build(final ResourceKey<Recipe<?>> recipeId, final RecipeOutput output) {
+		Objects.requireNonNull(this.input, "Input has not been set.");
+		Objects.requireNonNull(this.material, "'Material' has not been set.");
+		TransmuteRecipeBuilder.transmute(RecipeCategory.MISC, this.input, this.material, this.result.getItem())
+			//TODO implement this properly
+			.unlockedBy("dummy", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
+			.save(output, recipeId);
 	}
 }

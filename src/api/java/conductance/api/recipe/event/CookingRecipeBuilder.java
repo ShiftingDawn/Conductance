@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
-public interface CookingRecipeBuilder extends RecipeBuilder<CookingRecipeBuilder> {
+	public interface CookingRecipeBuilder extends RecipeBuilder<CookingRecipeBuilder> {
 
 	CookingRecipeBuilder time(int time);
 

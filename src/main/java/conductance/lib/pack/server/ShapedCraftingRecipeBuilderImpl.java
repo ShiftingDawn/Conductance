@@ -1,17 +1,21 @@
 package conductance.lib.pack.server;
 
 import java.util.Objects;
-import net.minecraft.Util;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import org.apache.http.util.TextUtils;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
@@ -20,19 +24,25 @@ import conductance.api.recipe.event.ShapedCraftingRecipeBuilder;
 
 final class ShapedCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<ShapedCraftingRecipeBuilder> implements ShapedCraftingRecipeBuilder {
 
-	private final String[] pattern = new String[3];
-	private final Char2ObjectArrayMap<JsonElement> keys = new Char2ObjectArrayMap<>();
+	private final ShapedRecipeBuilder builder;
 
-	ShapedCraftingRecipeBuilderImpl(final ItemStack result) {
-		super(ResourceLocation.withDefaultNamespace("crafting_shaped"), result);
+	ShapedCraftingRecipeBuilderImpl(final HolderLookup.Provider registries, final ItemStack result) {
+		super(registries);
+		this.builder = ShapedRecipeBuilder.shaped(this.getHolderGetter(), RecipeCategory.MISC, result).showNotification(false)
+			//TODO implement this properly
+			.unlockedBy("dummy", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()));
 	}
 
 	@SuppressWarnings("DataFlowIssue")
 	@Override
 	public ShapedCraftingRecipeBuilder pattern(final String row1, final String row2, final String row3) {
-		this.pattern[0] = row1;
-		this.pattern[1] = row2;
-		this.pattern[2] = row3;
+		this.builder.pattern(row1);
+		if (!TextUtils.isBlank(row2)) {
+			this.builder.pattern(row2);
+		}
+		if (!TextUtils.isBlank(row3)) {
+			this.builder.pattern(row3);
+		}
 		if (Objects.requireNonNullElse(row1, "").contains("W") || Objects.requireNonNullElse(row2, "").contains("W") || Objects.requireNonNullElse(row3, "").contains("W")) {
 			this.key('W', CAPI.TAG_WRENCHES);
 		}
@@ -47,32 +57,31 @@ final class ShapedCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<Shaped
 
 	@Override
 	public ShapedCraftingRecipeBuilder key(final char c, final Ingredient ingredient) {
-		this.keys.put(c, this.encode(ingredient));
+		this.builder.define(c, ingredient);
 		return this;
 	}
 
 	@Override
 	public ShapedCraftingRecipeBuilder key(final char c, final ItemStack stack) {
-		this.keys.put(c, this.encode(stack));
+		this.key(c, Ingredient.of(stack.getItem()));
 		return this;
 	}
 
 	@Override
 	public ShapedCraftingRecipeBuilder key(final char c, final ItemLike item) {
-		this.keys.put(c, this.encode(item));
+		this.key(c, Ingredient.of(item));
 		return this;
 	}
 
 	@Override
 	public ShapedCraftingRecipeBuilder key(final char c, final TagKey<Item> tag) {
-		this.keys.put(c, this.encode(tag));
+		this.builder.define(c, tag);
 		return this;
 	}
 
 	@Override
 	public ShapedCraftingRecipeBuilder key(final char c, final ResourceLocation tag) {
-		this.keys.put(c, this.encode(tag));
-		return this;
+		return this.key(c, TagKey.create(Registries.ITEM, tag));
 	}
 
 	@Override
@@ -81,21 +90,7 @@ final class ShapedCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<Shaped
 	}
 
 	@Override
-	protected void populateJson(final JsonObject json) {
-		json.add("pattern", Util.make(new JsonArray(), arr -> {
-			if (TextUtils.isBlank(this.pattern[0])) {
-				throw new IllegalArgumentException("No pattern set");
-			}
-			arr.add(this.pattern[0]);
-			if (!TextUtils.isBlank(this.pattern[1])) {
-				arr.add(this.pattern[1]);
-			}
-			if (!TextUtils.isBlank(this.pattern[2])) {
-				arr.add(this.pattern[2]);
-			}
-		}));
-		json.add("key", Util.make(new JsonObject(), keys -> {
-			this.keys.forEach((c, val) -> keys.add(c.toString(), val));
-		}));
+	protected void build(final ResourceKey<Recipe<?>> recipeId, final RecipeOutput output) {
+		this.builder.save(output, recipeId);
 	}
 }

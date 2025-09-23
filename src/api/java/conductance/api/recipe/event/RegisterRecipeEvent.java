@@ -90,165 +90,116 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 		this.transmute(this.id("crafting_transmute", recipeId), result, builder);
 	}
 
-	void cooking(ResourceLocation recipeType, ResourceLocation recipeId, ItemStack result, Consumer<CookingRecipeBuilder> builder);
+	void smelting(ResourceLocation recipeId, ItemStack result, Consumer<CookingRecipeBuilder> builder);
 
-	void cooking(ResourceLocation recipeType, ResourceLocation recipeId, ItemLike result, Consumer<CookingRecipeBuilder> builder);
-
-	default void cooking(final ResourceLocation recipeType, final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(recipeType, recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
-	}
-
-	default void cooking(
-		final ResourceLocation recipeType, final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final int resultAmount,
-		final Consumer<CookingRecipeBuilder> builder
-	) {
-		this.cooking(recipeType, recipeId, CAPI.materials().getItem(resultMaterial, resultHandler, resultAmount), builder);
-	}
-
-	default void cooking(final ResourceLocation recipeType, final String recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(recipeType, this.id(recipeType.getPath(), recipeId), result, builder);
-	}
-
-	default void cooking(final ResourceLocation recipeType, final String recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(recipeType, this.id(recipeType.getPath(), recipeId), result, builder);
-	}
-
-	default void cooking(final ResourceLocation recipeType, final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(recipeType, recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
-	}
-
-	default void cooking(
-		final ResourceLocation recipeType, final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final int resultAmount, final Consumer<CookingRecipeBuilder> builder
-	) {
-		this.cooking(recipeType, recipeId, CAPI.materials().getItem(resultMaterial, resultHandler, resultAmount), builder);
-	}
-
-	default void smelting(final ResourceLocation recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smelting"), recipeId, result, builder);
-	}
-
-	default void smelting(final ResourceLocation recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smelting"), recipeId, result, builder);
-	}
+	void smelting(ResourceLocation recipeId, ItemLike result, Consumer<CookingRecipeBuilder> builder);
 
 	default void smelting(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smelting"), recipeId, resultHandler, resultMaterial, builder);
+		this.smelting(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
 	}
 
 	default void smelting(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final int resultAmount, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smelting"), recipeId, resultHandler, resultMaterial, resultAmount, builder);
+		this.smelting(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler, resultAmount), builder);
 	}
 
 	default void smelting(final String recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smelting"), recipeId, result, builder);
+		this.smelting(this.id("smelting", recipeId), result, builder);
 	}
 
 	default void smelting(final String recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smelting"), recipeId, result, builder);
+		this.smelting(this.id("smelting", recipeId), result, builder);
 	}
 
 	default void smelting(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smelting"), recipeId, resultHandler, resultMaterial, builder);
+		this.smelting(this.id("smelting", recipeId), resultHandler, resultMaterial, builder);
 	}
 
 	default void smelting(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final int resultAmount, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smelting"), recipeId, resultHandler, resultMaterial, resultAmount, builder);
+		this.smelting(this.id("smelting", recipeId), resultHandler, resultMaterial, resultAmount, builder);
 	}
 
-	default void blasting(final ResourceLocation recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("blasting"), recipeId, result, builder);
-	}
+	void blasting(ResourceLocation recipeId, ItemStack result, Consumer<CookingRecipeBuilder> builder);
 
-	default void blasting(final ResourceLocation recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("blasting"), recipeId, result, builder);
-	}
+	void blasting(ResourceLocation recipeId, ItemLike result, Consumer<CookingRecipeBuilder> builder);
 
 	default void blasting(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("blasting"), recipeId, resultHandler, resultMaterial, builder);
+		this.blasting(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
 	}
 
 	default void blasting(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final int resultAmount, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("blasting"), recipeId, resultHandler, resultMaterial, resultAmount, builder);
+		this.blasting(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler, resultAmount), builder);
 	}
 
 	default void blasting(final String recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("blasting"), recipeId, result, builder);
+		this.blasting(this.id("blasting", recipeId), result, builder);
 	}
 
 	default void blasting(final String recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("blasting"), recipeId, result, builder);
+		this.blasting(this.id("blasting", recipeId), result, builder);
 	}
 
 	default void blasting(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("blasting"), recipeId, resultHandler, resultMaterial, builder);
+		this.blasting(this.id("blasting", recipeId), resultHandler, resultMaterial, builder);
 	}
 
 	default void blasting(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final int resultAmount, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("blasting"), recipeId, resultHandler, resultMaterial, resultAmount, builder);
+		this.blasting(this.id("blasting", recipeId), resultHandler, resultMaterial, resultAmount, builder);
 	}
 
-	default void smoking(final ResourceLocation recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smoking"), recipeId, result, builder);
-	}
+	void smoking(ResourceLocation recipeId, ItemStack result, Consumer<CookingRecipeBuilder> builder);
 
-	default void smoking(final ResourceLocation recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smoking"), recipeId, result, builder);
-	}
+	void smoking(ResourceLocation recipeId, ItemLike result, Consumer<CookingRecipeBuilder> builder);
 
 	default void smoking(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smoking"), recipeId, resultHandler, resultMaterial, builder);
+		this.smoking(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
 	}
 
 	default void smoking(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final int resultAmount, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smoking"), recipeId, resultHandler, resultMaterial, resultAmount, builder);
+		this.smoking(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler, resultAmount), builder);
 	}
 
 	default void smoking(final String recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smoking"), recipeId, result, builder);
+		this.smoking(this.id("smoking", recipeId), result, builder);
 	}
 
 	default void smoking(final String recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smoking"), recipeId, result, builder);
+		this.smoking(this.id("smoking", recipeId), result, builder);
 	}
 
 	default void smoking(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smoking"), recipeId, resultHandler, resultMaterial, builder);
+		this.smoking(this.id("smoking", recipeId), resultHandler, resultMaterial, builder);
 	}
 
 	default void smoking(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final int resultAmount, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("smoking"), recipeId, resultHandler, resultMaterial, resultAmount, builder);
+		this.smoking(this.id("smoking", recipeId), resultHandler, resultMaterial, resultAmount, builder);
 	}
 
-	default void campfire(final ResourceLocation recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("campfire_cooking"), recipeId, result, builder);
-	}
+	void campfire(ResourceLocation recipeId, ItemStack result, Consumer<CookingRecipeBuilder> builder);
 
-	default void campfire(final ResourceLocation recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("campfire_cooking"), recipeId, result, builder);
-	}
+	void campfire(ResourceLocation recipeId, ItemLike result, Consumer<CookingRecipeBuilder> builder);
 
 	default void campfire(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("campfire_cooking"), recipeId, resultHandler, resultMaterial, builder);
+		this.campfire(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
 	}
 
 	default void campfire(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final int resultAmount, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("campfire_cooking"), recipeId, resultHandler, resultMaterial, resultAmount, builder);
+		this.campfire(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler, resultAmount), builder);
 	}
 
 	default void campfire(final String recipeId, final ItemStack result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("campfire_cooking"), recipeId, result, builder);
+		this.campfire(this.id("campfire_cooking", recipeId), result, builder);
 	}
 
 	default void campfire(final String recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("campfire_cooking"), recipeId, result, builder);
+		this.campfire(this.id("campfire_cooking", recipeId), result, builder);
 	}
 
 	default void campfire(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("campfire_cooking"), recipeId, resultHandler, resultMaterial, builder);
+		this.campfire(this.id("campfire_cooking", recipeId), resultHandler, resultMaterial, builder);
 	}
 
 	default void campfire(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final int resultAmount, final Consumer<CookingRecipeBuilder> builder) {
-		this.cooking(ResourceLocation.withDefaultNamespace("campfire_cooking"), recipeId, resultHandler, resultMaterial, resultAmount, builder);
+		this.campfire(this.id("campfire_cooking", recipeId), resultHandler, resultMaterial, resultAmount, builder);
 	}
 
 	void stonecutting(ResourceLocation recipeId, ItemStack result, Consumer<StonecutterRecipeBuilder> builder);
