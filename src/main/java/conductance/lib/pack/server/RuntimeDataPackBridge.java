@@ -31,19 +31,23 @@ public final class RuntimeDataPackBridge {
 		Conductance.LOGGER.info("Conductance reloaded RuntimeDataPack in {}ms", System.currentTimeMillis() - sysTime);
 	}
 
-	public static void insertRecipes(final HolderLookup.Provider registries, final Map<ResourceLocation, Recipe<?>> recipeMap) {
-		final RecipeOutput recipeOutput = new RuntimeRecipeOutput(registries);
-		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, registries, recipeOutput, (recipeId, recipeType, builder) -> {
-			recipeMap.put(recipeId, Util.make(new MachineRecipeBuilderImpl(recipeType, registries), builder).build());
-		}));
-	}
-
 	public static void removeRecipes(final Map<ResourceLocation, ?> recipeMap) {
+		final long sysTime = System.currentTimeMillis();
 		Conductance.dispatchAll(RemoveRecipeEvent.class, new RemoveRecipeEventImpl(id -> {
 			if (recipeMap.remove(id) == null) {
 				Conductance.LOGGER.warn("Trying to remove non-existing recipe: {}", id);
 			}
 		}));
+		Conductance.LOGGER.info("Conductance reloaded RuntimeDataPack recipe removal in {}ms", System.currentTimeMillis() - sysTime);
+	}
+
+	public static void insertRecipes(final HolderLookup.Provider registries, final Map<ResourceLocation, Recipe<?>> recipeMap) {
+		final long sysTime = System.currentTimeMillis();
+		final RecipeOutput recipeOutput = new RuntimeRecipeOutput(registries, recipeMap);
+		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, registries, recipeOutput, (recipeId, recipeType, builder) -> {
+			Util.make(new MachineRecipeBuilderImpl(recipeType, registries), builder).save(recipeId, recipeOutput);
+		}));
+		Conductance.LOGGER.info("Conductance reloaded RuntimeDataPack recipe generation in {}ms", System.currentTimeMillis() - sysTime);
 	}
 
 	public static void generateTags(final ResourceKey<? extends Registry<?>> registry, final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {

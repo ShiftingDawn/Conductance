@@ -7,6 +7,9 @@ import java.util.Map;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -63,5 +66,9 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 	@Override
 	public MachineRecipe build() {
 		return new MachineRecipeImpl(this.recipeType, this.inputs, this.outputs);
+	}
+
+	public void save(final ResourceLocation recipeId, final RecipeOutput output) {
+		output.accept(ResourceKey.create(Registries.RECIPE, recipeId), this.build(), null);
 	}
 }

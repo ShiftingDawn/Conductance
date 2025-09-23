@@ -8,8 +8,8 @@
     "maxShiftBy": 5
   },
   "mixins": [
-    "DataComponentMapBuilderMixin", "ItemPropertiesMixin", "RecipeManagerMixin", "ReloadableServerResourcesMixin",
-    "TagLoaderMixin"
+    "DataComponentMapBuilderMixin", "HolderSetNamedMixin", "ItemPropertiesMixin", "RecipeManagerMixin",
+    "ReloadableServerResourcesMixin", "TagLoaderMixin"
   ],
   "client": ["LanguageManagerMixin", "ModelManagerMixin"]
 }
