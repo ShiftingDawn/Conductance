@@ -1,6 +1,7 @@
 package conductance.init.material;
 
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import conductance.api.CAPI;
@@ -129,6 +130,7 @@ public final class MaterialLoader2 {
 
 	@EventListener(priority = -100)
 	private static void addCustomTags(final RegisterTagEvent event) {
+		event.item(CAPI.materials().getItemTag(FLINT, NCMaterialGenerationHandlers.GEM), Items.FLINT);
 		event.tag(CAPI.materials().getItemTag(LAPIS_LAZULI, NCMaterialGenerationHandlers.STORAGE_BLOCK), Tags.Items.STORAGE_BLOCKS_LAPIS.location());
 		event.item(CAPI.materials().getItemTag(AMETHYST, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.AMETHYST_BLOCK);
 	}
