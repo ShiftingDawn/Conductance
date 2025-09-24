@@ -11,6 +11,7 @@ import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineBlockItem;
 import conductance.api.machine.MachineType;
+import conductance.api.recipe.MachineRecipeType;
 import conductance.api.util.Lazy;
 
 final class MachineTypeImpl<T extends MachineBlockEntity<T>> implements MachineType<T> {
@@ -27,6 +28,9 @@ final class MachineTypeImpl<T extends MachineBlockEntity<T>> implements MachineT
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	private Supplier<BlockEntityType<T>> blockEntityType;
+	@Getter
+	@Setter(AccessLevel.PACKAGE)
+	private MachineRecipeType[] recipeTypes;
 
 
 	@Override

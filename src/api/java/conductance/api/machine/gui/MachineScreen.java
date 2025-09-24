@@ -6,15 +6,15 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import lombok.Getter;
-import conductance.api.machine.MachineType;
+import conductance.api.machine.MachineBlockEntity;
 
 public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 
-	private final @Getter MachineType<?> machineType;
+	private final @Getter MachineBlockEntity<?> machine;
 
 	public MachineScreen(final MachineMenu menu, final Inventory playerInventory, final Component title) {
 		super(menu, playerInventory, title);
-		this.machineType = menu.getMachineType();
+		this.machine = menu.getMachine();
 		this.imageWidth = menu.getContainerSize().width();
 		this.imageHeight = menu.getContainerSize().height();
 		this.titleLabelX = 4;

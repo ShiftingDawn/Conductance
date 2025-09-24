@@ -14,6 +14,7 @@ import conductance.api.machine.event.MachineBlockEntityFactory;
 import conductance.api.machine.event.MachineBlockFactory;
 import conductance.api.machine.event.MachineBlockItemFactory;
 import conductance.api.machine.event.MachineBuilder;
+import conductance.api.recipe.MachineRecipeType;
 
 @RequiredArgsConstructor
 @Accessors(fluent = true, chain = true)
@@ -23,8 +24,17 @@ final class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Machi
 	private final MachineBlockEntityFactory<T> blockEntityFactory;
 	private @Setter MachineBlockFactory<T> blockFactory = MachineBlock::new;
 	private @Setter MachineBlockItemFactory<T> itemFactory = MachineBlockItem::new;
+	private MachineRecipeType[] recipeTypes = new MachineRecipeType[0];
 	private ModelType modelType = ModelType.DEFAULT;
 	private @Nullable Object modelTypeData = null;
+
+	@Override
+	public MachineBuilder<T> recipeType(final MachineRecipeType recipeType, final MachineRecipeType... additionalRecipeTypes) {
+		this.recipeTypes = new MachineRecipeType[1 + additionalRecipeTypes.length];
+		this.recipeTypes[0] = recipeType;
+		System.arraycopy(additionalRecipeTypes, 0, this.recipeTypes, 1, additionalRecipeTypes.length);
+		return this;
+	}
 
 	@Override
 	public MachineBuilder<T> simpleModel(final ResourceLocation casingTexture) {
@@ -44,6 +54,7 @@ final class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Machi
 			type.setBlock(MachineCore.createBlock(this.registryKey.getPath(), type, this.blockFactory));
 			type.setItem(MachineCore.createItem(this.registryKey.getPath(), type.getBlock(), this.itemFactory));
 			type.setBlockEntityType(MachineCore.createBlockEntityType(this.registryKey.getPath(), type, type.getBlock(), this.blockEntityFactory));
+			type.setRecipeTypes(this.recipeTypes);
 		});
 		switch (this.modelType) {
 			case DEFAULT -> MachineModelHandler.addDefault(result);

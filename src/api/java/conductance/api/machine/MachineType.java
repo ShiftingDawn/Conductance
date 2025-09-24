@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import conductance.api.CAPI;
+import conductance.api.recipe.MachineRecipeType;
 
 public interface MachineType<T extends MachineBlockEntity<T>> {
 
@@ -14,6 +15,8 @@ public interface MachineType<T extends MachineBlockEntity<T>> {
 	Supplier<MachineBlockItem<T>> getItem();
 
 	Supplier<BlockEntityType<T>> getBlockEntityType();
+
+	MachineRecipeType[] getRecipeTypes();
 
 	String getDescriptionId();
 

@@ -1,5 +1,6 @@
 package conductance.init;
 
+import conductance.api.NCRecipeTypes;
 import conductance.api.machine.event.RegisterMachineEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
@@ -13,8 +14,8 @@ final class ConductanceMachines {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterMachineEvent event) {
-		event.register("pulverizer", PulverizerMachine::new, b -> {
-		});
+		event.register("pulverizer", PulverizerMachine::new, b -> b
+			.recipeType(NCRecipeTypes.PULVERIZER));
 	}
 
 	@EventListener(priority = -100)

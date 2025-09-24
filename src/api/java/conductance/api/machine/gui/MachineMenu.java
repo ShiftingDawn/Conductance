@@ -7,19 +7,25 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.MachineType;
+import conductance.api.machine.MachineBlockEntity;
 
 public class MachineMenu extends AbstractContainerMenu {
 
-	private final @Getter MachineType<?> machineType;
+	private final @Getter MachineBlockEntity<?> machine;
 	private final @Getter ContainerLevelAccess access;
 
-	public MachineMenu(final MachineType<?> machineType, final int containerId, final ContainerLevelAccess access, final Inventory playerInventory) {
+	public MachineMenu(final MachineBlockEntity<?> machine, final int containerId, final ContainerLevelAccess access, final Inventory playerInventory) {
 		super(MachineGuiHelper.MENU_TYPE.get(), containerId);
-		this.machineType = machineType;
+		this.machine = machine;
 		this.access = access;
+		this.machine.getItemTransferCapability(null).ifPresent(handler -> {
+			for (int i = 0; i < handler.getSlots(); ++i) {
+				this.addSlot(new SlotItemHandler(handler, i, 10 + i * 18, 10));
+			}
+		});
 		Optional.ofNullable(this.getPlayerInventoryPos()).ifPresent(pos -> {
 			for (int y = 0; y < 3; ++y) {
 				for (int x = 0; x < 9; ++x) {
@@ -42,7 +48,7 @@ public class MachineMenu extends AbstractContainerMenu {
 
 	@Override
 	public boolean stillValid(final Player player) {
-		return AbstractContainerMenu.stillValid(this.access, player, this.machineType.getBlock().get());
+		return AbstractContainerMenu.stillValid(this.access, player, this.machine.getMachineType().getBlock().get());
 	}
 
 	protected Size getContainerSize() {

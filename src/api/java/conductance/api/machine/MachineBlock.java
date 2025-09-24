@@ -9,13 +9,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.gui.MachineMenu;
 
-public class MachineBlock<T extends MachineBlockEntity<T>> extends Block {
+public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements EntityBlock {
 
 	private final @Getter MachineType<T> machineType;
 
@@ -25,11 +28,20 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block {
 	}
 
 	@Override
-	protected MenuProvider getMenuProvider(final BlockState state, final Level level, final BlockPos pos) {
-		return new SimpleMenuProvider(
-			(containerId, playerInventory, plr) -> new MachineMenu(this.machineType, containerId, ContainerLevelAccess.create(level, pos), plr.getInventory()),
-			this.machineType.getName()
-		);
+	public BlockEntity newBlockEntity(final BlockPos blockPos, final BlockState blockState) {
+		return this.machineType.getBlockEntityType().get().create(blockPos, blockState);
+	}
+
+	@Override
+	protected @Nullable MenuProvider getMenuProvider(final BlockState state, final Level level, final BlockPos pos) {
+		final BlockEntity mbe = level.getBlockEntity(pos);
+		if (mbe instanceof final MachineBlockEntity<?> machine) {
+			return new SimpleMenuProvider(
+				(containerId, playerInventory, plr) -> new MachineMenu(machine, containerId, ContainerLevelAccess.create(level, pos), plr.getInventory()),
+				this.machineType.getName()
+			);
+		}
+		return null;
 	}
 
 	@Override
@@ -37,7 +49,7 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block {
 		//TODO only open gui when machine has a gui
 		if (!player.isCrouching()) {
 			if (player instanceof final ServerPlayer serverPlayer) {
-				serverPlayer.openMenu(state.getMenuProvider(level, pos), buffer -> buffer.writeResourceLocation(this.machineType.getId()));
+				serverPlayer.openMenu(state.getMenuProvider(level, pos), buffer -> buffer.writeBlockPos(pos));
 			}
 			return InteractionResult.SUCCESS;
 		}

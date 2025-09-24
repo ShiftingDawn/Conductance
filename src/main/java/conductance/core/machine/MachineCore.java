@@ -3,6 +3,7 @@ package conductance.core.machine;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -12,6 +13,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -43,11 +46,13 @@ public final class MachineCore {
 		MachineCore.ITEMS.register(modEventBus);
 		MachineCore.BLOCK_ENTITIES.register(modEventBus);
 		MachineCore.MENU_TYPES.register(modEventBus);
+		modEventBus.addListener(RegisterCapabilitiesEvent.class, MachineCore::attachCapabilities);
 
 		final Supplier<MenuType<MachineMenu>> menuType = MachineCore.MENU_TYPES.register("machine", () -> IMenuTypeExtension.create(
-			(containerId, inventory, registryFriendlyByteBuf) -> {
-				final MachineType<?> machineType = CAPI.regs().machines().get(registryFriendlyByteBuf.readResourceLocation()).orElseThrow().value();
-				return new MachineMenu(machineType, containerId, ContainerLevelAccess.NULL, inventory);
+			(containerId, inventory, buffer) -> {
+				final BlockPos pos = buffer.readBlockPos();
+				final MachineBlockEntity<?> mbe = (MachineBlockEntity<?>) inventory.player.level().getBlockEntity(pos);
+				return new MachineMenu(mbe, containerId, ContainerLevelAccess.NULL, inventory);
 			}
 		));
 		modEventBus.addListener(RegisterMenuScreensEvent.class, event -> {
@@ -91,6 +96,25 @@ public final class MachineCore {
 			(blockPos, blockState) -> blockEntityFactory.apply(machineType, blockPos, blockState),
 			block.get()
 		));
+	}
+
+	private static void attachCapabilities(final RegisterCapabilitiesEvent event) {
+		BuiltInRegistries.BLOCK.forEach(block -> {
+			if (block instanceof final MachineBlock<?> machineBlock) {
+				event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
+					if (blockEntity instanceof final MachineBlockEntity<?> machine) {
+						return machine.getItemTransferCapability(direction).orElse(null);
+					}
+					return null;
+				}, machineBlock);
+				event.registerBlock(Capabilities.FluidHandler.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
+					if (blockEntity instanceof final MachineBlockEntity<?> machine) {
+						return machine.getFluidTransferCapability(direction).orElse(null);
+					}
+					return null;
+				}, machineBlock);
+			}
+		});
 	}
 
 	private MachineCore() {
