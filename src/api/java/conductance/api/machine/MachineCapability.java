@@ -14,6 +14,7 @@ public abstract class MachineCapability implements ValueIOSerializable {
 	private final List<Runnable> changeListeners = new ArrayList<>();
 	private final @Getter MachineBlockEntity<?> machine;
 	private @Setter Predicate<@Nullable Direction> capabilityValidator;
+	private boolean hasChanged = false;
 
 	protected MachineCapability(final String key, final MachineBlockEntity<?> machine) {
 		this.machine = machine;
@@ -32,6 +33,18 @@ public abstract class MachineCapability implements ValueIOSerializable {
 
 	public final void notifyListeners() {
 		this.changeListeners.forEach(Runnable::run);
+	}
+
+	public final void setChanged() {
+		this.hasChanged = true;
+	}
+
+	public final boolean hasChanged() {
+		return this.hasChanged;
+	}
+
+	public final void clearChanged() {
+		this.hasChanged = false;
 	}
 
 	public void onLoad() {

@@ -7,18 +7,29 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import com.mojang.logging.LogUtils;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity {
 
+	public static final Logger LOGGER = LogUtils.getLogger();
 	private final @Getter Map<String, MachineCapability> capabilities = new ConcurrentHashMap<>();
 	private final @Getter MachineType<T> machineType;
 
@@ -83,6 +94,58 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 	}
 	//endregion
 
+	//region Event
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		for (final MachineCapability capability : this.capabilities.values()) {
+			capability.onLoad();
+		}
+	}
+
+	public void onUnload() {
+		for (final MachineCapability capability : this.capabilities.values()) {
+			capability.onUnload();
+		}
+	}
+
+	@Override
+	public void setRemoved() {
+		super.setRemoved();
+		this.onUnload();
+	}
+
+	@Override
+	public CompoundTag getUpdateTag(final HolderLookup.Provider registries) {
+		return super.saveWithoutMetadata(registries);
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this, (blockEntity, registryAccess) -> {
+			try (final ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(this.problemPath(), MachineBlockEntity.LOGGER)) {
+				final TagValueOutput output = TagValueOutput.createWithContext(scopedCollector, registryAccess);
+				this.capabilities.forEach((key, capability) -> {
+					if (capability.hasChanged()) {
+						capability.serialize(output.child(key));
+						capability.clearChanged();
+					}
+				});
+				return output.buildResult();
+			}
+		});
+	}
+
+	@Override
+	public void onDataPacket(final Connection net, final ValueInput valueInput) {
+		this.capabilities.forEach((key, capability) -> {
+			valueInput.child(key).ifPresent(capability::deserialize);
+		});
+	}
+
+	//endregion
+
+	//region Data
 	@Override
 	protected void saveAdditional(final ValueOutput output) {
 		super.saveAdditional(output);
@@ -94,4 +157,5 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		super.loadAdditional(input);
 		this.capabilities.forEach((key, cap) -> input.child(key).ifPresent(cap::deserialize));
 	}
+	//endregion
 }
