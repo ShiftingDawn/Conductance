@@ -77,6 +77,7 @@ public final class RecipeHandler extends MachineCapability {
 		if (this.tick != null) {
 			this.tick.invalidate();
 		}
+		this.setChanged();
 	}
 
 	public void revalidateTick() {
@@ -116,6 +117,7 @@ public final class RecipeHandler extends MachineCapability {
 		this.progressCurrent = 0;
 		this.status = RecipeHandlerStatus.PROCESSING;
 		CAPI.recipeHelper().handle(recipe, IO.IN, this.holder);
+		this.setChanged();
 	}
 
 	private void progressRecipe(final MachineRecipe recipe) {
@@ -128,5 +130,6 @@ public final class RecipeHandler extends MachineCapability {
 				this.reset();
 			}
 		}
+		this.setChanged();
 	}
 }

@@ -20,6 +20,7 @@ public abstract class MachineCapability implements ValueIOSerializable {
 		this.machine = machine;
 		this.capabilityValidator = side -> true;
 		machine.registerCapability(key, this);
+		this.changeListeners.add(machine::setChanged);
 	}
 
 	public final boolean isValid(@Nullable final Direction side) {
@@ -31,12 +32,13 @@ public abstract class MachineCapability implements ValueIOSerializable {
 		return () -> this.changeListeners.remove(listener);
 	}
 
-	public final void notifyListeners() {
+	private void notifyListeners() {
 		this.changeListeners.forEach(Runnable::run);
 	}
 
 	public final void setChanged() {
 		this.hasChanged = true;
+		this.notifyListeners();
 	}
 
 	public final boolean hasChanged() {

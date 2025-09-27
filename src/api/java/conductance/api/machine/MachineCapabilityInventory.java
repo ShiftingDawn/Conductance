@@ -26,7 +26,7 @@ public class MachineCapabilityInventory extends MachineCapability implements IBl
 	}
 
 	public void onContentsChanged() {
-		this.notifyListeners();
+		this.setChanged();
 	}
 
 	@Override
