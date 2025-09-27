@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.CapabilityMode;
 import conductance.api.machine.MachineBlockEntity;
 
 public class MachineMenu extends AbstractContainerMenu {
@@ -21,7 +22,7 @@ public class MachineMenu extends AbstractContainerMenu {
 		super(MachineGuiHelper.MENU_TYPE.get(), containerId);
 		this.machine = machine;
 		this.access = access;
-		this.machine.getItemTransferCapability(null).ifPresent(handler -> {
+		this.machine.getItemTransferCapability(null, CapabilityMode.INTERNAL).ifPresent(handler -> {
 			for (int i = 0; i < handler.getSlots(); ++i) {
 				this.addSlot(new SlotItemHandler(handler, i, 10 + i * 18, 10));
 			}

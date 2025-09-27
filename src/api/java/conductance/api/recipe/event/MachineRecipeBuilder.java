@@ -148,5 +148,7 @@ public interface MachineRecipeBuilder {
 		return this.out(material, handler, 1);
 	}
 
+	MachineRecipeBuilder duration(int recipeDuration);
+
 	MachineRecipe build();
 }

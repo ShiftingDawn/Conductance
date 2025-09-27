@@ -9,6 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import conductance.api.CAPI;
@@ -41,6 +42,7 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 		buf.writeResourceLocation(recipe.getType().getId());
 		MachineRecipeSerializer.writeRecipeMap(buf, recipe.getInputs());
 		MachineRecipeSerializer.writeRecipeMap(buf, recipe.getOutputs());
+		buf.writeVarInt(recipe.getRecipeDuration());
 	}
 
 	private static MachineRecipe fromNetwork(final RegistryFriendlyByteBuf buf) {
@@ -48,7 +50,8 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 		return new MachineRecipeImpl(
 			Objects.requireNonNull(CAPI.regs().recipeTypes().getValue(recipeType), () -> "Cannot load unknown recipe type " + recipeType),
 			MachineRecipeSerializer.loadRecipeMap(buf),
-			MachineRecipeSerializer.loadRecipeMap(buf)
+			MachineRecipeSerializer.loadRecipeMap(buf),
+			buf.readVarInt()
 		);
 	}
 
@@ -79,7 +82,8 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 		MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			MachineRecipeType.CODEC.fieldOf("type").forGetter(MachineRecipe::getType),
 			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("inputs").forGetter(MachineRecipe::getInputs),
-			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("outputs").forGetter(MachineRecipe::getOutputs)
+			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("outputs").forGetter(MachineRecipe::getOutputs),
+			Codec.INT.fieldOf("duration").forGetter(MachineRecipe::getRecipeDuration)
 		).apply(instance, MachineRecipeImpl::new));
 		STREAM_CODEC = StreamCodec.of(MachineRecipeSerializer::toNetwork, MachineRecipeSerializer::fromNetwork);
 	}

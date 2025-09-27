@@ -1,10 +1,12 @@
 package conductance.api.machine;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -13,7 +15,9 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueOutput;
@@ -32,6 +36,8 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 	public static final Logger LOGGER = LogUtils.getLogger();
 	private final @Getter Map<String, MachineCapability> capabilities = new ConcurrentHashMap<>();
 	private final @Getter MachineType<T> machineType;
+	private final List<MachineTick> ticksActive = new ArrayList<>();
+	private final List<MachineTick> ticksPending = new ArrayList<>();
 
 	public MachineBlockEntity(final MachineType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type.getBlockEntityType().get(), pos, blockState);
@@ -63,11 +69,19 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		return this.getCapability(type, false);
 	}
 
-	public Optional<IItemHandler> getItemTransferCapability(@Nullable final Direction side) {
+	public Optional<IItemHandler> getItemTransferCapability(@Nullable final Direction side, final CapabilityMode mode) {
 		final List<IItemHandlerModifiable> itemHandlers = new ArrayList<>();
 		for (final MachineCapability capability : this.capabilities.values()) {
-			if (capability instanceof final IItemHandlerModifiable cap2 && capability.isValid(side)) {
-				itemHandlers.add(cap2);
+			if (capability instanceof final IItemHandlerModifiable itemHandler && capability.isValid(side)) {
+				if (mode == CapabilityMode.INTERNAL) {
+					IItemHandlerModifiable handler = itemHandler;
+					if (itemHandler instanceof final MachineRecipeCapabilityItems recipeCapabilityItems) {
+						handler = recipeCapabilityItems.getInventory();
+					}
+					itemHandlers.add(handler);
+				} else {
+					itemHandlers.add(itemHandler);
+				}
 			}
 		}
 		if (itemHandlers.isEmpty()) {
@@ -78,11 +92,12 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		return Optional.of(handlerList);
 	}
 
-	public Optional<IFluidHandler> getFluidTransferCapability(@Nullable final Direction side) {
+	public Optional<IFluidHandler> getFluidTransferCapability(@Nullable final Direction side, final CapabilityMode mode) {
 		final List<IFluidHandler> fluidHandlers = new ArrayList<>();
 		for (final MachineCapability capability : this.capabilities.values()) {
-			if (capability instanceof final IFluidHandler cap2 && capability.isValid(side)) {
-				fluidHandlers.add(cap2);
+			if (capability instanceof final IFluidHandler fluidHandler && capability.isValid(side)) {
+				//TODO handle internal mode
+				fluidHandlers.add(fluidHandler);
 			}
 		}
 		if (fluidHandlers.isEmpty()) {
@@ -95,6 +110,51 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 	//endregion
 
 	//region Event
+	public final MachineTick addTick(final Runnable action) {
+		if (this.level instanceof final ServerLevel serverLevel) {
+			return Util.make(new MachineTick(action), result -> {
+				this.ticksPending.add(result);
+				if (!this.getBlockState().getValue(MachineBlock.TICKING)) {
+					final BlockState newState = this.getBlockState().setValue(MachineBlock.TICKING, true);
+					serverLevel.setBlockAndUpdate(this.getBlockPos(), newState);
+				}
+			});
+		}
+		throw new IllegalStateException("addTick can only be called on the server!");
+	}
+
+	public final MachineTick addTick(final Runnable action, @Nullable final MachineTick previous) {
+		if (previous == null || !previous.isValid()) {
+			return this.addTick(action);
+		}
+		return previous;
+	}
+
+	final void handleServerTick() {
+		if (!this.ticksPending.isEmpty()) {
+			this.ticksActive.addAll(this.ticksPending);
+			this.ticksPending.clear();
+		}
+		final Iterator<MachineTick> iterator = this.ticksActive.iterator();
+		while (iterator.hasNext()) {
+			final MachineTick tick = iterator.next();
+			tick.tick();
+			if (this.isInvalid()) {
+				break;
+			}
+			if (!tick.isValid()) {
+				iterator.remove();
+			}
+		}
+		if (this.isValid() && this.ticksActive.isEmpty() && this.ticksPending.isEmpty()) {
+			assert this.level != null;
+			this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(MachineBlock.TICKING, false));
+		}
+	}
+
+	public void onClientTick() {
+	}
+
 	@Override
 	public void onLoad() {
 		super.onLoad();
@@ -104,6 +164,8 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 	}
 
 	public void onUnload() {
+		this.ticksActive.forEach(MachineTick::invalidate);
+		this.ticksActive.clear();
 		for (final MachineCapability capability : this.capabilities.values()) {
 			capability.onUnload();
 		}
@@ -142,7 +204,6 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 			valueInput.child(key).ifPresent(capability::deserialize);
 		});
 	}
-
 	//endregion
 
 	//region Data
@@ -156,6 +217,26 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 	protected void loadAdditional(final ValueInput input) {
 		super.loadAdditional(input);
 		this.capabilities.forEach((key, cap) -> input.child(key).ifPresent(cap::deserialize));
+	}
+	//endregion
+
+	//region Helpers
+	public final boolean isValid() {
+		return !this.isRemoved();
+	}
+
+	public final boolean isInvalid() {
+		return this.isRemoved();
+	}
+
+	public final boolean isClientSide() {
+		final Level level = this.getLevel();
+		return level != null && level.isClientSide;
+	}
+
+	public final boolean isServerSide() {
+		final Level level = this.getLevel();
+		return level != null && !level.isClientSide;
 	}
 	//endregion
 }

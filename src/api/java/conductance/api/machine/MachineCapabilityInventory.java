@@ -30,7 +30,7 @@ public class MachineCapabilityInventory extends MachineCapability implements IBl
 	}
 
 	@Override
-	public CapIO getHandlerIo() {
+	public CapIO getCapabilityIoMode() {
 		return CapIO.BOTH;
 	}
 

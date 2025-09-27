@@ -11,6 +11,7 @@ import net.neoforged.neoforge.common.Tags;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import conductance.api.material.MaterialRegistry;
+import conductance.api.recipe.RecipeHelper;
 import conductance.api.registry.RegistryProvider;
 import conductance.api.resource.ResourceFinder;
 import conductance.api.tier.TierRegistry;
@@ -30,6 +31,7 @@ public final class CAPI {
 	private static MaterialRegistry materialRegistry;
 	private static TierRegistry tierRegistry;
 	private static ResourceFinder resourceFinder;
+	private static RecipeHelper recipeHelper;
 
 	public static RegistryProvider regs() {
 		return Objects.requireNonNull(CAPI.registryProvider, "CAPI::regs called too early!");
@@ -45,6 +47,10 @@ public final class CAPI {
 
 	public static ResourceFinder resourceFinder() {
 		return Objects.requireNonNull(CAPI.resourceFinder, "CAPI::resourceFinder called too early!");
+	}
+
+	public static RecipeHelper recipeHelper() {
+		return Objects.requireNonNull(CAPI.recipeHelper, "CAPI::recipeHelper called too early!");
 	}
 
 	public static boolean isClient() {

@@ -19,6 +19,7 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import conductance.api.CAPI;
+import conductance.api.machine.CapabilityMode;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineBlockItem;
@@ -103,13 +104,13 @@ public final class MachineCore {
 			if (block instanceof final MachineBlock<?> machineBlock) {
 				event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
 					if (blockEntity instanceof final MachineBlockEntity<?> machine) {
-						return machine.getItemTransferCapability(direction).orElse(null);
+						return machine.getItemTransferCapability(direction, CapabilityMode.DEFAULT).orElse(null);
 					}
 					return null;
 				}, machineBlock);
 				event.registerBlock(Capabilities.FluidHandler.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
 					if (blockEntity instanceof final MachineBlockEntity<?> machine) {
-						return machine.getFluidTransferCapability(direction).orElse(null);
+						return machine.getFluidTransferCapability(direction, CapabilityMode.DEFAULT).orElse(null);
 					}
 					return null;
 				}, machineBlock);

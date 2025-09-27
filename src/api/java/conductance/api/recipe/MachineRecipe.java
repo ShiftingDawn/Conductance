@@ -6,6 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import com.mojang.serialization.Codec;
 
@@ -16,9 +17,14 @@ public interface MachineRecipe extends Recipe<RecipeInput> {
 	@Override
 	MachineRecipeType getType();
 
+	@Override
+	RecipeSerializer<MachineRecipe> getSerializer();
+
 	Map<RecipeElementType<?>, List<RecipeObject>> getInputs();
 
 	Map<RecipeElementType<?>, List<RecipeObject>> getOutputs();
+
+	int getRecipeDuration();
 
 	@Override
 	default boolean isSpecial() {

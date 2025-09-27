@@ -11,8 +11,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -20,11 +24,18 @@ import conductance.api.machine.gui.MachineMenu;
 
 public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements EntityBlock {
 
+	public static final BooleanProperty TICKING = BooleanProperty.create("ticking");
 	private final @Getter MachineType<T> machineType;
 
 	public MachineBlock(final BlockBehaviour.Properties properties, final MachineType<T> machineType) {
 		super(properties);
 		this.machineType = machineType;
+		this.registerDefaultState(this.getStateDefinition().any().setValue(MachineBlock.TICKING, false));
+	}
+
+	@Override
+	protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder) {
+		super.createBlockStateDefinition(builder.add(MachineBlock.TICKING));
 	}
 
 	@Override
@@ -54,5 +65,25 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 			return InteractionResult.SUCCESS;
 		}
 		return super.useWithoutItem(state, level, pos, player, hitResult);
+	}
+
+	@Override
+	public @Nullable <BE extends BlockEntity> BlockEntityTicker<BE> getTicker(final Level level, final BlockState state, final BlockEntityType<BE> blockEntityType) {
+		if (blockEntityType == this.machineType.getBlockEntityType().get()) {
+			if (level.isClientSide) {
+				return (level1, blockPos, blockState, be) -> {
+					if (be instanceof final MachineBlockEntity<?> machine) {
+						machine.onClientTick();
+					}
+				};
+			} else {
+				return (level1, blockPos, blockState, be) -> {
+					if (be instanceof final MachineBlockEntity<?> machine) {
+						machine.handleServerTick();
+					}
+				};
+			}
+		}
+		return null;
 	}
 }

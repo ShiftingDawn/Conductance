@@ -2,13 +2,13 @@ package conductance.api.machine;
 
 public interface IBlockCapabilityHandler {
 
-	CapIO getHandlerIo();
+	CapIO getCapabilityIoMode();
 
 	default boolean canCapabilityInput() {
-		return this.getHandlerIo().isInput();
+		return this.getCapabilityIoMode().isInput();
 	}
 
 	default boolean canCapabilityOutput() {
-		return this.getHandlerIo().isOutput();
+		return this.getCapabilityIoMode().isOutput();
 	}
 }

@@ -29,6 +29,7 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 
 	private final Map<RecipeElementType<?>, List<RecipeObject>> inputs = new HashMap<>();
 	private final Map<RecipeElementType<?>, List<RecipeObject>> outputs = new HashMap<>();
+	private int recipeDuration = 200;
 	private final MachineRecipeType recipeType;
 	private final HolderLookup.Provider registries;
 
@@ -64,8 +65,14 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 	}
 
 	@Override
+	public MachineRecipeBuilder duration(final int recipeDuration) {
+		this.recipeDuration = recipeDuration;
+		return this;
+	}
+
+	@Override
 	public MachineRecipe build() {
-		return new MachineRecipeImpl(this.recipeType, this.inputs, this.outputs);
+		return new MachineRecipeImpl(this.recipeType, this.inputs, this.outputs, this.recipeDuration);
 	}
 
 	public void save(final ResourceLocation recipeId, final RecipeOutput output) {

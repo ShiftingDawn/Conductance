@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import com.mojang.serialization.Codec;
 import conductance.api.CAPI;
 import conductance.api.recipe.RecipeElementType;
+import conductance.api.recipe.RecipeHelper;
 import conductance.api.recipe.event.RegisterRecipeElementTypeEvent;
 import conductance.api.recipe.event.RegisterRecipeTypeEvent;
 import conductance.Conductance;
@@ -16,6 +17,7 @@ import conductance.Conductance;
 public final class RecipeCore {
 
 	public static void initialize() {
+		Conductance.setApiValue(RecipeHelper.class, new RecipeHelper());
 		RecipeCore.initElementTypes();
 		RecipeCore.initRecipeTypes();
 	}

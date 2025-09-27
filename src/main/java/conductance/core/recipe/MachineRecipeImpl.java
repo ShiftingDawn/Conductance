@@ -5,10 +5,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
-import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import lombok.Getter;
 import conductance.api.recipe.MachineRecipe;
@@ -21,18 +19,21 @@ final class MachineRecipeImpl implements MachineRecipe {
 	private final MachineRecipeType recipeType;
 	private final @Getter Map<RecipeElementType<?>, List<RecipeObject>> inputs;
 	private final @Getter Map<RecipeElementType<?>, List<RecipeObject>> outputs;
+	private final @Getter int recipeDuration;
 
 	MachineRecipeImpl(
 		final MachineRecipeType recipeType,
-		final Map<RecipeElementType<?>, List<RecipeObject>> inputs, final Map<RecipeElementType<?>, List<RecipeObject>> outputs
+		final Map<RecipeElementType<?>, List<RecipeObject>> inputs, final Map<RecipeElementType<?>, List<RecipeObject>> outputs,
+		final int recipeDuration
 	) {
 		this.recipeType = recipeType;
 		this.inputs = MachineRecipeImpl.toImmutableMap(inputs);
 		this.outputs = MachineRecipeImpl.toImmutableMap(outputs);
+		this.recipeDuration = recipeDuration;
 	}
 
 	@Override
-	public RecipeSerializer<? extends Recipe<RecipeInput>> getSerializer() {
+	public RecipeSerializer<MachineRecipe> getSerializer() {
 		return MachineRecipeSerializer.INSTANCE;
 	}
 

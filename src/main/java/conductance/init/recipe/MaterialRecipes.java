@@ -60,7 +60,7 @@ final class MaterialRecipes {
 			}
 			if (DUST.test(material)) {
 				event.create("%s_dust_from_block".formatted(material.getName()), NCRecipeTypes.PULVERIZER,
-					b -> b.in(material, STORAGE_BLOCK).out(material, DUST, 9));
+					b -> b.in(material, STORAGE_BLOCK).out(material, DUST, 9).duration(200));
 			}
 		}
 		if (NUGGET.test(material)) {
