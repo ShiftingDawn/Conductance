@@ -13,6 +13,7 @@ public class GuiTheme {
 	private final String themeName;
 	private final @Getter int textColor;
 	private final Later<GuiDrawable> textureBackground = new Later<>();
+	private final Later<GuiDrawable> textureTitleBackground = new Later<>();
 	private final Later<GuiDrawable> texturePlayerInventory = new Later<>();
 	private final Later<GuiDrawable> texturePlayerHotbar = new Later<>();
 	private final Later<GuiDrawable> textureSlotItem1 = new Later<>();
@@ -43,6 +44,10 @@ public class GuiTheme {
 
 	public GuiDrawable getBackground() {
 		return this.textureBackground.getOrSet(() -> new GuiDrawableTexture(this.getPath("background")));
+	}
+
+	public GuiDrawable getTitleBackground() {
+		return this.textureTitleBackground.getOrSet(() -> new GuiDrawableTexture(this.getPath("title_background")));
 	}
 
 	public GuiDrawable getPlayerInventory() {

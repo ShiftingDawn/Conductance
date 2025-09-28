@@ -1,44 +1,67 @@
 package conductance.api.machine.gui;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.CapabilityMode;
+import org.jetbrains.annotations.UnknownNullability;
+import conductance.api.CAPI;
 import conductance.api.machine.MachineBlockEntity;
+import conductance.api.util.Lazy;
 
 public class MachineMenu extends AbstractContainerMenu {
 
+	public static final Supplier<MenuType<?>> MENU_TYPE = Lazy.of(() -> BuiltInRegistries.MENU.getValue(ResourceLocation.fromNamespaceAndPath(CAPI.MOD_ID, "machine")));
+
 	private final @Getter MachineBlockEntity<?> machine;
 	private final @Getter ContainerLevelAccess access;
+	private final @Getter GuiSetup guiSetup;
 
 	public MachineMenu(final MachineBlockEntity<?> machine, final int containerId, final ContainerLevelAccess access, final Inventory playerInventory) {
-		super(MachineGuiHelper.MENU_TYPE.get(), containerId);
+		super(MachineMenu.MENU_TYPE.get(), containerId);
 		this.machine = machine;
 		this.access = access;
-		this.machine.getItemTransferCapability(null, CapabilityMode.INTERNAL).ifPresent(handler -> {
-			for (int i = 0; i < handler.getSlots(); ++i) {
-				this.addSlot(new SlotItemHandler(handler, i, 10 + i * 18, 10));
-			}
-		});
-		Optional.ofNullable(this.getPlayerInventoryPos()).ifPresent(pos -> {
+		this.guiSetup = Objects.requireNonNull(machine.getMachineType().getGuiSetup(), "Opened a menu for a machine without a GuiSetup!");
+		this.guiSetup.addSlots(this, this::addSlot);
+		Optional.ofNullable(this.guiSetup.getPlayerInventoryPos()).ifPresent(pos -> {
 			for (int y = 0; y < 3; ++y) {
 				for (int x = 0; x < 9; ++x) {
 					this.addSlot(new Slot(playerInventory, x + (y + 1) * 9, pos.x() + x * 18, pos.y() + y * 18));
 				}
 			}
 		});
-		Optional.ofNullable(this.getPlayerHotbarPos()).ifPresent(pos -> {
+		Optional.ofNullable(this.guiSetup.getPlayerHotbarPos()).ifPresent(pos -> {
 			for (int i = 0; i < 9; ++i) {
 				this.addSlot(new Slot(playerInventory, i, pos.x() + i * 18, pos.y()));
 			}
 		});
+	}
+
+	@UnknownNullability
+	public Slot getSlot(final IItemHandler inv, final int index) {
+		for (final Slot slot : this.slots) {
+			if (slot.getContainerSlot() != index) {
+				continue;
+			}
+			if (slot instanceof final SlotItemHandler slot2 && slot2.getItemHandler() == inv) {
+				return slot;
+			}
+			if (slot instanceof final RepositionableSlotItemHandler slot2 && slot2.getItemHandler() == inv) {
+				return slot;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -50,17 +73,5 @@ public class MachineMenu extends AbstractContainerMenu {
 	@Override
 	public boolean stillValid(final Player player) {
 		return AbstractContainerMenu.stillValid(this.access, player, this.machine.getMachineType().getBlock().get());
-	}
-
-	protected Size getContainerSize() {
-		return MachineGuiHelper.DEFAULT_CONTAINER_SIZE;
-	}
-
-	protected @Nullable Coordinate getPlayerInventoryPos() {
-		return MachineGuiHelper.DEFAULT_INVENTORY_POS;
-	}
-
-	protected @Nullable Coordinate getPlayerHotbarPos() {
-		return MachineGuiHelper.DEFAULT_HOTBAR_POS;
 	}
 }

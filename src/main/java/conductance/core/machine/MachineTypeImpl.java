@@ -7,10 +7,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineBlockItem;
 import conductance.api.machine.MachineType;
+import conductance.api.machine.gui.GuiSetup;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.util.Lazy;
 
@@ -31,6 +33,9 @@ final class MachineTypeImpl<T extends MachineBlockEntity<T>> implements MachineT
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	private MachineRecipeType[] recipeTypes;
+	@Getter
+	@Setter(AccessLevel.PACKAGE)
+	private @Nullable GuiSetup guiSetup;
 
 
 	@Override

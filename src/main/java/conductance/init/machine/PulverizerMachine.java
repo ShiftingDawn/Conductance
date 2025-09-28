@@ -3,6 +3,7 @@ package conductance.init.machine;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import lombok.Getter;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.CapIO;
 import conductance.api.machine.MachineBlockEntity;
@@ -17,9 +18,9 @@ import conductance.api.util.IO;
 
 public final class PulverizerMachine extends MachineBlockEntity<PulverizerMachine> implements RecipeCapabilityHolder {
 
-	private final MachineRecipeCapabilityItems inputItems;
-	private final MachineRecipeCapabilityItems outputItems;
-	private final RecipeHandler recipeHandler;
+	private final @Getter MachineRecipeCapabilityItems inputItems;
+	private final @Getter MachineRecipeCapabilityItems outputItems;
+	private final @Getter RecipeHandler recipeHandler;
 
 	public PulverizerMachine(final MachineType<PulverizerMachine> type, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
