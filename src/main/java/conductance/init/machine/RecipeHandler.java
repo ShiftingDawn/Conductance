@@ -28,6 +28,7 @@ public final class RecipeHandler extends MachineCapability {
 	public RecipeHandler(final MachineBlockEntity<?> machine, final RecipeCapabilityHolder holder) {
 		super("recipe", machine);
 		this.holder = holder;
+		this.addChangedListener(machine::syncToClient);
 	}
 
 	@Override

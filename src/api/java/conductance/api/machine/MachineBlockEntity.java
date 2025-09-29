@@ -176,6 +176,20 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		super.setRemoved();
 		this.onUnload();
 	}
+	//endregion
+
+	//region Data
+	@Override
+	protected void saveAdditional(final ValueOutput output) {
+		super.saveAdditional(output);
+		this.capabilities.forEach((key, cap) -> cap.serialize(output.child(key)));
+	}
+
+	@Override
+	protected void loadAdditional(final ValueInput input) {
+		super.loadAdditional(input);
+		this.capabilities.forEach((key, cap) -> input.child(key).ifPresent(cap::deserialize));
+	}
 
 	@Override
 	public CompoundTag getUpdateTag(final HolderLookup.Provider registries) {
@@ -204,19 +218,13 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 			valueInput.child(key).ifPresent(capability::deserialize);
 		});
 	}
-	//endregion
 
-	//region Data
-	@Override
-	protected void saveAdditional(final ValueOutput output) {
-		super.saveAdditional(output);
-		this.capabilities.forEach((key, cap) -> cap.serialize(output.child(key)));
-	}
-
-	@Override
-	protected void loadAdditional(final ValueInput input) {
-		super.loadAdditional(input);
-		this.capabilities.forEach((key, cap) -> input.child(key).ifPresent(cap::deserialize));
+	public final void syncToClient() {
+		if (this.getLevel() == null) {
+			return;
+		}
+		final BlockState state = this.getBlockState();
+		this.getLevel().sendBlockUpdated(this.getBlockPos(), state, state, MachineBlock.UPDATE_ALL);
 	}
 	//endregion
 
