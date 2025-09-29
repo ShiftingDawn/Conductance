@@ -60,7 +60,7 @@ final class MaterialRecipes {
 				}
 			}
 			if (DUST.test(material)) {
-				calc(material, STORAGE_BLOCK, DUST, 200, (inAmount, outAmount, time) -> {
+				calc(material, STORAGE_BLOCK, DUST, (int) material.getMass(), (inAmount, outAmount, time) -> {
 					event.create("%s_dust_from_block".formatted(material.getName()), NCRecipeTypes.PULVERIZER,
 						b -> b.in(material, STORAGE_BLOCK, inAmount).out(material, DUST, outAmount).duration(time));
 				});

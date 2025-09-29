@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.function.ToLongFunction;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import lombok.Getter;
@@ -19,6 +20,7 @@ import conductance.api.material.MaterialTraitKey;
 import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.util.Lazy;
 import conductance.api.util.LazyInt;
+import conductance.api.util.LazyLong;
 
 final class MaterialImpl implements Material {
 
@@ -29,6 +31,9 @@ final class MaterialImpl implements Material {
 	private final @Getter ResourceLocation textureSet;
 	private final LazyInt color;
 	private final List<MaterialStack> components;
+	private final LazyLong protons = LazyLong.of(() -> this.calc(PeriodicElement::protons, Material::getProtons, 43));
+	private final LazyLong neutrons = LazyLong.of(() -> this.calc(PeriodicElement::neutrons, Material::getNeutrons, 55));
+	private final LazyLong mass = LazyLong.of(() -> this.calc(PeriodicElement::mass, Material::getMass, 43));
 	private final Lazy<String> chemicalFormula;
 	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("material", this.getId()));
 
@@ -51,6 +56,21 @@ final class MaterialImpl implements Material {
 	@Override
 	public @Nullable PeriodicElement getPeriodicElement() {
 		return this.periodicElement;
+	}
+
+	@Override
+	public long getProtons() {
+		return this.protons.getAsLong();
+	}
+
+	@Override
+	public long getNeutrons() {
+		return this.neutrons.getAsLong();
+	}
+
+	@Override
+	public long getMass() {
+		return this.mass.getAsLong();
 	}
 
 	@Override
@@ -120,6 +140,22 @@ final class MaterialImpl implements Material {
 
 	private int calcColor() {
 		return -1;
+	}
+
+	private long calc(final ToLongFunction<PeriodicElement> rootProvider, final ToLongFunction<Material> provider, final long fallback) {
+		if (this.periodicElement != null) {
+			return rootProvider.applyAsLong(this.periodicElement);
+		} else if (this.components.isEmpty()) {
+			return fallback; // Technetium
+		} else {
+			long total = 0;
+			long amount = 0;
+			for (final MaterialStack entry : this.components) {
+				total += entry.count() * provider.applyAsLong(entry.material());
+				amount += entry.count();
+			}
+			return total / amount;
+		}
 	}
 
 	private String calcChemicalFormula() {

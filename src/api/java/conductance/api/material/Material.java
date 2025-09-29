@@ -14,6 +14,12 @@ public interface Material {
 	@Nullable
 	PeriodicElement getPeriodicElement();
 
+	long getProtons();
+
+	long getNeutrons();
+
+	long getMass();
+
 	boolean hasFlag(MaterialFlag flag);
 
 	boolean hasTrait(MaterialTraitKey<?> trait);
