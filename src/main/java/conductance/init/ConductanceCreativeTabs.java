@@ -16,10 +16,10 @@ public final class ConductanceCreativeTabs {
 		ConductanceCreativeTabs.REGISTRY.register(modEventBus);
 		for (final CreativeTabHelper.Tabs tabType : CreativeTabHelper.Tabs.values()) {
 			ConductanceCreativeTabs.REGISTRY.register(tabType.getName(), () -> CreativeModeTab.builder()
-					.title(Component.translatable("itemGroup.%s.%s".formatted(Conductance.MODID, tabType.getName())))
-					.displayItems(new TabDisplayGen(tabType))
-					.icon(tabType.getIcon())
-					.build()
+				.title(Component.translatable("itemGroup.%s.%s".formatted(Conductance.MODID, tabType.getName())))
+				.displayItems(new TabDisplayGen(tabType))
+				.icon(tabType.getIcon())
+				.build()
 			);
 		}
 	}
@@ -28,7 +28,10 @@ public final class ConductanceCreativeTabs {
 		@Override
 		public void accept(final CreativeModeTab.ItemDisplayParameters itemDisplayParameters, final CreativeModeTab.Output output) {
 			//TODO fillItemCategory ported from old mc
-			CreativeTabHelper.getTabContent(this.tabType).forEach(output::accept);
+			CreativeTabHelper.getTabContent(this.tabType).forEach(entry -> {
+				entry.ifLeft(output::accept);
+				entry.ifRight(output::accept);
+			});
 		}
 	}
 

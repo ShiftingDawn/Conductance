@@ -31,6 +31,7 @@ import conductance.core.tier.TierCore;
 import conductance.core.tier.TierRegistryImpl;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
+import conductance.init.ConductanceDataComponents;
 import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
 import conductance.lib.RegistryProviderImpl;
@@ -75,6 +76,7 @@ public final class Conductance {
 		RecipeCore.initialize();
 		MachineCore.initialize(Conductance.MODBUS);
 
+		ConductanceDataComponents.initialize(Conductance.MODBUS);
 		ConductanceBlocks.initialize(Conductance.MODBUS);
 		ConductanceItems.initialize(Conductance.MODBUS);
 		ConductanceFluids.initialize(Conductance.MODBUS);
@@ -90,8 +92,8 @@ public final class Conductance {
 
 	public static <T> void setApiValue(final Class<T> variableType, final T value) {
 		final Field field = Arrays.stream(CAPI.class.getDeclaredFields())
-				.filter(f -> variableType.isAssignableFrom(f.getType()) && !Modifier.isFinal(f.getModifiers()))
-				.findFirst().orElseThrow();
+			.filter(f -> variableType.isAssignableFrom(f.getType()) && !Modifier.isFinal(f.getModifiers()))
+			.findFirst().orElseThrow();
 		try {
 			field.setAccessible(true);
 			field.set(null, value);

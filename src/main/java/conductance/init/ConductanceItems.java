@@ -7,12 +7,14 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import com.google.common.collect.Tables;
 import conductance.api.CAPI;
+import conductance.api.NCDataComponents;
 import conductance.api.NCItems;
 import conductance.api.material.Material;
 import conductance.api.plugin.ConductancePluginListener;
@@ -26,6 +28,7 @@ import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
 import conductance.init.item.CraftingToolItem;
 import conductance.init.item.MaterialItem;
+import conductance.init.item.ProgramCircuitItem;
 import conductance.init.item.TieredItem;
 
 @ConductancePluginListener(modid = Conductance.MODID)
@@ -46,6 +49,13 @@ public final class ConductanceItems {
 			CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
 		}));
 		ConductanceItems.generateTiered();
+		NCItems.PROGRAM_CIRCUIT = ConductanceItems.REGISTRY.registerItem("program_circuit", props -> Util.make(new ProgramCircuitItem(props), item -> {
+			for (int i = 0; i <= 24; ++i) {
+				final ItemStack stack = new ItemStack(item);
+				stack.set(NCDataComponents.PROGRAM_CIRCUIT, i);
+				CreativeTabHelper.addToTab(stack, CreativeTabHelper.Tabs.GENERAL);
+			}
+		}));
 	}
 
 	private static void generateMaterial(final Material material) {
@@ -121,6 +131,18 @@ public final class ConductanceItems {
 		event.addSimpleItem(NCItems.WRENCH.value());
 		event.addSimpleItem(NCItems.HAMMER.value());
 		event.addSimpleItem(NCItems.WIRE_CUTTERS.value());
+		event.addItemsModel(NCItems.PROGRAM_CIRCUIT.value(), model -> model.select(ResourceLocation.withDefaultNamespace("component"), select -> {
+			for (int i = 0; i <= 24; ++i) {
+				final int finalI = i;
+				select.addCase(i, b -> b.model(Conductance.id("item/program_circuit/" + finalI), b2 -> {
+				}));
+			}
+			select.component(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(NCDataComponents.PROGRAM_CIRCUIT.get()));
+		}));
+		for (int i = 0; i <= 24; ++i) {
+			final int finalI = i;
+			event.addItemModel(Conductance.id("program_circuit/" + i), b -> b.layer0(Conductance.id("item/program_circuit/" + finalI)));
+		}
 	}
 
 	@EventListener(priority = -100)
