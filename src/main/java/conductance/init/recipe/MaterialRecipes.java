@@ -26,6 +26,7 @@ import static conductance.api.NCMaterialGenerationHandlers.GEM_FLAWLESS;
 import static conductance.api.NCMaterialGenerationHandlers.INGOT;
 import static conductance.api.NCMaterialGenerationHandlers.NUGGET;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE;
+import static conductance.api.NCMaterialGenerationHandlers.PLATE_DENSE;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE_DOUBLE;
 import static conductance.api.NCMaterialGenerationHandlers.RAW_ORE;
 import static conductance.api.NCMaterialGenerationHandlers.RAW_ORE_BLOCK;
@@ -36,6 +37,7 @@ import static conductance.api.NCMaterialGenerationHandlers.SCREW;
 import static conductance.api.NCMaterialGenerationHandlers.STORAGE_BLOCK;
 import static conductance.api.recipe.RecipeHelper.calc;
 
+//TODO extract pulverizer recipes into recycling recipes class
 final class MaterialRecipes {
 
 	public static void add(final RegisterRecipeEvent event) {
@@ -129,8 +131,10 @@ final class MaterialRecipes {
 			if (INGOT.test(material)) {
 				event.shaped("%s_plate".formatted(material.getName()), materials().getItem(material, PLATE),
 					b -> b.pattern("H", "a", "a").key('a', materials().getItemTag(material, INGOT)));
-				event.shaped("double_%s_plate".formatted(material.getName()), materials().getItem(material, PLATE_DOUBLE),
-					b -> b.pattern("H", "a", "a").key('a', materials().getItemTag(material, PLATE)));
+				calc(material, INGOT, PLATE, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_plate".formatted(material.getName()), NCRecipeTypes.BENDING_MACHINE,
+						b -> b.in(material, INGOT, inAmount).out(material, PLATE, outAmount).program(1).duration(time));
+				});
 			}
 			//Gem <-> plate will be handles by cutting machine later
 			//Dust <-> plate will be handles by compressor machine later
@@ -138,6 +142,42 @@ final class MaterialRecipes {
 				calc(material, PLATE, DUST, (int) material.getMass(), (inAmount, outAmount, time) -> {
 					event.create("%s_dust_from_plate".formatted(material.getName()), NCRecipeTypes.PULVERIZER,
 						b -> b.in(material, PLATE, inAmount).out(material, DUST, outAmount).duration(time));
+				});
+			}
+		}
+		if (PLATE_DOUBLE.test(material)) {
+			if (INGOT.test(material)) {
+				calc(material, INGOT, PLATE_DOUBLE, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("double_%s_plate".formatted(material.getName()), NCRecipeTypes.BENDING_MACHINE,
+						b -> b.in(material, INGOT, inAmount).out(material, PLATE_DOUBLE, outAmount).program(2).duration(time));
+				});
+			}
+			if (PLATE.test(material)) {
+				event.shaped("double_%s_plate".formatted(material.getName()), materials().getItem(material, PLATE_DOUBLE),
+					b -> b.pattern("H", "a", "a").key('a', materials().getItemTag(material, PLATE)));
+			}
+			//Gem <-> plate will be handles by cutting machine later
+			//Dust <-> plate will be handles by compressor machine later
+			if (DUST.test(material)) {
+				calc(material, PLATE_DOUBLE, DUST, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_dust_from_double_plate".formatted(material.getName()), NCRecipeTypes.PULVERIZER,
+						b -> b.in(material, PLATE_DOUBLE, inAmount).out(material, DUST, outAmount).duration(time));
+				});
+			}
+		}
+		if (PLATE_DENSE.test(material)) {
+			if (INGOT.test(material)) {
+				calc(material, INGOT, PLATE_DENSE, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("dense_%s_plate".formatted(material.getName()), NCRecipeTypes.BENDING_MACHINE,
+						b -> b.in(material, INGOT, inAmount).out(material, PLATE_DENSE, outAmount).program(9).duration(time));
+				});
+			}
+			//Gem <-> plate will be handles by cutting machine later
+			//Dust <-> plate will be handles by compressor machine later
+			if (DUST.test(material)) {
+				calc(material, PLATE_DENSE, DUST, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_dust_from_dense_plate".formatted(material.getName()), NCRecipeTypes.PULVERIZER,
+						b -> b.in(material, PLATE_DENSE, inAmount).out(material, DUST, outAmount).duration(time));
 				});
 			}
 		}

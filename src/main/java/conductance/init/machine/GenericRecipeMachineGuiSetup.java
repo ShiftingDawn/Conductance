@@ -4,7 +4,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.minecraft.Util;
 import net.minecraft.world.inventory.Slot;
-import conductance.api.NCRecipeTypes;
 import conductance.api.machine.MachineRecipeCapabilityItems;
 import conductance.api.machine.gui.GuiDrawableTexture;
 import conductance.api.machine.gui.GuiSetup;
@@ -18,11 +17,11 @@ import conductance.api.machine.gui.SlotWidget;
 import conductance.api.machine.gui.WidgetGroup;
 import conductance.api.util.IO;
 
-public class PulverizerGuiSetup extends GuiSetup {
+public class GenericRecipeMachineGuiSetup extends GuiSetup {
 
 	@Override
 	public void addSlots(final MachineMenu menu, final Consumer<Slot> adder) {
-		final PulverizerMachine machine = (PulverizerMachine) menu.getMachine();
+		final GenericRecipeMachine machine = (GenericRecipeMachine) menu.getMachine();
 		for (int i = 0; i < machine.getInputItems().getSlots(); ++i) {
 			adder.accept(new RepositionableSlotItemHandler(machine.getInputItems().getInventory(), i, i * 18, 0));
 		}
@@ -33,12 +32,12 @@ public class PulverizerGuiSetup extends GuiSetup {
 
 	@Override
 	public void addWidgets(final MachineScreen screen, final BiConsumer<String, GuiWidget> adder) {
-		final PulverizerMachine machine = (PulverizerMachine) screen.getMachine();
+		final GenericRecipeMachine machine = (GenericRecipeMachine) screen.getMachine();
 		adder.accept("root", Util.make(new WidgetGroup(0, 20, 0, 0), root -> {
 			final GuiWidget groupItemsIn = Util.make(this.makeGroup(IO.IN, machine.getInputItems(), screen.getMenu()), group -> root.addWidget("items_in", group));
 			final GuiWidget groupItemsOut = Util.make(this.makeGroup(IO.OUT, machine.getOutputItems(), screen.getMenu()), group -> root.addWidget("items_out", group));
 			final GuiWidget progress = Util.make(new ProgressWidget(
-				new GuiDrawableTexture(NCRecipeTypes.PULVERIZER.getGuiArrow()),
+				new GuiDrawableTexture(machine.getRecipeType().getGuiArrow()),
 				new RecipeHandlerProgressProvider(machine.getRecipeHandler()),
 				ProgressProvider.Direction.LEFT_TO_RIGHT,
 				0, 0, 20, 20
@@ -61,8 +60,8 @@ public class PulverizerGuiSetup extends GuiSetup {
 			group.setHeight(rows * 18);
 			for (int i = 0; i < inv.getSlots(); ++i) {
 				final RepositionableSlotItemHandler slot = (RepositionableSlotItemHandler) menu.getSlot(inv.getInventory(), i);
-				slot.setRelativeX((i % cols) * 18 + 1);
-				slot.setRelativeY((i / cols) * 18 + 1);
+				slot.setX((i % cols) * 18 + 1);
+				slot.setY((i / cols) * 18 + 1);
 				group.addWidget("items_" + io + "_" + i, new SlotWidget(slot));
 			}
 			group.setBackground(this.getTheme().getItemSlots(inv.getSlots(), io == IO.OUT));

@@ -30,6 +30,7 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 	private final Map<RecipeElementType<?>, List<RecipeObject>> inputs = new HashMap<>();
 	private final Map<RecipeElementType<?>, List<RecipeObject>> outputs = new HashMap<>();
 	private int recipeDuration = 200;
+	private int recipeProgram = -1;
 	private final MachineRecipeType recipeType;
 	private final HolderLookup.Provider registries;
 
@@ -71,8 +72,17 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 	}
 
 	@Override
+	public MachineRecipeBuilder program(final int program) {
+		if (program < -1 || program > 24) {
+			throw new IllegalArgumentException("Recipe program must adhere to -1 <= program <= 24");
+		}
+		this.recipeProgram = program;
+		return this;
+	}
+
+	@Override
 	public MachineRecipe build() {
-		return new MachineRecipeImpl(this.recipeType, this.inputs, this.outputs, this.recipeDuration);
+		return new MachineRecipeImpl(this.recipeType, this.inputs, this.outputs, this.recipeDuration, this.recipeProgram);
 	}
 
 	public void save(final ResourceLocation recipeId, final RecipeOutput output) {

@@ -2,7 +2,13 @@ package conductance.api.recipe;
 
 import java.util.List;
 import java.util.Map;
+import net.minecraft.Util;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandler;
+import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import conductance.api.CAPI;
+import conductance.api.NCDataComponents;
 import conductance.api.machine.MachineRecipeCapability;
 import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.material.Material;
@@ -12,6 +18,11 @@ import conductance.api.util.IO;
 public final class RecipeHelper {
 
 	public boolean test(final MachineRecipe recipe, final RecipeCapabilityHolder holder) {
+		if (recipe.getProgram() != -1) {
+			if (!holder.getRecipePrograms().contains(recipe.getProgram())) {
+				return false;
+			}
+		}
 		final boolean ins = this.testInternal(recipe, holder, IO.IN, recipe.getInputs());
 		final boolean outs = this.testInternal(recipe, holder, IO.OUT, recipe.getOutputs());
 		return ins & outs;
@@ -58,6 +69,18 @@ public final class RecipeHelper {
 				}
 			}
 		}
+	}
+
+	public static IntSortedSet findPrograms(final IItemHandler handler) {
+		return Util.make(new IntLinkedOpenHashSet(), set -> {
+			for (int i = 0; i < handler.getSlots(); ++i) {
+				final ItemStack stack = handler.getStackInSlot(i);
+				final int program = stack.isEmpty() ? -1 : stack.getOrDefault(NCDataComponents.PROGRAM_CIRCUIT, -1);
+				if (program >= 0) {
+					set.add(program);
+				}
+			}
+		});
 	}
 
 	public static AutoRecipeData calc(final Material material, final MaterialGenerationHandler input, final MaterialGenerationHandler output, final int processTime) {

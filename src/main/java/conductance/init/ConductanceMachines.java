@@ -7,16 +7,18 @@ import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.Conductance;
 import conductance.core.machine.MachineCore;
-import conductance.init.machine.PulverizerGuiSetup;
-import conductance.init.machine.PulverizerMachine;
+import conductance.init.machine.GenericRecipeMachine;
+import conductance.init.machine.GenericRecipeMachineGuiSetup;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 final class ConductanceMachines {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterMachineEvent event) {
-		event.register("pulverizer", PulverizerMachine::new, b -> b
-			.recipeType(NCRecipeTypes.PULVERIZER).guiSetup(new PulverizerGuiSetup()));
+		event.register("bending_machine", GenericRecipeMachine::new, b -> b
+			.recipeType(NCRecipeTypes.BENDING_MACHINE).guiSetup(new GenericRecipeMachineGuiSetup()));
+		event.register("pulverizer", GenericRecipeMachine::new, b -> b
+			.recipeType(NCRecipeTypes.PULVERIZER).guiSetup(new GenericRecipeMachineGuiSetup()));
 	}
 
 	@EventListener(priority = -100)

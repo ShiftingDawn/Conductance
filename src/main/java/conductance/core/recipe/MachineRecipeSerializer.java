@@ -43,6 +43,7 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 		MachineRecipeSerializer.writeRecipeMap(buf, recipe.getInputs());
 		MachineRecipeSerializer.writeRecipeMap(buf, recipe.getOutputs());
 		buf.writeVarInt(recipe.getRecipeDuration());
+		buf.writeVarInt(recipe.getProgram());
 	}
 
 	private static MachineRecipe fromNetwork(final RegistryFriendlyByteBuf buf) {
@@ -51,6 +52,7 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 			Objects.requireNonNull(CAPI.regs().recipeTypes().getValue(recipeType), () -> "Cannot load unknown recipe type " + recipeType),
 			MachineRecipeSerializer.loadRecipeMap(buf),
 			MachineRecipeSerializer.loadRecipeMap(buf),
+			buf.readVarInt(),
 			buf.readVarInt()
 		);
 	}
@@ -83,7 +85,8 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 			MachineRecipeType.CODEC.fieldOf("type").forGetter(MachineRecipe::getType),
 			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("inputs").forGetter(MachineRecipe::getInputs),
 			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("outputs").forGetter(MachineRecipe::getOutputs),
-			Codec.INT.fieldOf("duration").forGetter(MachineRecipe::getRecipeDuration)
+			Codec.INT.fieldOf("duration").forGetter(MachineRecipe::getRecipeDuration),
+			Codec.INT.fieldOf("program").forGetter(MachineRecipe::getProgram)
 		).apply(instance, MachineRecipeImpl::new));
 		STREAM_CODEC = StreamCodec.of(MachineRecipeSerializer::toNetwork, MachineRecipeSerializer::fromNetwork);
 	}

@@ -150,5 +150,7 @@ public interface MachineRecipeBuilder {
 
 	MachineRecipeBuilder duration(int recipeDuration);
 
+	MachineRecipeBuilder program(int program);
+
 	MachineRecipe build();
 }

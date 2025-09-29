@@ -20,16 +20,18 @@ final class MachineRecipeImpl implements MachineRecipe {
 	private final @Getter Map<RecipeElementType<?>, List<RecipeObject>> inputs;
 	private final @Getter Map<RecipeElementType<?>, List<RecipeObject>> outputs;
 	private final @Getter int recipeDuration;
+	private final @Getter int program;
 
 	MachineRecipeImpl(
 		final MachineRecipeType recipeType,
 		final Map<RecipeElementType<?>, List<RecipeObject>> inputs, final Map<RecipeElementType<?>, List<RecipeObject>> outputs,
-		final int recipeDuration
+		final int recipeDuration, final int program
 	) {
 		this.recipeType = recipeType;
 		this.inputs = MachineRecipeImpl.toImmutableMap(inputs);
 		this.outputs = MachineRecipeImpl.toImmutableMap(outputs);
 		this.recipeDuration = recipeDuration;
+		this.program = program;
 	}
 
 	@Override

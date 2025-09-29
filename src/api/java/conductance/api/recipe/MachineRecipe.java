@@ -26,6 +26,11 @@ public interface MachineRecipe extends Recipe<RecipeInput> {
 
 	int getRecipeDuration();
 
+	/**
+	 * @return The required program for this recipe, or <code>-1</code> if no program has been set
+	 */
+	int getProgram();
+
 	@Override
 	default boolean isSpecial() {
 		return true;
