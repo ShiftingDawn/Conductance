@@ -23,7 +23,7 @@ import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.material.event.RegisterMaterialFlagEvent;
 import conductance.api.material.event.RegisterMaterialGenerationHandlerEvent;
 import conductance.api.material.event.RegisterMaterialOreBearerEvent;
-import conductance.api.material.event.RegisterMaterialOverridesEvent;
+import conductance.api.material.event.RegisterMaterialOverrideEvent;
 import conductance.api.material.event.RegisterMaterialTraitEvent;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
@@ -121,7 +121,7 @@ public final class MaterialCore {
 	}
 
 	private static void initOverrides() {
-		Conductance.dispatchAll(RegisterMaterialOverridesEvent.class, new RegisterMaterialOverridesEventImpl(
+		Conductance.dispatchAll(RegisterMaterialOverrideEvent.class, new RegisterMaterialOverrideEventImpl(
 			Conductance.MATERIALS::addOverride, Conductance.MATERIALS::addOverride, Conductance.MATERIALS::addOverride
 		));
 	}

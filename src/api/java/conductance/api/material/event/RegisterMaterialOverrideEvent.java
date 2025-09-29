@@ -8,7 +8,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.plugin.IConductancePluginEvent;
 
-public interface RegisterMaterialOverridesEvent extends IConductancePluginEvent {
+public interface RegisterMaterialOverrideEvent extends IConductancePluginEvent {
 
 	void add(MaterialGenerationHandler handler, Material material, @Nullable Block block);
 

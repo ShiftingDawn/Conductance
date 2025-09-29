@@ -4,7 +4,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
-import conductance.api.material.event.RegisterMaterialOverridesEvent;
+import conductance.api.material.event.RegisterMaterialOverrideEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.Conductance;
@@ -50,7 +50,7 @@ import static conductance.api.NCMaterials.WOOD;
 final class ConductanceMaterialOverrides {
 
 	@EventListener(priority = -100)
-	private static void init(final RegisterMaterialOverridesEvent event) {
+	private static void init(final RegisterMaterialOverrideEvent event) {
 		event.add(STORAGE_BLOCK, IRON, Blocks.IRON_BLOCK);
 		event.add(STORAGE_BLOCK, GOLD, Blocks.GOLD_BLOCK);
 		event.add(STORAGE_BLOCK, COPPER, Blocks.COPPER_BLOCK);

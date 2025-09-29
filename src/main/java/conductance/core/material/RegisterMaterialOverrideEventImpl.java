@@ -8,10 +8,10 @@ import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
-import conductance.api.material.event.RegisterMaterialOverridesEvent;
+import conductance.api.material.event.RegisterMaterialOverrideEvent;
 
 @RequiredArgsConstructor
-final class RegisterMaterialOverridesEventImpl implements RegisterMaterialOverridesEvent {
+final class RegisterMaterialOverrideEventImpl implements RegisterMaterialOverrideEvent {
 
 	private final TriConsumer<MaterialGenerationHandler, Material, Block> blockDelegate;
 	private final TriConsumer<MaterialGenerationHandler, Material, Item> itemDelegate;
