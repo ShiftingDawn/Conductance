@@ -92,6 +92,12 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 		guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, this.getTextColor(), false);
 	}
 
+	@Override
+	public void render(final GuiGraphics graphics, final int mouseX, final int mouseY, final float partialTick) {
+		super.render(graphics, mouseX, mouseY, partialTick);
+		this.renderTooltip(graphics, mouseX, mouseY);
+	}
+
 	public final GuiTheme getTheme() {
 		return this.guiSetup.getTheme();
 	}
