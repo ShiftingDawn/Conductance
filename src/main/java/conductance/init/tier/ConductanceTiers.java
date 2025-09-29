@@ -15,7 +15,7 @@ final class ConductanceTiers {
 
 	@EventListener
 	private static void init(final RegisterTierEvent event) {
-		LV = event.register("lv", 0x004fff, LvComponentMap::new);
+		LV = event.register("lv", 0x649BFF, LvComponentMap::new);
 	}
 
 	@EventListener(priority = -100)
