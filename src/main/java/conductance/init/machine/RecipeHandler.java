@@ -36,10 +36,10 @@ public final class RecipeHandler extends MachineCapability {
 		if (this.lastRecipe != null) {
 			output.putString("type", this.lastRecipe.getType().getId().toString());
 			output.store("data", this.lastRecipe.getSerializer().codec().codec(), this.lastRecipe);
-			output.putInt("cur", this.progressCurrent);
-			output.putInt("max", this.progressMax);
-			output.store("status", RecipeHandlerStatus.CODEC, this.status);
 		}
+		output.putInt("cur", this.progressCurrent);
+		output.putInt("max", this.progressMax);
+		output.store("status", RecipeHandlerStatus.CODEC, this.status);
 	}
 
 	@Override
@@ -50,11 +50,11 @@ public final class RecipeHandler extends MachineCapability {
 				input.read("data", recipeType.getRecipeSerializer().codec().codec()).ifPresent(recipe -> {
 					this.lastRecipe = recipe;
 				});
-				this.progressCurrent = input.getIntOr("cur", 0);
-				this.progressMax = input.getIntOr("max", -1);
-				this.status = input.read("status", RecipeHandlerStatus.CODEC).orElse(RecipeHandlerStatus.IDLE);
 			}
 		});
+		this.progressCurrent = input.getIntOr("cur", 0);
+		this.progressMax = input.getIntOr("max", -1);
+		this.status = input.read("status", RecipeHandlerStatus.CODEC).orElse(RecipeHandlerStatus.IDLE);
 	}
 
 	public void tick() {
