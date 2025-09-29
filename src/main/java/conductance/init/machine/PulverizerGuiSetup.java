@@ -65,6 +65,7 @@ public class PulverizerGuiSetup extends GuiSetup {
 				slot.setRelativeY((i / cols) * 18 + 1);
 				group.addWidget("items_" + io + "_" + i, new SlotWidget(slot));
 			}
+			group.setBackground(this.getTheme().getItemSlots(inv.getSlots(), io == IO.OUT));
 		});
 	}
 
