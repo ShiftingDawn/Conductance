@@ -19,6 +19,7 @@ import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddTranslationEvent;
 import conductance.api.util.TextHelper;
 import conductance.Conductance;
+import static conductance.api.CAPI.UNIT;
 import static conductance.api.NCMaterialGenerationHandlers.BOLT;
 import static conductance.api.NCMaterialGenerationHandlers.DUST;
 import static conductance.api.NCMaterialGenerationHandlers.FINE_WIRE;
@@ -70,12 +71,14 @@ final class ConductanceMaterialGenerationHandlers {
 			.entryTag("c:dusts/%s", "%s Dusts")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.DUST)
+			.unitValue(UNIT)
 		);
 		STORAGE_BLOCK = event.register("storage_block", b -> b
 			.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
 			.entryTag("c:storage_blocks/%s", "%s Storage Blocks")
 			.setHasBlock(true, true, true, BlockTags.MINEABLE_WITH_PICKAXE)
 			.requiredFlag(NCMaterialFlags.BLOCK)
+			.unitValue(UNIT * 9)
 		);
 
 		INGOT = event.register("ingot", b -> b
@@ -83,12 +86,14 @@ final class ConductanceMaterialGenerationHandlers {
 			.entryTag("c:ingots/%s", "%s Ingots")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.INGOT)
+			.unitValue(UNIT)
 		);
 		NUGGET = event.register("nugget", b -> b
 			.groupTag("c:nuggets", (String) null) //translation handled by NeoForge
 			.entryTag("c:nuggets/%s", "%s Nuggets")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.NUGGET)
+			.unitValue(UNIT / 9)
 		);
 
 		GEM = event.register("gem", "%s", b -> b
@@ -96,24 +101,28 @@ final class ConductanceMaterialGenerationHandlers {
 			.entryTag("c:gems/%s", "%s Gems")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.GEM)
+			.unitValue(UNIT)
 		);
 		GEM_FLAWED = event.register("flawed_gem", "flawed_%s", b -> b
 			.groupTag("c:flawed_gems", "Flawed Gems")
 			.entryTag("c:flawed_gems/%s", "Flawed %s Gems")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.GEM_FLAWED)
+			.unitValue(UNIT / 2)
 		);
 		GEM_FLAWLESS = event.register("flawless_gem", "flawless_%s", b -> b
 			.groupTag("c:flawless_gems", "Flawless Gems")
 			.entryTag("c:flawless_gems/%s", "Flawless %s Gems")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.GEM_FLAWLESS)
+			.unitValue(UNIT * 2)
 		);
 		GEM_EXQUISITE = event.register("exquisite_gem", "exquisite_%s", b -> b
 			.groupTag("c:exquisite_gems", "Exquisite Gems")
 			.entryTag("c:exquisite_gems/%s", "Exquisite %s Gems")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.GEM_EXQUISITE)
+			.unitValue(UNIT * 4)
 		);
 
 		ORE_STONE = event.register("stone_ore", "%s_ore", NCMaterialOreBearers.STONE, b -> b
@@ -225,78 +234,91 @@ final class ConductanceMaterialGenerationHandlers {
 			.entryTag("c:plates/%s", "%s Plates")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.PLATE)
+			.unitValue(UNIT)
 		);
 		PLATE_DOUBLE = event.register("double_plate", "double_%s_plate", b -> b
 			.groupTag("c:double_plates", "Double Plates")
 			.entryTag("c:double_plates/%s", "Double %s Plates")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.PLATE)
+			.unitValue(UNIT * 2)
 		);
 		PLATE_DENSE = event.register("dense_plate", "dense_%s_plate", b -> b
 			.groupTag("c:dense_plates", "Dense Plates")
 			.entryTag("c:dense_plates/%s", "Dense %s Plates")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.PLATE)
+			.unitValue(UNIT * 9)
 		);
 		ROD = event.register("rod", b -> b
 			.groupTag("c:rods", (String) null) //translation handled by NeoForge
 			.entryTag("c:rods/%s", "%s Rods")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.ROD)
+			.unitValue(UNIT / 2)
 		);
 		GEAR = event.register("gear", b -> b
 			.groupTag("c:gears", "Gears")
 			.entryTag("c:gears/%s", "%s Gears")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.GEAR)
+			.unitValue(UNIT * 4)
 		);
 		GEAR_SMALL = event.register("small_gear", b -> b
 			.groupTag("c:small_gears", "Small Gears")
 			.entryTag("c:small_gears/%s", "Small %s Gears")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.GEAR_SMALL)
+			.unitValue(UNIT)
 		);
 		FOIL = event.register("foil", b -> b
 			.groupTag("c:foils", "Foils")
 			.entryTag("c:foils/%s", "%s Foil")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.FOIL)
+			.unitValue(UNIT * 4)
 		);
 		BOLT = event.register("bolt", b -> b
 			.groupTag("c:bolts", "Bolts")
 			.entryTag("c:bolts/%s", "%s Bolts")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.BOLT_AND_SCREW)
+			.unitValue(UNIT * 8)
 		);
 		SCREW = event.register("screw", b -> b
 			.groupTag("c:screws", "Screws")
 			.entryTag("c:screws/%s", "%s Screws")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.BOLT_AND_SCREW)
+			.unitValue(UNIT * 8)
 		);
 		RING = event.register("ring", b -> b
 			.groupTag("c:rings", "Rings")
 			.entryTag("c:rings/%s", "%s Rings")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.RING)
+			.unitValue(UNIT / 4)
 		);
 		ROTOR = event.register("rotor", b -> b
 			.groupTag("c:rotors", "Rotors")
 			.entryTag("c:rotors/%s", "%s Rotors")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.ROTOR)
+			.unitValue(UNIT * 5)
 		);
 		FINE_WIRE = event.register("fine_wire", b -> b
 			.groupTag("c:fine_wires", "Fine Wires")
 			.entryTag("c:fine_wires/%s", "Fine %s Wires")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.FINE_WIRE)
+			.unitValue(UNIT / 8)
 		);
 		FRAME_BOX = event.register("frame_box", b -> b
 			.groupTag("c:frame_boxes", "Frame Boxes")
 			.entryTag("c:frame_boxes/%s", "%s Frame Boxes")
 			.setHasBlock(true, true, false, BlockTags.MINEABLE_WITH_PICKAXE)
 			.requiredFlag(NCMaterialFlags.FRAME_BOX)
+			.unitValue(UNIT * 2)
 		);
 
 		LIQUID = event.register("liquid", ConductanceMaterialGenerationHandlers::liquidUnlocalizedNameFactory, b -> b

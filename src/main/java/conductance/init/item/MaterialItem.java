@@ -33,7 +33,7 @@ public final class MaterialItem extends Item {
 			if (value == 0) {
 				return 0;
 			}
-			final double factor = (double) handler.getUnitValue() / (double) CAPI.UNIT;
+			final double factor = (double) handler.getUnitValue(material) / (double) CAPI.UNIT;
 			return (int) (value * factor);
 		});
 	}

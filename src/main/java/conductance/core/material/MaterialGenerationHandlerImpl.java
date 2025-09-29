@@ -166,7 +166,7 @@ final class MaterialGenerationHandlerImpl implements MaterialGenerationHandler {
 	}
 
 	@Override
-	public long getUnitValue() {
+	public long getBaseUnitValue() {
 		return this.unitValue;
 	}
 

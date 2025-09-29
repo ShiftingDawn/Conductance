@@ -26,7 +26,7 @@ public final class MaterialBlockItem extends BlockItem {
 			if (value == 0) {
 				return 0;
 			}
-			final double factor = (double) block.getHandler().getUnitValue() / (double) CAPI.UNIT;
+			final double factor = (double) block.getHandler().getUnitValue(block.getMaterial()) / (double) CAPI.UNIT;
 			return (int) (value * factor);
 		});
 	}

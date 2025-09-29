@@ -25,6 +25,7 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 	private final Table<Material, MaterialGenerationHandler, Optional<Block>> overriddenBlocks = HashBasedTable.create();
 	private final Table<Material, MaterialGenerationHandler, Optional<Item>> overriddenItems = HashBasedTable.create();
 	private final Table<Material, MaterialGenerationHandler, Optional<Fluid>> overriddenFluids = HashBasedTable.create();
+	private final Table<Material, MaterialGenerationHandler, Long> overriddenUnitValues = HashBasedTable.create();
 
 	public void register(final Material material, final MaterialGenerationHandler handler, final Block block) {
 		this.blocks.put(material, handler, block);
@@ -68,6 +69,14 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 	}
 
 	@Override
+	public long getUnitValue(final Material material, final MaterialGenerationHandler handler) {
+		if (this.hasUnitOverride(material, handler)) {
+			return this.overriddenUnitValues.get(material, handler);
+		}
+		return handler.getBaseUnitValue();
+	}
+
+	@Override
 	public boolean hasBlockOverride(final Material material, final MaterialGenerationHandler handler) {
 		return this.overriddenBlocks.contains(material, handler);
 	}
@@ -80,6 +89,11 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 	@Override
 	public boolean hasFluidOverride(final Material material, final MaterialGenerationHandler handler) {
 		return this.overriddenFluids.contains(material, handler);
+	}
+
+	@Override
+	public boolean hasUnitOverride(final Material material, final MaterialGenerationHandler handler) {
+		return this.overriddenUnitValues.contains(material, handler);
 	}
 
 	public void addOverride(final MaterialGenerationHandler handler, final Material material, @Nullable final Block block) {
@@ -98,6 +112,12 @@ public final class MaterialRegistryImpl implements MaterialRegistry {
 		Objects.requireNonNull(handler, "handler cannot be null");
 		Objects.requireNonNull(material, "material cannot be null");
 		this.overriddenFluids.put(material, handler, Optional.ofNullable(fluid));
+	}
+
+	public void addUnitOverride(final MaterialGenerationHandler handler, final Material material, final long unitValue) {
+		Objects.requireNonNull(handler, "handler cannot be null");
+		Objects.requireNonNull(material, "material cannot be null");
+		this.overriddenUnitValues.put(material, handler, unitValue);
 	}
 
 	public Table<Material, MaterialGenerationHandler, Block> getBlockTable() {

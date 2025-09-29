@@ -25,6 +25,7 @@ import conductance.api.material.event.RegisterMaterialGenerationHandlerEvent;
 import conductance.api.material.event.RegisterMaterialOreBearerEvent;
 import conductance.api.material.event.RegisterMaterialOverrideEvent;
 import conductance.api.material.event.RegisterMaterialTraitEvent;
+import conductance.api.material.event.RegisterMaterialUnitOverrideEvent;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
 
@@ -39,6 +40,7 @@ public final class MaterialCore {
 		MaterialCore.initGenerationHandlers();
 		MaterialCore.initMaterials();
 		MaterialCore.initOverrides();
+		MaterialCore.initUnitOverrides();
 		modEventBus.addListener(FMLLoadCompleteEvent.class, ignored -> MaterialCore.validateMaterials());
 
 		modEventBus.addListener(EventPriority.HIGHEST, BuildCreativeModeTabContentsEvent.class, event -> {
@@ -124,6 +126,10 @@ public final class MaterialCore {
 		Conductance.dispatchAll(RegisterMaterialOverrideEvent.class, new RegisterMaterialOverrideEventImpl(
 			Conductance.MATERIALS::addOverride, Conductance.MATERIALS::addOverride, Conductance.MATERIALS::addOverride
 		));
+	}
+
+	private static void initUnitOverrides() {
+		Conductance.dispatchAll(RegisterMaterialUnitOverrideEvent.class, new RegisterMaterialUnitOverrideEventImpl(Conductance.MATERIALS::addUnitOverride));
 	}
 
 	private static void validateMaterials() {

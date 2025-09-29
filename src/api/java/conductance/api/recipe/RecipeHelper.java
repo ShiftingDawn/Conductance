@@ -2,8 +2,11 @@ package conductance.api.recipe;
 
 import java.util.List;
 import java.util.Map;
+import conductance.api.CAPI;
 import conductance.api.machine.MachineRecipeCapability;
 import conductance.api.machine.RecipeCapabilityHolder;
+import conductance.api.material.Material;
+import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.util.IO;
 
 public final class RecipeHelper {
@@ -55,5 +58,24 @@ public final class RecipeHelper {
 				}
 			}
 		}
+	}
+
+	public static AutoRecipeData calc(final Material material, final MaterialGenerationHandler input, final MaterialGenerationHandler output, final int processTime) {
+		final long inputValue = CAPI.materials().getUnitValue(material, input);
+		final long outputValue = CAPI.materials().getUnitValue(material, output);
+		if (inputValue == outputValue) {
+			return new AutoRecipeData(1, 1, processTime);
+		} else if (inputValue < outputValue) {
+			final int diffAmount = (int) (outputValue / inputValue);
+			return new AutoRecipeData(diffAmount, 1, processTime * diffAmount);
+		} else {
+			final int diffAmount = (int) (inputValue / outputValue);
+			return new AutoRecipeData(1, diffAmount, processTime * diffAmount);
+		}
+	}
+
+	public static void calc(final Material material, final MaterialGenerationHandler input, final MaterialGenerationHandler output, final int processTime, final AutoRecipeDataCallback callback) {
+		final AutoRecipeData data = RecipeHelper.calc(material, input, output, processTime);
+		callback.accept(data.inAmount(), data.outAmount(), data.processTime());
 	}
 }

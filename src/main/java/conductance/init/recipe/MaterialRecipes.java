@@ -31,6 +31,7 @@ import static conductance.api.NCMaterialGenerationHandlers.ROD;
 import static conductance.api.NCMaterialGenerationHandlers.ROTOR;
 import static conductance.api.NCMaterialGenerationHandlers.SCREW;
 import static conductance.api.NCMaterialGenerationHandlers.STORAGE_BLOCK;
+import static conductance.api.recipe.RecipeHelper.calc;
 
 final class MaterialRecipes {
 
@@ -59,8 +60,10 @@ final class MaterialRecipes {
 				}
 			}
 			if (DUST.test(material)) {
-				event.create("%s_dust_from_block".formatted(material.getName()), NCRecipeTypes.PULVERIZER,
-					b -> b.in(material, STORAGE_BLOCK).out(material, DUST, 9).duration(200));
+				calc(material, STORAGE_BLOCK, DUST, 200, (inAmount, outAmount, time) -> {
+					event.create("%s_dust_from_block".formatted(material.getName()), NCRecipeTypes.PULVERIZER,
+						b -> b.in(material, STORAGE_BLOCK, inAmount).out(material, DUST, outAmount).duration(time));
+				});
 			}
 		}
 		if (NUGGET.test(material)) {

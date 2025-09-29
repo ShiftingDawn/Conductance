@@ -58,7 +58,11 @@ public interface MaterialGenerationHandler {
 	@Nullable
 	MaterialGenerationHandlerBuilder.BuilderCallback<FluidType.Properties> getFluidBuilderCallback();
 
-	long getUnitValue();
+	long getBaseUnitValue();
+
+	default long getUnitValue(final Material material) {
+		return CAPI.materials().getUnitValue(material, this);
+	}
 
 	Function<Material, String> getUnlocalizedNameFactory();
 

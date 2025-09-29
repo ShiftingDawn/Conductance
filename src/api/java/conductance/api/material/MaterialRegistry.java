@@ -54,9 +54,17 @@ public interface MaterialRegistry {
 		return !tags.isEmpty() ? tags.getFirst() : null;
 	}
 
+	long getUnitValue(Material material, MaterialGenerationHandler handler);
+
+	default long getUnitValue(final Material material, final MaterialGenerationHandler handler, final long amount) {
+		return this.getUnitValue(material, handler) * amount;
+	}
+
 	boolean hasBlockOverride(Material material, MaterialGenerationHandler handler);
 
 	boolean hasItemOverride(Material material, MaterialGenerationHandler handler);
 
 	boolean hasFluidOverride(Material material, MaterialGenerationHandler handler);
+
+	boolean hasUnitOverride(Material material, MaterialGenerationHandler handler);
 }
