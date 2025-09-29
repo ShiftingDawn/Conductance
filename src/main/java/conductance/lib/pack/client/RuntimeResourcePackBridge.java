@@ -44,7 +44,7 @@ public final class RuntimeResourcePackBridge {
 	}
 
 	private static void addItemsModel(final ResourceLocation location, final Consumer<ItemsModelBuilder> builder) {
-		final JsonObject data = Util.make(new ItemsModelBuilderImpl(), builder).build();
+		final JsonObject data = Util.make(new ItemsModelBuilderImpl(), builder).buildFull();
 		RuntimeResourcePack.addItemsModel(location, data);
 	}
 

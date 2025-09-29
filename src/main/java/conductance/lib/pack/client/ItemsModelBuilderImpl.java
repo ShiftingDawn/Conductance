@@ -73,6 +73,10 @@ final class ItemsModelBuilderImpl implements ItemsModelBuilder {
 	}
 
 	public JsonObject build() {
+		return this.model != null ? this.model.build() : new JsonObject();
+	}
+
+	public JsonObject buildFull() {
 		return Util.make(new JsonObject(), json -> {
 			if (this.handAnimationOnSwap != null) {
 				json.addProperty("hand_animation_on_swap", this.handAnimationOnSwap);
@@ -81,7 +85,7 @@ final class ItemsModelBuilderImpl implements ItemsModelBuilder {
 				json.addProperty("oversized_in_gui", this.oversizedInGui);
 			}
 			if (this.model != null) {
-				json.add("model", this.model.build());
+				json.add("model", this.build());
 			}
 		});
 	}

@@ -9,6 +9,10 @@ public interface ItemsModelSelectBuilder extends JsonResourceBuilder<ItemsModelS
 
 	ItemsModelSelectBuilder addCase(String when, Consumer<ItemsModelBuilder> builder);
 
+	ItemsModelSelectBuilder addCase(int when, Consumer<ItemsModelBuilder> builder);
+
+	ItemsModelSelectBuilder addCase(boolean when, Consumer<ItemsModelBuilder> builder);
+
 	ItemsModelSelectBuilder fallback(Consumer<ItemsModelBuilder> builder);
 
 	void blockState(String property);

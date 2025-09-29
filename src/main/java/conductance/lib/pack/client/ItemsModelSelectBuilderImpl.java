@@ -7,6 +7,7 @@ import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.ItemsModelBuilder;
@@ -15,14 +16,28 @@ import conductance.api.resource.ItemsModelSelectBuilder;
 @RequiredArgsConstructor
 final class ItemsModelSelectBuilderImpl extends JsonResourceBuilderImpl<ItemsModelSelectBuilder> implements ItemsModelSelectBuilder {
 
-	private final Map<String, ItemsModelBuilderImpl> cases = new LinkedHashMap<>();
+	private final Map<JsonPrimitive, ItemsModelBuilderImpl> cases = new LinkedHashMap<>();
 	private final ResourceLocation property;
 	private @Nullable ItemsModelBuilderImpl fallback;
 
 	@Override
 	public ItemsModelSelectBuilder addCase(final String when, final Consumer<ItemsModelBuilder> builder) {
 		final ItemsModelBuilderImpl modelBuilder = Util.make(new ItemsModelBuilderImpl(), builder);
-		this.cases.put(when, modelBuilder);
+		this.cases.put(new JsonPrimitive(when), modelBuilder);
+		return this;
+	}
+
+	@Override
+	public ItemsModelSelectBuilder addCase(final int when, final Consumer<ItemsModelBuilder> builder) {
+		final ItemsModelBuilderImpl modelBuilder = Util.make(new ItemsModelBuilderImpl(), builder);
+		this.cases.put(new JsonPrimitive(when), modelBuilder);
+		return this;
+	}
+
+	@Override
+	public ItemsModelSelectBuilder addCase(final boolean when, final Consumer<ItemsModelBuilder> builder) {
+		final ItemsModelBuilderImpl modelBuilder = Util.make(new ItemsModelBuilderImpl(), builder);
+		this.cases.put(new JsonPrimitive(when), modelBuilder);
 		return this;
 	}
 
@@ -70,7 +85,7 @@ final class ItemsModelSelectBuilderImpl extends JsonResourceBuilderImpl<ItemsMod
 		}
 		json.add("cases", Util.make(new JsonArray(), arr -> this.cases.forEach((when, model) -> {
 			arr.add(Util.make(new JsonObject(), caseJson -> {
-				caseJson.addProperty("when", when);
+				caseJson.add("when", when);
 				caseJson.add("model", model.build());
 			}));
 		})));
