@@ -1,5 +1,6 @@
 package conductance.init.material;
 
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialGenerationHandlers;
@@ -59,6 +60,7 @@ public final class MaterialLoader3 {
 
 	@EventListener(priority = -100)
 	private static void addCustomTags(final RegisterTagEvent event) {
+		event.item(CAPI.materials().getItemTag(BRICK, NCMaterialGenerationHandlers.INGOT), Items.BRICK);
 		event.item(CAPI.materials().getItemTag(BRICK, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.BRICKS);
 	}
 
