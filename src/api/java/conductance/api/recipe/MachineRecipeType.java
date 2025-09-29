@@ -14,6 +14,8 @@ public interface MachineRecipeType extends RecipeType<MachineRecipe> {
 
 	int getLimit(IO io, RecipeElementType<?> elementType);
 
+	ResourceLocation getGuiArrow();
+
 	RecipeSerializer<MachineRecipe> getRecipeSerializer();
 
 	default ResourceLocation getId() {

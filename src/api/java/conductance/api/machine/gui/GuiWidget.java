@@ -7,8 +7,8 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiWidget implements Renderable {
 
-	private final @Getter int initialX;
-	private final @Getter int initialY;
+	private @Getter int initialX;
+	private @Getter int initialY;
 	private @Getter int x;
 	private @Getter int y;
 	private @Getter int width;
@@ -32,6 +32,14 @@ public abstract class GuiWidget implements Renderable {
 		if (this.background != null) {
 			this.background.draw(guiGraphics, mouseX, mouseY, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 		}
+	}
+
+	public final void setInitialX(final int initialX) {
+		this.initialX = initialX;
+	}
+
+	public final void setInitialY(final int initialY) {
+		this.initialY = initialY;
 	}
 
 	public final void setX(final int x) {

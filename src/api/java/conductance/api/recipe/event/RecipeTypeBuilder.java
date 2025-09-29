@@ -1,5 +1,6 @@
 package conductance.api.recipe.event;
 
+import net.minecraft.resources.ResourceLocation;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.util.IO;
@@ -14,4 +15,6 @@ public interface RecipeTypeBuilder {
 			.setIO(IO.OUT, NCRecipeElementTypes.ITEM, outItemsLimit)
 			.setIO(IO.OUT, NCRecipeElementTypes.FLUID, outFluidsLimit);
 	}
+
+	RecipeTypeBuilder guiArrow(ResourceLocation arrowTexture);
 }

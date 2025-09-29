@@ -138,7 +138,7 @@
         <!-- Checks for Size Violations.                    -->
         <!-- See https://checkstyle.org/checks/sizes/index.html -->
         <module name="ParameterNumber">
-            <property name="max" value="10"/>
+	        <property name="max" value="12"/>
         </module>
 
         <!-- Checks for whitespace                               -->

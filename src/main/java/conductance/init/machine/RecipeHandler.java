@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.MachineBlockEntity;
@@ -20,8 +21,8 @@ public final class RecipeHandler extends MachineCapability {
 	private final RecipeCapabilityHolder holder;
 	private @Nullable MachineTick tick;
 	private @Nullable MachineRecipe lastRecipe;
-	private int progressMax = -1;
-	private int progressCurrent = 0;
+	private @Getter int progressMax = -1;
+	private @Getter int progressCurrent = 0;
 	private RecipeHandlerStatus status = RecipeHandlerStatus.IDLE;
 
 	public RecipeHandler(final MachineBlockEntity<?> machine, final RecipeCapabilityHolder holder) {
