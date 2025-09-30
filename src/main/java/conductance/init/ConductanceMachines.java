@@ -5,7 +5,6 @@ import conductance.api.machine.event.RegisterMachineEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
-import conductance.api.resource.event.AddTranslationEvent;
 import conductance.Conductance;
 import conductance.core.machine.MachineCore;
 import conductance.init.machine.GenericRecipeMachine;
@@ -27,12 +26,6 @@ final class ConductanceMachines {
 	@EventListener(priority = -100)
 	private static void addMachineModels(final AddRuntimeModelEvent event) {
 		MachineCore.generateModels(event);
-	}
-
-	@EventListener(priority = -100)
-	private static void addTranslations(final AddTranslationEvent event) {
-		event.add(BENDING_MACHINE, "Bending Machine");
-		event.add(PULVERIZER, "Pulverizer");
 	}
 
 	private ConductanceMachines() {

@@ -4,11 +4,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidType;
-import conductance.api.machine.MachineType;
 import conductance.api.material.Material;
 import conductance.api.plugin.IConductancePluginEvent;
-import conductance.api.recipe.MachineRecipeType;
-import conductance.api.tier.Tier;
 
 public interface AddTranslationEvent extends IConductancePluginEvent {
 
@@ -28,18 +25,6 @@ public interface AddTranslationEvent extends IConductancePluginEvent {
 
 	default void add(final Material material, final String value) {
 		this.add(material.getDescriptionId(), value);
-	}
-
-	default void add(final Tier tier, final String value) {
-		this.add(tier.getDescriptionId(), value);
-	}
-
-	default void add(final MachineRecipeType recipeType, final String value) {
-		this.add(recipeType.getDescriptionId(), value);
-	}
-
-	default void add(final MachineType<?> machineType, final String value) {
-		this.add(machineType.getDescriptionId(), value);
 	}
 
 	default void add(final TagKey<?> tag, final String value) {

@@ -17,5 +17,23 @@
   "tag.item.conductance.tools.hammer": "Hammers",
   "tag.item.conductance.tools.wire_cutter": "Wire Cutters",
 
-  "info.conductance.jei.requires_program_circuit": "Requires Recipe Program %s"
+  "info.conductance.jei.requires_program_circuit": "Requires Recipe Program %s",
+
+  "tieredItemType.conductance.circuit": "%s Circuit",
+  "tieredItemType.conductance.advanced_circuit": "Advanced %s Circuit",
+  "tieredItemType.conductance.electric_motor": "%s Electric Motor",
+  "tieredItemType.conductance.electric_piston": "%s Electric Piston",
+  "tieredItemType.conductance.conveyor_module": "%s Conveyor Module",
+  "tieredItemType.conductance.electric_pump": "%s Electric Pump",
+  "tieredItemType.conductance.robot_arm": "%s Robot Arm",
+
+  "tier.conductance.empty": "Empty",
+  "tier.conductance.max": "§lMAX",
+  "tier.conductance.lv": "§1LV",
+
+  "recipeType.conductance.bending_machine": "Bending Machine",
+  "recipeType.conductance.pulverizer": "Pulverizer",
+
+  "machine.conductance.bending_machine": "Bending Machine",
+  "machine.conductance.pulverizer": "Pulverizer"
 }
