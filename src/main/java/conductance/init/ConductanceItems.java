@@ -7,7 +7,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -29,7 +28,9 @@ import conductance.core.CreativeTabHelper;
 import conductance.init.item.CraftingToolItem;
 import conductance.init.item.MaterialItem;
 import conductance.init.item.ProgramCircuitItem;
+import conductance.init.item.ProgramCircuitSetItemPacketC2S;
 import conductance.init.item.TieredItem;
+import conductance.lib.network.RegisterPacketEvent;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceItems {
@@ -51,9 +52,7 @@ public final class ConductanceItems {
 		ConductanceItems.generateTiered();
 		NCItems.PROGRAM_CIRCUIT = ConductanceItems.REGISTRY.registerItem("program_circuit", props -> Util.make(new ProgramCircuitItem(props), item -> {
 			for (int i = 0; i <= 24; ++i) {
-				final ItemStack stack = new ItemStack(item);
-				stack.set(NCDataComponents.PROGRAM_CIRCUIT, i);
-				CreativeTabHelper.addToTab(stack, CreativeTabHelper.Tabs.GENERAL);
+				CreativeTabHelper.addToTab(ProgramCircuitItem.makeStack(item, i), CreativeTabHelper.Tabs.GENERAL);
 			}
 		}));
 	}
@@ -109,8 +108,6 @@ public final class ConductanceItems {
 				}
 			});
 		}));
-		event.add(CAPI.TAG_HAMMERS, "Hammers");
-		event.add(CAPI.TAG_WIRE_CUTTERS, "Wire Cutters");
 	}
 
 	@EventListener(priority = -100)
@@ -131,7 +128,7 @@ public final class ConductanceItems {
 		event.addSimpleItem(NCItems.WRENCH.value());
 		event.addSimpleItem(NCItems.HAMMER.value());
 		event.addSimpleItem(NCItems.WIRE_CUTTERS.value());
-		event.addItemsModel(NCItems.PROGRAM_CIRCUIT.value(), model -> model.select(ResourceLocation.withDefaultNamespace("component"), select -> {
+		event.addItemsModel(NCItems.PROGRAM_CIRCUIT.value(), model -> model.handAnimationOnSwap(false).select(ResourceLocation.withDefaultNamespace("component"), select -> {
 			for (int i = 0; i <= 24; ++i) {
 				final int finalI = i;
 				select.addCase(i, b -> b.model(Conductance.id("item/program_circuit/" + finalI), b2 -> {
@@ -151,6 +148,11 @@ public final class ConductanceItems {
 		event.item(CAPI.TAG_WRENCHES, NCItems.WRENCH.value());
 		event.item(CAPI.TAG_HAMMERS, NCItems.HAMMER.value());
 		event.item(CAPI.TAG_WIRE_CUTTERS, NCItems.WIRE_CUTTERS.value());
+	}
+
+	@EventListener
+	private static void registerPackets(final RegisterPacketEvent event) {
+		ProgramCircuitSetItemPacketC2S.register(event.getRegistrar());
 	}
 
 	private ConductanceItems() {

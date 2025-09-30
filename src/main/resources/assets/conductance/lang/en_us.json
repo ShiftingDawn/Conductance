@@ -7,8 +7,15 @@
   "item.conductance.wrench": "Wrench",
   "item.conductance.hammer": "Hammer",
   "item.conductance.wire_cutters": "Wire Cutters",
+  "item.conductance.program_circuit": "Program Circuit",
+  "item.conductance.program_circuit.with_program": "Program Circuit §e%s",
 
   "tooltip.material_bucket.temperature": "§eTemperature: §r%sK",
   "tooltip.material_bucket.density": "§eDensity: §r%s",
-  "tooltip.material_bucket.viscosity": "§eViscosity: §r%s"
+  "tooltip.material_bucket.viscosity": "§eViscosity: §r%s",
+
+  "tag.item.conductance.tools.hammer": "Hammers",
+  "tag.item.conductance.tools.wire_cutter": "Wire Cutters",
+
+  "info.conductance.jei.requires_program_circuit": "Requires Recipe Program %s"
 }

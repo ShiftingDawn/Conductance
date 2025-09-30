@@ -16,6 +16,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.slf4j.Logger;
 import conductance.api.CAPI;
@@ -34,8 +35,10 @@ import conductance.init.ConductanceCreativeTabs;
 import conductance.init.ConductanceDataComponents;
 import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
+import conductance.init.ConductanceMenuTypes;
 import conductance.lib.RegistryProviderImpl;
 import conductance.lib.ResourceFinderImpl;
+import conductance.lib.network.RegisterPacketEvent;
 
 @Mod(value = Conductance.MODID)
 @SuppressWarnings("NotNullFieldNotInitialized")
@@ -61,6 +64,7 @@ public final class Conductance {
 		Conductance.setApiValue(ResourceFinder.class, new ResourceFinderImpl());
 
 		modEventBus.addListener(RegisterEvent.class, this::onRegister);
+		modEventBus.addListener(RegisterPayloadHandlersEvent.class, this::onRegisterPayloadHandlers);
 
 		ConductanceCreativeTabs.initialize(modEventBus);
 	}
@@ -76,10 +80,15 @@ public final class Conductance {
 		RecipeCore.initialize();
 		MachineCore.initialize(Conductance.MODBUS);
 
+		ConductanceMenuTypes.initialize(Conductance.MODBUS);
 		ConductanceDataComponents.initialize(Conductance.MODBUS);
 		ConductanceBlocks.initialize(Conductance.MODBUS);
 		ConductanceItems.initialize(Conductance.MODBUS);
 		ConductanceFluids.initialize(Conductance.MODBUS);
+	}
+
+	private void onRegisterPayloadHandlers(final RegisterPayloadHandlersEvent event) {
+		Conductance.dispatchAll(RegisterPacketEvent.class, new RegisterPacketEvent(event.registrar("1")));
 	}
 
 	public static ResourceLocation id(final String path) {
