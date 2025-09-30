@@ -1,13 +1,16 @@
 package conductance.core.recipe;
 
+import java.util.List;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeMap;
 import com.mojang.serialization.Codec;
 import conductance.api.CAPI;
+import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.RecipeHelper;
 import conductance.api.recipe.event.RegisterRecipeElementTypeEvent;
@@ -43,6 +46,14 @@ public final class RecipeCore {
 			Registry.register(BuiltInRegistries.RECIPE_TYPE, registryKey, result);
 			return result;
 		}));
+	}
+
+	public static void processRecipes(final RecipeMap recipeMap) {
+		//Called from RecipeManagerMixin
+		MachineRecipeTypeImpl.ALL_RECIPES.clear();
+		for (final MachineRecipeType recipeType : CAPI.regs().recipeTypes()) {
+			MachineRecipeTypeImpl.ALL_RECIPES.put(recipeType, List.copyOf(recipeMap.byType(recipeType)));
+		}
 	}
 
 	private RecipeCore() {

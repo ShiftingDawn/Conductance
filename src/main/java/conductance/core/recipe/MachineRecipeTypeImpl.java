@@ -1,6 +1,10 @@
 package conductance.core.recipe;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
@@ -12,6 +16,7 @@ import conductance.api.util.IO;
 
 final class MachineRecipeTypeImpl implements MachineRecipeType {
 
+	static final Map<MachineRecipeType, List<RecipeHolder<MachineRecipe>>> ALL_RECIPES = new ConcurrentHashMap<>();
 	private final Object2IntMap<RecipeElementType<?>> inputLimits;
 	private final Object2IntMap<RecipeElementType<?>> outputLimits;
 	private final @Getter ResourceLocation guiArrow;
@@ -25,6 +30,11 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 	@Override
 	public RecipeSerializer<MachineRecipe> getRecipeSerializer() {
 		return MachineRecipeSerializer.INSTANCE;
+	}
+
+	@Override
+	public List<RecipeHolder<MachineRecipe>> getRecipes() {
+		return MachineRecipeTypeImpl.ALL_RECIPES.getOrDefault(this, List.of());
 	}
 
 	@Override

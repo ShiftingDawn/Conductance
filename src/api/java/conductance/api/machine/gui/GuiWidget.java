@@ -27,34 +27,42 @@ public abstract class GuiWidget implements Renderable {
 	public void init(final MachineScreen screen) {
 	}
 
-	@Override
-	public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+	public void renderBackground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
 		if (this.background != null) {
 			this.background.draw(guiGraphics, mouseX, mouseY, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 		}
 	}
 
-	public final void setInitialX(final int initialX) {
+	@Override
+	public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+		this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+	}
+
+	public void setInitialX(final int initialX) {
+		final int offset = this.x - this.initialX;
 		this.initialX = initialX;
+		this.x = this.initialX + offset;
 	}
 
-	public final void setInitialY(final int initialY) {
+	public void setInitialY(final int initialY) {
+		final int offset = this.y - this.initialY;
 		this.initialY = initialY;
+		this.y = this.initialY + offset;
 	}
 
-	public final void setX(final int x) {
+	public void setX(final int x) {
 		this.x = x;
 	}
 
-	public final void setY(final int y) {
+	public void setY(final int y) {
 		this.y = y;
 	}
 
-	public final void setRelativeX(final int newX) {
+	public void setRelativeX(final int newX) {
 		this.x = this.initialX + newX;
 	}
 
-	public final void setRelativeY(final int newY) {
+	public void setRelativeY(final int newY) {
 		this.y = this.initialY + newY;
 	}
 
