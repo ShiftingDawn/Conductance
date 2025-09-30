@@ -2,6 +2,7 @@ package conductance.api.recipe.event;
 
 import net.minecraft.resources.ResourceLocation;
 import conductance.api.NCRecipeElementTypes;
+import conductance.api.machine.gui.ProgressProvider;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.util.IO;
 
@@ -16,5 +17,9 @@ public interface RecipeTypeBuilder {
 			.setIO(IO.OUT, NCRecipeElementTypes.FLUID, outFluidsLimit);
 	}
 
-	RecipeTypeBuilder guiArrow(ResourceLocation arrowTexture);
+	RecipeTypeBuilder guiArrow(ResourceLocation arrowTexture, ProgressProvider.Direction direction);
+
+	default RecipeTypeBuilder guiArrow(final ResourceLocation arrowTexture) {
+		return this.guiArrow(arrowTexture, ProgressProvider.Direction.LEFT_TO_RIGHT);
+	}
 }

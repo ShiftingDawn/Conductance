@@ -8,6 +8,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import com.mojang.serialization.Codec;
 import conductance.api.CAPI;
+import conductance.api.machine.gui.ProgressProvider;
 import conductance.api.util.IO;
 
 public interface MachineRecipeType extends RecipeType<MachineRecipe> {
@@ -17,6 +18,8 @@ public interface MachineRecipeType extends RecipeType<MachineRecipe> {
 	int getLimit(IO io, RecipeElementType<?> elementType);
 
 	ResourceLocation getGuiArrow();
+
+	ProgressProvider.Direction getGuiArrowDirection();
 
 	RecipeSerializer<MachineRecipe> getRecipeSerializer();
 

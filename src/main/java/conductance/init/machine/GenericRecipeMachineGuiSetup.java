@@ -47,27 +47,27 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 	public static WidgetGroup makeRootGroup(
 		final GuiTheme theme, final IItemHandler inputItems, final IItemHandler outputItems, final MachineMenu menu, final MachineRecipeType recipeType, final ProgressProvider progressProvider
 	) {
-		return GenericRecipeMachineGuiSetup.makeRootGroup(theme, recipeType, progressProvider, io -> switch (io) {
+		return GenericRecipeMachineGuiSetup.makeRootGroup(recipeType, progressProvider, io -> switch (io) {
 			case IN -> GenericRecipeMachineGuiSetup.makeGroup(theme, IO.IN, inputItems, menu);
 			case OUT -> GenericRecipeMachineGuiSetup.makeGroup(theme, IO.OUT, outputItems, menu);
 		});
 	}
 
 	public static WidgetGroup makeDummyRootGroup(final GuiTheme theme, final int inputCount, final int outputCount, final MachineRecipeType recipeType, final ProgressProvider progressProvider) {
-		return GenericRecipeMachineGuiSetup.makeRootGroup(theme, recipeType, progressProvider, io -> switch (io) {
+		return GenericRecipeMachineGuiSetup.makeRootGroup(recipeType, progressProvider, io -> switch (io) {
 			case IN -> GenericRecipeMachineGuiSetup.makeDummyGroup(theme, IO.IN, inputCount);
 			case OUT -> GenericRecipeMachineGuiSetup.makeDummyGroup(theme, IO.OUT, outputCount);
 		});
 	}
 
-	private static WidgetGroup makeRootGroup(final GuiTheme theme, final MachineRecipeType recipeType, final ProgressProvider progressProvider, final Function<IO, WidgetGroup> groupFactory) {
+	private static WidgetGroup makeRootGroup(final MachineRecipeType recipeType, final ProgressProvider progressProvider, final Function<IO, WidgetGroup> groupFactory) {
 		return Util.make(new WidgetGroup(0, 0, 0, 0), root -> {
 			final GuiWidget groupItemsIn = Util.make(groupFactory.apply(IO.IN), group -> root.addWidget("items_in", group));
 			final GuiWidget groupItemsOut = Util.make(groupFactory.apply(IO.OUT), group -> root.addWidget("items_out", group));
 			final GuiWidget progress = Util.make(new ProgressWidget(
 				new GuiDrawableTexture(recipeType.getGuiArrow()),
 				progressProvider,
-				ProgressProvider.Direction.LEFT_TO_RIGHT,
+				recipeType.getGuiArrowDirection(),
 				5, 0, 20, 20
 			), progressWidget -> root.addWidget("progress", progressWidget));
 			final int totalWidth = groupItemsIn.getWidth() + 5 + progress.getWidth() + 5 + groupItemsOut.getWidth();
