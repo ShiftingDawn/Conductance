@@ -12,6 +12,7 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import conductance.api.CAPI;
 import conductance.api.machine.MachineType;
+import conductance.api.machine.gui.GuiTheme;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.Conductance;
 
@@ -24,7 +25,10 @@ public final class ConductanceJeiPlugin implements IModPlugin {
 	public void registerCategories(final IRecipeCategoryRegistration registration) {
 		final List<IRecipeCategory<?>> categories = new ArrayList<>();
 		for (final MachineType<?> machineType : CAPI.regs().machines()) {
-			categories.add(new GenericRecipeMachineCategory(machineType, GenericRecipeMachineCategory.RECIPE_TYPES.apply(machineType.getRecipeTypes()[0])));
+			final GuiTheme theme = machineType.getGuiSetup() != null ? machineType.getGuiSetup().getTheme() : GuiTheme.THEME_DEFAULT;
+			for (final MachineRecipeType recipeType : machineType.getRecipeTypes()) {
+				categories.add(new GenericRecipeMachineCategory(recipeType, GenericRecipeMachineCategory.RECIPE_TYPES.apply(machineType.getRecipeTypes()[0]), theme));
+			}
 		}
 		registration.addRecipeCategories(categories.toArray(IRecipeCategory[]::new));
 	}
@@ -39,7 +43,9 @@ public final class ConductanceJeiPlugin implements IModPlugin {
 	@Override
 	public void registerRecipeCatalysts(final IRecipeCatalystRegistration registration) {
 		for (final MachineType<?> machineType : CAPI.regs().machines()) {
-			registration.addCraftingStation(GenericRecipeMachineCategory.RECIPE_TYPES.apply(machineType.getRecipeTypes()[0]), machineType.getBlock().get());
+			for (final MachineRecipeType recipeType : machineType.getRecipeTypes()) {
+				registration.addCraftingStation(GenericRecipeMachineCategory.RECIPE_TYPES.apply(recipeType), machineType.getBlock().get());
+			}
 		}
 	}
 

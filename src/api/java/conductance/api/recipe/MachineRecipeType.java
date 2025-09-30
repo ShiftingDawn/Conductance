@@ -2,6 +2,7 @@ package conductance.api.recipe;
 
 import java.util.List;
 import java.util.Objects;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -24,6 +25,10 @@ public interface MachineRecipeType extends RecipeType<MachineRecipe> {
 	RecipeSerializer<MachineRecipe> getRecipeSerializer();
 
 	List<RecipeHolder<MachineRecipe>> getRecipes();
+
+	String getDescriptionId();
+
+	Component getName();
 
 	default ResourceLocation getId() {
 		return Objects.requireNonNull(CAPI.regs().recipeTypes().getKey(this), "Unregistered recipe type");

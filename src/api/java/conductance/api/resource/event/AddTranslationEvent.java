@@ -4,8 +4,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidType;
+import conductance.api.machine.MachineType;
 import conductance.api.material.Material;
 import conductance.api.plugin.IConductancePluginEvent;
+import conductance.api.recipe.MachineRecipeType;
 import conductance.api.tier.Tier;
 
 public interface AddTranslationEvent extends IConductancePluginEvent {
@@ -32,11 +34,19 @@ public interface AddTranslationEvent extends IConductancePluginEvent {
 		this.add(tier.getDescriptionId(), value);
 	}
 
+	default void add(final MachineRecipeType recipeType, final String value) {
+		this.add(recipeType.getDescriptionId(), value);
+	}
+
+	default void add(final MachineType<?> machineType, final String value) {
+		this.add(machineType.getDescriptionId(), value);
+	}
+
 	default void add(final TagKey<?> tag, final String value) {
 		this.add("tag.%s.%s.%s".formatted(
-				tag.registry().location().getPath(),
-				tag.location().getNamespace(),
-				tag.location().getPath().replace('/', '.')
+			tag.registry().location().getPath(),
+			tag.location().getNamespace(),
+			tag.location().getPath().replace('/', '.')
 		), value);
 	}
 }

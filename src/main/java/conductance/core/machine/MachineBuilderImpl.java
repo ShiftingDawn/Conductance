@@ -57,10 +57,10 @@ final class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Machi
 		return this;
 	}
 
-	public MachineTypeImpl<T> build() {
-		final MachineTypeImpl<T> result = Util.make(new MachineTypeImpl<>(), type -> {
+	public MachineTypeImpl<T> build(final ResourceLocation registryKey) {
+		final MachineTypeImpl<T> result = Util.make(new MachineTypeImpl<>(Util.makeDescriptionId("machine", registryKey)), type -> {
 			type.setBlock(MachineCore.createBlock(this.registryKey.getPath(), type, this.blockFactory));
-			type.setItem(MachineCore.createItem(this.registryKey.getPath(), type.getBlock(), this.itemFactory));
+			type.setItem(MachineCore.createItem(this.registryKey.getPath(), type.getDescriptionId(), type.getBlock(), this.itemFactory));
 			type.setBlockEntityType(MachineCore.createBlockEntityType(this.registryKey.getPath(), type, type.getBlock(), this.blockEntityFactory));
 			type.setRecipeTypes(this.recipeTypes);
 			type.setGuiSetup(this.guiSetup);

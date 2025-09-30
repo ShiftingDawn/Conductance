@@ -1,11 +1,11 @@
 package conductance.core.machine;
 
 import java.util.function.Supplier;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.MachineBlock;
@@ -16,10 +16,11 @@ import conductance.api.machine.gui.GuiSetup;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.util.Lazy;
 
+@RequiredArgsConstructor
 final class MachineTypeImpl<T extends MachineBlockEntity<T>> implements MachineType<T> {
 
-	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("machine", this.getId()));
-	private final Lazy<Component> name = Lazy.of(() -> Component.translatable(this.descriptionId.get()));
+	private final Lazy<Component> name = Lazy.of(() -> Component.translatable(this.getDescriptionId()));
+	private final @Getter String descriptionId;
 
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
@@ -36,12 +37,6 @@ final class MachineTypeImpl<T extends MachineBlockEntity<T>> implements MachineT
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	private @Nullable GuiSetup guiSetup;
-
-
-	@Override
-	public String getDescriptionId() {
-		return this.descriptionId.get();
-	}
 
 	@Override
 	public Component getName() {

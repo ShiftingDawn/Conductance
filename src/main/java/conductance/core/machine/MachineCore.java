@@ -65,7 +65,7 @@ public final class MachineCore {
 			@Override
 			public <T extends MachineBlockEntity<T>> MachineType<T> apply(final String registryName, final MachineBlockEntityFactory<T> blockEntityFactory, final Consumer<MachineBuilder<T>> builder) {
 				final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
-				final MachineType<T> result = Util.make(new MachineBuilderImpl<>(registryKey, blockEntityFactory), builder).build();
+				final MachineType<T> result = Util.make(new MachineBuilderImpl<>(registryKey, blockEntityFactory), builder).build(registryKey);
 				Conductance.REGISTRIES.register(CAPI.regs().machines(), registryKey, result);
 				return result;
 			}
@@ -83,11 +83,13 @@ public final class MachineCore {
 		}, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK));
 	}
 
-	static <T extends MachineBlockEntity<T>> Supplier<MachineBlockItem<T>> createItem(final String registryName, final Supplier<MachineBlock<T>> block, final MachineBlockItemFactory<T> itemFactory) {
+	static <T extends MachineBlockEntity<T>> Supplier<MachineBlockItem<T>> createItem(
+		final String registryName, final String descriptionId, final Supplier<MachineBlock<T>> block, final MachineBlockItemFactory<T> itemFactory
+	) {
 		return MachineCore.ITEMS.registerItem(registryName, props -> {
 			//TODO builder callback here
 			return Util.make(itemFactory.apply(block.get(), props), item -> CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.MACHINE));
-		}, new Item.Properties());
+		}, new Item.Properties().overrideDescription(descriptionId));
 	}
 
 	static <T extends MachineBlockEntity<T>> Supplier<BlockEntityType<T>> createBlockEntityType(

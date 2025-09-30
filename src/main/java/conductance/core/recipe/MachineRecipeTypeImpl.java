@@ -3,6 +3,8 @@ package conductance.core.recipe;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -14,6 +16,7 @@ import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.util.IO;
+import conductance.api.util.Lazy;
 
 final class MachineRecipeTypeImpl implements MachineRecipeType {
 
@@ -22,6 +25,8 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 	private final Object2IntMap<RecipeElementType<?>> outputLimits;
 	private final @Getter ResourceLocation guiArrow;
 	private final @Getter ProgressProvider.Direction guiArrowDirection;
+	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("recipeType", this.getId()));
+	private final Lazy<Component> name = Lazy.of(() -> Component.translatable(this.getDescriptionId()));
 
 	MachineRecipeTypeImpl(
 		final Object2IntMap<RecipeElementType<?>> inputLimits, final Object2IntMap<RecipeElementType<?>> outputLimits,
@@ -49,5 +54,15 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 			case IN -> this.inputLimits.getInt(elementType);
 			case OUT -> this.outputLimits.getInt(elementType);
 		};
+	}
+
+	@Override
+	public String getDescriptionId() {
+		return this.descriptionId.get();
+	}
+
+	@Override
+	public Component getName() {
+		return this.name.get();
 	}
 }

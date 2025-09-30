@@ -15,8 +15,8 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.NCRecipeElementTypes;
-import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.GuiTheme;
 import conductance.api.machine.gui.GuiWidget;
 import conductance.api.machine.gui.WidgetGroup;
@@ -30,27 +30,21 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 	static final Function<MachineRecipeType, IRecipeType<MachineRecipe>> RECIPE_TYPES = Util.memoize(machineRecipeType ->
 		new IRecipeType.JeiRecipeType<>(machineRecipeType.getId(), MachineRecipe.class)
 	);
-	private final MachineType<?> machineType;
 	private final MachineRecipeType recipeType;
 	private final IRecipeType<MachineRecipe> jeiRecipeType;
-	private final Component title;
-	private final IDrawable icon;
 	private final WidgetGroup rootGroup;
 	private final int width;
 	private final int height;
 
-	GenericRecipeMachineCategory(final MachineType<?> machineType, final IRecipeType<MachineRecipe> jeiRecipeType) {
-		this.machineType = machineType;
-		this.recipeType = machineType.getRecipeTypes()[0];
+	GenericRecipeMachineCategory(final MachineRecipeType recipeType, final IRecipeType<MachineRecipe> jeiRecipeType, final GuiTheme theme) {
+		this.recipeType = recipeType;
 		this.jeiRecipeType = jeiRecipeType;
-		this.title = machineType.getName();
-		this.icon = null;
 		this.rootGroup = GenericRecipeMachineGuiSetup.makeDummyRootGroup(
-			machineType.getGuiSetup() != null ? machineType.getGuiSetup().getTheme() : GuiTheme.THEME_DEFAULT,
+			theme,
 			this.recipeType.getLimit(IO.IN, NCRecipeElementTypes.ITEM), this.recipeType.getLimit(IO.OUT, NCRecipeElementTypes.ITEM),
 			this.recipeType, new JeiProgressProvider()
 		);
-		this.width = this.rootGroup.getWidth();
+		this.width = Math.max(116, this.rootGroup.getWidth());
 		this.height = this.rootGroup.getHeight();
 	}
 
@@ -100,12 +94,12 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 
 	@Override
 	public Component getTitle() {
-		return this.title;
+		return this.recipeType.getName();
 	}
 
 	@Override
-	public IDrawable getIcon() {
-		return this.icon;
+	public @Nullable IDrawable getIcon() {
+		return null;
 	}
 
 	@Override
