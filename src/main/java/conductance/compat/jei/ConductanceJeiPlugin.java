@@ -10,7 +10,10 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
 import conductance.api.CAPI;
+import conductance.api.NCDataComponents;
+import conductance.api.NCItems;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.GuiTheme;
 import conductance.api.recipe.MachineRecipeType;
@@ -20,6 +23,11 @@ import conductance.Conductance;
 public final class ConductanceJeiPlugin implements IModPlugin {
 
 	public static final ResourceLocation UID = Conductance.id(Conductance.MODID);
+
+	@Override
+	public void registerItemSubtypes(final ISubtypeRegistration registration) {
+		registration.registerFromDataComponentTypes(NCItems.PROGRAM_CIRCUIT.value(), NCDataComponents.PROGRAM_CIRCUIT.get());
+	}
 
 	@Override
 	public void registerCategories(final IRecipeCategoryRegistration registration) {
