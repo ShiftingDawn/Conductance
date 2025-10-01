@@ -276,21 +276,21 @@ final class ConductanceMaterialGenerationHandlers {
 			.entryTag("c:foils/%s", "%s Foil")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.FOIL)
-			.unitValue(UNIT * 4)
+			.unitValue(UNIT / 4)
 		);
 		BOLT = event.register("bolt", b -> b
 			.groupTag("c:bolts", "Bolts")
 			.entryTag("c:bolts/%s", "%s Bolts")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.BOLT_AND_SCREW)
-			.unitValue(UNIT * 8)
+			.unitValue(UNIT / 8)
 		);
 		SCREW = event.register("screw", b -> b
 			.groupTag("c:screws", "Screws")
 			.entryTag("c:screws/%s", "%s Screws")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.BOLT_AND_SCREW)
-			.unitValue(UNIT * 8)
+			.unitValue(UNIT / 8)
 		);
 		RING = event.register("ring", b -> b
 			.groupTag("c:rings", "Rings")

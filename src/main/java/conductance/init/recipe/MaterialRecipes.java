@@ -246,10 +246,16 @@ final class MaterialRecipes {
 			}
 		}
 		if (SCREW.test(material)) {
-			//TODO ingot -> extruder
+			if (INGOT.test(material)) {
+				calc(material, INGOT, SCREW, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_screw".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.SCREW).value()).out(material, SCREW, outAmount).duration(time));
+				});
+			}
+			//TODO bolt -> lathe
 			if (BOLT.test(material)) {
 				event.shapeless("%s_screw".formatted(material.getName()), materials().getItem(material, SCREW),
-					b -> b.add(TAG_HAMMERS).add(BOLT, material));
+					b -> b.add(TAG_HAMMERS).add(BOLT, material, 2));
 			}
 			if (DUST.test(material)) {
 				calc(material, SCREW, DUST, (int) material.getMass(), (inAmount, outAmount, time) -> {
@@ -259,7 +265,12 @@ final class MaterialRecipes {
 			}
 		}
 		if (FOIL.test(material)) {
-			//TODO ingot -> extruder
+			if (INGOT.test(material)) {
+				calc(material, INGOT, FOIL, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_foil".formatted(material.getName()), NCRecipeTypes.BENDING_MACHINE,
+						b -> b.in(material, INGOT, inAmount).out(material, FOIL, outAmount).program(10).duration(time));
+				});
+			}
 			if (PLATE.test(material)) {
 				event.shapeless("%s_foil".formatted(material.getName()), materials().getItem(material, FOIL),
 					b -> b.add(TAG_HAMMERS).add(PLATE, material));
@@ -272,10 +283,19 @@ final class MaterialRecipes {
 			}
 		}
 		if (RING.test(material)) {
-			//TODO ingot -> extruder
+			if (INGOT.test(material)) {
+				calc(material, INGOT, RING, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_ring".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.RING).value()).out(material, RING, outAmount).duration(time));
+				});
+			}
 			if (ROD.test(material)) {
 				event.shapeless("%s_ring".formatted(material.getName()), materials().getItem(material, RING),
 					b -> b.add(TAG_HAMMERS).add(ROD, material));
+				calc(material, ROD, RING, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_ring".formatted(material.getName()), NCRecipeTypes.BENDING_MACHINE,
+						b -> b.in(material, ROD, inAmount).out(material, RING, outAmount).duration(time));
+				});
 			}
 			if (DUST.test(material)) {
 				calc(material, RING, DUST, (int) material.getMass(), (inAmount, outAmount, time) -> {
@@ -285,7 +305,12 @@ final class MaterialRecipes {
 			}
 		}
 		if (ROTOR.test(material)) {
-			//TODO ingot -> extruder
+			if (INGOT.test(material)) {
+				calc(material, INGOT, ROTOR, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_rotor".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.ROTOR).value()).out(material, ROTOR, outAmount).duration(time));
+				});
+			}
 			if (PLATE.test(material) && RING.test(material) && SCREW.test(material)) {
 				event.shaped("%s_rotor".formatted(material.getName()), materials().getItem(material, ROTOR),
 					b -> b.pattern("aWa", "bcH", "aXa").key('a', PLATE, material).key('b', SCREW, material).key('c', RING, material));
@@ -298,7 +323,7 @@ final class MaterialRecipes {
 			}
 		}
 		if (FINE_WIRE.test(material)) {
-			//TODO ingot -> extruder
+			//TODO ingot -> wire_mill
 			if (FOIL.test(material)) {
 				event.shapeless("fine_%s_wire".formatted(material.getName()), materials().getItem(material, FINE_WIRE),
 					b -> b.add(TAG_WIRE_CUTTERS).add(FOIL, material));

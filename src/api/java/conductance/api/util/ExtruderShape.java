@@ -9,7 +9,10 @@ public enum ExtruderShape {
 	ROD,
 	BOLT,
 	GEAR,
-	GEAR_SMALL("small_gear");
+	GEAR_SMALL("small_gear"),
+	RING,
+	ROTOR,
+	SCREW;
 
 	private final String name;
 
