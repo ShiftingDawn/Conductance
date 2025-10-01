@@ -9,6 +9,10 @@
   "item.conductance.wire_cutters": "Wire Cutters",
   "item.conductance.program_circuit": "Program Circuit",
   "item.conductance.program_circuit.with_program": "Program Circuit §e%s",
+  "item.conductance.rod_extruder_shape": "Rod Extruder Shape",
+  "item.conductance.bolt_extruder_shape": "Bolt Extruder Shape",
+  "item.conductance.gear_extruder_shape": "Gear Extruder Shape",
+  "item.conductance.small_gear_extruder_shape": "Small Gear Extruder Shape",
 
   "tooltip.material_bucket.temperature": "§eTemperature: §r%sK",
   "tooltip.material_bucket.density": "§eDensity: §r%s",

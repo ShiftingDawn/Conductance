@@ -1,5 +1,6 @@
 package conductance.init;
 
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import net.minecraft.Util;
@@ -23,6 +24,7 @@ import conductance.api.resource.event.AddTranslationEvent;
 import conductance.api.resource.event.RegisterTagEvent;
 import conductance.api.tier.Tier;
 import conductance.api.tier.TieredItemType;
+import conductance.api.util.ExtruderShape;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
 import conductance.init.item.CraftingToolItem;
@@ -53,6 +55,16 @@ public final class ConductanceItems {
 		NCItems.PROGRAM_CIRCUIT = ConductanceItems.REGISTRY.registerItem("program_circuit", props -> Util.make(new ProgramCircuitItem(props), item -> {
 			for (int i = 0; i <= 24; ++i) {
 				CreativeTabHelper.addToTab(ProgramCircuitItem.makeStack(item, i), CreativeTabHelper.Tabs.GENERAL);
+			}
+		}));
+		NCItems.EMPTY_EXTRUDER_SHAPE = ConductanceItems.REGISTRY.registerItem("empty_extruder_shape", props -> Util.make(new CraftingToolItem(props), item -> {
+			CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
+		}));
+		NCItems.EXTRUDER_SHAPES = Collections.unmodifiableMap(Util.make(new EnumMap<>(ExtruderShape.class), map -> {
+			for (final ExtruderShape shape : ExtruderShape.values()) {
+				map.put(shape, ConductanceItems.REGISTRY.registerItem(shape + "_extruder_shape", props -> Util.make(new CraftingToolItem(props), item -> {
+					CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
+				})));
 			}
 		}));
 	}
@@ -140,6 +152,12 @@ public final class ConductanceItems {
 			final int finalI = i;
 			event.addItemModel(Conductance.id("program_circuit/" + i), b -> b.layer0(Conductance.id("item/program_circuit/" + finalI)));
 		}
+		event.addItemsModel(NCItems.EMPTY_EXTRUDER_SHAPE.value(), b -> b.simple(NCItems.EMPTY_EXTRUDER_SHAPE.value()));
+		event.addItemModel(NCItems.EMPTY_EXTRUDER_SHAPE.value(), b -> b.layer0(Conductance.id("item/extruder_shape/empty")));
+		NCItems.EXTRUDER_SHAPES.forEach((shape, item) -> {
+			event.addItemsModel(item.value(), b -> b.simple(item.value()));
+			event.addItemModel(item.value(), b -> b.layer0(Conductance.id("item/extruder_shape/" + shape)));
+		});
 	}
 
 	@EventListener(priority = -100)
