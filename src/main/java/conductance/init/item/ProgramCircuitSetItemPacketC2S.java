@@ -30,7 +30,7 @@ public record ProgramCircuitSetItemPacketC2S(InteractionHand hand, int program) 
 		registrar.playToServer(ProgramCircuitSetItemPacketC2S.TYPE, ProgramCircuitSetItemPacketC2S.STREAM_CODEC, ProgramCircuitSetItemPacketC2S::handle);
 	}
 
-	public static void handle(final ProgramCircuitSetItemPacketC2S packet, final IPayloadContext ctx) {
+	private static void handle(final ProgramCircuitSetItemPacketC2S packet, final IPayloadContext ctx) {
 		final ItemStack stack = ctx.player().getItemInHand(packet.hand);
 		if (stack.has(NCDataComponents.PROGRAM_CIRCUIT) && ctx.player().containerMenu instanceof final ProgramCircuitMenu menu) {
 			menu.getDataSlot().set(Mth.clamp(packet.program, 0, 24));

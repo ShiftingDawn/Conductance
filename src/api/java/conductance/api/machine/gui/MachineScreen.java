@@ -1,19 +1,19 @@
 package conductance.api.machine.gui;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.storage.ValueOutput;
 import lombok.Getter;
-import org.jetbrains.annotations.UnknownNullability;
 import conductance.api.machine.MachineBlockEntity;
+import conductance.api.util.Internal;
 
 public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 
-	private final Map<String, GuiWidget> widgets = new HashMap<>();
 	private final @Getter MachineBlockEntity<?> machine;
 	private final @Getter GuiSetup guiSetup;
 
@@ -29,39 +29,19 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 			this.inventoryLabelX = pos.x() - 1;
 			this.inventoryLabelY = pos.y() - 11;
 		});
+		menu.getWidgets().values().forEach(widget -> {
+			widget.setWidgetPacketHandler(this::sendToServer);
+			widget.setScreen(() -> this);
+		});
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-		if (this.widgets.isEmpty()) {
-			this.guiSetup.addWidgets(this, this::addWidget);
-		}
 		this.guiSetup.init(this);
-		for (final GuiWidget widget : this.widgets.values()) {
-			widget.init(this);
+		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
+			widget.initClient();
 		}
-	}
-
-	public final <T extends GuiWidget> T addWidget(final String id, final T widget) {
-		this.widgets.put(id, widget);
-		return widget;
-	}
-
-	@UnknownNullability
-	public GuiWidget getWidgetById(final String id) {
-		GuiWidget result = this.widgets.get(id);
-		if (result == null) {
-			for (final GuiWidget widget : this.widgets.values()) {
-				if (widget instanceof final WidgetGroup group) {
-					result = group.getWidgetById(id);
-					if (result != null) {
-						return result;
-					}
-				}
-			}
-		}
-		return result;
 	}
 
 	@Override
@@ -78,7 +58,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 			this.getTheme().getPlayerHotbar().draw(guiGraphics, mouseX, mouseY, pos.x() - 1, pos.y() - 1, 162, 18);
 		});
 
-		for (final GuiWidget widget : this.widgets.values()) {
+		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
 			//TODO check if mouse needs to be translated too
 			widget.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
@@ -98,11 +78,59 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 		this.renderTooltip(graphics, mouseX, mouseY);
 	}
 
+	@Override
+	public boolean mouseClicked(final double absoluteMouseX, final double absoluteMouseY, final int button) {
+		if (this.handleMouseEvent(true, absoluteMouseX, absoluteMouseY, button)) {
+			return true;
+		}
+		return super.mouseClicked(absoluteMouseX, absoluteMouseY, button);
+	}
+
+	@Override
+	public boolean mouseReleased(final double absoluteMouseX, final double absoluteMouseY, final int button) {
+		if (this.handleMouseEvent(false, absoluteMouseX, absoluteMouseY, button)) {
+			return true;
+		}
+		return super.mouseReleased(absoluteMouseX, absoluteMouseY, button);
+	}
+
+	private boolean handleMouseEvent(final boolean click, final double absoluteMouseX, final double absoluteMouseY, final int button) {
+		final int mouseX = (int) (absoluteMouseX - this.leftPos);
+		final int mouseY = (int) (absoluteMouseY - this.topPos);
+		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
+			if (mouseX < widget.getX() || mouseX > widget.getX() + widget.getWidth()) {
+				continue;
+			}
+			if (mouseY < widget.getY() || mouseY > widget.getY() + widget.getHeight()) {
+				continue;
+			}
+			final int mx = mouseX - widget.getX();
+			final int my = mouseY - widget.getY();
+			if (click) {
+				if (widget.onMouseClicked(mx, my, button)) {
+					return true;
+				}
+			} else if (widget.onMouseReleased(mx, my, button)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public final GuiTheme getTheme() {
 		return this.guiSetup.getTheme();
 	}
 
 	public final int getTextColor() {
 		return this.getTheme().getTextColor();
+	}
+
+	private void sendToServer(final GuiWidget widget, final int requestId, final Consumer<ValueOutput> payloadFactory) {
+		Internal.MACHINE_SCREEN_PACKET_SENDER.accept(this.getMenu(), contentFactory -> {
+			final String key = Objects.requireNonNull(this.getMenu().getWidgetId(widget), "Cannot send client request for unknown widget.");
+			contentFactory.putString("w", key);
+			contentFactory.putInt("r", requestId);
+			payloadFactory.accept(contentFactory.child("d"));
+		});
 	}
 }

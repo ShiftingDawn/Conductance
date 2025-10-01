@@ -17,8 +17,10 @@
 
     <suppress files="Conductance.java" checks="VisibilityModifier"/>
     <suppress files="Conductance.java" checks="StaticVariableName"/>
-    <suppress files="NC.+\.java" checks="VisibilityModifier"/>
-    <suppress files="NC.+\.java" checks="StaticVariableName"/>
+	<suppress files="NC.+\.java" checks="VisibilityModifier"/>
+	<suppress files="NC.+\.java" checks="StaticVariableName"/>
+	<suppress files="Internal\.java" checks="VisibilityModifier"/>
+	<suppress files="Internal\.java" checks="StaticVariableName"/>
 
     <suppress files="ModConfig\.java" checks="[a-zA-Z0-9]*"/>
 

@@ -31,10 +31,14 @@ import conductance.api.machine.event.MachineBuilder;
 import conductance.api.machine.event.RegisterMachineEvent;
 import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.gui.MachineScreen;
+import conductance.api.plugin.ConductancePluginListener;
+import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
+import conductance.lib.network.RegisterPacketEvent;
 
+@ConductancePluginListener(modid = Conductance.MODID)
 public final class MachineCore {
 
 	private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Conductance.MODID);
@@ -118,6 +122,11 @@ public final class MachineCore {
 				}, machineBlock);
 			}
 		});
+	}
+
+	@EventListener
+	private static void registerPackets(final RegisterPacketEvent event) {
+		MachineScreenRequestPacketC2S.register(event.getRegistrar());
 	}
 
 	private MachineCore() {

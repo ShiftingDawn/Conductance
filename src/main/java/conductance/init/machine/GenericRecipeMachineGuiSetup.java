@@ -36,11 +36,11 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 	}
 
 	@Override
-	public void addWidgets(final MachineScreen screen, final BiConsumer<String, GuiWidget> adder) {
-		final GenericRecipeMachine machine = (GenericRecipeMachine) screen.getMachine();
+	public void addWidgets(final MachineMenu menu, final BiConsumer<String, GuiWidget> adder) {
+		final GenericRecipeMachine machine = (GenericRecipeMachine) menu.getMachine();
 		adder.accept("root", Util.make(GenericRecipeMachineGuiSetup.makeRootGroup(
 			this.getTheme(), machine.getInputItems().getInventory(), machine.getOutputItems().getInventory(),
-			screen.getMenu(), machine.getRecipeType(), new RecipeHandlerProgressProvider(machine.getRecipeHandler())
+			menu, machine.getRecipeType(), new RecipeHandlerProgressProvider(machine.getRecipeHandler())
 		), root -> root.setInitialY(10)));
 	}
 
@@ -110,7 +110,7 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 
 	@Override
 	public void init(final MachineScreen screen) {
-		final GuiWidget root = screen.getWidgetById("root");
+		final GuiWidget root = screen.getMenu().getWidgetById("root");
 		root.setX((screen.getXSize() - root.getWidth()) / 2);
 	}
 }

@@ -17,7 +17,7 @@ public class SlotWidget extends GuiWidget {
 	}
 
 	@Override
-	public void init(final MachineScreen screen) {
+	public void initClient() {
 		this.slot.x = this.getX();
 		this.slot.y = this.getY();
 	}
