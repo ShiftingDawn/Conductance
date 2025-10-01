@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.fluids.FluidType;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.MaterialOreBearer;
@@ -43,7 +42,7 @@ final class MaterialGenerationHandlerBuilderImpl implements MaterialGenerationHa
 	private boolean autoGenerateFluid = false;
 	private @Nullable BuilderCallback<FluidType.Properties> fluidBuilderCallback;
 	private @Nullable Function<Material, String> descriptionIdSuffixFactory;
-	private long unitValue = CAPI.UNIT;
+	private long unitValue = -1;
 	private @Nullable ResourceLocation textureType;
 
 	@Override

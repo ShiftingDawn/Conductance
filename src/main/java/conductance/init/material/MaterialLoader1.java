@@ -817,6 +817,7 @@ public final class MaterialLoader1 {
 		event.item(CAPI.materials().getItemTag(OBSIDIAN, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.OBSIDIAN);
 		event.item(CAPI.materials().getItemTag(CALCITE, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.CALCITE);
 		event.item(CAPI.materials().getItemTag(BONE, NCMaterialGenerationHandlers.STORAGE_BLOCK), Blocks.BONE_BLOCK);
+		event.item(CAPI.materials().getItemTag(BONE, NCMaterialGenerationHandlers.ROD), Items.BONE);
 		event.item(CAPI.materials().getItemTag(BONE, NCMaterialGenerationHandlers.DUST), Items.BONE_MEAL);
 		event.item(CAPI.materials().getItemTag(COAL, NCMaterialGenerationHandlers.GEM), Items.COAL);
 		event.item(CAPI.materials().getItemTag(CHARCOAL, NCMaterialGenerationHandlers.GEM), Items.CHARCOAL);

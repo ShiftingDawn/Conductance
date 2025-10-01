@@ -130,6 +130,8 @@ public final class MaterialLoader2 {
 
 	@EventListener(priority = -100)
 	private static void addCustomTags(final RegisterTagEvent event) {
+		event.item(CAPI.materials().getItemTag(BLAZE, NCMaterialGenerationHandlers.ROD), Items.BLAZE_ROD);
+		event.item(CAPI.materials().getItemTag(BLAZE, NCMaterialGenerationHandlers.DUST), Items.BLAZE_POWDER);
 		event.item(CAPI.materials().getItemTag(FLINT, NCMaterialGenerationHandlers.GEM), Items.FLINT);
 		event.tag(CAPI.materials().getItemTag(LAPIS_LAZULI, NCMaterialGenerationHandlers.GEM), Tags.Items.GEMS_LAPIS.location());
 		event.tag(CAPI.materials().getItemTag(LAPIS_LAZULI, NCMaterialGenerationHandlers.STORAGE_BLOCK), Tags.Items.STORAGE_BLOCKS_LAPIS.location());
