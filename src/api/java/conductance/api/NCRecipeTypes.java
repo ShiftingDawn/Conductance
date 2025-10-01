@@ -8,6 +8,8 @@ public final class NCRecipeTypes {
 	public static MachineRecipeType BENDING_MACHINE;
 	public static MachineRecipeType PULVERIZER;
 	public static MachineRecipeType EXTRUDER;
+	public static MachineRecipeType WIREMILL;
+	public static MachineRecipeType LATHE;
 
 	private NCRecipeTypes() {
 	}

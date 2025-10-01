@@ -225,6 +225,16 @@ final class MaterialRecipes {
 					event.create("%s_rod".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
 						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.ROD).value()).out(material, ROD, outAmount).duration(time));
 				});
+				calc(material, INGOT, ROD, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_rod".formatted(material.getName()), NCRecipeTypes.LATHE,
+						b -> b.in(material, INGOT, inAmount).out(material, ROD, outAmount).duration(time));
+				});
+			}
+			if (GEM.test(material)) {
+				calc(material, GEM, ROD, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_rod".formatted(material.getName()), NCRecipeTypes.LATHE,
+						b -> b.in(material, GEM, inAmount).out(material, ROD, outAmount).duration(time));
+				});
 			}
 		}
 		if (BOLT.test(material)) {
@@ -252,10 +262,13 @@ final class MaterialRecipes {
 						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.SCREW).value()).out(material, SCREW, outAmount).duration(time));
 				});
 			}
-			//TODO bolt -> lathe
 			if (BOLT.test(material)) {
 				event.shapeless("%s_screw".formatted(material.getName()), materials().getItem(material, SCREW),
 					b -> b.add(TAG_HAMMERS).add(BOLT, material, 2));
+				calc(material, BOLT, SCREW, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_screw".formatted(material.getName()), NCRecipeTypes.LATHE,
+						b -> b.in(material, BOLT, inAmount).out(material, SCREW, outAmount).duration(time));
+				});
 			}
 			if (DUST.test(material)) {
 				calc(material, SCREW, DUST, (int) material.getMass(), (inAmount, outAmount, time) -> {
@@ -323,12 +336,23 @@ final class MaterialRecipes {
 			}
 		}
 		if (FINE_WIRE.test(material)) {
-			//TODO ingot -> wire_mill
+			if (INGOT.test(material)) {
+				calc(material, INGOT, FINE_WIRE, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("fine_%s_wire".formatted(material.getName()), NCRecipeTypes.WIREMILL,
+						b -> b.in(material, INGOT, inAmount).out(material, FINE_WIRE, outAmount).program(3).duration(time));
+				});
+			}
 			if (FOIL.test(material)) {
 				event.shapeless("fine_%s_wire".formatted(material.getName()), materials().getItem(material, FINE_WIRE),
 					b -> b.add(TAG_WIRE_CUTTERS).add(FOIL, material));
 			}
 			if (DUST.test(material)) {
+				if (!INGOT.test(material)) {
+					calc(material, DUST, FINE_WIRE, (int) material.getMass(), (inAmount, outAmount, time) -> {
+						event.create("fine_%s_wire".formatted(material.getName()), NCRecipeTypes.WIREMILL,
+							b -> b.in(material, DUST, inAmount).out(material, FINE_WIRE, outAmount).program(3).duration(time));
+					});
+				}
 				calc(material, FINE_WIRE, DUST, (int) material.getMass(), (inAmount, outAmount, time) -> {
 					event.create("%s_dust_from_fine_wire".formatted(material.getName()), NCRecipeTypes.PULVERIZER,
 						b -> b.in(material, FINE_WIRE, inAmount).out(material, DUST, outAmount).duration(time));

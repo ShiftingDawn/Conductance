@@ -8,6 +8,8 @@ public final class NCMachines {
 	public static MachineType<?> BENDING_MACHINE;
 	public static MachineType<?> PULVERIZER;
 	public static MachineType<?> EXTRUDER;
+	public static MachineType<?> WIREMILL;
+	public static MachineType<?> LATHE;
 
 	private NCMachines() {
 	}

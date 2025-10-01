@@ -50,8 +50,12 @@
   "recipeType.conductance.bending_machine": "Bending Machine",
   "recipeType.conductance.pulverizer": "Pulverizer",
   "recipeType.conductance.extruder": "Extruder",
+  "recipeType.conductance.wiremill": "Wiremill",
+  "recipeType.conductance.lathe": "Lathe",
 
   "machine.conductance.bending_machine": "Bending Machine",
   "machine.conductance.pulverizer": "Pulverizer",
-  "machine.conductance.extruder": "Extruder"
+  "machine.conductance.extruder": "Extruder",
+  "machine.conductance.wiremill": "Wiremill",
+  "machine.conductance.lathe": "Lathe"
 }
