@@ -10,6 +10,7 @@ import conductance.core.machine.MachineCore;
 import conductance.init.machine.GenericRecipeMachine;
 import conductance.init.machine.GenericRecipeMachineGuiSetup;
 import static conductance.api.NCMachines.BENDING_MACHINE;
+import static conductance.api.NCMachines.EXTRUDER;
 import static conductance.api.NCMachines.PULVERIZER;
 
 @ConductancePluginListener(modid = Conductance.MODID)
@@ -21,6 +22,8 @@ final class ConductanceMachines {
 			.recipeType(NCRecipeTypes.BENDING_MACHINE).guiSetup(new GenericRecipeMachineGuiSetup()));
 		PULVERIZER = event.register("pulverizer", GenericRecipeMachine::new, b -> b
 			.recipeType(NCRecipeTypes.PULVERIZER).guiSetup(new GenericRecipeMachineGuiSetup()));
+		EXTRUDER = event.register("extruder", GenericRecipeMachine::new, b -> b
+			.recipeType(NCRecipeTypes.EXTRUDER).guiSetup(new GenericRecipeMachineGuiSetup()));
 	}
 
 	@EventListener(priority = -100)

@@ -32,18 +32,21 @@ public interface RecipeElementType<T> {
 	@SuppressWarnings("unchecked")
 	default void toNetwork(final RegistryFriendlyByteBuf buf, final RecipeObject obj) {
 		this.getDataStreamCodec().encode(buf, (T) obj.data());
+		buf.writeDouble(obj.chance());
 	}
 
 	default RecipeObject fromNetwork(final RegistryFriendlyByteBuf buf) {
 		return new RecipeObject(
-			this.getDataStreamCodec().decode(buf)
+			this.getDataStreamCodec().decode(buf),
+			buf.readDouble()
 		);
 	}
 
 	@SuppressWarnings("unchecked")
 	default Codec<RecipeObject> getRecipeObjectCodec() {
 		return RecordCodecBuilder.create(instance -> instance.group(
-			this.getDataCodec().fieldOf("data").forGetter(obj -> (T) obj.data())
+			this.getDataCodec().fieldOf("data").forGetter(obj -> (T) obj.data()),
+			Codec.DOUBLE.optionalFieldOf("chance", 1.0).forGetter(RecipeObject::chance)
 		).apply(instance, RecipeObject::new));
 	}
 

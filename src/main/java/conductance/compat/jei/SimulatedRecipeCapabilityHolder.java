@@ -3,6 +3,7 @@ package conductance.compat.jei;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.Util;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -26,12 +27,12 @@ final class SimulatedRecipeCapabilityHolder {
 			if (inputs == null || inputs.isEmpty()) {
 				return new ItemHandler(List.of());
 			}
-			final List<List<ItemStack>> items = new ArrayList<>();
+			final List<Tuple<List<ItemStack>, RecipeObject>> items = new ArrayList<>();
 			for (final RecipeObject input : inputs) {
-				items.add(Util.make(new ArrayList<>(), list -> {
+				items.add(new Tuple<>(Util.make(new ArrayList<>(), list -> {
 					final SizedIngredient ingredient = (SizedIngredient) input.data();
 					ingredient.ingredient().getValues().forEach(item -> list.add(new ItemStack(item.value(), ingredient.count())));
-				}));
+				}), input));
 			}
 			return new ItemHandler(items);
 		});
@@ -40,12 +41,12 @@ final class SimulatedRecipeCapabilityHolder {
 			if (inputs == null || inputs.isEmpty()) {
 				return new ItemHandler(List.of());
 			}
-			final List<List<ItemStack>> items = new ArrayList<>();
+			final List<Tuple<List<ItemStack>, RecipeObject>> items = new ArrayList<>();
 			for (final RecipeObject input : inputs) {
-				items.add(Util.make(new ArrayList<>(), list -> {
+				items.add(new Tuple<>(Util.make(new ArrayList<>(), list -> {
 					final SizedIngredient ingredient = (SizedIngredient) input.data();
 					ingredient.ingredient().getValues().forEach(item -> list.add(new ItemStack(item.value(), ingredient.count())));
-				}));
+				}), input));
 			}
 			return new ItemHandler(items);
 		});
@@ -55,20 +56,20 @@ final class SimulatedRecipeCapabilityHolder {
 	public static final class ItemHandler implements IItemHandler {
 
 		@Getter
-		private final List<List<ItemStack>> stacks;
+		private final List<Tuple<List<ItemStack>, RecipeObject>> stackData;
 
 		@Override
 		public int getSlots() {
-			return this.stacks.size();
+			return this.stackData.size();
 		}
 
 		@Override
 		public ItemStack getStackInSlot(final int slot) {
-			final List<ItemStack> stackList = this.stacks.get(slot);
-			if (stackList == null || stackList.isEmpty()) {
+			final Tuple<List<ItemStack>, RecipeObject> stackList = this.stackData.get(slot);
+			if (stackList == null || stackList.getA().isEmpty()) {
 				return ItemStack.EMPTY;
 			}
-			return stackList.get(Math.abs((int) (System.currentTimeMillis() / 1000) % stackList.size()));
+			return stackList.getA().get(Math.abs((int) (System.currentTimeMillis() / 1000) % stackList.getA().size()));
 		}
 
 		@Override

@@ -7,9 +7,11 @@ import java.util.function.Function;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -23,6 +25,7 @@ import conductance.api.machine.gui.GuiWidget;
 import conductance.api.machine.gui.WidgetGroup;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
+import conductance.api.recipe.RecipeObject;
 import conductance.api.util.IO;
 import conductance.init.item.ProgramCircuitItem;
 import conductance.init.machine.GenericRecipeMachineGuiSetup;
@@ -66,19 +69,38 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 		for (final Map.Entry<String, GuiWidget> entry : allWidgets.entrySet()) {
 			final String key = entry.getKey();
 			final GuiWidget widget = entry.getValue();
-			if (key.startsWith("items_in_")) {
-				final int slotIndex = Integer.parseInt(key.substring("items_in_".length()));
-				if (slotIndex >= 0 && slotIndex < holder.getInputItems().getStacks().size()) {
-					final List<ItemStack> items = holder.getInputItems().getStacks().get(slotIndex);
-					builder.addInputSlot(xOffset + widget.getX(), widget.getY()).addIngredients(VanillaTypes.ITEM_STACK, items);
-				}
+			final IO io = key.startsWith("items_in") ? IO.IN : key.startsWith("items_out_") ? IO.OUT : null;
+			if (io == null) {
+				continue;
 			}
-			if (key.startsWith("items_out_")) {
-				final int slotIndex = Integer.parseInt(key.substring("items_out_".length()));
-				if (slotIndex >= 0 && slotIndex < holder.getOutputItems().getStacks().size()) {
-					final List<ItemStack> items = holder.getOutputItems().getStacks().get(slotIndex);
-					builder.addOutputSlot(xOffset + widget.getX(), widget.getY()).addIngredients(VanillaTypes.ITEM_STACK, items);
+			final int slotIndex = Integer.parseInt(key.substring(key.lastIndexOf('_') + 1));
+			final List<Tuple<List<ItemStack>, RecipeObject>> itemMapping = (io == IO.IN ? holder.getInputItems() : holder.getOutputItems()).getStackData();
+			if (slotIndex < 0 || slotIndex >= itemMapping.size()) {
+				continue;
+			}
+			final Tuple<List<ItemStack>, RecipeObject> data = itemMapping.get(slotIndex);
+			final IRecipeSlotBuilder slotBuilder = switch (io) {
+				case IN -> builder.addInputSlot(xOffset + widget.getX(), widget.getY());
+				case OUT -> builder.addOutputSlot(xOffset + widget.getX(), widget.getY());
+			};
+			slotBuilder.addIngredients(VanillaTypes.ITEM_STACK, data.getA());
+			slotBuilder.addRichTooltipCallback((recipeSlotView, tooltip) -> {
+				if (data.getB().chance() == 0) {
+					tooltip.add(Component.translatable("info.conductance.jei.%s.chance_0".formatted(io)));
+				} else if (data.getB().chance() != 1.0) {
+					tooltip.add(Component.translatable("info.conductance.jei.%s.chance".formatted(io), data.getB().chance() * 100));
 				}
+			});
+			if (data.getB().chance() == 0) {
+				slotBuilder.setOverlay(switch (io) {
+					case IN -> SlotTextOverlay.IN_CHANCE_0;
+					case OUT -> SlotTextOverlay.OUT_CHANCE_0;
+				}, 0, 0);
+			} else if (data.getB().chance() < 1) {
+				slotBuilder.setOverlay(switch (io) {
+					case IN -> SlotTextOverlay.IN_CHANCE;
+					case OUT -> SlotTextOverlay.OUT_CHANCE;
+				}, 0, 0);
 			}
 		}
 	}

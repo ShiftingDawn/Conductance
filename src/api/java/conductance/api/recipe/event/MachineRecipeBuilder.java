@@ -20,6 +20,12 @@ import conductance.api.util.IO;
 
 public interface MachineRecipeBuilder {
 
+	MachineRecipeBuilder chance(double chance);
+
+	default MachineRecipeBuilder change1() {
+		return this.chance(1);
+	}
+
 	<T> MachineRecipeBuilder add(IO io, RecipeElementType<T> elementType, T obj);
 
 	default <T> MachineRecipeBuilder in(final RecipeElementType<T> elementType, final T obj) {
@@ -83,6 +89,72 @@ public interface MachineRecipeBuilder {
 
 	default MachineRecipeBuilder in(final Material material, final MaterialGenerationHandler handler) {
 		return this.in(material, handler, 1);
+	}
+
+	default <T> MachineRecipeBuilder nc(final RecipeElementType<T> elementType, final T obj) {
+		this.chance(0);
+		this.add(IO.IN, elementType, obj);
+		this.change1();
+		return this;
+	}
+
+	default MachineRecipeBuilder nc(final SizedIngredient ingredient) {
+		return this.nc(NCRecipeElementTypes.ITEM, ingredient);
+	}
+
+	default MachineRecipeBuilder nc(final Ingredient ingredient, final int count) {
+		return this.nc(NCRecipeElementTypes.ITEM, new SizedIngredient(ingredient, count));
+	}
+
+	default MachineRecipeBuilder nc(final ItemStack ingredient) {
+		return this.nc(ingredient.getItem(), ingredient.getCount());
+	}
+
+	default MachineRecipeBuilder nc(final ItemLike ingredient, final int count) {
+		return this.nc(NCRecipeElementTypes.ITEM, SizedIngredient.of(ingredient, count));
+	}
+
+	default MachineRecipeBuilder nc(final ItemLike ingredient) {
+		return this.nc(ingredient, 1);
+	}
+
+	default MachineRecipeBuilder nc(final SizedFluidIngredient ingredient) {
+		return this.nc(NCRecipeElementTypes.FLUID, ingredient);
+	}
+
+	default MachineRecipeBuilder nc(final FluidIngredient ingredient, final int amount) {
+		return this.nc(NCRecipeElementTypes.FLUID, new SizedFluidIngredient(ingredient, amount));
+	}
+
+	default MachineRecipeBuilder nc(final FluidStack ingredient) {
+		return this.nc(ingredient.getFluid(), ingredient.getAmount());
+	}
+
+	default MachineRecipeBuilder nc(final Fluid ingredient, final int amount) {
+		return this.nc(NCRecipeElementTypes.FLUID, SizedFluidIngredient.of(ingredient, amount));
+	}
+
+	default MachineRecipeBuilder nc(final Fluid ingredient) {
+		return this.nc(ingredient, FluidType.BUCKET_VOLUME);
+	}
+
+	MachineRecipeBuilder nc(TagKey<?> tag, int count);
+
+	default MachineRecipeBuilder nc(final TagKey<?> tagKey) {
+		return this.nc(tagKey, -1);
+	}
+
+	default MachineRecipeBuilder nc(final Material material, final MaterialGenerationHandler handler, final int count) {
+		if (handler.hasItem() || handler.hasBlock()) {
+			this.nc(CAPI.materials().getItemTag(material, handler), count);
+		} else if (handler.hasFluid()) {
+			this.nc(CAPI.materials().getFluidTag(material, handler), count);
+		}
+		return this;
+	}
+
+	default MachineRecipeBuilder nc(final Material material, final MaterialGenerationHandler handler) {
+		return this.nc(material, handler, 1);
 	}
 
 	default <T> MachineRecipeBuilder out(final RecipeElementType<T> elementType, final T obj) {

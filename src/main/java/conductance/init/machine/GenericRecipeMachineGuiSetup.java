@@ -70,13 +70,14 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 				recipeType.getGuiArrowDirection(),
 				5, 0, 20, 20
 			), progressWidget -> root.addWidget("progress", progressWidget));
-			final int totalWidth = groupItemsIn.getWidth() + 5 + progress.getWidth() + 5 + groupItemsOut.getWidth();
+			final int totalWidth = Math.max(groupItemsIn.getWidth(), groupItemsOut.getWidth()) * 2 + 10 + progress.getWidth();
 			final int totalHeight = Math.max(Math.max(groupItemsIn.getHeight(), progress.getHeight()), groupItemsOut.getHeight());
 			root.setWidth(totalWidth);
 			root.setHeight(totalHeight);
 			progress.setInitialX(totalWidth / 2 - 10);
 			progress.setInitialY(totalHeight / 2 - 10);
-			groupItemsOut.setInitialX(totalWidth - groupItemsOut.getWidth());
+			groupItemsIn.setInitialX(totalWidth / 2 - 5 - progress.getWidth() / 2 - groupItemsIn.getWidth());
+			groupItemsOut.setInitialX(totalWidth / 2 + progress.getWidth() / 2 + 5);
 		});
 	}
 

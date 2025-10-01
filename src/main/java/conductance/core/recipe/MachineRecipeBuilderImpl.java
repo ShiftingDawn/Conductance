@@ -29,16 +29,28 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 
 	private final Map<RecipeElementType<?>, List<RecipeObject>> inputs = new HashMap<>();
 	private final Map<RecipeElementType<?>, List<RecipeObject>> outputs = new HashMap<>();
+	private double currentChance = 1;
 	private int recipeDuration = 200;
 	private int recipeProgram = -1;
 	private final MachineRecipeType recipeType;
 	private final HolderLookup.Provider registries;
 
 	@Override
+	public MachineRecipeBuilder chance(final double chance) {
+		if (chance > 1) {
+			//Assume full percentage when larger than 1.
+			this.currentChance = chance / 100.0;
+		} else {
+			this.currentChance = chance;
+		}
+		return this;
+	}
+
+	@Override
 	public <T> MachineRecipeBuilder add(final IO io, final RecipeElementType<T> elementType, final T obj) {
 		switch (io) {
-			case IN -> this.inputs.computeIfAbsent(elementType, k -> new ArrayList<>()).add(new RecipeObject(obj));
-			case OUT -> this.outputs.computeIfAbsent(elementType, k -> new ArrayList<>()).add(new RecipeObject(obj));
+			case IN -> this.inputs.computeIfAbsent(elementType, k -> new ArrayList<>()).add(new RecipeObject(obj, this.currentChance));
+			case OUT -> this.outputs.computeIfAbsent(elementType, k -> new ArrayList<>()).add(new RecipeObject(obj, this.currentChance));
 		}
 		return this;
 	}
@@ -50,6 +62,17 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 			return this.in(Ingredient.of(this.registries.lookupOrThrow(Registries.ITEM).getOrThrow((TagKey<Item>) tag)), Math.abs(count));
 		} else if (tag.registry() == Registries.FLUID) {
 			return this.in(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow((TagKey<Fluid>) tag)), Math.abs(count) * (count < 0 ? FluidType.BUCKET_VOLUME : 1));
+		}
+		return this;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public MachineRecipeBuilder nc(final TagKey<?> tag, final int count) {
+		if (tag.registry() == Registries.ITEM) {
+			return this.nc(Ingredient.of(this.registries.lookupOrThrow(Registries.ITEM).getOrThrow((TagKey<Item>) tag)), Math.abs(count));
+		} else if (tag.registry() == Registries.FLUID) {
+			return this.nc(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow((TagKey<Fluid>) tag)), Math.abs(count) * (count < 0 ? FluidType.BUCKET_VOLUME : 1));
 		}
 		return this;
 	}

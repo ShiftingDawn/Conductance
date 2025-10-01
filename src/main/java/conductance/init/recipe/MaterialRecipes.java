@@ -2,6 +2,7 @@ package conductance.init.recipe;
 
 import java.util.function.BiConsumer;
 import conductance.api.CAPI;
+import conductance.api.NCItems;
 import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCRecipeTypes;
@@ -9,6 +10,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.MaterialTraitOre;
 import conductance.api.recipe.event.RegisterRecipeEvent;
+import conductance.api.util.ExtruderShape;
 import static conductance.api.CAPI.TAG_HAMMERS;
 import static conductance.api.CAPI.TAG_WIRE_CUTTERS;
 import static conductance.api.CAPI.materials;
@@ -182,7 +184,12 @@ final class MaterialRecipes {
 			}
 		}
 		if (GEAR.test(material)) {
-			//TODO ingot -> extruder
+			if (INGOT.test(material)) {
+				calc(material, INGOT, GEAR, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_gear".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.GEAR).value()).out(material, GEAR, outAmount).duration(time));
+				});
+			}
 			if (PLATE.test(material) && ROD.test(material)) {
 				event.shaped("%s_gear".formatted(material.getName()), materials().getItem(material, GEAR),
 					b -> b.pattern("aba", "bWb", "aba").key('a', ROD, material).key('b', PLATE, material));
@@ -195,7 +202,12 @@ final class MaterialRecipes {
 			}
 		}
 		if (GEAR_SMALL.test(material)) {
-			//TODO ingot -> extruder
+			if (INGOT.test(material)) {
+				calc(material, INGOT, GEAR_SMALL, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("small_%s_gear".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.GEAR_SMALL).value()).out(material, GEAR_SMALL, outAmount).duration(time));
+				});
+			}
 			if (PLATE.test(material) && ROD.test(material)) {
 				event.shaped("small_%s_gear".formatted(material.getName()), materials().getItem(material, GEAR_SMALL),
 					b -> b.pattern(" a ", "XbH", " a ").key('a', ROD, material).key('b', PLATE, material));
@@ -207,8 +219,21 @@ final class MaterialRecipes {
 				});
 			}
 		}
+		if (ROD.test(material)) {
+			if (INGOT.test(material)) {
+				calc(material, INGOT, ROD, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_rod".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.ROD).value()).out(material, ROD, outAmount).duration(time));
+				});
+			}
+		}
 		if (BOLT.test(material)) {
-			//TODO ingot -> extruder
+			if (INGOT.test(material)) {
+				calc(material, INGOT, BOLT, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_bolt".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.BOLT).value()).out(material, BOLT, outAmount).duration(time));
+				});
+			}
 			if (ROD.test(material)) {
 				event.shapeless("%s_bolt".formatted(material.getName()), materials().getItem(material, BOLT, 2),
 					b -> b.add(TAG_WIRE_CUTTERS).add(ROD, material));
