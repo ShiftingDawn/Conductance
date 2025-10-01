@@ -6,11 +6,11 @@ final class JeiProgressProvider implements ProgressProvider {
 
 	@Override
 	public int getMaxProgress() {
-		return 0;
+		return 200;
 	}
 
 	@Override
 	public int getCurrentProgress() {
-		return 0;
+		return (int) (System.currentTimeMillis() % 10_000) / 50;
 	}
 }
