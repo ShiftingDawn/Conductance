@@ -1,5 +1,7 @@
 package conductance.api.recipe.event;
 
+import java.util.List;
+import java.util.Map;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -15,6 +17,7 @@ import conductance.api.NCRecipeElementTypes;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.recipe.RecipeElementType;
+import conductance.api.recipe.RecipeElement;
 import conductance.api.util.IO;
 
 public interface MachineRecipeBuilder {
@@ -222,4 +225,16 @@ public interface MachineRecipeBuilder {
 	MachineRecipeBuilder duration(int recipeDuration);
 
 	MachineRecipeBuilder program(int program);
+
+	MachineRecipeBuilder copy();
+
+	Map<RecipeElementType<?>, List<RecipeElement>> getInputs();
+
+	Map<RecipeElementType<?>, List<RecipeElement>> getOutputs();
+
+	int getProgram();
+
+	int getDuration();
+
+	double getCurrentChance();
 }

@@ -12,6 +12,7 @@ import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.recipe.MachineRecipeType;
+import conductance.api.recipe.RecipeElementCloner;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.RecipeHelper;
 import conductance.api.recipe.event.RecipeBuilderCallback;
@@ -29,10 +30,11 @@ public final class RecipeCore {
 
 	private static void initElementTypes() {
 		Conductance.dispatch(RegisterRecipeElementTypeEvent.class, modid -> new RegisterRecipeElementTypeEventImpl(new RegisterRecipeElementTypeEventImpl.Delegate() {
+
 			@Override
-			public <T> RecipeElementType<T> apply(final String registryName, final Codec<T> codec, final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
+			public <T> RecipeElementType<T> apply(final String registryName, final Codec<T> codec, final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec, final RecipeElementCloner<T> cloner) {
 				final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
-				final RecipeElementTypeImpl<T> result = new RecipeElementTypeImpl<>(codec, streamCodec);
+				final RecipeElementTypeImpl<T> result = new RecipeElementTypeImpl<>(codec, streamCodec, cloner);
 				Conductance.REGISTRIES.register(CAPI.regs().recipeElementTypes(), registryKey, result);
 				return result;
 			}

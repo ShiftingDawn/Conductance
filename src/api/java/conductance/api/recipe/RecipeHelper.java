@@ -29,22 +29,22 @@ public final class RecipeHelper {
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	private boolean testInternal(final MachineRecipe recipe, final RecipeCapabilityHolder holder, final IO io, final Map<RecipeElementType<?>, List<RecipeObject>> map) {
-		for (final Map.Entry<RecipeElementType<?>, List<RecipeObject>> entry : map.entrySet()) {
+	private boolean testInternal(final MachineRecipe recipe, final RecipeCapabilityHolder holder, final IO io, final Map<RecipeElementType<?>, List<RecipeElement>> map) {
+		for (final Map.Entry<RecipeElementType<?>, List<RecipeElement>> entry : map.entrySet()) {
 			final List<MachineRecipeCapability<?>> handlers = holder.getRecipeCapabilities(entry.getKey(), io);
 			if (handlers.isEmpty() && !entry.getValue().isEmpty()) {
 				return false;
 			}
-			List recipeObjectContentList = entry.getValue().stream()
-				.map(RecipeObject::data)
+			List recipeElementContentList = entry.getValue().stream()
+				.map(RecipeElement::data)
 				.toList();
 			for (final MachineRecipeCapability handler : handlers) {
-				recipeObjectContentList = handler.handle(io, recipe, recipeObjectContentList, true);
-				if (recipeObjectContentList == null || recipeObjectContentList.isEmpty()) {
+				recipeElementContentList = handler.handle(io, recipe, recipeElementContentList, true);
+				if (recipeElementContentList == null || recipeElementContentList.isEmpty()) {
 					break;
 				}
 			}
-			if (recipeObjectContentList != null && !recipeObjectContentList.isEmpty()) {
+			if (recipeElementContentList != null && !recipeElementContentList.isEmpty()) {
 				return false;
 			}
 		}
@@ -59,19 +59,19 @@ public final class RecipeHelper {
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	private void handleInternal(final MachineRecipe recipe, final RecipeCapabilityHolder holder, final IO io, final Map<RecipeElementType<?>, List<RecipeObject>> map) {
-		for (final Map.Entry<RecipeElementType<?>, List<RecipeObject>> entry : map.entrySet()) {
+	private void handleInternal(final MachineRecipe recipe, final RecipeCapabilityHolder holder, final IO io, final Map<RecipeElementType<?>, List<RecipeElement>> map) {
+		for (final Map.Entry<RecipeElementType<?>, List<RecipeElement>> entry : map.entrySet()) {
 			final List<MachineRecipeCapability<?>> handlers = holder.getRecipeCapabilities(entry.getKey(), io);
 			if (handlers.isEmpty() && !entry.getValue().isEmpty()) {
 				continue;
 			}
-			List recipeObjectContentList = entry.getValue().stream()
-				.filter(RecipeObject::testChance)
-				.map(RecipeObject::data)
+			List recipeElementContentList = entry.getValue().stream()
+				.filter(RecipeElement::testChance)
+				.map(RecipeElement::data)
 				.toList();
 			for (final MachineRecipeCapability handler : handlers) {
-				recipeObjectContentList = handler.handle(io, recipe, recipeObjectContentList, false);
-				if (recipeObjectContentList == null || recipeObjectContentList.isEmpty()) {
+				recipeElementContentList = handler.handle(io, recipe, recipeElementContentList, false);
+				if (recipeElementContentList == null || recipeElementContentList.isEmpty()) {
 					break;
 				}
 			}

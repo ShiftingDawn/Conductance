@@ -28,7 +28,7 @@ import conductance.api.machine.gui.GuiWidget;
 import conductance.api.machine.gui.WidgetGroup;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
-import conductance.api.recipe.RecipeObject;
+import conductance.api.recipe.RecipeElement;
 import conductance.api.util.IO;
 import conductance.init.item.ProgramCircuitItem;
 import conductance.init.machine.GenericRecipeMachineGuiSetup;
@@ -77,7 +77,7 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 				if (io == null) {
 					continue;
 				}
-				final List<Tuple<List<ItemStack>, RecipeObject>> mapping = io == IO.IN ? holder.getInputItems() : holder.getOutputItems();
+				final List<Tuple<List<ItemStack>, RecipeElement>> mapping = io == IO.IN ? holder.getInputItems() : holder.getOutputItems();
 				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset, 0, entry.getValue(), key, io, mapping,
 					(slotBuilder, itemStacks) -> slotBuilder.addIngredients(VanillaTypes.ITEM_STACK, itemStacks));
 			} else if (key.startsWith("fluids_")) {
@@ -85,7 +85,7 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 				if (io == null) {
 					continue;
 				}
-				final List<Tuple<List<FluidStack>, RecipeObject>> mapping = io == IO.IN ? holder.getInputFluids() : holder.getOutputFluids();
+				final List<Tuple<List<FluidStack>, RecipeElement>> mapping = io == IO.IN ? holder.getInputFluids() : holder.getOutputFluids();
 				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset + 1, 1, entry.getValue(), key, io, mapping,
 					(slotBuilder, fluidStacks) -> slotBuilder
 						.addIngredients(NeoForgeTypes.FLUID_STACK, fluidStacks)
@@ -96,14 +96,14 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 	}
 
 	private static <T> void makeRecipeSlotEntry(
-		final IRecipeLayoutBuilder builder, final int xOffset, final int yOffset, final GuiWidget widget, final String widgetKey, final IO io, final List<Tuple<List<T>, RecipeObject>> mapping,
+		final IRecipeLayoutBuilder builder, final int xOffset, final int yOffset, final GuiWidget widget, final String widgetKey, final IO io, final List<Tuple<List<T>, RecipeElement>> mapping,
 		final BiConsumer<IRecipeSlotBuilder, List<T>> ingredientSetter
 	) {
 		final int slotIndex = Integer.parseInt(widgetKey.substring(widgetKey.lastIndexOf('_') + 1));
 		if (slotIndex < 0 || slotIndex >= mapping.size()) {
 			return;
 		}
-		final Tuple<List<T>, RecipeObject> data = mapping.get(slotIndex);
+		final Tuple<List<T>, RecipeElement> data = mapping.get(slotIndex);
 		final IRecipeSlotBuilder slotBuilder = switch (io) {
 			case IN -> builder.addInputSlot(xOffset + widget.getX(), yOffset + widget.getY());
 			case OUT -> builder.addOutputSlot(xOffset + widget.getX(), yOffset + widget.getY());

@@ -3,7 +3,6 @@ package conductance.init.recipe;
 import conductance.api.CAPI;
 import conductance.api.NCItems;
 import conductance.api.NCMaterialFlags;
-import conductance.api.NCMaterials;
 import conductance.api.NCRecipeTypes;
 import conductance.api.material.Material;
 import conductance.api.recipe.event.RegisterRecipeEvent;
@@ -22,7 +21,6 @@ import static conductance.api.NCMaterialGenerationHandlers.GEM;
 import static conductance.api.NCMaterialGenerationHandlers.GEM_EXQUISITE;
 import static conductance.api.NCMaterialGenerationHandlers.GEM_FLAWLESS;
 import static conductance.api.NCMaterialGenerationHandlers.INGOT;
-import static conductance.api.NCMaterialGenerationHandlers.LIQUID;
 import static conductance.api.NCMaterialGenerationHandlers.NUGGET;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE_DENSE;
@@ -81,7 +79,7 @@ final class MaterialRecipes {
 			if (GEM.test(material) && STORAGE_BLOCK.test(material)) {
 				calc(material, STORAGE_BLOCK, PLATE, (int) material.getMass(), (inAmount, outAmount, time) -> {
 					event.create("%s_plate".formatted(material.getName()), NCRecipeTypes.CUTTING_MACHINE,
-						b -> b.in(material, STORAGE_BLOCK, inAmount).in(NCMaterials.WATER, LIQUID, time * 8).out(material, PLATE, outAmount).duration(time));
+						b -> b.in(material, STORAGE_BLOCK, inAmount).out(material, PLATE, outAmount).duration(time));
 				});
 			}
 			if (DUST.test(material) && !INGOT.test(material)) {
@@ -263,7 +261,6 @@ final class MaterialRecipes {
 			}
 		}
 	}
-
 
 	private MaterialRecipes() {
 	}

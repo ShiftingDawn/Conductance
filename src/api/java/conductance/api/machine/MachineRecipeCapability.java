@@ -30,6 +30,6 @@ public abstract class MachineRecipeCapability<T> extends MachineCapability imple
 			//TODO maybe log?
 			return inputs;
 		}
-		return this.handleInternal(io, recipe, new ArrayList<>(inputs.stream().map(obj -> this.elementType.copy(this.getMachine().getLevel().registryAccess(), obj)).toList()), simulate);
+		return this.handleInternal(io, recipe, new ArrayList<>(inputs.stream().map(obj -> this.elementType.getCloner().copy(obj)).toList()), simulate);
 	}
 }

@@ -12,19 +12,19 @@ import lombok.Getter;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
-import conductance.api.recipe.RecipeObject;
+import conductance.api.recipe.RecipeElement;
 
 final class MachineRecipeImpl implements MachineRecipe {
 
 	private final MachineRecipeType recipeType;
-	private final @Getter Map<RecipeElementType<?>, List<RecipeObject>> inputs;
-	private final @Getter Map<RecipeElementType<?>, List<RecipeObject>> outputs;
+	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> inputs;
+	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> outputs;
 	private final @Getter int recipeDuration;
 	private final @Getter int program;
 
 	MachineRecipeImpl(
 		final MachineRecipeType recipeType,
-		final Map<RecipeElementType<?>, List<RecipeObject>> inputs, final Map<RecipeElementType<?>, List<RecipeObject>> outputs,
+		final Map<RecipeElementType<?>, List<RecipeElement>> inputs, final Map<RecipeElementType<?>, List<RecipeElement>> outputs,
 		final int recipeDuration, final int program
 	) {
 		this.recipeType = recipeType;
@@ -55,9 +55,9 @@ final class MachineRecipeImpl implements MachineRecipe {
 		return RecipeBookCategories.CRAFTING_MISC;
 	}
 
-	private static Map<RecipeElementType<?>, List<RecipeObject>> toImmutableMap(final Map<RecipeElementType<?>, List<RecipeObject>> input) {
-		final Map<RecipeElementType<?>, List<RecipeObject>> map = new IdentityHashMap<>();
-		for (final Map.Entry<RecipeElementType<?>, List<RecipeObject>> entry : input.entrySet()) {
+	private static Map<RecipeElementType<?>, List<RecipeElement>> toImmutableMap(final Map<RecipeElementType<?>, List<RecipeElement>> input) {
+		final Map<RecipeElementType<?>, List<RecipeElement>> map = new IdentityHashMap<>();
+		for (final Map.Entry<RecipeElementType<?>, List<RecipeElement>> entry : input.entrySet()) {
 			map.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
 		}
 		return Collections.unmodifiableMap(map);

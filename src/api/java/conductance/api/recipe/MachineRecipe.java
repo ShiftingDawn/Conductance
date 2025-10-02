@@ -12,7 +12,7 @@ import com.mojang.serialization.Codec;
 
 public interface MachineRecipe extends Recipe<RecipeInput> {
 
-	Codec<Map<RecipeElementType<?>, List<RecipeObject>>> CONTENT_MAP_CODEC = Codec.dispatchedMap(RecipeElementType.CODEC, elementType -> elementType.getRecipeObjectCodec().listOf());
+	Codec<Map<RecipeElementType<?>, List<RecipeElement>>> CONTENT_MAP_CODEC = Codec.dispatchedMap(RecipeElementType.CODEC, elementType -> elementType.getRecipeObjectCodec().listOf());
 
 	@Override
 	MachineRecipeType getType();
@@ -20,9 +20,9 @@ public interface MachineRecipe extends Recipe<RecipeInput> {
 	@Override
 	RecipeSerializer<MachineRecipe> getSerializer();
 
-	Map<RecipeElementType<?>, List<RecipeObject>> getInputs();
+	Map<RecipeElementType<?>, List<RecipeElement>> getInputs();
 
-	Map<RecipeElementType<?>, List<RecipeObject>> getOutputs();
+	Map<RecipeElementType<?>, List<RecipeElement>> getOutputs();
 
 	int getRecipeDuration();
 

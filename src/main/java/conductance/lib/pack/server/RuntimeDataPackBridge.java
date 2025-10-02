@@ -48,7 +48,7 @@ public final class RuntimeDataPackBridge {
 		final long sysTime = System.currentTimeMillis();
 		final RecipeOutput recipeOutput = new RuntimeRecipeOutput(registries, recipeMap);
 		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, registries, recipeOutput, (recipeId, recipeType, builder, self) -> {
-			Util.make(new MachineRecipeBuilderImpl(recipeType, registries), builder).save(recipeId, recipeOutput, self);
+			Util.make(new MachineRecipeBuilderImpl(recipeType, registries), builder).save(recipeId, recipeOutput);
 		}));
 		Conductance.LOGGER.info("Conductance reloaded RuntimeDataPack recipe generation in {}ms", System.currentTimeMillis() - sysTime);
 	}

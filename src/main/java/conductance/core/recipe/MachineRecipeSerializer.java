@@ -16,7 +16,7 @@ import conductance.api.CAPI;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
-import conductance.api.recipe.RecipeObject;
+import conductance.api.recipe.RecipeElement;
 
 final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 
@@ -57,7 +57,7 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 		);
 	}
 
-	private static void writeRecipeMap(final RegistryFriendlyByteBuf buf, final Map<RecipeElementType<?>, List<RecipeObject>> map) {
+	private static void writeRecipeMap(final RegistryFriendlyByteBuf buf, final Map<RecipeElementType<?>, List<RecipeElement>> map) {
 		buf.writeVarInt(map.size());
 		map.forEach((key, list) -> {
 			RecipeElementType.STREAM_CODEC.encode(buf, key);
@@ -66,13 +66,13 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 		});
 	}
 
-	private static Map<RecipeElementType<?>, List<RecipeObject>> loadRecipeMap(final RegistryFriendlyByteBuf buf) {
+	private static Map<RecipeElementType<?>, List<RecipeElement>> loadRecipeMap(final RegistryFriendlyByteBuf buf) {
 		final int mapSize = buf.readVarInt();
-		final Map<RecipeElementType<?>, List<RecipeObject>> result = new HashMap<>();
+		final Map<RecipeElementType<?>, List<RecipeElement>> result = new HashMap<>();
 		for (int i = 0; i < mapSize; ++i) {
 			final RecipeElementType<?> key = RecipeElementType.STREAM_CODEC.decode(buf);
 			final int listSize = buf.readVarInt();
-			final List<RecipeObject> list = result.computeIfAbsent(key, k -> new ArrayList<>(listSize));
+			final List<RecipeElement> list = result.computeIfAbsent(key, k -> new ArrayList<>(listSize));
 			for (int j = 0; j < listSize; ++j) {
 				list.add(key.fromNetwork(buf));
 			}

@@ -11,20 +11,20 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import lombok.Getter;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.recipe.MachineRecipe;
-import conductance.api.recipe.RecipeObject;
+import conductance.api.recipe.RecipeElement;
 
 final class SimulatedRecipeCapabilityHolder {
 
-	private final @Getter List<Tuple<List<ItemStack>, RecipeObject>> inputItems;
-	private final @Getter List<Tuple<List<ItemStack>, RecipeObject>> outputItems;
-	private final @Getter List<Tuple<List<FluidStack>, RecipeObject>> inputFluids;
-	private final @Getter List<Tuple<List<FluidStack>, RecipeObject>> outputFluids;
+	private final @Getter List<Tuple<List<ItemStack>, RecipeElement>> inputItems;
+	private final @Getter List<Tuple<List<ItemStack>, RecipeElement>> outputItems;
+	private final @Getter List<Tuple<List<FluidStack>, RecipeElement>> inputFluids;
+	private final @Getter List<Tuple<List<FluidStack>, RecipeElement>> outputFluids;
 
 	SimulatedRecipeCapabilityHolder(final MachineRecipe recipe) {
 		this.inputItems = Util.make(new ArrayList<>(), items -> {
-			final List<RecipeObject> inputs = recipe.getInputs().get(NCRecipeElementTypes.ITEM);
+			final List<RecipeElement> inputs = recipe.getInputs().get(NCRecipeElementTypes.ITEM);
 			if (inputs != null && !inputs.isEmpty()) {
-				for (final RecipeObject input : inputs) {
+				for (final RecipeElement input : inputs) {
 					items.add(new Tuple<>(Util.make(new ArrayList<>(), list -> {
 						final SizedIngredient ingredient = (SizedIngredient) input.data();
 						ingredient.ingredient().getValues().forEach(item -> list.add(new ItemStack(item.value(), ingredient.count())));
@@ -33,9 +33,9 @@ final class SimulatedRecipeCapabilityHolder {
 			}
 		});
 		this.outputItems = Util.make(new ArrayList<>(), items -> {
-			final List<RecipeObject> inputs = recipe.getOutputs().get(NCRecipeElementTypes.ITEM);
+			final List<RecipeElement> inputs = recipe.getOutputs().get(NCRecipeElementTypes.ITEM);
 			if (inputs != null && !inputs.isEmpty()) {
-				for (final RecipeObject input : inputs) {
+				for (final RecipeElement input : inputs) {
 					items.add(new Tuple<>(Util.make(new ArrayList<>(), list -> {
 						final SizedIngredient ingredient = (SizedIngredient) input.data();
 						ingredient.ingredient().getValues().forEach(item -> list.add(new ItemStack(item.value(), ingredient.count())));
@@ -44,9 +44,9 @@ final class SimulatedRecipeCapabilityHolder {
 			}
 		});
 		this.inputFluids = Util.make(new ArrayList<>(), items -> {
-			final List<RecipeObject> inputs = recipe.getInputs().get(NCRecipeElementTypes.FLUID);
+			final List<RecipeElement> inputs = recipe.getInputs().get(NCRecipeElementTypes.FLUID);
 			if (inputs != null && !inputs.isEmpty()) {
-				for (final RecipeObject input : inputs) {
+				for (final RecipeElement input : inputs) {
 					items.add(new Tuple<>(Util.make(new ArrayList<>(), list -> {
 						final SizedFluidIngredient ingredient = (SizedFluidIngredient) input.data();
 						ingredient.ingredient().fluids().forEach(fluid -> list.add(new FluidStack(fluid.value(), ingredient.amount())));
@@ -55,9 +55,9 @@ final class SimulatedRecipeCapabilityHolder {
 			}
 		});
 		this.outputFluids = Util.make(new ArrayList<>(), items -> {
-			final List<RecipeObject> inputs = recipe.getOutputs().get(NCRecipeElementTypes.FLUID);
+			final List<RecipeElement> inputs = recipe.getOutputs().get(NCRecipeElementTypes.FLUID);
 			if (inputs != null && !inputs.isEmpty()) {
-				for (final RecipeObject input : inputs) {
+				for (final RecipeElement input : inputs) {
 					items.add(new Tuple<>(Util.make(new ArrayList<>(), list -> {
 						final SizedFluidIngredient ingredient = (SizedFluidIngredient) input.data();
 						ingredient.ingredient().fluids().forEach(fluid -> list.add(new FluidStack(fluid.value(), ingredient.amount())));

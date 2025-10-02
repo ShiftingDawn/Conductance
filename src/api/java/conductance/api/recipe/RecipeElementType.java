@@ -1,15 +1,12 @@
 package conductance.api.recipe;
 
 import java.util.Objects;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.neoforged.neoforge.network.connection.ConnectionType;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import conductance.api.CAPI;
 
 public interface RecipeElementType<T> {
@@ -21,36 +18,30 @@ public interface RecipeElementType<T> {
 
 	StreamCodec<RegistryFriendlyByteBuf, T> getDataStreamCodec();
 
-	default T copy(final RegistryAccess registryAccess, final T obj) {
-		final RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), registryAccess, ConnectionType.NEOFORGE);
-		this.getDataStreamCodec().encode(buf, obj);
-		final T copy = this.getDataStreamCodec().decode(buf);
-		buf.release();
-		return copy;
-	}
+	RecipeElementCloner<T> getCloner();
 
 	@SuppressWarnings("unchecked")
-	default void toNetwork(final RegistryFriendlyByteBuf buf, final RecipeObject obj) {
-		this.getDataStreamCodec().encode(buf, (T) obj.data());
-		buf.writeDouble(obj.chance());
+	default void toNetwork(final RegistryFriendlyByteBuf buf, final RecipeElement element) {
+		this.getDataStreamCodec().encode(buf, (T) element.data());
+		buf.writeDouble(element.chance());
 	}
 
-	default RecipeObject fromNetwork(final RegistryFriendlyByteBuf buf) {
-		return new RecipeObject(
+	default RecipeElement fromNetwork(final RegistryFriendlyByteBuf buf) {
+		return new RecipeElement(
 			this.getDataStreamCodec().decode(buf),
 			buf.readDouble()
 		);
 	}
 
 	@SuppressWarnings("unchecked")
-	default Codec<RecipeObject> getRecipeObjectCodec() {
+	default Codec<RecipeElement> getRecipeObjectCodec() {
 		return RecordCodecBuilder.create(instance -> instance.group(
 			this.getDataCodec().fieldOf("data").forGetter(obj -> (T) obj.data()),
-			Codec.DOUBLE.optionalFieldOf("chance", 1.0).forGetter(RecipeObject::chance)
-		).apply(instance, RecipeObject::new));
+			Codec.DOUBLE.optionalFieldOf("chance", 1.0).forGetter(RecipeElement::chance)
+		).apply(instance, RecipeElement::new));
 	}
 
-	default StreamCodec<RegistryFriendlyByteBuf, RecipeObject> getRecipeObjectStreamCodec() {
+	default StreamCodec<RegistryFriendlyByteBuf, RecipeElement> getRecipeObjectStreamCodec() {
 		return StreamCodec.of(this::toNetwork, this::fromNetwork);
 	}
 

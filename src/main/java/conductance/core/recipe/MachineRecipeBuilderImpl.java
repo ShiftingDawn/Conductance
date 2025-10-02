@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -15,26 +16,25 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
+import conductance.api.recipe.RecipeElement;
 import conductance.api.recipe.RecipeElementType;
-import conductance.api.recipe.RecipeObject;
 import conductance.api.recipe.event.MachineRecipeBuilder;
 import conductance.api.recipe.event.RecipeBuilderCallback;
-import conductance.api.recipe.event.RegisterRecipeEvent;
 import conductance.api.util.IO;
 
 @RequiredArgsConstructor
 public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 
-	private final Map<RecipeElementType<?>, List<RecipeObject>> inputs = new HashMap<>();
-	private final Map<RecipeElementType<?>, List<RecipeObject>> outputs = new HashMap<>();
-	private double currentChance = 1;
-	private int recipeDuration = 200;
-	private int recipeProgram = -1;
+	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> inputs = new HashMap<>();
+	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> outputs = new HashMap<>();
 	private final MachineRecipeType recipeType;
 	private final HolderLookup.Provider registries;
+	private @Getter double currentChance = 1;
+	private @Getter int duration = 200;
+	private @Getter int program = -1;
 
 	@Override
 	public MachineRecipeBuilder chance(final double chance) {
@@ -50,8 +50,8 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 	@Override
 	public <T> MachineRecipeBuilder add(final IO io, final RecipeElementType<T> elementType, final T obj) {
 		switch (io) {
-			case IN -> this.inputs.computeIfAbsent(elementType, k -> new ArrayList<>()).add(new RecipeObject(obj, this.currentChance));
-			case OUT -> this.outputs.computeIfAbsent(elementType, k -> new ArrayList<>()).add(new RecipeObject(obj, this.currentChance));
+			case IN -> this.inputs.computeIfAbsent(elementType, k -> new ArrayList<>()).add(new RecipeElement(obj, this.currentChance));
+			case OUT -> this.outputs.computeIfAbsent(elementType, k -> new ArrayList<>()).add(new RecipeElement(obj, this.currentChance));
 		}
 		return this;
 	}
@@ -91,7 +91,7 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 
 	@Override
 	public MachineRecipeBuilder duration(final int recipeDuration) {
-		this.recipeDuration = recipeDuration;
+		this.duration = recipeDuration;
 		return this;
 	}
 
@@ -100,19 +100,38 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 		if (program < -1 || program > 24) {
 			throw new IllegalArgumentException("Recipe program must adhere to -1 <= program <= 24");
 		}
-		this.recipeProgram = program;
+		this.program = program;
 		return this;
 	}
 
-	public MachineRecipe build(final RegisterRecipeEvent event) {
+	public void save(final ResourceLocation recipeId, final RecipeOutput output) {
 		final RecipeBuilderCallback callback = RecipeCore.getRecipeBuilderCallback(this.recipeType);
 		if (callback != null) {
-			callback.accept(this, (additionalId, builder) -> event.create(additionalId, this.recipeType, builder));
+			callback.accept(recipeId, this, (newRecipeId, builder) -> {
+				final MachineRecipeBuilderImpl copy = Util.make(MachineRecipeBuilderImpl.this.copy(), builder);
+				copy.save(newRecipeId, output);
+			});
 		}
-		return new MachineRecipeImpl(this.recipeType, this.inputs, this.outputs, this.recipeDuration, this.recipeProgram);
+		final MachineRecipeImpl recipe = new MachineRecipeImpl(this.recipeType, this.inputs, this.outputs, this.duration, this.program);
+		output.accept(ResourceKey.create(Registries.RECIPE, recipeId), recipe, null);
 	}
 
-	public void save(final ResourceLocation recipeId, final RecipeOutput output, final RegisterRecipeEvent event) {
-		output.accept(ResourceKey.create(Registries.RECIPE, recipeId), this.build(event), null);
+	@Override
+	public MachineRecipeBuilderImpl copy() {
+		return Util.make(new MachineRecipeBuilderImpl(this.recipeType, this.registries), builder -> {
+			this.inputs.forEach((elementType, elements) -> builder.inputs.put(elementType, this.copyContentList(elementType, elements)));
+			this.outputs.forEach((elementType, elements) -> builder.outputs.put(elementType, this.copyContentList(elementType, elements)));
+			builder.duration = this.duration;
+			builder.program = this.program;
+			builder.currentChance = this.currentChance;
+		});
+	}
+
+	private List<RecipeElement> copyContentList(final RecipeElementType<?> type, final List<RecipeElement> list) {
+		final ArrayList<RecipeElement> result = new ArrayList<>(list.size());
+		for (final RecipeElement obj : list) {
+			result.add(obj.copy(type, null));
+		}
+		return result;
 	}
 }

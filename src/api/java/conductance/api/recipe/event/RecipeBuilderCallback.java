@@ -1,9 +1,14 @@
 package conductance.api.recipe.event;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import net.minecraft.resources.ResourceLocation;
 
 public interface RecipeBuilderCallback {
 
-	void accept(MachineRecipeBuilder builder, BiConsumer<String, Consumer<MachineRecipeBuilder>> recipeBuilderFactory);
+	interface RecipeRegister {
+
+		void register(ResourceLocation recipeId, Consumer<MachineRecipeBuilder> builder);
+	}
+
+	void accept(ResourceLocation recipeId, MachineRecipeBuilder builder, RecipeRegister register);
 }
