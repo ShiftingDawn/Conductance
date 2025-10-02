@@ -25,6 +25,7 @@
   "tag.item.conductance.tools.hammer": "Hammers",
   "tag.item.conductance.tools.wire_cutter": "Wire Cutters",
 
+  "info.conductance.generic.hold_shift": "Hold %s for more information",
   "info.conductance.jei.requires_program_circuit": "Requires Recipe Program %s",
   "info.conductance.jei.in.chance": "§eConsumption chance: %s%",
   "info.conductance.jei.in.chance_0": "§cNot Consumed",
@@ -57,5 +58,12 @@
   "machine.conductance.pulverizer": "Pulverizer",
   "machine.conductance.extruder": "Extruder",
   "machine.conductance.wiremill": "Wiremill",
-  "machine.conductance.lathe": "Lathe"
+  "machine.conductance.lathe": "Lathe",
+
+  "guiWidget.conductance.tank.empty": "Empty",
+  "guiWidget.conductance.tank.capacity": "§9Capacity:§r %s",
+  "guiWidget.conductance.tank.stored": "§9Stored:§r %s/%s",
+  "guiWidget.conductance.tank.info.1": "§6Left-click§9 with a Fluid Container to §6fill§9 the tank.",
+  "guiWidget.conductance.tank.info.2": "§6Right-click§9 with a Fluid Container to §6empty§9 the tank.",
+  "guiWidget.conductance.tank.info.3": "§9Hold %s to fill/empty the whole stack."
 }

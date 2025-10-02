@@ -18,8 +18,8 @@ public class ProgressWidget extends GuiWidget {
 	}
 
 	@Override
-	public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
-		super.render(guiGraphics, mouseX, mouseY, partialTick);
+	public void renderForeground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+		super.renderForeground(guiGraphics, mouseX, mouseY, partialTick);
 		if (this.provider.getCurrentProgress() == 0 || this.provider.getMaxProgress() == 0) {
 			return;
 		}

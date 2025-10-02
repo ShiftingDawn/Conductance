@@ -40,10 +40,10 @@ public final class ProgramCircuitScreen extends AbstractContainerScreen<ProgramC
 			final int y = 17 + (i / 9) * 18;
 			if (this.getMenu().getDataSlot().get() == i) {
 				//Render twice to deepen color
-				this.getTheme().getSlotHover().draw(guiGraphics, mouseX, mouseY, x - 1, y - 1, 18, 18);
-				this.getTheme().getSlotHover().draw(guiGraphics, mouseX, mouseY, x - 1, y - 1, 18, 18);
+				this.getTheme().getSlotHighlightBack().draw(guiGraphics, mouseX, mouseY, x - 1, y - 1, 18, 18);
+				this.getTheme().getSlotHighlightBack().draw(guiGraphics, mouseX, mouseY, x - 1, y - 1, 18, 18);
 			} else if (mouseX >= x && mouseX <= x + 18 && mouseY >= y && mouseY <= y + 18) {
-				this.getTheme().getSlotHover().draw(guiGraphics, mouseX, mouseY, x - 1, y - 1, 18, 18);
+				this.getTheme().getSlotHighlightBack().draw(guiGraphics, mouseX, mouseY, x - 1, y - 1, 18, 18);
 			}
 			guiGraphics.renderItem(ProgramCircuitItem.makeStack(i), x, y);
 		}

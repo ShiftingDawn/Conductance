@@ -2,8 +2,9 @@ package conductance.api.machine.gui;
 
 import java.util.function.Consumer;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.Nullable;
 
 interface WidgetPacketHandler {
 
-	void sendRequest(GuiWidget widget, int requestId, Consumer<ValueOutput> packetFiller);
+	void sendPacket(GuiWidget widget, int requestId, @Nullable Consumer<ValueOutput> packetFiller);
 }

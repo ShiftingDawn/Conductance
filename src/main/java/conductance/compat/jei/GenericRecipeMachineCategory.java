@@ -114,7 +114,8 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 			inputGroup.renderBackground(guiGraphics, (int) mouseX, (int) mouseY, 0);
 		});
 		Optional.ofNullable(this.rootGroup.getWidgetById("progress")).ifPresent(progress -> {
-			progress.render(guiGraphics, (int) mouseX, (int) mouseY, 0);
+			progress.renderBackground(guiGraphics, (int) mouseX, (int) mouseY, 0);
+			progress.renderForeground(guiGraphics, (int) mouseX, (int) mouseY, 0);
 		});
 		Optional.ofNullable(this.rootGroup.getWidgetById("items_out")).ifPresent(outputGroup -> {
 			outputGroup.renderBackground(guiGraphics, (int) mouseX, (int) mouseY, 0);

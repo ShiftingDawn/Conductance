@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 public final class WidgetGroup extends GuiWidget {
@@ -30,12 +31,14 @@ public final class WidgetGroup extends GuiWidget {
 		return this;
 	}
 
-	private void sendToServer(final GuiWidget widget, final int requestId, final Consumer<ValueOutput> payloadFactory) {
+	private void sendToServer(final GuiWidget widget, final int requestId, @Nullable final Consumer<ValueOutput> payloadFactory) {
 		this.sendToServer(0, contentFactory -> {
 			final String key = Objects.requireNonNull(this.getMenu().getWidgetId(widget), "Cannot send client request for unknown widget.");
 			contentFactory.putString("w", key);
 			contentFactory.putInt("r", requestId);
-			payloadFactory.accept(contentFactory.child("d"));
+			if (payloadFactory != null) {
+				payloadFactory.accept(contentFactory.child("d"));
+			}
 		});
 	}
 
@@ -60,10 +63,26 @@ public final class WidgetGroup extends GuiWidget {
 	}
 
 	@Override
-	public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
-		super.render(guiGraphics, mouseX, mouseY, partialTick);
+	public void renderBackground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+		super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 		for (final GuiWidget child : this.widgets.values()) {
-			child.render(guiGraphics, mouseX, mouseY, partialTick);
+			child.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+		}
+	}
+
+	@Override
+	public void renderForeground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+		super.renderForeground(guiGraphics, mouseX, mouseY, partialTick);
+		for (final GuiWidget child : this.widgets.values()) {
+			child.renderForeground(guiGraphics, mouseX, mouseY, partialTick);
+		}
+	}
+
+	@Override
+	public void renderTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+		super.renderTooltips(guiGraphics, mouseX, mouseY, partialTick);
+		for (final GuiWidget child : this.widgets.values()) {
+			child.renderTooltips(guiGraphics, mouseX, mouseY, partialTick);
 		}
 	}
 

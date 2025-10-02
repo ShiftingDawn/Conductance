@@ -126,7 +126,7 @@ public final class MachineCore {
 
 	@EventListener
 	private static void registerPackets(final RegisterPacketEvent event) {
-		MachineScreenRequestPacketC2S.register(event.getRegistrar());
+		MachineScreenRequestPacket.register(event.getRegistrar());
 	}
 
 	private MachineCore() {

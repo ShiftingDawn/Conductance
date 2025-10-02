@@ -32,7 +32,8 @@ public class GuiTheme {
 	private final Later<GuiDrawable> textureSlotFluid5Mirrored = new Later<>();
 	private final Later<GuiDrawable> textureSlotFluid6 = new Later<>();
 	private final Later<GuiDrawable> textureSlotFluid9 = new Later<>();
-	private final Later<GuiDrawable> textureSlotHover = new Later<>();
+	private final Later<GuiDrawable> textureSlotHighlightBack = new Later<>();
+	private final Later<GuiDrawable> textureSlotHighlightFront = new Later<>();
 
 	private final Later<GuiDrawable> textureEnergyBar = new Later<>();
 	private final Later<GuiDrawable> textureEnergyBarOverlay = new Later<>();
@@ -146,8 +147,12 @@ public class GuiTheme {
 		};
 	}
 
-	public GuiDrawable getSlotHover() {
-		return this.textureSlotHover.getOrSet(() -> new GuiDrawableColor(0x669cd3ff));
+	public GuiDrawable getSlotHighlightBack() {
+		return this.textureSlotHighlightBack.getOrSet(() -> new GuiDrawableTexture(this.getPath("slot_highlight_back")));
+	}
+
+	public GuiDrawable getSlotHighlightFront() {
+		return this.textureSlotHighlightFront.getOrSet(() -> new GuiDrawableTexture(this.getPath("slot_highlight_front")));
 	}
 
 	public GuiDrawable getEnergyBar() {

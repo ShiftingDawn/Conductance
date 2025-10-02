@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.storage.ValueOutput;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.util.Internal;
 
@@ -46,24 +47,20 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 
 	@Override
 	protected void renderBg(final GuiGraphics guiGraphics, final float partialTick, final int mouseX, final int mouseY) {
-		guiGraphics.pose().pushMatrix();
-		guiGraphics.pose().translate(this.leftPos, this.topPos);
+		this.translated(guiGraphics, () -> {
+			this.getTheme().getTitleBackground().draw(guiGraphics, mouseX, mouseY, 0, this.titleLabelY - 4, this.font.width(this.title) + 8, 14);
+			this.getTheme().getBackground().draw(guiGraphics, mouseX, mouseY, 0, 0, this.imageWidth, this.imageHeight);
+			Optional.ofNullable(this.guiSetup.getPlayerInventoryPos()).ifPresent(pos -> {
+				this.getTheme().getPlayerInventory().draw(guiGraphics, mouseX, mouseY, pos.x() - 1, pos.y() - 1, 162, 54);
+			});
+			Optional.ofNullable(this.guiSetup.getPlayerHotbarPos()).ifPresent(pos -> {
+				this.getTheme().getPlayerHotbar().draw(guiGraphics, mouseX, mouseY, pos.x() - 1, pos.y() - 1, 162, 18);
+			});
 
-		this.getTheme().getTitleBackground().draw(guiGraphics, mouseX, mouseY, 0, this.titleLabelY - 4, this.font.width(this.title) + 8, 14);
-		this.getTheme().getBackground().draw(guiGraphics, mouseX, mouseY, 0, 0, this.imageWidth, this.imageHeight);
-		Optional.ofNullable(this.guiSetup.getPlayerInventoryPos()).ifPresent(pos -> {
-			this.getTheme().getPlayerInventory().draw(guiGraphics, mouseX, mouseY, pos.x() - 1, pos.y() - 1, 162, 54);
+			for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
+				widget.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+			}
 		});
-		Optional.ofNullable(this.guiSetup.getPlayerHotbarPos()).ifPresent(pos -> {
-			this.getTheme().getPlayerHotbar().draw(guiGraphics, mouseX, mouseY, pos.x() - 1, pos.y() - 1, 162, 18);
-		});
-
-		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
-			//TODO check if mouse needs to be translated too
-			widget.render(guiGraphics, mouseX, mouseY, partialTick);
-		}
-
-		guiGraphics.pose().popMatrix();
 	}
 
 	@Override
@@ -73,9 +70,40 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 	}
 
 	@Override
-	public void render(final GuiGraphics graphics, final int mouseX, final int mouseY, final float partialTick) {
-		super.render(graphics, mouseX, mouseY, partialTick);
-		this.renderTooltip(graphics, mouseX, mouseY);
+	public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+		super.render(guiGraphics, mouseX, mouseY, partialTick);
+		this.renderTooltip(guiGraphics, mouseX, mouseY);
+		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
+			widget.renderTooltips(guiGraphics, mouseX, mouseY, partialTick);
+		}
+	}
+
+	@Override
+	public void renderContents(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+		super.renderContents(guiGraphics, mouseX, mouseY, partialTick);
+		this.translated(guiGraphics, () -> {
+			for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
+				widget.renderForeground(guiGraphics, mouseX, mouseY, partialTick);
+			}
+		});
+	}
+
+	private void translated(final GuiGraphics guiGraphics, final Runnable callback) {
+		guiGraphics.pose().pushMatrix();
+		guiGraphics.pose().translate(this.leftPos, this.topPos);
+		callback.run();
+		guiGraphics.pose().popMatrix();
+	}
+
+	@Override
+	protected void renderSlots(final GuiGraphics guiGraphics) {
+		if (this.hoveredSlot != null && this.hoveredSlot.isHighlightable()) {
+			this.getTheme().getSlotHighlightBack().draw(guiGraphics, 0, 0, this.hoveredSlot.x - 1, this.hoveredSlot.y - 1, 18, 18);
+		}
+		super.renderSlots(guiGraphics);
+		if (this.hoveredSlot != null && this.hoveredSlot.isHighlightable()) {
+			this.getTheme().getSlotHighlightFront().draw(guiGraphics, 0, 0, this.hoveredSlot.x - 1, this.hoveredSlot.y - 1, 18, 18);
+		}
 	}
 
 	@Override
@@ -125,12 +153,14 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 		return this.getTheme().getTextColor();
 	}
 
-	private void sendToServer(final GuiWidget widget, final int requestId, final Consumer<ValueOutput> payloadFactory) {
-		Internal.MACHINE_SCREEN_PACKET_SENDER.accept(this.getMenu(), contentFactory -> {
+	private void sendToServer(final GuiWidget widget, final int requestId, @Nullable final Consumer<ValueOutput> payloadFactory) {
+		Internal.MACHINE_SCREEN_PACKET_SENDER.accept(this.getMenu(), null, contentFactory -> {
 			final String key = Objects.requireNonNull(this.getMenu().getWidgetId(widget), "Cannot send client request for unknown widget.");
 			contentFactory.putString("w", key);
 			contentFactory.putInt("r", requestId);
-			payloadFactory.accept(contentFactory.child("d"));
+			if (payloadFactory != null) {
+				payloadFactory.accept(contentFactory.child("d"));
+			}
 		});
 	}
 }

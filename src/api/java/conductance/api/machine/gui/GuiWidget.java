@@ -2,7 +2,9 @@ package conductance.api.machine.gui;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import lombok.AccessLevel;
@@ -38,11 +40,24 @@ public abstract class GuiWidget {
 	public void initClient() {
 	}
 
-	public void sendToServer(final int requestId, final Consumer<ValueOutput> output) {
-		this.widgetPacketHandler.sendRequest(this, requestId, output);
+	public void sendToServer(final int requestId, @Nullable final Consumer<ValueOutput> output) {
+		if (this.getMenu().getPlayerInventory().player instanceof ServerPlayer) {
+			throw new IllegalStateException("Already on server!");
+		}
+		this.widgetPacketHandler.sendPacket(this, requestId, output);
+	}
+
+	public void sendToClient(final int requestId, @Nullable final Consumer<ValueOutput> output) {
+		if (!(this.getMenu().getPlayerInventory().player instanceof ServerPlayer)) {
+			throw new IllegalStateException("Already on client!");
+		}
+		this.widgetPacketHandler.sendPacket(this, requestId, output);
 	}
 
 	protected void handleClientRequest(final int requestId, final ValueInput input) {
+	}
+
+	protected void handleServerRequest(final int requestId, final ValueInput input) {
 	}
 
 	//region Rendering
@@ -52,8 +67,10 @@ public abstract class GuiWidget {
 		}
 	}
 
-	public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
-		this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+	public void renderForeground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+	}
+
+	public void renderTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
 	}
 	//endregion
 
@@ -70,6 +87,12 @@ public abstract class GuiWidget {
 
 	public boolean onMouseReleased(final int mouseX, final int mouseY, final int button) {
 		return false;
+	}
+
+	public final boolean containsMouse(final int mouseX, final int mouseY) {
+		final int mx = mouseX - this.getScreen().getGuiLeft();
+		final int my = mouseY - this.getScreen().getGuiTop();
+		return mx >= this.getX() && mx <= this.getX() + this.getWidth() && my >= this.getY() && my <= this.getY() + this.getHeight();
 	}
 	//endregion
 
@@ -137,6 +160,14 @@ public abstract class GuiWidget {
 
 	public final MachineScreen getScreen() {
 		return this.screen.get();
+	}
+
+	public final GuiTheme getTheme() {
+		return this.screen.get().getTheme();
+	}
+
+	public final Font getFont() {
+		return this.getScreen().getFont();
 	}
 	//endregion
 }
