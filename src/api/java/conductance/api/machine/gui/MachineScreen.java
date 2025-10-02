@@ -75,6 +75,9 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
 			widget.renderTooltips(guiGraphics, mouseX, mouseY, partialTick);
+			if (widget.containsMouse(mouseX, mouseY)) {
+				widget.handleTooltipCallbacks(guiGraphics, mouseX, mouseY);
+			}
 		}
 	}
 
@@ -138,8 +141,16 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 				if (widget.onMouseClicked(mx, my, button)) {
 					return true;
 				}
-			} else if (widget.onMouseReleased(mx, my, button)) {
-				return true;
+				if (widget.notifyMouseEventListeners(MouseEventListener.Event.PRESS, button, mx, my)) {
+					return true;
+				}
+			} else {
+				if (widget.onMouseReleased(mx, my, button)) {
+					return true;
+				}
+				if (widget.notifyMouseEventListeners(MouseEventListener.Event.RELEASE, button, mx, my)) {
+					return true;
+				}
 			}
 		}
 		return false;

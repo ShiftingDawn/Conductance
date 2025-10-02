@@ -1,9 +1,13 @@
 package conductance.api.machine.gui;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -14,6 +18,8 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiWidget {
 
+	private final List<MouseEventListener> mouseEventListeners = new ArrayList<>();
+	private final List<TooltipCallback> tooltipCallbacks = new ArrayList<>();
 	@Setter(AccessLevel.PACKAGE)
 	private Supplier<MachineMenu> menu;
 	@Setter(AccessLevel.PACKAGE)
@@ -40,14 +46,14 @@ public abstract class GuiWidget {
 	public void initClient() {
 	}
 
-	public void sendToServer(final int requestId, @Nullable final Consumer<ValueOutput> output) {
+	public final void sendToServer(final int requestId, @Nullable final Consumer<ValueOutput> output) {
 		if (this.getMenu().getPlayerInventory().player instanceof ServerPlayer) {
 			throw new IllegalStateException("Already on server!");
 		}
 		this.widgetPacketHandler.sendPacket(this, requestId, output);
 	}
 
-	public void sendToClient(final int requestId, @Nullable final Consumer<ValueOutput> output) {
+	public final void sendToClient(final int requestId, @Nullable final Consumer<ValueOutput> output) {
 		if (!(this.getMenu().getPlayerInventory().player instanceof ServerPlayer)) {
 			throw new IllegalStateException("Already on client!");
 		}
@@ -72,13 +78,37 @@ public abstract class GuiWidget {
 
 	public void renderTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
 	}
+
+	final void handleTooltipCallbacks(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+		final List<ClientTooltipComponent> tooltip = new ArrayList<>();
+		for (final TooltipCallback callback : this.tooltipCallbacks) {
+			callback.onTooltip(tooltip);
+		}
+		if (!tooltip.isEmpty()) {
+			guiGraphics.renderTooltip(this.getFont(), tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+		}
+	}
 	//endregion
 
 	//region Events
+	public final GuiWidget addMouseListener(final MouseEventListener listener) {
+		this.mouseEventListeners.add(listener);
+		return this;
+	}
+
 	public void onPositionChanged(final int newX, final int newY, final int oldX, final int oldY) {
 	}
 
 	public void onSizeChanged(final int newWidth, final int newHeight, final int oldWidth, final int oldHeight) {
+	}
+
+	final boolean notifyMouseEventListeners(final MouseEventListener.Event event, final int button, final int mouseX, final int mouseY) {
+		for (final MouseEventListener listener : new ArrayList<>(this.mouseEventListeners)) {
+			if (listener.onMouseEvent(this, event, button, mouseX, mouseY)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public boolean onMouseClicked(final int mouseX, final int mouseY, final int button) {
@@ -147,6 +177,11 @@ public abstract class GuiWidget {
 		final int oldHeight = this.height;
 		this.height = height;
 		this.onSizeChanged(this.width, this.height, this.width, oldHeight);
+	}
+
+	public final GuiWidget addTooltipCallback(final TooltipCallback listener) {
+		this.tooltipCallbacks.add(listener);
+		return this;
 	}
 
 	public final GuiWidget setBackground(@Nullable final GuiDrawable background) {

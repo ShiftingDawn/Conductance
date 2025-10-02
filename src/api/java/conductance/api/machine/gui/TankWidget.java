@@ -1,12 +1,8 @@
 package conductance.api.machine.gui;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -44,6 +40,28 @@ public final class TankWidget extends GuiWidget {
 			this.handler = handler;
 		}
 		this.tank = tank;
+		this.addTooltipCallback(tooltip -> {
+			if (this.getMenu().getCarried().isEmpty()) {
+				final int capacity = this.handler.getTankCapacity(this.tank);
+				final FluidStack fluid = this.handler.getFluidInTank(this.tank);
+				if (fluid.isEmpty()) {
+					tooltipTranslatable(tooltip, "guiWidget.conductance.tank.empty");
+					tooltipTranslatable(tooltip, "guiWidget.conductance.tank.capacity", Component.literal(String.valueOf(capacity)).withStyle(ChatFormatting.BLUE));
+				} else {
+					GuiUtils.tooltip(tooltip, fluid.getHoverName());
+					tooltipTranslatable(tooltip, "guiWidget.conductance.tank.stored",
+						Component.literal(String.valueOf(fluid.getAmount())).withStyle(ChatFormatting.YELLOW),
+						Component.literal(String.valueOf(capacity)).withStyle(ChatFormatting.BLUE)
+					);
+				}
+				GuiUtils.tooltip(tooltip, Component.empty());
+				tooltipMoreInfo(tooltip, () -> {
+					tooltipTranslatable(tooltip, "guiWidget.conductance.tank.info.1");
+					tooltipTranslatable(tooltip, "guiWidget.conductance.tank.info.2");
+					tooltipTranslatable(tooltip, "guiWidget.conductance.tank.info.3", Minecraft.getInstance().options.keyShift.getKey().getDisplayName());
+				});
+			}
+		});
 	}
 
 	public TankWidget(final int x, final int y, final IFluidHandler handler, final int tank) {
@@ -82,33 +100,6 @@ public final class TankWidget extends GuiWidget {
 		super.renderForeground(guiGraphics, mouseX, mouseY, partialTick);
 		if (this.containsMouse(mouseX, mouseY)) {
 			this.getTheme().getSlotHighlightFront().draw(guiGraphics, mouseX, mouseY, this.getX(), this.getY(), this.getWidth(), this.getHeight());
-		}
-	}
-
-	@Override
-	public void renderTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
-		super.renderTooltips(guiGraphics, mouseX, mouseY, partialTick);
-		if (this.containsMouse(mouseX, mouseY) && this.getMenu().getCarried().isEmpty()) {
-			final int capacity = this.handler.getTankCapacity(this.tank);
-			final FluidStack fluid = this.handler.getFluidInTank(this.tank);
-			final List<ClientTooltipComponent> tooltip = new ArrayList<>();
-			if (fluid.isEmpty()) {
-				tooltipTranslatable(tooltip, "guiWidget.conductance.tank.empty");
-				tooltipTranslatable(tooltip, "guiWidget.conductance.tank.capacity", Component.literal(String.valueOf(capacity)).withStyle(ChatFormatting.BLUE));
-			} else {
-				GuiUtils.tooltip(tooltip, fluid.getHoverName());
-				tooltipTranslatable(tooltip, "guiWidget.conductance.tank.stored",
-					Component.literal(String.valueOf(fluid.getAmount())).withStyle(ChatFormatting.YELLOW),
-					Component.literal(String.valueOf(capacity)).withStyle(ChatFormatting.BLUE)
-				);
-			}
-			GuiUtils.tooltip(tooltip, Component.empty());
-			tooltipMoreInfo(tooltip, () -> {
-				tooltipTranslatable(tooltip, "guiWidget.conductance.tank.info.1");
-				tooltipTranslatable(tooltip, "guiWidget.conductance.tank.info.2");
-				tooltipTranslatable(tooltip, "guiWidget.conductance.tank.info.3", Minecraft.getInstance().options.keyShift.getKey().getDisplayName());
-			});
-			guiGraphics.renderTooltip(this.getFont(), tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
 		}
 	}
 

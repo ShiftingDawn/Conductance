@@ -83,6 +83,9 @@ public final class WidgetGroup extends GuiWidget {
 		super.renderTooltips(guiGraphics, mouseX, mouseY, partialTick);
 		for (final GuiWidget child : this.widgets.values()) {
 			child.renderTooltips(guiGraphics, mouseX, mouseY, partialTick);
+			if (child.containsMouse(mouseX, mouseY)) {
+				child.handleTooltipCallbacks(guiGraphics, mouseX, mouseY);
+			}
 		}
 	}
 
@@ -120,8 +123,16 @@ public final class WidgetGroup extends GuiWidget {
 				if (widget.onMouseClicked(mx, my, button)) {
 					return true;
 				}
-			} else if (widget.onMouseReleased(mx, my, button)) {
-				return true;
+				if (widget.notifyMouseEventListeners(MouseEventListener.Event.PRESS, button, mx, my)) {
+					return true;
+				}
+			} else {
+				if (widget.onMouseReleased(mx, my, button)) {
+					return true;
+				}
+				if (widget.notifyMouseEventListeners(MouseEventListener.Event.RELEASE, button, mx, my)) {
+					return true;
+				}
 			}
 		}
 		return false;

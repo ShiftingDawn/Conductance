@@ -12,6 +12,8 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.NCDataComponents;
 import conductance.api.NCItems;
@@ -25,6 +27,7 @@ import conductance.Conductance;
 public final class ConductanceJeiPlugin implements IModPlugin {
 
 	public static final ResourceLocation UID = Conductance.id(Conductance.MODID);
+	private static @Nullable IJeiRuntime jeiRuntime = null;
 
 	@Override
 	public void registerItemSubtypes(final ISubtypeRegistration registration) {
@@ -65,7 +68,18 @@ public final class ConductanceJeiPlugin implements IModPlugin {
 	}
 
 	@Override
+	public void onRuntimeAvailable(final IJeiRuntime runtime) {
+		ConductanceJeiPlugin.jeiRuntime = runtime;
+	}
+
+	@Override
 	public ResourceLocation getPluginUid() {
 		return ConductanceJeiPlugin.UID;
+	}
+
+	public static void showRecipes(final MachineRecipeType recipeType) {
+		if (ConductanceJeiPlugin.jeiRuntime != null) {
+			ConductanceJeiPlugin.jeiRuntime.getRecipesGui().showTypes(List.of(GenericRecipeMachineCategory.RECIPE_TYPES.apply(recipeType)));
+		}
 	}
 }

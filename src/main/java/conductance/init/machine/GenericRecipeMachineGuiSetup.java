@@ -53,7 +53,14 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 			this.getTheme(),
 			inputItems, outputItems, inputFluids, outputFluids,
 			menu, machine.getRecipeType(), new RecipeHandlerProgressProvider(machine.getRecipeHandler())
-		), root -> root.setInitialY(10)));
+		), root -> {
+			root.setInitialY(10);
+			Util.make(new ShowRecipeViewerHandlers(menu.getMachine()), handler -> {
+				final GuiWidget widget = root.getWidgetById("progress");
+				widget.addTooltipCallback(handler);
+				widget.addMouseListener(handler);
+			});
+		}));
 	}
 
 	public static WidgetGroup makeRootGroup(
