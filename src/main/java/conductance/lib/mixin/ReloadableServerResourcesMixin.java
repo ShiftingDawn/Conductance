@@ -25,6 +25,6 @@ public abstract class ReloadableServerResourcesMixin {
 		final Commands.CommandSelection commandSelection, final int functionCompilationLevel, final Executor backgroundExecutor, final Executor gameExecutor,
 		final CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir
 	) {
-		RuntimeDataPackBridge.reload();
+		RuntimeDataPackBridge.reload(registryAccess.compositeAccess());
 	}
 }

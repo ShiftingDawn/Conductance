@@ -1,7 +1,10 @@
 package conductance.api.machine;
 
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
@@ -20,9 +23,10 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.block.IGeneratedMiningTags;
 import conductance.api.machine.gui.MachineMenu;
 
-public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements EntityBlock {
+public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements EntityBlock, IGeneratedMiningTags {
 
 	public static final BooleanProperty TICKING = BooleanProperty.create("ticking");
 	private final @Getter MachineType<T> machineType;
@@ -36,6 +40,16 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	@Override
 	protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder.add(MachineBlock.TICKING));
+	}
+
+	@Override
+	public List<TagKey<Block>> getRequiredToolTypeTag() {
+		return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
+	}
+
+	@Override
+	public List<TagKey<Block>> getRequiredToolLevelTag() {
+		return List.of(BlockTags.NEEDS_STONE_TOOL);
 	}
 
 	@Override

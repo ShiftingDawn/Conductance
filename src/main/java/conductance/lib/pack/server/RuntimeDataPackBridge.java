@@ -26,8 +26,11 @@ public final class RuntimeDataPackBridge {
 
 	private static final RegisterTagEventImpl.TagRegister TAG_REGISTER;
 
-	public static void reload() {
+	public static void reload(final HolderLookup.Provider provider) {
 		final long sysTime = System.currentTimeMillis();
+
+		LootTableGenerationHandler.reload(provider);
+
 		Conductance.LOGGER.info("Conductance reloaded RuntimeDataPack in {}ms", System.currentTimeMillis() - sysTime);
 	}
 

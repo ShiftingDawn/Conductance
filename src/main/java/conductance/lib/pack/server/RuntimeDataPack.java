@@ -3,6 +3,8 @@ package conductance.lib.pack.server;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackType;
@@ -33,12 +35,20 @@ final class RuntimeDataPack extends AbstractRuntimePack {
 		RuntimeDataPack.DATA.put(recipeLocation, recipe.toString().getBytes(StandardCharsets.UTF_8));
 	}
 
+	static void addBlockLootTable(final ResourceLocation blockId, final Supplier<JsonElement> lootTable) {
+		Util.make(lootTable.get(), json -> {
+			final ResourceLocation lootTableLocation = RuntimeDataPack.getLootTableLocation(blockId, "blocks");
+			RuntimeDataPack.writeJson(lootTableLocation, json);
+			RuntimeDataPack.DATA.put(lootTableLocation, json.toString().getBytes(StandardCharsets.UTF_8));
+		});
+	}
+
 	private static ResourceLocation getRecipeLocation(final ResourceLocation recipeId) {
 		return ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "recipe/%s.json".formatted(recipeId.getPath()));
 	}
 
-	private static ResourceLocation getAdvancementLocation(final ResourceLocation advancementId) {
-		return ResourceLocation.fromNamespaceAndPath(advancementId.getNamespace(), "advancement/%s.json".formatted(advancementId.getPath()));
+	private static ResourceLocation getLootTableLocation(final ResourceLocation lootTableId, final String type) {
+		return ResourceLocation.fromNamespaceAndPath(lootTableId.getNamespace(), "loot_table/%s/%s.json".formatted(type, lootTableId.getPath()));
 	}
 
 	private static boolean shouldDumpAssets() {
