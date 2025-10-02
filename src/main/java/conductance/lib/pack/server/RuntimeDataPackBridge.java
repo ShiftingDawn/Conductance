@@ -47,8 +47,8 @@ public final class RuntimeDataPackBridge {
 	public static void insertRecipes(final HolderLookup.Provider registries, final Map<ResourceLocation, Recipe<?>> recipeMap) {
 		final long sysTime = System.currentTimeMillis();
 		final RecipeOutput recipeOutput = new RuntimeRecipeOutput(registries, recipeMap);
-		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, registries, recipeOutput, (recipeId, recipeType, builder) -> {
-			Util.make(new MachineRecipeBuilderImpl(recipeType, registries), builder).save(recipeId, recipeOutput);
+		Conductance.dispatch(RegisterRecipeEvent.class, modid -> new RegisterRecipeEventImpl(modid, registries, recipeOutput, (recipeId, recipeType, builder, self) -> {
+			Util.make(new MachineRecipeBuilderImpl(recipeType, registries), builder).save(recipeId, recipeOutput, self);
 		}));
 		Conductance.LOGGER.info("Conductance reloaded RuntimeDataPack recipe generation in {}ms", System.currentTimeMillis() - sysTime);
 	}

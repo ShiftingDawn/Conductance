@@ -11,10 +11,12 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.gui.ProgressProvider;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
+import conductance.api.recipe.event.RecipeBuilderCallback;
 import conductance.api.util.IO;
 import conductance.api.util.Lazy;
 
@@ -25,17 +27,20 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 	private final Object2IntMap<RecipeElementType<?>> outputLimits;
 	private final @Getter ResourceLocation guiArrow;
 	private final @Getter ProgressProvider.Direction guiArrowDirection;
+	private final @Nullable RecipeBuilderCallback recipeBuilderCallback;
 	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("recipeType", this.getId()));
 	private final Lazy<Component> name = Lazy.of(() -> Component.translatable(this.getDescriptionId()));
 
 	MachineRecipeTypeImpl(
 		final Object2IntMap<RecipeElementType<?>> inputLimits, final Object2IntMap<RecipeElementType<?>> outputLimits,
-		final ResourceLocation guiArrow, final ProgressProvider.Direction guiArrowDirection
+		final ResourceLocation guiArrow, final ProgressProvider.Direction guiArrowDirection,
+		@Nullable final RecipeBuilderCallback recipeBuilderCallback
 	) {
 		this.inputLimits = Object2IntMaps.unmodifiable(inputLimits);
 		this.outputLimits = Object2IntMaps.unmodifiable(outputLimits);
 		this.guiArrow = guiArrow;
 		this.guiArrowDirection = guiArrowDirection;
+		this.recipeBuilderCallback = recipeBuilderCallback;
 	}
 
 	@Override
@@ -54,6 +59,10 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 			case IN -> this.inputLimits.getInt(elementType);
 			case OUT -> this.outputLimits.getInt(elementType);
 		};
+	}
+
+	public @Nullable RecipeBuilderCallback getRecipeBuilderCallback() {
+		return this.recipeBuilderCallback;
 	}
 
 	@Override

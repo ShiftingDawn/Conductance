@@ -9,10 +9,12 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeMap;
 import com.mojang.serialization.Codec;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.RecipeHelper;
+import conductance.api.recipe.event.RecipeBuilderCallback;
 import conductance.api.recipe.event.RegisterRecipeElementTypeEvent;
 import conductance.api.recipe.event.RegisterRecipeTypeEvent;
 import conductance.Conductance;
@@ -54,6 +56,10 @@ public final class RecipeCore {
 		for (final MachineRecipeType recipeType : CAPI.regs().recipeTypes()) {
 			MachineRecipeTypeImpl.ALL_RECIPES.put(recipeType, List.copyOf(recipeMap.byType(recipeType)));
 		}
+	}
+
+	public static @Nullable RecipeBuilderCallback getRecipeBuilderCallback(final MachineRecipeType recipeType) {
+		return recipeType instanceof final MachineRecipeTypeImpl impl ? impl.getRecipeBuilderCallback() : null;
 	}
 
 	private RecipeCore() {

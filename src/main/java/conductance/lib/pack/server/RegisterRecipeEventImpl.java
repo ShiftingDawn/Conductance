@@ -16,7 +16,6 @@ import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.level.ItemLike;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.function.TriConsumer;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.event.CookingRecipeBuilder;
 import conductance.api.recipe.event.MachineRecipeBuilder;
@@ -30,10 +29,14 @@ import conductance.api.recipe.event.TransmuteCraftingRecipeBuilder;
 @RequiredArgsConstructor
 final class RegisterRecipeEventImpl implements RegisterRecipeEvent {
 
+	interface Delegate {
+		void accept(ResourceLocation recipeId, MachineRecipeType recipeType, Consumer<MachineRecipeBuilder> builder, RegisterRecipeEvent self);
+	}
+
 	private final String modid;
 	private final HolderLookup.Provider registries;
 	private final RecipeOutput recipeOutput;
-	private final TriConsumer<ResourceLocation, MachineRecipeType, Consumer<MachineRecipeBuilder>> machineOutput;
+	private final Delegate machineOutput;
 
 	@Override
 	public ResourceLocation id(final String recipeType, final String recipePath) {
@@ -47,7 +50,7 @@ final class RegisterRecipeEventImpl implements RegisterRecipeEvent {
 
 	@Override
 	public void create(final ResourceLocation recipeId, final MachineRecipeType type, final Consumer<MachineRecipeBuilder> builder) {
-		this.machineOutput.accept(recipeId, type, builder);
+		this.machineOutput.accept(recipeId, type, builder, this);
 	}
 
 	@Override

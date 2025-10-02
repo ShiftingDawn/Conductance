@@ -22,4 +22,6 @@ public interface RecipeTypeBuilder {
 	default RecipeTypeBuilder guiArrow(final ResourceLocation arrowTexture) {
 		return this.guiArrow(arrowTexture, ProgressProvider.Direction.LEFT_TO_RIGHT);
 	}
+
+	RecipeTypeBuilder recipeBuilderCallback(RecipeBuilderCallback callback);
 }

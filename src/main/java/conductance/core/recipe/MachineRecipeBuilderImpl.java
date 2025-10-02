@@ -21,6 +21,8 @@ import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.RecipeObject;
 import conductance.api.recipe.event.MachineRecipeBuilder;
+import conductance.api.recipe.event.RecipeBuilderCallback;
+import conductance.api.recipe.event.RegisterRecipeEvent;
 import conductance.api.util.IO;
 
 @RequiredArgsConstructor
@@ -102,12 +104,15 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 		return this;
 	}
 
-	@Override
-	public MachineRecipe build() {
+	public MachineRecipe build(final RegisterRecipeEvent event) {
+		final RecipeBuilderCallback callback = RecipeCore.getRecipeBuilderCallback(this.recipeType);
+		if (callback != null) {
+			callback.accept(this, (additionalId, builder) -> event.create(additionalId, this.recipeType, builder));
+		}
 		return new MachineRecipeImpl(this.recipeType, this.inputs, this.outputs, this.recipeDuration, this.recipeProgram);
 	}
 
-	public void save(final ResourceLocation recipeId, final RecipeOutput output) {
-		output.accept(ResourceKey.create(Registries.RECIPE, recipeId), this.build(), null);
+	public void save(final ResourceLocation recipeId, final RecipeOutput output, final RegisterRecipeEvent event) {
+		output.accept(ResourceKey.create(Registries.RECIPE, recipeId), this.build(event), null);
 	}
 }

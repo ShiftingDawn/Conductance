@@ -14,7 +14,6 @@ import conductance.api.CAPI;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
-import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.util.IO;
 
@@ -223,6 +222,4 @@ public interface MachineRecipeBuilder {
 	MachineRecipeBuilder duration(int recipeDuration);
 
 	MachineRecipeBuilder program(int program);
-
-	MachineRecipe build();
 }
