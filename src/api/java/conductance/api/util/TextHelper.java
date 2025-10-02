@@ -1,10 +1,12 @@
 package conductance.api.util;
 
+import java.text.NumberFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 public final class TextHelper {
 
+	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getIntegerInstance();
 	public static final Component ENERGY_FORMAT = Component.literal(ChatFormatting.BOLD + "⚡" + ChatFormatting.RESET);
 	public static final Component ENERGY_FORMAT_PER_TICK = Component.literal(ChatFormatting.BOLD + "⚡" + ChatFormatting.RESET + "/t");
 

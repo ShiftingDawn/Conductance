@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.IFluidHandlerModifiable;
 import conductance.api.machine.TankAwareFluidHandler;
 import conductance.api.util.GuiUtils;
+import conductance.api.util.TextHelper;
 import static conductance.api.util.GuiUtils.tooltipMoreInfo;
 import static conductance.api.util.GuiUtils.tooltipTranslatable;
 
@@ -46,12 +47,12 @@ public final class TankWidget extends GuiWidget {
 				final FluidStack fluid = this.handler.getFluidInTank(this.tank);
 				if (fluid.isEmpty()) {
 					tooltipTranslatable(tooltip, "guiWidget.conductance.tank.empty");
-					tooltipTranslatable(tooltip, "guiWidget.conductance.tank.capacity", Component.literal(String.valueOf(capacity)).withStyle(ChatFormatting.BLUE));
+					tooltipTranslatable(tooltip, "guiWidget.conductance.tank.capacity", Component.literal(TextHelper.NUMBER_FORMAT.format(capacity)).withStyle(ChatFormatting.BLUE));
 				} else {
 					GuiUtils.tooltip(tooltip, fluid.getHoverName());
 					tooltipTranslatable(tooltip, "guiWidget.conductance.tank.stored",
-						Component.literal(String.valueOf(fluid.getAmount())).withStyle(ChatFormatting.YELLOW),
-						Component.literal(String.valueOf(capacity)).withStyle(ChatFormatting.BLUE)
+						Component.literal(TextHelper.NUMBER_FORMAT.format(fluid.getAmount())).withStyle(ChatFormatting.YELLOW),
+						Component.literal(TextHelper.NUMBER_FORMAT.format(capacity)).withStyle(ChatFormatting.BLUE)
 					);
 				}
 				GuiUtils.tooltip(tooltip, Component.empty());
