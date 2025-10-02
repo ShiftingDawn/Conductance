@@ -11,6 +11,8 @@ public final class NCMachines {
 	public static MachineType<?> WIREMILL;
 	public static MachineType<?> LATHE;
 	public static MachineType<?> EXTRACTOR;
+	public static MachineType<?> COMPRESSOR;
+	public static MachineType<?> CUTTING_MACHINE;
 
 	private NCMachines() {
 	}

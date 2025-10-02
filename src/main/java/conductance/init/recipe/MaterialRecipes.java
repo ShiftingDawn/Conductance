@@ -3,6 +3,7 @@ package conductance.init.recipe;
 import conductance.api.CAPI;
 import conductance.api.NCItems;
 import conductance.api.NCMaterialFlags;
+import conductance.api.NCMaterials;
 import conductance.api.NCRecipeTypes;
 import conductance.api.material.Material;
 import conductance.api.recipe.event.RegisterRecipeEvent;
@@ -18,7 +19,10 @@ import static conductance.api.NCMaterialGenerationHandlers.FRAME_BOX;
 import static conductance.api.NCMaterialGenerationHandlers.GEAR;
 import static conductance.api.NCMaterialGenerationHandlers.GEAR_SMALL;
 import static conductance.api.NCMaterialGenerationHandlers.GEM;
+import static conductance.api.NCMaterialGenerationHandlers.GEM_EXQUISITE;
+import static conductance.api.NCMaterialGenerationHandlers.GEM_FLAWLESS;
 import static conductance.api.NCMaterialGenerationHandlers.INGOT;
+import static conductance.api.NCMaterialGenerationHandlers.LIQUID;
 import static conductance.api.NCMaterialGenerationHandlers.NUGGET;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE_DENSE;
@@ -74,8 +78,19 @@ final class MaterialRecipes {
 						b -> b.in(material, INGOT, inAmount).out(material, PLATE, outAmount).program(1).duration(time));
 				});
 			}
-			//Gem <-> plate will be handles by cutting machine later
-			//Dust <-> plate will be handles by compressor machine later
+			if (GEM.test(material) && STORAGE_BLOCK.test(material)) {
+				calc(material, STORAGE_BLOCK, PLATE, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("%s_plate".formatted(material.getName()), NCRecipeTypes.CUTTING_MACHINE,
+						b -> b.in(material, STORAGE_BLOCK, inAmount).in(NCMaterials.WATER, LIQUID, time * 8).out(material, PLATE, outAmount).duration(time));
+				});
+			}
+			if (DUST.test(material) && !INGOT.test(material)) {
+				calc(material, DUST, PLATE, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					final int realTime = GEM.test(material) ? time * 2 : time; //Block in cutting machine is the intended way for gems
+					event.create("%s_plate".formatted(material.getName()), NCRecipeTypes.COMPRESSOR,
+						b -> b.in(material, DUST, inAmount).out(material, PLATE, outAmount).duration(realTime));
+				});
+			}
 		}
 		if (PLATE_DOUBLE.test(material)) {
 			if (INGOT.test(material)) {
@@ -88,7 +103,12 @@ final class MaterialRecipes {
 				event.shaped("double_%s_plate".formatted(material.getName()), materials().getItem(material, PLATE_DOUBLE),
 					b -> b.pattern("H", "a", "a").key('a', materials().getItemTag(material, PLATE)));
 			}
-			//Gem <-> plate will be handles by cutting machine later
+			if (GEM_FLAWLESS.test(material)) {
+				calc(material, GEM_FLAWLESS, PLATE_DOUBLE, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("double_%s_plate".formatted(material.getName()), NCRecipeTypes.LATHE,
+						b -> b.in(material, GEM_FLAWLESS, inAmount).out(material, PLATE_DOUBLE, outAmount).duration(time));
+				});
+			}
 			//Dust <-> plate will be handles by compressor machine later
 		}
 		if (PLATE_DENSE.test(material)) {
@@ -98,7 +118,12 @@ final class MaterialRecipes {
 						b -> b.in(material, INGOT, inAmount).out(material, PLATE_DENSE, outAmount).program(9).duration(time));
 				});
 			}
-			//Gem <-> plate will be handles by cutting machine later
+			if (GEM_EXQUISITE.test(material)) {
+				calc(material, GEM_EXQUISITE, PLATE_DENSE, (int) material.getMass(), (inAmount, outAmount, time) -> {
+					event.create("dense_%s_plate".formatted(material.getName()), NCRecipeTypes.LATHE,
+						b -> b.in(material, GEM_EXQUISITE, inAmount).out(material, PLATE_DENSE, outAmount).duration(time));
+				});
+			}
 			//Dust <-> plate will be handles by compressor machine later
 		}
 		if (GEAR.test(material)) {

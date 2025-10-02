@@ -55,6 +55,8 @@
   "recipeType.conductance.wiremill": "Wiremill",
   "recipeType.conductance.lathe": "Lathe",
   "recipeType.conductance.extractor": "Extractor",
+  "recipeType.conductance.compressor": "Compressor",
+  "recipeType.conductance.cutting_machine": "Cutting Machine",
 
   "machine.conductance.bending_machine": "Bending Machine",
   "machine.conductance.pulverizer": "Pulverizer",
@@ -62,6 +64,8 @@
   "machine.conductance.wiremill": "Wiremill",
   "machine.conductance.lathe": "Lathe",
   "machine.conductance.extractor": "Extractor",
+  "machine.conductance.compressor": "Compressor",
+  "machine.conductance.cutting_machine": "Cutting Machine",
 
   "guiWidget.conductance.tank.empty": "Empty",
   "guiWidget.conductance.tank.capacity": "§9Capacity:§r %s",
