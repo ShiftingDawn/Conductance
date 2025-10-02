@@ -1,14 +1,17 @@
 package conductance.api.util;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import conductance.api.CAPI;
 
 public final class TextHelper {
 
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getIntegerInstance();
 	public static final Component ENERGY_FORMAT = Component.literal(ChatFormatting.BOLD + "⚡" + ChatFormatting.RESET);
 	public static final Component ENERGY_FORMAT_PER_TICK = Component.literal(ChatFormatting.BOLD + "⚡" + ChatFormatting.RESET + "/t");
+	private static final DecimalFormat BUCKET_FORMAT = new DecimalFormat("0.##");
 
 	public static String toLowerCaseUnderscore(final String string) {
 		final StringBuilder result = new StringBuilder();
@@ -33,6 +36,16 @@ public final class TextHelper {
 			}
 		}
 		return result.toString();
+	}
+
+	public static String getFormattedFluidAmount(final int amount) {
+		if (amount < CAPI.BUCKET) {
+			return amount + "mB";
+		}
+		if (amount < CAPI.BUCKET * 1000) {
+			return TextHelper.BUCKET_FORMAT.format(amount / 1000.0) + "B";
+		}
+		return TextHelper.BUCKET_FORMAT.format(amount / 1000_000.0) + "kB";
 	}
 
 	private TextHelper() {

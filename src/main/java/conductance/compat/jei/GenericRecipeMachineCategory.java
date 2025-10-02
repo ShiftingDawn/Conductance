@@ -30,6 +30,7 @@ import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElement;
 import conductance.api.util.IO;
+import conductance.api.util.TextHelper;
 import conductance.init.item.ProgramCircuitItem;
 import conductance.init.machine.GenericRecipeMachineGuiSetup;
 
@@ -79,7 +80,8 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 				}
 				final List<Tuple<List<ItemStack>, RecipeElement>> mapping = io == IO.IN ? holder.getInputItems() : holder.getOutputItems();
 				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset, 0, entry.getValue(), key, io, mapping,
-					(slotBuilder, itemStacks) -> slotBuilder.addIngredients(VanillaTypes.ITEM_STACK, itemStacks));
+					(slotBuilder, itemStacks) -> slotBuilder.addIngredients(VanillaTypes.ITEM_STACK, itemStacks),
+					null);
 			} else if (key.startsWith("fluids_")) {
 				final IO io = key.startsWith("fluids_in_") ? IO.IN : key.startsWith("fluids_out_") ? IO.OUT : null;
 				if (io == null) {
@@ -87,9 +89,8 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 				}
 				final List<Tuple<List<FluidStack>, RecipeElement>> mapping = io == IO.IN ? holder.getInputFluids() : holder.getOutputFluids();
 				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset + 1, 1, entry.getValue(), key, io, mapping,
-					(slotBuilder, fluidStacks) -> slotBuilder
-						.addIngredients(NeoForgeTypes.FLUID_STACK, fluidStacks)
-						.setFluidRenderer(1, false, 16, 16)
+					(slotBuilder, fluidStacks) -> slotBuilder.addIngredients(NeoForgeTypes.FLUID_STACK, fluidStacks).setFluidRenderer(1, false, 16, 16),
+					fluidStacks -> !fluidStacks.isEmpty() ? Component.literal(TextHelper.getFormattedFluidAmount(fluidStacks.getFirst().getAmount())) : null
 				);
 			}
 		}
@@ -97,7 +98,7 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 
 	private static <T> void makeRecipeSlotEntry(
 		final IRecipeLayoutBuilder builder, final int xOffset, final int yOffset, final GuiWidget widget, final String widgetKey, final IO io, final List<Tuple<List<T>, RecipeElement>> mapping,
-		final BiConsumer<IRecipeSlotBuilder, List<T>> ingredientSetter
+		final BiConsumer<IRecipeSlotBuilder, List<T>> ingredientSetter, @Nullable final Function<List<T>, @Nullable Component> bottomText
 	) {
 		final int slotIndex = Integer.parseInt(widgetKey.substring(widgetKey.lastIndexOf('_') + 1));
 		if (slotIndex < 0 || slotIndex >= mapping.size()) {
@@ -116,17 +117,10 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 				tooltip.add(Component.translatable("info.conductance.jei.%s.chance".formatted(io), data.getB().chance() * 100));
 			}
 		});
-		if (data.getB().chance() == 0) {
-			slotBuilder.setOverlay(switch (io) {
-				case IN -> SlotTextOverlay.IN_CHANCE_0;
-				case OUT -> SlotTextOverlay.OUT_CHANCE_0;
-			}, 0, 0);
-		} else if (data.getB().chance() < 1) {
-			slotBuilder.setOverlay(switch (io) {
-				case IN -> SlotTextOverlay.IN_CHANCE;
-				case OUT -> SlotTextOverlay.OUT_CHANCE;
-			}, 0, 0);
-		}
+		slotBuilder.setOverlay(new SlotTextOverlay(switch (io) {
+			case IN -> data.getB().chance() == 0 ? SlotTextOverlay.IN_CHANCE_0 : data.getB().chance() < 1 ? SlotTextOverlay.IN_CHANCE : null;
+			case OUT -> data.getB().chance() == 0 ? SlotTextOverlay.OUT_CHANCE_0 : data.getB().chance() < 1 ? SlotTextOverlay.OUT_CHANCE : null;
+		}, bottomText != null ? bottomText.apply(data.getA()) : null), 0, 0);
 	}
 
 	@Override

@@ -102,6 +102,16 @@ public final class TankWidget extends GuiWidget {
 		if (this.containsMouse(mouseX, mouseY)) {
 			this.getTheme().getSlotHighlightFront().draw(guiGraphics, mouseX, mouseY, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 		}
+		final FluidStack fluid = this.handler.getFluidInTank(this.tank);
+		if (!fluid.isEmpty()) {
+			final String txt = TextHelper.getFormattedFluidAmount(fluid.getAmount());
+			final float scale = Math.min((float) (this.getWidth() - 2) / (float) this.getFont().width(txt), 0.7f);
+			guiGraphics.pose().pushMatrix();
+			guiGraphics.pose().translate(this.getX() + this.getWidth() - this.getFont().width(txt) * scale, this.getY() + this.getHeight() - this.getFont().lineHeight * scale);
+			guiGraphics.pose().scale(scale, scale);
+			guiGraphics.drawString(this.getFont(), txt, 0, 0, -1, true);
+			guiGraphics.pose().popMatrix();
+		}
 	}
 
 	@Override
