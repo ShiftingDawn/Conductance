@@ -5,6 +5,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
+//TODO add overflow toggle
 public class MachineCapabilityInventory extends MachineCapability implements IBlockCapabilityHandler, IItemHandlerModifiable {
 
 	public final MachineInventory inventory;

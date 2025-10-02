@@ -145,6 +145,30 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 		return false;
 	}
 
+	public @Nullable GuiWidget getWidgetUnderMouse(final int mouseX, final int mouseY) {
+		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
+			if (widget.containsMouse(mouseX, mouseY)) {
+				if (widget instanceof final WidgetGroup widgetGroup) {
+					return this.getWidgetUnderMouse(widgetGroup, mouseX, mouseY);
+				}
+				return widget;
+			}
+		}
+		return null;
+	}
+
+	private GuiWidget getWidgetUnderMouse(final WidgetGroup group, final int mouseX, final int mouseY) {
+		for (final GuiWidget widget : group.getWidgets().values()) {
+			if (widget.containsMouse(mouseX, mouseY)) {
+				if (widget instanceof final WidgetGroup widgetGroup) {
+					return this.getWidgetUnderMouse(widgetGroup, mouseX, mouseY);
+				}
+				return widget;
+			}
+		}
+		return group;
+	}
+
 	public final GuiTheme getTheme() {
 		return this.guiSetup.getTheme();
 	}

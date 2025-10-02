@@ -10,6 +10,7 @@ public final class NCRecipeTypes {
 	public static MachineRecipeType EXTRUDER;
 	public static MachineRecipeType WIREMILL;
 	public static MachineRecipeType LATHE;
+	public static MachineRecipeType EXTRACTOR;
 
 	private NCRecipeTypes() {
 	}

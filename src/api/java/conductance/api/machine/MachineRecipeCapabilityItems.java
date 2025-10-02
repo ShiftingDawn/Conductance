@@ -14,7 +14,8 @@ import conductance.api.NCRecipeElementTypes;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.util.IO;
 
-public final class MachineRecipeCapabilityItems extends MachineRecipeCapability<SizedIngredient> implements IBlockCapabilityHandler, IItemHandlerModifiable {
+//TODO add overflow toggle
+public final class MachineRecipeCapabilityItems extends MachineRecipeCapability<SizedIngredient> implements IBlockCapabilityHandler, IDelegatedItemHandler {
 
 	private final @Getter MachineInventory inventory;
 
@@ -22,6 +23,11 @@ public final class MachineRecipeCapabilityItems extends MachineRecipeCapability<
 		super(machine, NCRecipeElementTypes.ITEM, recipeIoMode, capabilityIoMode);
 		this.inventory = inventoryFactory.apply(slots);
 		this.inventory.setChangeListener(this::setChanged);
+	}
+
+	@Override
+	public IItemHandlerModifiable getRealItemHandler() {
+		return this.inventory;
 	}
 
 	@Override
@@ -84,21 +90,6 @@ public final class MachineRecipeCapabilityItems extends MachineRecipeCapability<
 	}
 
 	@Override
-	public void setStackInSlot(final int slot, final ItemStack stack) {
-		this.inventory.setStackInSlot(slot, stack);
-	}
-
-	@Override
-	public int getSlots() {
-		return this.inventory.getSlots();
-	}
-
-	@Override
-	public ItemStack getStackInSlot(final int slot) {
-		return this.inventory.getStackInSlot(slot);
-	}
-
-	@Override
 	public ItemStack insertItem(final int slot, final ItemStack stack, final boolean simulate) {
 		if (this.canCapabilityInput()) {
 			return this.inventory.insertItem(slot, stack, simulate);
@@ -112,15 +103,5 @@ public final class MachineRecipeCapabilityItems extends MachineRecipeCapability<
 			return this.inventory.extractItem(slot, maxAmount, simulate);
 		}
 		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public int getSlotLimit(final int slot) {
-		return this.inventory.getSlotLimit(slot);
-	}
-
-	@Override
-	public boolean isItemValid(final int slot, final ItemStack stack) {
-		return this.inventory.isItemValid(slot, stack);
 	}
 }

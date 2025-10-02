@@ -3,17 +3,20 @@ package conductance.compat.jei;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
@@ -47,6 +50,7 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 		this.rootGroup = GenericRecipeMachineGuiSetup.makeDummyRootGroup(
 			theme,
 			this.recipeType.getLimit(IO.IN, NCRecipeElementTypes.ITEM), this.recipeType.getLimit(IO.OUT, NCRecipeElementTypes.ITEM),
+			this.recipeType.getLimit(IO.IN, NCRecipeElementTypes.FLUID), this.recipeType.getLimit(IO.OUT, NCRecipeElementTypes.FLUID),
 			this.recipeType, new JeiProgressProvider()
 		);
 		this.width = Math.max(140, this.rootGroup.getWidth());
@@ -68,40 +72,60 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 		final Map<String, GuiWidget> allWidgets = this.rootGroup.getWidgetsFlattened();
 		for (final Map.Entry<String, GuiWidget> entry : allWidgets.entrySet()) {
 			final String key = entry.getKey();
-			final GuiWidget widget = entry.getValue();
-			final IO io = key.startsWith("items_in") ? IO.IN : key.startsWith("items_out_") ? IO.OUT : null;
-			if (io == null) {
-				continue;
-			}
-			final int slotIndex = Integer.parseInt(key.substring(key.lastIndexOf('_') + 1));
-			final List<Tuple<List<ItemStack>, RecipeObject>> itemMapping = (io == IO.IN ? holder.getInputItems() : holder.getOutputItems()).getStackData();
-			if (slotIndex < 0 || slotIndex >= itemMapping.size()) {
-				continue;
-			}
-			final Tuple<List<ItemStack>, RecipeObject> data = itemMapping.get(slotIndex);
-			final IRecipeSlotBuilder slotBuilder = switch (io) {
-				case IN -> builder.addInputSlot(xOffset + widget.getX(), widget.getY());
-				case OUT -> builder.addOutputSlot(xOffset + widget.getX(), widget.getY());
-			};
-			slotBuilder.addIngredients(VanillaTypes.ITEM_STACK, data.getA());
-			slotBuilder.addRichTooltipCallback((recipeSlotView, tooltip) -> {
-				if (data.getB().chance() == 0) {
-					tooltip.add(Component.translatable("info.conductance.jei.%s.chance_0".formatted(io)));
-				} else if (data.getB().chance() != 1.0) {
-					tooltip.add(Component.translatable("info.conductance.jei.%s.chance".formatted(io), data.getB().chance() * 100));
+			if (key.startsWith("items_")) {
+				final IO io = key.startsWith("items_in_") ? IO.IN : key.startsWith("items_out_") ? IO.OUT : null;
+				if (io == null) {
+					continue;
 				}
-			});
-			if (data.getB().chance() == 0) {
-				slotBuilder.setOverlay(switch (io) {
-					case IN -> SlotTextOverlay.IN_CHANCE_0;
-					case OUT -> SlotTextOverlay.OUT_CHANCE_0;
-				}, 0, 0);
-			} else if (data.getB().chance() < 1) {
-				slotBuilder.setOverlay(switch (io) {
-					case IN -> SlotTextOverlay.IN_CHANCE;
-					case OUT -> SlotTextOverlay.OUT_CHANCE;
-				}, 0, 0);
+				final List<Tuple<List<ItemStack>, RecipeObject>> mapping = io == IO.IN ? holder.getInputItems() : holder.getOutputItems();
+				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset, 0, entry.getValue(), key, io, mapping,
+					(slotBuilder, itemStacks) -> slotBuilder.addIngredients(VanillaTypes.ITEM_STACK, itemStacks));
+			} else if (key.startsWith("fluids_")) {
+				final IO io = key.startsWith("fluids_in_") ? IO.IN : key.startsWith("fluids_out_") ? IO.OUT : null;
+				if (io == null) {
+					continue;
+				}
+				final List<Tuple<List<FluidStack>, RecipeObject>> mapping = io == IO.IN ? holder.getInputFluids() : holder.getOutputFluids();
+				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset + 1, 1, entry.getValue(), key, io, mapping,
+					(slotBuilder, fluidStacks) -> slotBuilder
+						.addIngredients(NeoForgeTypes.FLUID_STACK, fluidStacks)
+						.setFluidRenderer(1, false, 16, 16)
+				);
 			}
+		}
+	}
+
+	private static <T> void makeRecipeSlotEntry(
+		final IRecipeLayoutBuilder builder, final int xOffset, final int yOffset, final GuiWidget widget, final String widgetKey, final IO io, final List<Tuple<List<T>, RecipeObject>> mapping,
+		final BiConsumer<IRecipeSlotBuilder, List<T>> ingredientSetter
+	) {
+		final int slotIndex = Integer.parseInt(widgetKey.substring(widgetKey.lastIndexOf('_') + 1));
+		if (slotIndex < 0 || slotIndex >= mapping.size()) {
+			return;
+		}
+		final Tuple<List<T>, RecipeObject> data = mapping.get(slotIndex);
+		final IRecipeSlotBuilder slotBuilder = switch (io) {
+			case IN -> builder.addInputSlot(xOffset + widget.getX(), yOffset + widget.getY());
+			case OUT -> builder.addOutputSlot(xOffset + widget.getX(), yOffset + widget.getY());
+		};
+		ingredientSetter.accept(slotBuilder, data.getA());
+		slotBuilder.addRichTooltipCallback((recipeSlotView, tooltip) -> {
+			if (data.getB().chance() == 0) {
+				tooltip.add(Component.translatable("info.conductance.jei.%s.chance_0".formatted(io)));
+			} else if (data.getB().chance() != 1.0) {
+				tooltip.add(Component.translatable("info.conductance.jei.%s.chance".formatted(io), data.getB().chance() * 100));
+			}
+		});
+		if (data.getB().chance() == 0) {
+			slotBuilder.setOverlay(switch (io) {
+				case IN -> SlotTextOverlay.IN_CHANCE_0;
+				case OUT -> SlotTextOverlay.OUT_CHANCE_0;
+			}, 0, 0);
+		} else if (data.getB().chance() < 1) {
+			slotBuilder.setOverlay(switch (io) {
+				case IN -> SlotTextOverlay.IN_CHANCE;
+				case OUT -> SlotTextOverlay.OUT_CHANCE;
+			}, 0, 0);
 		}
 	}
 
@@ -110,14 +134,14 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 		final int xOffset = (this.width - this.rootGroup.getWidth()) / 2;
 		guiGraphics.pose().pushMatrix();
 		guiGraphics.pose().translate(xOffset, 0);
-		Optional.ofNullable(this.rootGroup.getWidgetById("items_in")).ifPresent(inputGroup -> {
+		Optional.ofNullable(this.rootGroup.getWidgetById("in")).ifPresent(inputGroup -> {
 			inputGroup.renderBackground(guiGraphics, (int) mouseX, (int) mouseY, 0);
 		});
 		Optional.ofNullable(this.rootGroup.getWidgetById("progress")).ifPresent(progress -> {
 			progress.renderBackground(guiGraphics, (int) mouseX, (int) mouseY, 0);
 			progress.renderForeground(guiGraphics, (int) mouseX, (int) mouseY, 0);
 		});
-		Optional.ofNullable(this.rootGroup.getWidgetById("items_out")).ifPresent(outputGroup -> {
+		Optional.ofNullable(this.rootGroup.getWidgetById("out")).ifPresent(outputGroup -> {
 			outputGroup.renderBackground(guiGraphics, (int) mouseX, (int) mouseY, 0);
 		});
 		guiGraphics.pose().popMatrix();

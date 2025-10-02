@@ -8,6 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import conductance.api.material.MaterialRegistry;
@@ -21,6 +22,7 @@ public final class CAPI {
 
 	public static final String MOD_ID = "conductance";
 	public static final long UNIT = 3628800;
+	public static final int BUCKET = FluidType.BUCKET_VOLUME;
 	public static final RandomSource RANDOM = RandomSource.createNewThreadLocalInstance();
 	public static final Gson GSON;
 	public static final TagKey<Item> TAG_WRENCHES = Tags.Items.TOOLS_WRENCH;

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
@@ -61,7 +60,7 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 		if (tag.registry() == Registries.ITEM) {
 			return this.in(Ingredient.of(this.registries.lookupOrThrow(Registries.ITEM).getOrThrow((TagKey<Item>) tag)), Math.abs(count));
 		} else if (tag.registry() == Registries.FLUID) {
-			return this.in(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow((TagKey<Fluid>) tag)), Math.abs(count) * (count < 0 ? FluidType.BUCKET_VOLUME : 1));
+			return this.in(FluidIngredient.of(this.registries.lookupOrThrow(Registries.FLUID).getOrThrow((TagKey<Fluid>) tag)), Math.abs(count) * (count < 0 ? FluidType.BUCKET_VOLUME : 1));
 		}
 		return this;
 	}
@@ -72,7 +71,7 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 		if (tag.registry() == Registries.ITEM) {
 			return this.nc(Ingredient.of(this.registries.lookupOrThrow(Registries.ITEM).getOrThrow((TagKey<Item>) tag)), Math.abs(count));
 		} else if (tag.registry() == Registries.FLUID) {
-			return this.nc(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow((TagKey<Fluid>) tag)), Math.abs(count) * (count < 0 ? FluidType.BUCKET_VOLUME : 1));
+			return this.nc(FluidIngredient.of(this.registries.lookupOrThrow(Registries.FLUID).getOrThrow((TagKey<Fluid>) tag)), Math.abs(count) * (count < 0 ? FluidType.BUCKET_VOLUME : 1));
 		}
 		return this;
 	}
@@ -83,7 +82,7 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 		if (tag.registry() == Registries.ITEM) {
 			return this.out(Ingredient.of(this.registries.lookupOrThrow(Registries.ITEM).getOrThrow((TagKey<Item>) tag)), Math.abs(count));
 		} else if (tag.registry() == Registries.FLUID) {
-			return this.out(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow((TagKey<Fluid>) tag)), Math.abs(count) * (count < 0 ? FluidType.BUCKET_VOLUME : 1));
+			return this.out(FluidIngredient.of(this.registries.lookupOrThrow(Registries.FLUID).getOrThrow((TagKey<Fluid>) tag)), Math.abs(count) * (count < 0 ? FluidType.BUCKET_VOLUME : 1));
 		}
 		return this;
 	}

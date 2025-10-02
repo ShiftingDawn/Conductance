@@ -175,14 +175,4 @@ public class IOFluidHandlerList implements IFluidHandlerModifiable, ValueIOSeria
 		}
 		return drainedStack == null ? FluidStack.EMPTY : drainedStack;
 	}
-
-	@Override
-	public boolean canFill(final int tank) {
-		return this.io.isInput();
-	}
-
-	@Override
-	public boolean canDrain(final int tank) {
-		return this.io.isOutput();
-	}
 }

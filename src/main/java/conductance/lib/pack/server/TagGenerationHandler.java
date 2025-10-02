@@ -16,6 +16,7 @@ import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import conductance.api.NCMaterialProps;
 import conductance.Conductance;
 
@@ -109,13 +110,19 @@ final class TagGenerationHandler {
 	}
 
 	private static void addFluidEntriesToTagMap(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
-		//		MaterialRegistryImpl.INSTANCE.getFluidTable().rowMap().forEach((taggedSet, map) -> map.forEach((material, fluids) -> fluids.forEach(fluid -> {
-		//			final ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
-		//			taggedSet.streamAllFluidTags(material).forEach(tagKey -> {
-		//				tagMap.computeIfAbsent(tagKey.location(), k -> new ArrayList<>())
-		//						.add(new TagLoader.EntryWithSource(TagEntry.element(fluidId), TagGenerationHandler.TAG_SOURCE));
-		//			});
-		//		})));
+		Conductance.MATERIALS.getFluidTable().rowMap().forEach((material, map) -> map.forEach((handler, fluid) -> {
+			if (handler == null || fluid == null || material == null) {
+				return;
+			}
+			for (final TagKey<Fluid> entryTag : handler.getEntryTags(BuiltInRegistries.FLUID, material)) {
+				tagMap.computeIfAbsent(entryTag.location(), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.FLUID.getKey(fluid)), TagGenerationHandler.TAG_SOURCE));
+			}
+			for (final TagKey<Fluid> entryTag : handler.getGroupTags(BuiltInRegistries.FLUID, material)) {
+				tagMap.computeIfAbsent(entryTag.location(), k -> new ArrayList<>())
+					.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.FLUID.getKey(fluid)), TagGenerationHandler.TAG_SOURCE));
+			}
+		}));
 	}
 
 	private TagGenerationHandler() {

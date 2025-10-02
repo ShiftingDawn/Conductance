@@ -10,6 +10,7 @@ public final class NCMachines {
 	public static MachineType<?> EXTRUDER;
 	public static MachineType<?> WIREMILL;
 	public static MachineType<?> LATHE;
+	public static MachineType<?> EXTRACTOR;
 
 	private NCMachines() {
 	}

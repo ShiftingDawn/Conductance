@@ -12,6 +12,7 @@ import conductance.core.machine.MachineCore;
 import conductance.init.machine.GenericRecipeMachine;
 import conductance.init.machine.GenericRecipeMachineGuiSetup;
 import static conductance.api.NCMachines.BENDING_MACHINE;
+import static conductance.api.NCMachines.EXTRACTOR;
 import static conductance.api.NCMachines.EXTRUDER;
 import static conductance.api.NCMachines.LATHE;
 import static conductance.api.NCMachines.PULVERIZER;
@@ -27,6 +28,7 @@ final class ConductanceMachines {
 		EXTRUDER = ConductanceMachines.makeGenericRecipeMachine(event, "extruder", NCRecipeTypes.EXTRUDER);
 		WIREMILL = ConductanceMachines.makeGenericRecipeMachine(event, "wiremill", NCRecipeTypes.WIREMILL);
 		LATHE = ConductanceMachines.makeGenericRecipeMachine(event, "lathe", NCRecipeTypes.LATHE);
+		EXTRACTOR = ConductanceMachines.makeGenericRecipeMachine(event, "extractor", NCRecipeTypes.EXTRACTOR);
 	}
 
 	private static MachineType<GenericRecipeMachine> makeGenericRecipeMachine(final RegisterMachineEvent event, final String name, final MachineRecipeType recipeType) {

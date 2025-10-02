@@ -7,6 +7,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -16,6 +17,7 @@ import conductance.api.NCDataComponents;
 import conductance.api.NCItems;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.GuiTheme;
+import conductance.api.machine.gui.MachineScreen;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.Conductance;
 
@@ -55,6 +57,11 @@ public final class ConductanceJeiPlugin implements IModPlugin {
 				registration.addCraftingStation(GenericRecipeMachineCategory.RECIPE_TYPES.apply(recipeType), machineType.getBlock().get());
 			}
 		}
+	}
+
+	@Override
+	public void registerGuiHandlers(final IGuiHandlerRegistration registration) {
+		registration.addGuiContainerHandler(MachineScreen.class, new MachineScreenGuiHandler());
 	}
 
 	@Override
