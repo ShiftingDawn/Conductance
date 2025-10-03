@@ -1,6 +1,7 @@
 package conductance.api.machine;
 
 import java.util.List;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -10,9 +11,12 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -23,23 +27,28 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.block.BlockRotationHelper;
+import conductance.api.block.BlockRotationType;
 import conductance.api.block.IGeneratedMiningTags;
 import conductance.api.machine.gui.MachineMenu;
 
 public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements EntityBlock, IGeneratedMiningTags {
 
+	private static final ThreadLocal<BlockRotationType> CURRENT_ROTATION_TYPE = new ThreadLocal<>();
 	public static final BooleanProperty TICKING = BooleanProperty.create("ticking");
 	private final @Getter MachineType<T> machineType;
 
 	public MachineBlock(final BlockBehaviour.Properties properties, final MachineType<T> machineType) {
-		super(properties);
+		super(Util.make(properties, ignored -> MachineBlock.CURRENT_ROTATION_TYPE.set(machineType.getRotationType())));
 		this.machineType = machineType;
-		this.registerDefaultState(this.getStateDefinition().any().setValue(MachineBlock.TICKING, false));
+		this.registerDefaultState(BlockRotationHelper.addToDefaultState(machineType.getRotationType(), this.getStateDefinition().any()).setValue(MachineBlock.TICKING, false));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder) {
-		super.createBlockStateDefinition(builder.add(MachineBlock.TICKING));
+		super.createBlockStateDefinition(builder);
+		BlockRotationHelper.addToBlockStateDefinition(MachineBlock.CURRENT_ROTATION_TYPE.get(), builder);
+		builder.add(MachineBlock.TICKING);
 	}
 
 	@Override
@@ -55,6 +64,23 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	@Override
 	public BlockEntity newBlockEntity(final BlockPos blockPos, final BlockState blockState) {
 		return this.machineType.getBlockEntityType().get().create(blockPos, blockState);
+	}
+
+	@Override
+	public BlockState getStateForPlacement(final BlockPlaceContext context) {
+		BlockState state = this.defaultBlockState();
+		state = BlockRotationHelper.setFacingOnPlacement(state, context);
+		return state;
+	}
+
+	@Override
+	protected BlockState rotate(final BlockState state, final Rotation rotation) {
+		return BlockRotationHelper.applyRotation(state, rotation);
+	}
+
+	@Override
+	protected BlockState mirror(final BlockState state, final Mirror mirror) {
+		return BlockRotationHelper.applyMirror(state, mirror);
 	}
 
 	@Override

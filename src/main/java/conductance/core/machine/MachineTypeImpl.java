@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.block.BlockRotationType;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineBlockItem;
@@ -37,6 +38,9 @@ final class MachineTypeImpl<T extends MachineBlockEntity<T>> implements MachineT
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	private @Nullable GuiSetup guiSetup;
+	@Getter
+	@Setter(AccessLevel.PACKAGE)
+	private BlockRotationType rotationType;
 
 	@Override
 	public Component getName() {

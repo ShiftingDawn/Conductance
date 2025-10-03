@@ -1,11 +1,10 @@
 package conductance.api.block;
 
-public enum RotationType {
+public enum BlockRotationType {
 
 	NONE,
 	ALL,
-	ALL_DIRECTIONAL,
+	EXTENDED,
 	HORIZONTAL,
-	VERTICAL;
-
+	VERTICAL
 }

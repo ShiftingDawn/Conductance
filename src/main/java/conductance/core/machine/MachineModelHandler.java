@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.block.BlockRotationHelper;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineType;
 import conductance.api.resource.ModelBuilder;
@@ -36,13 +37,13 @@ final class MachineModelHandler {
 		event.addBlockModel(Conductance.id("machine/base"), b -> b.parent(Conductance.id("block/cube_all")).particle(MachineModelHandler.BASE_CASING_TEXTURE));
 		MachineModelHandler.DEFAULT_MODELS.forEach(machineType -> {
 			final MachineBlock<?> block = machineType.getBlock().get();
-			event.addBlockState(block, blockState -> blockState.simple(variant -> variant.model(block)));
+			event.addBlockState(block, blockState -> BlockRotationHelper.handleBlockStateGeneration(blockState, machineType.getRotationType(), variant -> variant.model(block)));
 			MachineModelHandler.createStandardModel(event, machineType, block, MachineModelHandler.BASE_CASING_TEXTURE, casing -> casing.parent(Conductance.id("block/machine/base")));
 			event.addItemModelDelegate(block);
 		});
 		MachineModelHandler.SIMPLE_MODELS.forEach((machineType, casingTexture) -> {
 			final MachineBlock<?> block = machineType.getBlock().get();
-			event.addBlockState(block, blockState -> blockState.simple(variant -> variant.model(block)));
+			event.addBlockState(block, blockState -> BlockRotationHelper.handleBlockStateGeneration(blockState, machineType.getRotationType(), variant -> variant.model(block)));
 			MachineModelHandler.createStandardModel(event, machineType, block, casingTexture, casing -> casing.parent(Conductance.id("block/cube_all")).particle(casingTexture));
 			event.addItemModelDelegate(block);
 		});

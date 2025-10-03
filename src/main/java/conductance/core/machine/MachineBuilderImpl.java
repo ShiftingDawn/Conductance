@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.block.BlockRotationType;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineBlockItem;
@@ -27,6 +28,7 @@ final class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Machi
 	private @Setter MachineBlockItemFactory<T> itemFactory = MachineBlockItem::new;
 	private MachineRecipeType[] recipeTypes = new MachineRecipeType[0];
 	private @Nullable GuiSetup guiSetup = new GuiSetup();
+	private BlockRotationType rotationType = BlockRotationType.HORIZONTAL;
 	private ModelType modelType = ModelType.DEFAULT;
 	private @Nullable Object modelTypeData = null;
 
@@ -41,6 +43,12 @@ final class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Machi
 	@Override
 	public MachineBuilder<T> guiSetup(@Nullable final GuiSetup guiSetup) {
 		this.guiSetup = guiSetup;
+		return this;
+	}
+
+	@Override
+	public MachineBuilder<T> rotationType(final BlockRotationType type) {
+		this.rotationType = type;
 		return this;
 	}
 
@@ -64,6 +72,7 @@ final class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Machi
 			type.setBlockEntityType(MachineCore.createBlockEntityType(this.registryKey.getPath(), type, type.getBlock(), this.blockEntityFactory));
 			type.setRecipeTypes(this.recipeTypes);
 			type.setGuiSetup(this.guiSetup);
+			type.setRotationType(this.rotationType);
 		});
 		switch (this.modelType) {
 			case DEFAULT -> MachineModelHandler.addDefault(result);
