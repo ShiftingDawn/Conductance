@@ -3,13 +3,25 @@ package conductance.api.util;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public final class ModelUtils {
 
+	public static final ResourceLocation BLOCK_ATLAS = ResourceLocation.withDefaultNamespace("textures/atlas/blocks.png");
 	public static final Map<Direction, IntPos> MODEL_ROTATION;
 	public static final Map<Direction, String> LOGICAL_SIDES;
+
+	public static @UnknownNullability TextureAtlasSprite getBlockSprite(@Nullable final ResourceLocation texture) {
+		return Minecraft.getInstance().getTextureAtlas(ModelUtils.BLOCK_ATLAS).apply(Objects.requireNonNullElseGet(texture, MissingTextureAtlasSprite::getLocation));
+	}
 
 	static {
 		MODEL_ROTATION = Collections.unmodifiableMap(Util.make(new EnumMap<>(Direction.class), map -> {

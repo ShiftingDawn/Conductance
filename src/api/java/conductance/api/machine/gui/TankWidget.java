@@ -4,8 +4,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.network.chat.Component;
@@ -21,9 +19,11 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.CapIO;
 import conductance.api.machine.IFluidHandlerModifiable;
 import conductance.api.machine.TankAwareFluidHandler;
 import conductance.api.util.GuiUtils;
+import conductance.api.util.ModelUtils;
 import conductance.api.util.TextHelper;
 import static conductance.api.util.GuiUtils.tooltipMoreInfo;
 import static conductance.api.util.GuiUtils.tooltipTranslatable;
@@ -32,9 +32,11 @@ public final class TankWidget extends GuiWidget {
 
 	private final @Getter IFluidHandler handler;
 	private final @Getter int tank;
+	private final CapIO io;
 
-	public TankWidget(final int x, final int y, final int width, final int height, final IFluidHandler handler, final int tank) {
+	public TankWidget(final int x, final int y, final int width, final int height, final IFluidHandler handler, final int tank, final CapIO io) {
 		super(x, y, width, height);
+		this.io = io;
 		if (handler instanceof final IFluidHandlerModifiable modifiable && !(handler instanceof TankAwareFluidHandler)) {
 			this.handler = new TankAwareFluidHandler(modifiable, tank);
 		} else {
@@ -65,10 +67,11 @@ public final class TankWidget extends GuiWidget {
 		});
 	}
 
-	public TankWidget(final int x, final int y, final IFluidHandler handler, final int tank) {
-		this(x, y, 18, 18, handler, tank);
+	public TankWidget(final int x, final int y, final IFluidHandler handler, final int tank, final CapIO io) {
+		this(x, y, 18, 18, handler, tank, io);
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void renderBackground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
 		super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
@@ -80,9 +83,9 @@ public final class TankWidget extends GuiWidget {
 			final IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(fluid.getFluid());
 			final ResourceLocation texture = extensions.getStillTexture(fluid);
 			final int color = ARGB.opaque(extensions.getTintColor(fluid));
-			TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(texture);
+			TextureAtlasSprite sprite = ModelUtils.getBlockSprite(texture);
 			if (sprite == null) {
-				sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(MissingTextureAtlasSprite.getLocation());
+				sprite = ModelUtils.getBlockSprite(null);
 			}
 			final GuiSpriteScaling.Tile tileScaling = new GuiSpriteScaling.Tile(sprite.contents().width(), sprite.contents().height());
 			guiGraphics.enableScissor(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1);
@@ -116,13 +119,18 @@ public final class TankWidget extends GuiWidget {
 
 	@Override
 	public boolean onMouseClicked(final int mouseX, final int mouseY, final int button) {
-		final ItemStack carried = this.getMenu().getCarried();
-		if (!carried.isEmpty() && carried.getCapability(Capabilities.FluidHandler.ITEM) != null) {
-			this.sendToServer(1, output -> {
-				output.putBoolean("fill", button == 0);
-				output.putBoolean("mult", GuiUtils.isShiftDown());
-			});
-			return true;
+		if (this.io != CapIO.NONE) {
+			final ItemStack carried = this.getMenu().getCarried();
+			if (!carried.isEmpty() && carried.getCapability(Capabilities.FluidHandler.ITEM) != null) {
+				final boolean fill = button == 0;
+				if ((fill && this.io.isInput()) || (!fill && this.io.isOutput())) {
+					this.sendToServer(1, output -> {
+						output.putBoolean("fill", fill);
+						output.putBoolean("mult", GuiUtils.isShiftDown());
+					});
+				}
+				return true;
+			}
 		}
 		return super.onMouseClicked(mouseX, mouseY, button);
 	}
@@ -141,6 +149,9 @@ public final class TankWidget extends GuiWidget {
 	}
 
 	private @Nullable ItemStack tryFillIntoHandler(final boolean multiple) {
+		if (!this.io.isInput()) {
+			return null;
+		}
 		final ItemStack carried = this.getMenu().getCarried();
 		if (carried.isEmpty() || carried.getCapability(Capabilities.FluidHandler.ITEM) == null) {
 			return null;
@@ -157,6 +168,9 @@ public final class TankWidget extends GuiWidget {
 	}
 
 	private @Nullable ItemStack tryDrainFromHandler(final boolean multiple) {
+		if (!this.io.isOutput()) {
+			return null;
+		}
 		final ItemStack carried = this.getMenu().getCarried();
 		if (carried.isEmpty() || carried.getCapability(Capabilities.FluidHandler.ITEM) == null) {
 			return null;

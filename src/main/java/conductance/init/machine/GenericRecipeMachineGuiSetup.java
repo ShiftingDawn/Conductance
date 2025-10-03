@@ -9,6 +9,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.CapIO;
 import conductance.api.machine.gui.GuiDrawableTexture;
 import conductance.api.machine.gui.GuiSetup;
 import conductance.api.machine.gui.GuiTheme;
@@ -32,12 +33,12 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 		final GenericRecipeMachine machine = (GenericRecipeMachine) menu.getMachine();
 		if (machine.getInputItems() != null) {
 			for (int i = 0; i < machine.getInputItems().getSlots(); ++i) {
-				adder.accept(new RepositionableSlotItemHandler(machine.getInputItems().getInventory(), i, i * 18, 0));
+				adder.accept(new RepositionableSlotItemHandler(machine.getInputItems().getInventory(), i, i * 18, 0, CapIO.BOTH));
 			}
 		}
 		if (machine.getOutputItems() != null) {
 			for (int i = 0; i < machine.getOutputItems().getSlots(); ++i) {
-				adder.accept(new RepositionableSlotItemHandler(machine.getOutputItems().getInventory(), i, i * 18, 0));
+				adder.accept(new RepositionableSlotItemHandler(machine.getOutputItems().getInventory(), i, i * 18, 0, CapIO.OUT));
 			}
 		}
 	}
@@ -120,7 +121,7 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 			return new SlotWidget(slot);
 		}, (tankIndex, x, y) -> {
 			assert fluidHandler != null;
-			return new TankWidget(x, y, fluidHandler, tankIndex);
+			return new TankWidget(x, y, fluidHandler, tankIndex, io == IO.IN ? CapIO.BOTH : CapIO.OUT);
 		});
 	}
 

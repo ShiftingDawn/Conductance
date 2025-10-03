@@ -9,6 +9,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import lombok.Getter;
+import conductance.api.machine.CapIO;
 
 /**
  * @see net.neoforged.neoforge.items.SlotItemHandler
@@ -18,14 +19,14 @@ public class RepositionableSlotItemHandler extends RepositionableSlot {
 	private static final Container EMPTY_INVENTORY = new SimpleContainer(0);
 	private final @Getter IItemHandler itemHandler;
 
-	public RepositionableSlotItemHandler(final IItemHandler itemHandler, final int slot, final int initialX, final int initialY) {
-		super(RepositionableSlotItemHandler.EMPTY_INVENTORY, slot, initialX, initialY);
+	public RepositionableSlotItemHandler(final IItemHandler itemHandler, final int slot, final int initialX, final int initialY, final CapIO io) {
+		super(RepositionableSlotItemHandler.EMPTY_INVENTORY, slot, initialX, initialY, io);
 		this.itemHandler = itemHandler;
 	}
 
 	@Override
 	public boolean mayPlace(final ItemStack stack) {
-		if (stack.isEmpty()) {
+		if (!this.getIo().isInput() || stack.isEmpty()) {
 			return false;
 		}
 		return this.itemHandler.isItemValid(this.getContainerSlot(), stack);
@@ -58,7 +59,7 @@ public class RepositionableSlotItemHandler extends RepositionableSlot {
 
 	@Override
 	public boolean mayPickup(final Player playerIn) {
-		return !this.getItemHandler().extractItem(this.getContainerSlot(), 1, true).isEmpty();
+		return this.getIo().isOutput() && !this.getItemHandler().extractItem(this.getContainerSlot(), 1, true).isEmpty();
 	}
 
 	@Override
