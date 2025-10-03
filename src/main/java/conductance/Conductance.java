@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.logging.LogUtils;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -40,9 +40,8 @@ import conductance.lib.RegistryProviderImpl;
 import conductance.lib.ResourceFinderImpl;
 import conductance.lib.network.RegisterPacketEvent;
 
-@Mod(value = Conductance.MODID)
 @SuppressWarnings("NotNullFieldNotInitialized")
-public final class Conductance {
+public abstract class Conductance {
 
 	public static final String MODID = "conductance";
 	public static final Logger LOGGER = LogUtils.getLogger();
@@ -52,8 +51,8 @@ public final class Conductance {
 	private static final AtomicBoolean HAS_REGISTERED = new AtomicBoolean(false);
 	private static IEventBus MODBUS;
 
-	public Conductance(final IEventBus modEventBus, final ModContainer modContainer) {
-		Conductance.LOGGER.info("Conductance is initializing on platform: NeoForge");
+	protected Conductance(final Dist dist, final IEventBus modEventBus, final ModContainer modContainer) {
+		Conductance.LOGGER.info("Conductance[{}] is initializing on platform: NeoForge", dist);
 		Conductance.MODBUS = modEventBus;
 		modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, ModConfig.SPEC);
 		modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
