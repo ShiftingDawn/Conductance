@@ -14,8 +14,10 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -36,6 +38,7 @@ import conductance.init.machine.GenericRecipeMachineGuiSetup;
 
 final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecipe> {
 
+	private static final int LINE_COUNT = 1;
 	static final Function<MachineRecipeType, IRecipeType<MachineRecipe>> RECIPE_TYPES = Util.memoize(machineRecipeType ->
 		new IRecipeType.JeiRecipeType<>(machineRecipeType.getId(), MachineRecipe.class)
 	);
@@ -55,7 +58,7 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 			this.recipeType, new JeiProgressProvider()
 		);
 		this.width = Math.max(140, this.rootGroup.getWidth());
-		this.height = this.rootGroup.getHeight();
+		this.height = this.rootGroup.getHeight() + 3 + (GenericRecipeMachineCategory.LINE_COUNT * 10);
 	}
 
 	@Override
@@ -139,6 +142,13 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 			outputGroup.renderBackground(guiGraphics, (int) mouseX, (int) mouseY, 0);
 		});
 		guiGraphics.pose().popMatrix();
+	}
+
+	@Override
+	public void createRecipeExtras(final IRecipeExtrasBuilder builder, final MachineRecipe recipe, final IFocusGroup focuses) {
+		builder.addText(List.of(
+			Component.translatable("info.conductance.jei.duration", TextHelper.getFormattedRecipeDuration(recipe.getRecipeDuration()))
+		), this.getWidth(), this.getHeight() - this.rootGroup.getHeight()).setPosition(0, this.rootGroup.getHeight() + 3);
 	}
 
 	@Override

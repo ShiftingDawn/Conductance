@@ -48,6 +48,16 @@ public final class TextHelper {
 		return TextHelper.BUCKET_FORMAT.format(amount / 1000_000.0) + "kB";
 	}
 
+	public static Component getFormattedRecipeDuration(final int ticks) {
+		if (ticks < 20) {
+			return Component.translatable("info.conductance.generic.duration.ticks", ticks);
+		} else if (ticks < 200) {
+			return Component.translatable("info.conductance.generic.duration.seconds_small", TextHelper.BUCKET_FORMAT.format(ticks / 20.0), ticks);
+		} else {
+			return Component.translatable("info.conductance.generic.duration.seconds", TextHelper.BUCKET_FORMAT.format(ticks / 20.0));
+		}
+	}
+
 	private TextHelper() {
 	}
 }

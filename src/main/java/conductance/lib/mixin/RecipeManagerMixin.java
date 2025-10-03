@@ -27,8 +27,9 @@ public class RecipeManagerMixin {
 	private HolderLookup.Provider registries;
 
 	@Inject(method = "prepare(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)Lnet/minecraft/world/item/crafting/RecipeMap;", at = @At(value = "INVOKE", target = "Ljava/util/SortedMap;forEach(Ljava/util/function/BiConsumer;)V"))
-	private void conductance$removeRecipes(final ResourceManager resourceManager, final ProfilerFiller profiler, final CallbackInfoReturnable<RecipeMap> cir,
-	                                       @Local final SortedMap<ResourceLocation, Recipe<?>> sortedmap) {
+	private void conductance$removeRecipes(
+		final ResourceManager resourceManager, final ProfilerFiller profiler, final CallbackInfoReturnable<RecipeMap> cir, @Local final SortedMap<ResourceLocation, Recipe<?>> sortedmap
+	) {
 		RuntimeDataPackBridge.removeRecipes(sortedmap);
 		RuntimeDataPackBridge.insertRecipes(this.registries, sortedmap);
 	}
