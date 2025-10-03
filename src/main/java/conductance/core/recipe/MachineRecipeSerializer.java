@@ -15,17 +15,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import conductance.api.CAPI;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
-import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.RecipeElement;
+import conductance.api.recipe.RecipeElementType;
 
 final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 
-	public static final MachineRecipeSerializer INSTANCE = new MachineRecipeSerializer();
 	private static final MapCodec<MachineRecipe> MAP_CODEC;
 	private static final StreamCodec<RegistryFriendlyByteBuf, MachineRecipe> STREAM_CODEC;
-
-	private MachineRecipeSerializer() {
-	}
 
 	@Override
 	public MapCodec<MachineRecipe> codec() {

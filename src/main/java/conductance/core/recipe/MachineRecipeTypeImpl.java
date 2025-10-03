@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.Util;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -43,9 +44,10 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 		this.recipeBuilderCallback = recipeBuilderCallback;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public RecipeSerializer<MachineRecipe> getRecipeSerializer() {
-		return MachineRecipeSerializer.INSTANCE;
+		return (RecipeSerializer<MachineRecipe>) BuiltInRegistries.RECIPE_SERIALIZER.getValue(this.getId());
 	}
 
 	@Override

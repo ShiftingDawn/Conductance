@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
@@ -11,8 +12,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import lombok.Getter;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
-import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.RecipeElement;
+import conductance.api.recipe.RecipeElementType;
 
 final class MachineRecipeImpl implements MachineRecipe {
 
@@ -36,7 +37,7 @@ final class MachineRecipeImpl implements MachineRecipe {
 
 	@Override
 	public RecipeSerializer<MachineRecipe> getSerializer() {
-		return MachineRecipeSerializer.INSTANCE;
+		return this.recipeType.getRecipeSerializer();
 	}
 
 	@Override

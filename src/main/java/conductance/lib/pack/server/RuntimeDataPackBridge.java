@@ -29,6 +29,7 @@ public final class RuntimeDataPackBridge {
 	public static void reload(final HolderLookup.Provider provider) {
 		final long sysTime = System.currentTimeMillis();
 
+		RuntimeDataPack.clearData();
 		LootTableGenerationHandler.reload(provider);
 
 		Conductance.LOGGER.info("Conductance reloaded RuntimeDataPack in {}ms", System.currentTimeMillis() - sysTime);

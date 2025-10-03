@@ -35,7 +35,7 @@ public final class RecipeHandler extends MachineCapability {
 	public void serialize(final ValueOutput output) {
 		if (this.lastRecipe != null) {
 			output.putString("type", this.lastRecipe.getType().getId().toString());
-			output.store("data", this.lastRecipe.getSerializer().codec().codec(), this.lastRecipe);
+			output.store("data", this.lastRecipe.getType().getRecipeSerializer().codec().codec(), this.lastRecipe);
 		}
 		output.putInt("cur", this.progressCurrent);
 		output.putInt("max", this.progressMax);

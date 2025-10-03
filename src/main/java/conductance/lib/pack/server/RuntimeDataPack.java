@@ -35,6 +35,10 @@ final class RuntimeDataPack extends AbstractRuntimePack {
 		RuntimeDataPack.DATA.put(recipeLocation, recipe.toString().getBytes(StandardCharsets.UTF_8));
 	}
 
+	static void clearData() {
+		RuntimeDataPack.DATA.clear();
+	}
+
 	static void addBlockLootTable(final ResourceLocation blockId, final Supplier<JsonElement> lootTable) {
 		Util.make(lootTable.get(), json -> {
 			final ResourceLocation lootTableLocation = RuntimeDataPack.getLootTableLocation(blockId, "blocks");

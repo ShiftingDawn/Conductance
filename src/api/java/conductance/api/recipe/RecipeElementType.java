@@ -37,7 +37,7 @@ public interface RecipeElementType<T> {
 	default Codec<RecipeElement> getRecipeObjectCodec() {
 		return RecordCodecBuilder.create(instance -> instance.group(
 			this.getDataCodec().fieldOf("data").forGetter(obj -> (T) obj.data()),
-			Codec.DOUBLE.optionalFieldOf("chance", 1.0).forGetter(RecipeElement::chance)
+			Codec.DOUBLE.fieldOf("chance").forGetter(RecipeElement::chance)
 		).apply(instance, RecipeElement::new));
 	}
 

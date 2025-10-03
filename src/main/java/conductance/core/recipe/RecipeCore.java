@@ -42,12 +42,12 @@ public final class RecipeCore {
 	}
 
 	private static void initRecipeTypes() {
-		Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Conductance.id("machine"), MachineRecipeSerializer.INSTANCE);
 		Conductance.dispatch(RegisterRecipeTypeEvent.class, modid -> new RegisterRecipeTypeEventImpl((registryName, builder) -> {
 			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
 			final MachineRecipeTypeImpl result = Util.make(new RecipeTypeBuilderImpl(), builder).build();
 			Conductance.REGISTRIES.register(CAPI.regs().recipeTypes(), registryKey, result);
 			Registry.register(BuiltInRegistries.RECIPE_TYPE, registryKey, result);
+			Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, registryKey, new MachineRecipeSerializer());
 			return result;
 		}));
 	}
