@@ -121,15 +121,22 @@ public final class TankWidget extends GuiWidget {
 	public boolean onMouseClicked(final int mouseX, final int mouseY, final int button) {
 		if (this.io != CapIO.NONE) {
 			final ItemStack carried = this.getMenu().getCarried();
-			if (!carried.isEmpty() && carried.getCapability(Capabilities.FluidHandler.ITEM) != null) {
-				final boolean fill = button == 0;
-				if ((fill && this.io.isInput()) || (!fill && this.io.isOutput())) {
-					this.sendToServer(1, output -> {
-						output.putBoolean("fill", fill);
-						output.putBoolean("mult", GuiUtils.isShiftDown());
-					});
+			if (!carried.isEmpty()) {
+				final IFluidHandler itemHandler = carried.getCapability(Capabilities.FluidHandler.ITEM);
+				if (itemHandler != null) {
+					final boolean[] fill = {button == 0};
+					if (fill[0] && itemHandler.getTanks() > 0 && itemHandler.getFluidInTank(0).isEmpty()) {
+						//Left-clicking with an empty fluid container should drain fluid instead
+						fill[0] = false;
+					}
+					if ((fill[0] && this.io.isInput()) || (!fill[0] && this.io.isOutput())) {
+						this.sendToServer(1, output -> {
+							output.putBoolean("fill", fill[0]);
+							output.putBoolean("mult", GuiUtils.isShiftDown());
+						});
+					}
+					return true;
 				}
-				return true;
 			}
 		}
 		return super.onMouseClicked(mouseX, mouseY, button);
