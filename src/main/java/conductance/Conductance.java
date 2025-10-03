@@ -16,6 +16,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ import conductance.init.ConductanceDataComponents;
 import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
 import conductance.init.ConductanceMenuTypes;
+import conductance.lib.GridInteractionHandler;
 import conductance.lib.RegistryProviderImpl;
 import conductance.lib.ResourceFinderImpl;
 import conductance.lib.network.RegisterPacketEvent;
@@ -64,6 +66,7 @@ public abstract class Conductance {
 
 		modEventBus.addListener(RegisterEvent.class, this::onRegister);
 		modEventBus.addListener(RegisterPayloadHandlersEvent.class, this::onRegisterPayloadHandlers);
+		GridInteractionHandler.init(NeoForge.EVENT_BUS);
 
 		ConductanceCreativeTabs.initialize(modEventBus);
 	}
