@@ -3,6 +3,7 @@ package conductance.init;
 import java.util.Objects;
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -16,6 +17,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialTraits;
+import conductance.api.block.BlockHelper;
+import conductance.api.block.RotationType;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreBearer;
 import conductance.api.plugin.ConductancePluginListener;
@@ -28,18 +31,34 @@ import conductance.init.block.MaterialBlockItem;
 import conductance.init.block.MaterialOreBlock;
 import conductance.init.block.MaterialOreBlockItem;
 import conductance.init.block.MaterialOreRotatedPillarBlock;
+import conductance.init.block.TestBlock;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceBlocks {
 
 	private static final DeferredRegister.Blocks REGISTRY = DeferredRegister.createBlocks(Conductance.MODID);
 	private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Conductance.MODID);
+	private static Holder<Block> testBlock0;
+	private static Holder<Block> testBlock1;
+	private static Holder<Block> testBlock2;
+	private static Holder<Block> testBlock3;
+	private static Holder<Block> testBlock4;
 
 	public static void initialize(final IEventBus modEventBus) {
 		ConductanceBlocks.REGISTRY.register(modEventBus);
 		ConductanceBlocks.ITEMS.register(modEventBus);
 		CAPI.regs().materials().forEach(ConductanceBlocks::generateMaterial);
 		modEventBus.addListener(RegisterColorHandlersEvent.Block.class, ConductanceBlocks::handleMaterialBlockColors);
+		ConductanceBlocks.testBlock0 = ConductanceBlocks.REGISTRY.registerBlock("test_0", props -> TestBlock.create(props, RotationType.NONE));
+		ConductanceBlocks.testBlock1 = ConductanceBlocks.REGISTRY.registerBlock("test_1", props -> TestBlock.create(props, RotationType.ALL));
+		ConductanceBlocks.testBlock2 = ConductanceBlocks.REGISTRY.registerBlock("test_2", props -> TestBlock.create(props, RotationType.HORIZONTAL));
+		ConductanceBlocks.testBlock3 = ConductanceBlocks.REGISTRY.registerBlock("test_3", props -> TestBlock.create(props, RotationType.VERTICAL));
+		ConductanceBlocks.testBlock4 = ConductanceBlocks.REGISTRY.registerBlock("test_4", props -> TestBlock.create(props, RotationType.ALL_DIRECTIONAL));
+		ConductanceBlocks.ITEMS.registerSimpleBlockItem(ConductanceBlocks.testBlock0);
+		ConductanceBlocks.ITEMS.registerSimpleBlockItem(ConductanceBlocks.testBlock1);
+		ConductanceBlocks.ITEMS.registerSimpleBlockItem(ConductanceBlocks.testBlock2);
+		ConductanceBlocks.ITEMS.registerSimpleBlockItem(ConductanceBlocks.testBlock3);
+		ConductanceBlocks.ITEMS.registerSimpleBlockItem(ConductanceBlocks.testBlock4);
 	}
 
 	private static void generateMaterial(final Material material) {
@@ -168,6 +187,27 @@ public final class ConductanceBlocks {
 			);
 			event.addItemModelDelegate(block);
 		}));
+		final ResourceLocation rl = ResourceLocation.withDefaultNamespace("block/furnace");
+		event.addBlockState(ConductanceBlocks.testBlock0.value(), b -> {
+			BlockHelper.applyRotation(b, RotationType.NONE, rl);
+		});
+		event.addBlockState(ConductanceBlocks.testBlock1.value(), b -> {
+			BlockHelper.applyRotation(b, RotationType.ALL, rl);
+		});
+		event.addBlockState(ConductanceBlocks.testBlock2.value(), b -> {
+			BlockHelper.applyRotation(b, RotationType.HORIZONTAL, rl);
+		});
+		event.addBlockState(ConductanceBlocks.testBlock3.value(), b -> {
+			BlockHelper.applyRotation(b, RotationType.VERTICAL, rl);
+		});
+		event.addBlockState(ConductanceBlocks.testBlock4.value(), b -> {
+			BlockHelper.applyRotation(b, RotationType.ALL_DIRECTIONAL, rl);
+		});
+		event.addItemModelDelegate(ConductanceBlocks.testBlock0.value());
+		event.addItemModelDelegate(ConductanceBlocks.testBlock1.value());
+		event.addItemModelDelegate(ConductanceBlocks.testBlock2.value());
+		event.addItemModelDelegate(ConductanceBlocks.testBlock3.value());
+		event.addItemModelDelegate(ConductanceBlocks.testBlock4.value());
 	}
 
 	private static void handleMaterialBlockColors(final RegisterColorHandlersEvent.Block event) {
