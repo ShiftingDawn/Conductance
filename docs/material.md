@@ -8,8 +8,11 @@ This means that a texture set named `coolmod:daset` should have a json file loca
 ## Json Structure
 ```json5
 {
-  // The parent set to use when looking for a texture that doesn't exist.
-  // If omitted, conductance:dull will be used
-  "parent": "conductance:shiny"
+	// The parent set to use when looking for a texture that doesn't exist.
+	// If omitted, conductance:dull will be used
+	"parent": "conductance:shiny",
+	// Optional texture to render on top of all other textures in the set.
+	// Does not cascade like other textures in a set
+	"overlay":"conductance:material/magnetic_overlay"
 }
 ```
