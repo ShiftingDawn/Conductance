@@ -19,6 +19,11 @@ public final class NCItems {
 	public static Holder<Item> PROGRAM_CIRCUIT;
 	public static Holder<Item> EMPTY_EXTRUDER_SHAPE;
 	public static Map<ExtruderShape, Holder<Item>> EXTRUDER_SHAPES;
+	public static Holder<Item> WOOD_CIRCUIT_BOARD;
+	public static Holder<Item> WOOD_CIRCUIT_SUBSTRATE;
+	public static Holder<Item> DIODE;
+	public static Holder<Item> RESISTOR;
+	public static Holder<Item> TRANSISTOR;
 
 	public static ItemStack tiered(final TieredItemType tieredItemType, final Tier tier, final int count) {
 		final Holder<Item> item = NCItems.TIERED.get(tieredItemType, tier);

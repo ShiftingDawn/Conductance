@@ -17,6 +17,11 @@
   "item.conductance.ring_extruder_shape": "Ring Extruder Shape",
   "item.conductance.rotor_extruder_shape": "Rotor Extruder Shape",
   "item.conductance.screw_extruder_shape": "Screw Extruder Shape",
+  "item.conductance.wood_circuit_board": "Wood Circuit Board",
+  "item.conductance.wood_circuit_substrate": "Wood Circuit Substrate",
+  "item.conductance.diode": "Diode",
+  "item.conductance.resistor": "Resistor",
+  "item.conductance.transistor": "Transistor",
 
   "tooltip.material_bucket.temperature": "§eTemperature: §r%sK",
   "tooltip.material_bucket.density": "§eDensity: §r%s",

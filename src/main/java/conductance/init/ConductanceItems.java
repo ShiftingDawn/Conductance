@@ -1,8 +1,10 @@
 package conductance.init;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -38,6 +40,7 @@ import conductance.lib.network.RegisterPacketEvent;
 public final class ConductanceItems {
 
 	private static final DeferredRegister.Items REGISTRY = DeferredRegister.createItems(Conductance.MODID);
+	private static final List<Holder<Item>> SIMPLE_ITEMS = new ArrayList<>();
 
 	public static void initialize(final IEventBus modEventBus) {
 		ConductanceItems.REGISTRY.register(modEventBus);
@@ -67,6 +70,19 @@ public final class ConductanceItems {
 				})));
 			}
 		}));
+		NCItems.WOOD_CIRCUIT_BOARD = ConductanceItems.makeSimpleItem("wood_circuit_board");
+		NCItems.WOOD_CIRCUIT_SUBSTRATE = ConductanceItems.makeSimpleItem("wood_circuit_substrate");
+		NCItems.DIODE = ConductanceItems.makeSimpleItem("diode");
+		NCItems.RESISTOR = ConductanceItems.makeSimpleItem("resistor");
+		NCItems.TRANSISTOR = ConductanceItems.makeSimpleItem("transistor");
+	}
+
+	private static Holder<Item> makeSimpleItem(final String itemName) {
+		final Holder<Item> result = ConductanceItems.REGISTRY.registerItem(itemName, props -> Util.make(new Item(props), item -> {
+			CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
+		}));
+		ConductanceItems.SIMPLE_ITEMS.add(result);
+		return result;
 	}
 
 	private static void generateMaterial(final Material material) {
@@ -158,6 +174,7 @@ public final class ConductanceItems {
 			event.addItemsModel(item.value(), b -> b.simple(item.value()));
 			event.addItemModel(item.value(), b -> b.layer0(Conductance.id("item/extruder_shape/" + shape)));
 		});
+		ConductanceItems.SIMPLE_ITEMS.forEach(itemHolder -> event.addSimpleItem(itemHolder.value()));
 	}
 
 	@EventListener(priority = -100)

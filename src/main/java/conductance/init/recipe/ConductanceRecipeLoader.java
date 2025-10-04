@@ -14,6 +14,7 @@ final class ConductanceRecipeLoader {
 		TierRecipes.add(event);
 		MaterialOreRecipes.add(event);
 		MaterialRecycleRecipes.add(event);
+		CircuitRecipes.add(event);
 	}
 
 	private ConductanceRecipeLoader() {
