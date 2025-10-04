@@ -1,18 +1,20 @@
 package conductance.api;
 
+import java.util.Map;
 import conductance.api.machine.MachineType;
+import conductance.api.tier.Tier;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCMachines {
 
-	public static MachineType<?> BENDING_MACHINE;
-	public static MachineType<?> PULVERIZER;
-	public static MachineType<?> EXTRUDER;
-	public static MachineType<?> WIREMILL;
-	public static MachineType<?> LATHE;
-	public static MachineType<?> EXTRACTOR;
-	public static MachineType<?> COMPRESSOR;
-	public static MachineType<?> CUTTING_MACHINE;
+	public static Map<Tier, MachineType<?>> BENDING_MACHINE;
+	public static Map<Tier, MachineType<?>> PULVERIZER;
+	public static Map<Tier, MachineType<?>> EXTRUDER;
+	public static Map<Tier, MachineType<?>> WIREMILL;
+	public static Map<Tier, MachineType<?>> LATHE;
+	public static Map<Tier, MachineType<?>> EXTRACTOR;
+	public static Map<Tier, MachineType<?>> COMPRESSOR;
+	public static Map<Tier, MachineType<?>> CUTTING_MACHINE;
 
 	private NCMachines() {
 	}

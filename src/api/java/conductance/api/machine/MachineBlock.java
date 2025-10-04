@@ -3,6 +3,7 @@ package conductance.api.machine;
 import java.util.List;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -49,6 +50,11 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 		super.createBlockStateDefinition(builder);
 		BlockRotationHelper.addToBlockStateDefinition(MachineBlock.CURRENT_ROTATION_TYPE.get(), builder);
 		builder.add(MachineBlock.TICKING);
+	}
+
+	@Override
+	public MutableComponent getName() {
+		return this.machineType.getName();
 	}
 
 	@Override

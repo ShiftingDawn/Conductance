@@ -1,7 +1,7 @@
 package conductance.core.machine;
 
 import java.util.function.Supplier;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,14 +15,12 @@ import conductance.api.machine.MachineBlockItem;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.gui.GuiSetup;
 import conductance.api.recipe.MachineRecipeType;
-import conductance.api.util.Lazy;
 
 @RequiredArgsConstructor
 final class MachineTypeImpl<T extends MachineBlockEntity<T>> implements MachineType<T> {
 
-	private final Lazy<Component> name = Lazy.of(() -> Component.translatable(this.getDescriptionId()));
 	private final @Getter String descriptionId;
-
+	private final @Getter MutableComponent name;
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	private Supplier<MachineBlock<T>> block;
@@ -41,9 +39,4 @@ final class MachineTypeImpl<T extends MachineBlockEntity<T>> implements MachineT
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	private BlockRotationType rotationType;
-
-	@Override
-	public Component getName() {
-		return this.name.get();
-	}
 }

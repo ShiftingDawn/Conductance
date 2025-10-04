@@ -27,9 +27,10 @@ import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.RecipeHelper;
+import conductance.api.tier.Tier;
 import conductance.api.util.IO;
 
-public final class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachine> implements RecipeCapabilityHolder {
+public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachine> implements RecipeCapabilityHolder {
 
 	private final @Getter RecipeHandler recipeHandler;
 	@Getter
@@ -43,41 +44,29 @@ public final class GenericRecipeMachine extends MachineBlockEntity<GenericRecipe
 	private final Table<RecipeElementType<?>, IO, List<MachineRecipeCapability<?>>> recipeCapabilities;
 	private final Lazy<IntSortedSet> recipePrograms;
 
-	public GenericRecipeMachine(final MachineType<GenericRecipeMachine> type, final BlockPos pos, final BlockState blockState) {
+	public GenericRecipeMachine(final MachineType<GenericRecipeMachine> type, final Tier tier, final BlockPos pos, final BlockState blockState, final Object... additionalProps) {
 		super(type, pos, blockState);
 		this.recipeHandler = new RecipeHandler(this, this);
 		final int inputItemLimit = this.getRecipeType().getLimit(IO.IN, NCRecipeElementTypes.ITEM);
-		if (inputItemLimit > 0) {
-			this.inputItems = new MachineRecipeCapabilityItems(this, inputItemLimit, IO.IN, CapIO.IN, MachineInventory::new);
-			this.inputItems.addChangedListener(this::setChanged);
-			this.inputItems.addChangedListener(this.recipeHandler::revalidateTick);
-		} else {
-			this.inputItems = null;
-		}
+		this.inputItems = inputItemLimit > 0 ? CAPI.make(new MachineRecipeCapabilityItems(this, inputItemLimit, IO.IN, CapIO.IN, MachineInventory::new), inv -> {
+			inv.addChangedListener(this::setChanged);
+			inv.addChangedListener(this.recipeHandler::revalidateTick);
+		}) : null;
 		final int outputItemLimit = this.getRecipeType().getLimit(IO.OUT, NCRecipeElementTypes.ITEM);
-		if (outputItemLimit > 0) {
-			this.outputItems = new MachineRecipeCapabilityItems(this, outputItemLimit, IO.OUT, CapIO.OUT, MachineInventory::new);
-			this.outputItems.addChangedListener(this::setChanged);
-			this.outputItems.addChangedListener(this.recipeHandler::revalidateTick);
-		} else {
-			this.outputItems = null;
-		}
+		this.outputItems = outputItemLimit > 0 ? CAPI.make(new MachineRecipeCapabilityItems(this, outputItemLimit, IO.OUT, CapIO.OUT, MachineInventory::new), inv -> {
+			inv.addChangedListener(this::setChanged);
+			inv.addChangedListener(this.recipeHandler::revalidateTick);
+		}) : null;
 		final int inputFluidLimit = this.getRecipeType().getLimit(IO.IN, NCRecipeElementTypes.FLUID);
-		if (inputFluidLimit > 0) {
-			this.inputFluids = new MachineRecipeCapabilityFluids(this, inputFluidLimit, IO.IN, CapIO.IN, tankCount -> new MachineFluidHandler(tankCount, CAPI.BUCKET * 16));
-			this.inputFluids.addChangedListener(this::setChanged);
-			this.inputFluids.addChangedListener(this.recipeHandler::revalidateTick);
-		} else {
-			this.inputFluids = null;
-		}
-		final int outputFluidLimit = this.getRecipeType().getLimit(IO.OUT, NCRecipeElementTypes.FLUID);
-		if (outputFluidLimit > 0) {
-			this.outputFluids = new MachineRecipeCapabilityFluids(this, outputFluidLimit, IO.OUT, CapIO.OUT, tankCount -> new MachineFluidHandler(tankCount, CAPI.BUCKET * 16));
-			this.outputFluids.addChangedListener(this::setChanged);
-			this.outputFluids.addChangedListener(this.recipeHandler::revalidateTick);
-		} else {
-			this.outputFluids = null;
-		}
+		this.inputFluids = inputFluidLimit > 0 ? CAPI.make(new MachineRecipeCapabilityFluids(this, inputFluidLimit, IO.IN, CapIO.IN, tankCount -> new MachineFluidHandler(tankCount, CAPI.BUCKET * 16)), handler -> {
+			handler.addChangedListener(this::setChanged);
+			handler.addChangedListener(this.recipeHandler::revalidateTick);
+		}) : null;
+		final int outputFluidLimit = this.getRecipeType().getLimit(IO.IN, NCRecipeElementTypes.FLUID);
+		this.outputFluids = outputFluidLimit > 0 ? CAPI.make(new MachineRecipeCapabilityFluids(this, outputFluidLimit, IO.OUT, CapIO.OUT, tankCount -> new MachineFluidHandler(tankCount, CAPI.BUCKET * 16)), handler -> {
+			handler.addChangedListener(this::setChanged);
+			handler.addChangedListener(this.recipeHandler::revalidateTick);
+		}) : null;
 		this.recipeCapabilities = Tables.unmodifiableTable(Util.make(HashBasedTable.create(), table -> {
 			table.put(NCRecipeElementTypes.ITEM, IO.IN, this.inputItems != null ? List.of(this.inputItems) : List.of());
 			table.put(NCRecipeElementTypes.ITEM, IO.OUT, this.outputItems != null ? List.of(this.outputItems) : List.of());

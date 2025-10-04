@@ -1,6 +1,7 @@
 package conductance.api;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -11,6 +12,9 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.material.MaterialRegistry;
 import conductance.api.recipe.RecipeHelper;
 import conductance.api.registry.RegistryProvider;
@@ -57,6 +61,14 @@ public final class CAPI {
 
 	public static boolean isClient() {
 		return FMLEnvironment.dist.isClient();
+	}
+
+	@Contract("!null, _ -> !null; null, _ -> null")
+	public static @Nullable <T> T make(@Nullable final T object, final Consumer<@NotNull T> consumer) {
+		if (object != null) {
+			consumer.accept(object);
+		}
+		return object;
 	}
 
 	static {

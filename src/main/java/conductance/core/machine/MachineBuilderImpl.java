@@ -1,7 +1,10 @@
 package conductance.core.machine;
 
 import java.util.Objects;
+import java.util.function.Function;
 import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -17,6 +20,7 @@ import conductance.api.machine.event.MachineBlockItemFactory;
 import conductance.api.machine.event.MachineBuilder;
 import conductance.api.machine.gui.GuiSetup;
 import conductance.api.recipe.MachineRecipeType;
+import conductance.api.tier.Tier;
 
 @RequiredArgsConstructor
 @Accessors(fluent = true, chain = true)
@@ -31,6 +35,7 @@ final class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Machi
 	private BlockRotationType rotationType = BlockRotationType.HORIZONTAL;
 	private ModelType modelType = ModelType.DEFAULT;
 	private @Nullable Object modelTypeData = null;
+	private Function<String, MutableComponent> nameFactory = Component::translatable;
 
 	@Override
 	public MachineBuilder<T> recipeType(final MachineRecipeType recipeType, final MachineRecipeType... additionalRecipeTypes) {
@@ -60,13 +65,30 @@ final class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Machi
 	}
 
 	@Override
+	public MachineBuilder<T> tieredModel(final String machineModelKey, final Tier tier) {
+		this.modelType = ModelType.TIERED;
+		this.modelTypeData = new Object[] {
+			Objects.requireNonNull(machineModelKey, "Machine key cannot be null"),
+			Objects.requireNonNull(tier, "Tier cannot be null"),
+		};
+		return this;
+	}
+
+	@Override
 	public MachineBuilder<T> customModel() {
 		this.modelType = ModelType.CUSTOM;
 		return this;
 	}
 
+	@Override
+	public MachineBuilder<T> customName(final Function<String, MutableComponent> nameFactory) {
+		this.nameFactory = nameFactory;
+		return this;
+	}
+
 	public MachineTypeImpl<T> build(final ResourceLocation registryKey) {
-		final MachineTypeImpl<T> result = Util.make(new MachineTypeImpl<>(Util.makeDescriptionId("machine", registryKey)), type -> {
+		final String descriptionId = Util.makeDescriptionId("machine", registryKey);
+		final MachineTypeImpl<T> result = Util.make(new MachineTypeImpl<>(descriptionId, this.nameFactory.apply(descriptionId)), type -> {
 			type.setBlock(MachineCore.createBlock(this.registryKey.getPath(), type, this.blockFactory));
 			type.setItem(MachineCore.createItem(this.registryKey.getPath(), type.getDescriptionId(), type.getBlock(), this.itemFactory));
 			type.setBlockEntityType(MachineCore.createBlockEntityType(this.registryKey.getPath(), type, type.getBlock(), this.blockEntityFactory));
@@ -77,6 +99,7 @@ final class MachineBuilderImpl<T extends MachineBlockEntity<T>> implements Machi
 		switch (this.modelType) {
 			case DEFAULT -> MachineModelHandler.addDefault(result);
 			case SIMPLE -> MachineModelHandler.addSimple(result, (ResourceLocation) this.modelTypeData);
+			case TIERED -> MachineModelHandler.addTiered(result, (String) ((Object[]) this.modelTypeData)[0], (Tier) ((Object[]) this.modelTypeData)[1]);
 		}
 		return result;
 	}

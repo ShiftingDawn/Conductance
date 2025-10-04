@@ -4,5 +4,6 @@ public enum ModelType {
 
 	DEFAULT,
 	SIMPLE,
+	TIERED,
 	CUSTOM;
 }

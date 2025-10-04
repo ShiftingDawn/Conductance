@@ -56,7 +56,7 @@
 
   "tier.conductance.empty": "Empty",
   "tier.conductance.max": "§lMAX",
-  "tier.conductance.lv": "§1LV",
+  "tier.conductance.lv": "§9LV",
 
   "recipeType.conductance.bending_machine": "Bending Machine",
   "recipeType.conductance.pulverizer": "Pulverizer",
@@ -67,14 +67,14 @@
   "recipeType.conductance.compressor": "Compressor",
   "recipeType.conductance.cutting_machine": "Cutting Machine",
 
-  "machine.conductance.bending_machine": "Bending Machine",
-  "machine.conductance.pulverizer": "Pulverizer",
-  "machine.conductance.extruder": "Extruder",
-  "machine.conductance.wiremill": "Wiremill",
-  "machine.conductance.lathe": "Lathe",
-  "machine.conductance.extractor": "Extractor",
-  "machine.conductance.compressor": "Compressor",
-  "machine.conductance.cutting_machine": "Cutting Machine",
+  "machine.conductance.bending_machine": "%s Bending Machine",
+  "machine.conductance.pulverizer": "%s Pulverizer",
+  "machine.conductance.extruder": "%s Extruder",
+  "machine.conductance.wiremill": "%s Wiremill",
+  "machine.conductance.lathe": "%s Lathe",
+  "machine.conductance.extractor": "%s Extractor",
+  "machine.conductance.compressor": "%s Compressor",
+  "machine.conductance.cutting_machine": "%s Cutting Machine",
 
   "guiWidget.conductance.tank.empty": "Empty",
   "guiWidget.conductance.tank.capacity": "§9Capacity:§r %s",

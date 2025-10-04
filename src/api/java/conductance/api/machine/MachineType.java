@@ -2,7 +2,7 @@ package conductance.api.machine;
 
 import java.util.Objects;
 import java.util.function.Supplier;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +27,7 @@ public interface MachineType<T extends MachineBlockEntity<T>> {
 
 	String getDescriptionId();
 
-	Component getName();
+	MutableComponent getName();
 
 	default ResourceLocation getId() {
 		return Objects.requireNonNull(CAPI.regs().machines().getKey(this), "Unregistered machine type");
