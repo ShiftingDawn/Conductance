@@ -1,3 +1,4 @@
 {
-  "parent": "conductance:metallic"
+  "parent": "conductance:metallic",
+  "overlay": "conductance:material/magnetic_overlay"
 }

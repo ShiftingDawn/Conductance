@@ -1,17 +1,19 @@
 package conductance.core.material;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import com.google.gson.JsonObject;
+import net.minecraft.util.LenientJsonParser;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.google.gson.JsonElement;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
@@ -19,17 +21,13 @@ import conductance.Conductance;
 
 public final class MaterialTextureSetLoader {
 
-	private record MaterialTextureSet(ResourceLocation id, @Nullable MaterialTextureSet parent) {
-
-	}
-
 	private static final MaterialTextureSetLoader INSTANCE = new MaterialTextureSetLoader();
 	private static final ResourceLocation BASE_ID = Conductance.id("dull");
+	private static final Codec<MaterialTextureSet> CODEC;
 	private final Map<ResourceLocation, MaterialTextureSet> knownSets = new ConcurrentHashMap<>();
 
 	public static void reload() {
 		MaterialTextureSetLoader.INSTANCE.knownSets.clear();
-		MaterialTextureSetLoader.INSTANCE.knownSets.put(MaterialTextureSetLoader.BASE_ID, new MaterialTextureSet(MaterialTextureSetLoader.BASE_ID, null));
 		for (final Material material : CAPI.regs().materials()) {
 			MaterialTextureSetLoader.INSTANCE.load(material.getTextureSet(), new LinkedList<>());
 		}
@@ -52,13 +50,14 @@ public final class MaterialTextureSetLoader {
 		loadingStack.addLast(set);
 		final ResourceLocation expectedPath = set.withPath("models/material/%s.json"::formatted);
 		Minecraft.getInstance().getResourceManager().getResource(expectedPath).ifPresentOrElse(resource -> {
-			//noinspection CheckStyle
-			try (final InputStreamReader reader = new InputStreamReader(resource.open())) {
-				final JsonObject json = GsonHelper.fromJson(CAPI.GSON, reader, JsonObject.class);
-				final ResourceLocation parent = ResourceLocation.parse(GsonHelper.getAsString(json, "parent", MaterialTextureSetLoader.BASE_ID.toString()));
-				this.load(parent, loadingStack);
-				this.knownSets.put(set, new MaterialTextureSet(set, this.knownSets.get(parent)));
-			} catch (final IOException e) {
+			try (final BufferedReader reader = resource.openAsReader()) {
+				final JsonElement element = LenientJsonParser.parse(reader);
+				final MaterialTextureSet textureSet = MaterialTextureSetLoader.CODEC.decode(JsonOps.INSTANCE, element).getOrThrow().getFirst();
+				if (!set.equals(MaterialTextureSetLoader.BASE_ID) && !textureSet.parent().equals(MaterialTextureSetLoader.BASE_ID)) {
+					this.load(textureSet.parent(), loadingStack);
+				}
+				this.knownSets.put(set, textureSet);
+			} catch (final Throwable e) {
 				Conductance.LOGGER.error("Could not generate material texture set {}.", set, e);
 			}
 		}, () -> {
@@ -68,17 +67,23 @@ public final class MaterialTextureSetLoader {
 		loadingStack.removeLast();
 	}
 
-	public static Collection<ResourceLocation> getTextureSets() {
-		return MaterialTextureSetLoader.INSTANCE.knownSets.keySet();
+	public static Map<ResourceLocation, MaterialTextureSet> getTextureSets() {
+		return Collections.unmodifiableMap(MaterialTextureSetLoader.INSTANCE.knownSets);
 	}
 
-	@Nullable
-	public static ResourceLocation getParentSet(final ResourceLocation set) {
-		final MaterialTextureSet setObject = MaterialTextureSetLoader.INSTANCE.knownSets.get(set);
-		if (setObject == null || setObject.parent == null) {
+	public static @Nullable ResourceLocation getParentSet(final ResourceLocation set) {
+		if (set.equals(MaterialTextureSetLoader.BASE_ID)) {
 			return null;
 		}
-		return setObject.parent.id;
+		final MaterialTextureSet entry = MaterialTextureSetLoader.INSTANCE.knownSets.get(set);
+		return entry != null ? entry.parent() : null;
+	}
+
+	static {
+		CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			ResourceLocation.CODEC.optionalFieldOf("parent", MaterialTextureSetLoader.BASE_ID).forGetter(MaterialTextureSet::parent),
+			ResourceLocation.CODEC.optionalFieldOf("overlay").forGetter(MaterialTextureSet::overlay)
+		).apply(instance, MaterialTextureSet::new));
 	}
 
 	private MaterialTextureSetLoader() {
