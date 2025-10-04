@@ -23,6 +23,7 @@ import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
 import conductance.Conductance;
+import conductance.core.material.MaterialColorTintSource;
 import conductance.init.block.MaterialBlock;
 import conductance.init.block.MaterialBlockItem;
 import conductance.init.block.MaterialOreBlock;
@@ -138,9 +139,13 @@ public final class ConductanceBlocks {
 				event.addBlockState(block, b -> b.simple(b2 -> {
 					b2.model(model);
 				}));
-				event.addItemsModel(block.asItem(), b -> b.model(model, b2 -> {
-					b2.tints(tints -> tints.constant(material.getColor()));
-				}));
+				event.addItemsModel(block.asItem(), b -> b.model(model, b2 -> b2.tints(tints -> {
+					if (!material.getColor().hasMultipleColors()) {
+						tints.constant(material.getColor().getCurrentColor());
+					} else {
+						tints.custom(MaterialColorTintSource.ID, json -> json.addProperty("default", -1));
+					}
+				})));
 			}
 		}));
 		Conductance.MATERIALS.getBlockTable().rowMap().forEach((material, map) -> map.forEach((handler, block) -> {
@@ -168,7 +173,7 @@ public final class ConductanceBlocks {
 							.from(0, 0, 0)
 							.to(16, 16, 16)
 							.shade(!emissive)
-							.faces((f, b) -> b.particle().neoforgeData(b2 -> b2.color(material.getColor())), true)
+							.faces((f, b) -> b.particle().tintIndex(0), true)
 						)
 					)
 				)
@@ -178,13 +183,24 @@ public final class ConductanceBlocks {
 	}
 
 	private static void handleMaterialBlockColors(final RegisterColorHandlersEvent.Block event) {
-		final Block[] materialBlocks = ConductanceBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get)
-			.filter(block -> block instanceof MaterialBlock)
-			.toArray(Block[]::new);
-		event.register((blockState, blockAndTintGetter, blockPos, i) -> {
-			final MaterialBlock block = (MaterialBlock) blockState.getBlock();
-			return i == 0 ? block.getMaterial().getColor() : -1;
-		}, materialBlocks);
+		Util.make(ConductanceBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof MaterialBlock).toArray(Block[]::new), blocks -> {
+			event.register((blockState, blockAndTintGetter, blockPos, i) -> {
+				final MaterialBlock block = (MaterialBlock) blockState.getBlock();
+				return i == 0 ? block.getMaterial().getColor().getCurrentColor() : -1;
+			}, blocks);
+		});
+		Util.make(ConductanceBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof MaterialOreBlock).toArray(Block[]::new), blocks -> {
+			event.register((blockState, blockAndTintGetter, blockPos, i) -> {
+				final MaterialOreBlock block = (MaterialOreBlock) blockState.getBlock();
+				return i == 0 ? block.getMaterial().getColor().getCurrentColor() : -1;
+			}, blocks);
+		});
+		Util.make(ConductanceBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof MaterialOreRotatedPillarBlock).toArray(Block[]::new), blocks -> {
+			event.register((blockState, blockAndTintGetter, blockPos, i) -> {
+				final MaterialOreRotatedPillarBlock block = (MaterialOreRotatedPillarBlock) blockState.getBlock();
+				return i == 0 ? block.getMaterial().getColor().getCurrentColor() : -1;
+			}, blocks);
+		});
 	}
 
 	private ConductanceBlocks() {

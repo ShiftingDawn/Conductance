@@ -202,10 +202,10 @@ public interface MaterialBuilder {
 
 	<T> MaterialBuilder removeProp(MaterialProp<T> propToRemove);
 
-	MaterialBuilder color(int rgb);
+	MaterialBuilder color(int[] colors, int frametime);
 
-	default MaterialBuilder color(final int r, final int g, final int b) {
-		return this.color(ARGB.color(r, g, b));
+	default MaterialBuilder color(final int rgb) {
+		return this.color(new int[] {rgb}, 0);
 	}
 
 	MaterialBuilder textureSet(ResourceLocation textureSet);

@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.material.Material;
+import conductance.api.material.MaterialColor;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialProp;
 import conductance.api.material.MaterialStack;
@@ -19,7 +20,6 @@ import conductance.api.material.MaterialTrait;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.util.Lazy;
-import conductance.api.util.LazyInt;
 import conductance.api.util.LazyLong;
 
 final class MaterialImpl implements Material {
@@ -29,7 +29,7 @@ final class MaterialImpl implements Material {
 	private final Map<MaterialTraitKey<?>, MaterialTrait<?>> traits;
 	private final Map<MaterialProp<?>, Object> props;
 	private final @Getter ResourceLocation textureSet;
-	private final LazyInt color;
+	private final Lazy<MaterialColor> color;
 	private final List<MaterialStack> components;
 	private final LazyLong protons = LazyLong.of(() -> this.calc(PeriodicElement::protons, Material::getProtons, 43));
 	private final LazyLong neutrons = LazyLong.of(() -> this.calc(PeriodicElement::neutrons, Material::getNeutrons, 55));
@@ -40,7 +40,7 @@ final class MaterialImpl implements Material {
 	MaterialImpl(
 		@Nullable final PeriodicElement periodicElement,
 		final Set<MaterialFlag> flags, final Map<MaterialTraitKey<?>, MaterialTrait<?>> traits, final Map<MaterialProp<?>, Object> props,
-		@Nullable final Integer color, final ResourceLocation textureSet,
+		@Nullable final MaterialColor color, final ResourceLocation textureSet,
 		final List<MaterialStack> components, @Nullable final String chemicalFormula
 	) {
 		this.periodicElement = periodicElement;
@@ -48,7 +48,7 @@ final class MaterialImpl implements Material {
 		this.traits = Collections.unmodifiableMap(traits);
 		this.props = Collections.unmodifiableMap(props);
 		this.textureSet = textureSet;
-		this.color = color != null ? LazyInt.of(color) : LazyInt.of(this::calcColor);
+		this.color = color != null ? Lazy.of(color) : Lazy.of(this::calcColor);
 		this.components = Collections.unmodifiableList(components);
 		this.chemicalFormula = chemicalFormula != null ? Lazy.of(chemicalFormula) : Lazy.of(this::calcChemicalFormula);
 	}
@@ -124,8 +124,8 @@ final class MaterialImpl implements Material {
 	}
 
 	@Override
-	public int getColor() {
-		return this.color.getAsInt();
+	public MaterialColor getColor() {
+		return this.color.get();
 	}
 
 	@Override
@@ -138,8 +138,8 @@ final class MaterialImpl implements Material {
 		return this.chemicalFormula.get();
 	}
 
-	private int calcColor() {
-		return -1;
+	private MaterialColor calcColor() {
+		return new MaterialColor(new int[] {-1}, 0);
 	}
 
 	private long calc(final ToLongFunction<PeriodicElement> rootProvider, final ToLongFunction<Material> provider, final long fallback) {

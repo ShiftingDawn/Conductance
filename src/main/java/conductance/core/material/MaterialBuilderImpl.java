@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.AccessLevel;
@@ -22,6 +21,7 @@ import conductance.api.NCMaterialTextureSets;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCMaterials;
 import conductance.api.material.Material;
+import conductance.api.material.MaterialColor;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialProp;
 import conductance.api.material.MaterialStack;
@@ -46,7 +46,7 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 
 	private final @Nullable PeriodicElement periodicElement;
 	private ResourceLocation textureSet = NCMaterialTextureSets.DULL;
-	private @Nullable Integer color;
+	private @Nullable MaterialColor color;
 	private @Nullable String chemicalFormula;
 
 	@Override
@@ -109,8 +109,8 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	}
 
 	@Override
-	public MaterialBuilder color(final int rgb) {
-		this.color = ARGB.opaque(rgb);
+	public MaterialBuilder color(final int[] colors, final int frametime) {
+		this.color = new MaterialColor(colors, frametime);
 		return this;
 	}
 

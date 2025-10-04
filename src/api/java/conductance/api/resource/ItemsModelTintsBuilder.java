@@ -1,5 +1,9 @@
 package conductance.api.resource;
 
+import java.util.function.Consumer;
+import net.minecraft.resources.ResourceLocation;
+import com.google.gson.JsonObject;
+
 public interface ItemsModelTintsBuilder {
 
 	ItemsModelTintsBuilder constant(int color);
@@ -39,4 +43,6 @@ public interface ItemsModelTintsBuilder {
 	default ItemsModelTintsBuilder customModelData(final float r, final float g, final float b) {
 		return this.customModelData(0, r, g, b);
 	}
+
+	ItemsModelTintsBuilder custom(ResourceLocation type, Consumer<JsonObject> obj);
 }

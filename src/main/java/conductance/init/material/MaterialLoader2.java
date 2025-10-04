@@ -111,7 +111,7 @@ public final class MaterialLoader2 {
 		EYE_OF_ENDER = event.register("eye_of_ender", b -> b
 			.gemExtra()
 			.removeFlag(NCMaterialFlags.GEM_FLAWED, NCMaterialFlags.GEM_FLAWLESS, NCMaterialFlags.GEM_EXQUISITE)
-			.color(160, 250, 230).textureSet(SHINY)
+			.color(0xA0FAE6).textureSet(SHINY)
 			.components(ENDER_PEARL, BLAZE)
 		);
 		AMETHYST = event.register("amethyst", b -> b

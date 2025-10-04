@@ -8,6 +8,7 @@ import net.minecraft.util.Mth;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
+import conductance.api.resource.ItemsModelBuilder;
 import conductance.api.resource.ItemsModelTintsBuilder;
 
 @RequiredArgsConstructor
@@ -125,6 +126,11 @@ final class ItemsModelTintsBuilderImpl implements ItemsModelTintsBuilder {
 				arr.add(Mth.clamp(b, 0, 1));
 			}));
 		});
+	}
+
+	@Override
+	public ItemsModelTintsBuilder custom(final ResourceLocation type, final Consumer<JsonObject> obj) {
+		return this.add(type, obj);
 	}
 
 	public JsonArray build() {

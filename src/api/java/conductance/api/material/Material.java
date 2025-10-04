@@ -44,7 +44,7 @@ public interface Material {
 
 	String getDescriptionId();
 
-	int getColor();
+	MaterialColor getColor();
 
 	ResourceLocation getTextureSet();
 

@@ -739,6 +739,7 @@ final class MaterialLoader0 {
 		POSITRONIUM = event.register("positronium", NCPeriodicElements.POSITRONIUM, b -> b
 			.metalAll()
 			.liquid(10000)
+			.color(new int[] {0xFFCB00, 0x52E73A}, 100)
 		);
 	}
 

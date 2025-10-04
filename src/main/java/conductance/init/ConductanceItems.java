@@ -11,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -29,6 +30,7 @@ import conductance.api.tier.TieredItemType;
 import conductance.api.util.ExtruderShape;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
+import conductance.core.material.MaterialColorTintSource;
 import conductance.init.item.CraftingToolItem;
 import conductance.init.item.MaterialItem;
 import conductance.init.item.ProgramCircuitItem;
@@ -44,6 +46,7 @@ public final class ConductanceItems {
 
 	public static void initialize(final IEventBus modEventBus) {
 		ConductanceItems.REGISTRY.register(modEventBus);
+		modEventBus.addListener(RegisterColorHandlersEvent.ItemTintSources.class, ConductanceItems::handleMaterialItemColors);
 		CAPI.regs().materials().forEach(ConductanceItems::generateMaterial);
 		NCItems.WRENCH = ConductanceItems.REGISTRY.registerItem("wrench", props -> Util.make(new CraftingToolItem(props), item -> {
 			CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
@@ -149,9 +152,13 @@ public final class ConductanceItems {
 				event.addItemModel(materialItem, b -> b.layer0(customTexture));
 			} else {
 				final ResourceLocation model = CAPI.resourceFinder().getMaterialItemModel(materialItem.getMaterial().getTextureSet(), materialItem.getHandler().getTextureType(), null, null).value();
-				event.addItemsModel(materialItem, b -> b.model(model, b2 -> {
-					b2.tints(tints -> tints.constant(materialItem.getMaterial().getColor()));
-				}));
+				event.addItemsModel(materialItem, b -> b.model(model, b2 -> b2.tints(tints -> {
+					if (!materialItem.getMaterial().getColor().hasMultipleColors()) {
+						tints.constant(materialItem.getMaterial().getColor().getCurrentColor());
+					} else {
+						tints.custom(MaterialColorTintSource.ID, json -> json.addProperty("default", -1));
+					}
+				})));
 			}
 		});
 		ConductanceItems.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(item -> item instanceof TieredItem).forEach(item -> {
@@ -195,6 +202,10 @@ public final class ConductanceItems {
 	@EventListener
 	private static void registerPackets(final RegisterPacketEvent event) {
 		ProgramCircuitSetItemPacketC2S.register(event.getRegistrar());
+	}
+
+	private static void handleMaterialItemColors(final RegisterColorHandlersEvent.ItemTintSources event) {
+		event.register(MaterialColorTintSource.ID, MaterialColorTintSource.MAP_CODEC);
 	}
 
 	private ConductanceItems() {

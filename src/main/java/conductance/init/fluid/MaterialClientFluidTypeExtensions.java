@@ -14,7 +14,7 @@ public final class MaterialClientFluidTypeExtensions implements IClientFluidType
 
 	@Override
 	public int getTintColor(final FluidStack stack) {
-		return this.fluidType.getMaterial().getColor();
+		return this.fluidType.getMaterial().getColor().getCurrentColor();
 	}
 
 	@Override

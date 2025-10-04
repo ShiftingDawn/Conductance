@@ -253,7 +253,7 @@ public final class MaterialLoader1 {
 		STAINLESS_STEEL = event.register("stainless_steel", b -> b
 			.metalAll()
 			.liquid(2011)
-			.color(200, 200, 220).textureSet(METALLIC)
+			.color(0xC8C8DC).textureSet(METALLIC)
 			.prop(REQUIRED_TOOL_LEVEL, NEEDS_IRON_TOOL)
 			.components(IRON, 6, NICKEL, MANGANESE, CHROMIUM)
 		);
