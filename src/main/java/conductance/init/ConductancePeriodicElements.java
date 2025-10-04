@@ -134,6 +134,9 @@ final class ConductancePeriodicElements {
 		NCPeriodicElements.LIVERMORIUM = event.create(116, 177, "Livermorium", "Lv", null);
 		NCPeriodicElements.TENNESSINE = event.create(117, 177, "Tennessine", "Ts", null);
 		NCPeriodicElements.OGANESSON = event.create(118, 176, "Oganesson", "Og", null);
+
+		NCPeriodicElements.NEUTRONIUM = event.create(0, 1, "Neutronium", "Nt", null);
+		NCPeriodicElements.POSITRONIUM = event.create(0, 0, "Positronium", "E+", null);
 	}
 
 	private ConductancePeriodicElements() {

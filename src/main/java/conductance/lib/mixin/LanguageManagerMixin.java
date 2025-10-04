@@ -2,6 +2,7 @@ package conductance.lib.mixin;
 
 import net.minecraft.client.resources.language.LanguageManager;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.neoforged.fml.ModLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,6 +14,9 @@ public abstract class LanguageManagerMixin {
 
 	@Inject(method = "onResourceManagerReload", at = @At("HEAD"))
 	private void conductance$injectRuntimeResourcePackTranslations(final ResourceManager resourceManager, final CallbackInfo ci) {
+		if (ModLoader.hasErrors()) {
+			return;
+		}
 		RuntimeResourcePackBridge.loadTranslations();
 	}
 }

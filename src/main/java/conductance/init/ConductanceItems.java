@@ -142,10 +142,17 @@ public final class ConductanceItems {
 	private static void addItemModels(final AddRuntimeModelEvent event) {
 		ConductanceItems.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(item -> item instanceof MaterialItem).forEach(item -> {
 			final MaterialItem materialItem = (MaterialItem) item;
-			final ResourceLocation model = CAPI.resourceFinder().getMaterialItemModel(materialItem.getMaterial().getTextureSet(), materialItem.getHandler().getTextureType(), null, null).value();
-			event.addItemsModel(materialItem, b -> b.model(model, b2 -> {
-				b2.tints(tints -> tints.constant(materialItem.getMaterial().getColor()));
-			}));
+			final ResourceLocation customTexture = CAPI.resourceFinder().getCustomMaterialTexture(materialItem.getMaterial(), materialItem.getHandler().getTextureType());
+			if (customTexture != null) {
+				event.addItemsModel(materialItem, b -> b.model(materialItem, tints -> {
+				}));
+				event.addItemModel(materialItem, b -> b.layer0(customTexture));
+			} else {
+				final ResourceLocation model = CAPI.resourceFinder().getMaterialItemModel(materialItem.getMaterial().getTextureSet(), materialItem.getHandler().getTextureType(), null, null).value();
+				event.addItemsModel(materialItem, b -> b.model(model, b2 -> {
+					b2.tints(tints -> tints.constant(materialItem.getMaterial().getColor()));
+				}));
+			}
 		});
 		ConductanceItems.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(item -> item instanceof TieredItem).forEach(item -> {
 			final TieredItem tieredItem = (TieredItem) item;

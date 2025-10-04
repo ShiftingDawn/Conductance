@@ -13,6 +13,11 @@ public final class PeriodicElementCore {
 			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
 			final ResourceLocation parentKey = parent != null ? Conductance.REGISTRIES.periodicElements().getKey(parent) : null;
 			final PeriodicElement periodicElement = new PeriodicElement(protons, neutrons, name, symbol, parentKey);
+			for (final PeriodicElement element : CAPI.regs().periodicElements()) {
+				if (element.symbol().equals(symbol)) {
+					throw new IllegalArgumentException("The symbol %s has already been used by periodic element %s".formatted(symbol, CAPI.regs().periodicElements().getKey(element)));
+				}
+			}
 			Conductance.REGISTRIES.register(CAPI.regs().periodicElements(), registryKey, periodicElement);
 			return periodicElement;
 		}));

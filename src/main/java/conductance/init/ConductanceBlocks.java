@@ -128,13 +128,20 @@ public final class ConductanceBlocks {
 			if (material == null || handler == null || block == null) {
 				return;
 			}
-			final ResourceLocation model = CAPI.resourceFinder().getMaterialBlockModel(material.getTextureSet(), handler.getTextureType(), null, null).value();
-			event.addBlockState(block, b -> b.simple(b2 -> {
-				b2.model(model);
-			}));
-			event.addItemsModel(block.asItem(), b -> b.model(model, b2 -> {
-				b2.tints(tints -> tints.constant(material.getColor()));
-			}));
+			final ResourceLocation customTexture = CAPI.resourceFinder().getCustomMaterialTexture(material, handler.getTextureType());
+			if (customTexture != null) {
+				event.addBlockState(block, b -> b.simple(b2 -> b2.model(block)));
+				event.addBlockModel(block, b -> b.parent(Conductance.id("block/cube_all")).particle(customTexture).renderType("cutout_mipped"));
+				event.addItemModelDelegate(block);
+			} else {
+				final ResourceLocation model = CAPI.resourceFinder().getMaterialBlockModel(material.getTextureSet(), handler.getTextureType(), null, null).value();
+				event.addBlockState(block, b -> b.simple(b2 -> {
+					b2.model(model);
+				}));
+				event.addItemsModel(block.asItem(), b -> b.model(model, b2 -> {
+					b2.tints(tints -> tints.constant(material.getColor()));
+				}));
+			}
 		}));
 		Conductance.MATERIALS.getBlockTable().rowMap().forEach((material, map) -> map.forEach((handler, block) -> {
 			if (material == null || handler == null || block == null || handler.getOreBearer() == null) {

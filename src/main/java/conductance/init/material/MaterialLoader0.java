@@ -83,6 +83,7 @@ import static conductance.api.NCMaterials.MOSCOVIUM;
 import static conductance.api.NCMaterials.NEODYMIUM;
 import static conductance.api.NCMaterials.NEON;
 import static conductance.api.NCMaterials.NEPTUNIUM;
+import static conductance.api.NCMaterials.NEUTRONIUM;
 import static conductance.api.NCMaterials.NICKEL;
 import static conductance.api.NCMaterials.NIHONIUM;
 import static conductance.api.NCMaterials.NIOBIUM;
@@ -97,6 +98,7 @@ import static conductance.api.NCMaterials.PLATINUM;
 import static conductance.api.NCMaterials.PLUTONIUM_239;
 import static conductance.api.NCMaterials.PLUTONIUM_241;
 import static conductance.api.NCMaterials.POLONIUM;
+import static conductance.api.NCMaterials.POSITRONIUM;
 import static conductance.api.NCMaterials.POTASSIUM;
 import static conductance.api.NCMaterials.PRASEODYMIUM;
 import static conductance.api.NCMaterials.PROMETHIUM;
@@ -728,6 +730,15 @@ final class MaterialLoader0 {
 		OGANESSON = event.register("oganesson", NCPeriodicElements.OGANESSON, b -> b
 			.gas()
 			.style(0x142D64, METALLIC)
+		);
+
+		NEUTRONIUM = event.register("neutronium", NCPeriodicElements.NEUTRONIUM, b -> b
+			.metalAll()
+			.liquid(10000)
+		);
+		POSITRONIUM = event.register("positronium", NCPeriodicElements.POSITRONIUM, b -> b
+			.metalAll()
+			.liquid(10000)
 		);
 	}
 

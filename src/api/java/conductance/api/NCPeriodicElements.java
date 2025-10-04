@@ -5,7 +5,6 @@ import conductance.api.periodicelement.PeriodicElement;
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCPeriodicElements {
 
-	// region Real Elements
 	public static PeriodicElement HYDROGEN;
 	public static PeriodicElement DEUTERIUM;
 	public static PeriodicElement TRITIUM;
@@ -129,7 +128,9 @@ public final class NCPeriodicElements {
 	public static PeriodicElement LIVERMORIUM;
 	public static PeriodicElement TENNESSINE;
 	public static PeriodicElement OGANESSON;
-	// endregion
+
+	public static PeriodicElement NEUTRONIUM;
+	public static PeriodicElement POSITRONIUM;
 
 	private NCPeriodicElements() {
 	}
