@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
@@ -36,13 +37,18 @@ import conductance.api.machine.gui.MachineMenu;
 public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements EntityBlock, IGeneratedMiningTags {
 
 	private static final ThreadLocal<BlockRotationType> CURRENT_ROTATION_TYPE = new ThreadLocal<>();
+	public static final BooleanProperty WORKING = BlockStateProperties.LIT;
 	public static final BooleanProperty TICKING = BooleanProperty.create("ticking");
 	private final @Getter MachineType<T> machineType;
 
 	public MachineBlock(final BlockBehaviour.Properties properties, final MachineType<T> machineType) {
 		super(Util.make(properties, ignored -> MachineBlock.CURRENT_ROTATION_TYPE.set(machineType.getRotationType())));
 		this.machineType = machineType;
-		this.registerDefaultState(BlockRotationHelper.addToDefaultState(machineType.getRotationType(), this.getStateDefinition().any()).setValue(MachineBlock.TICKING, false));
+		this.registerDefaultState(this.createDefaultState());
+	}
+
+	protected BlockState createDefaultState() {
+		return BlockRotationHelper.addToDefaultState(this.machineType.getRotationType(), this.getStateDefinition().any()).setValue(MachineBlock.TICKING, false);
 	}
 
 	@Override

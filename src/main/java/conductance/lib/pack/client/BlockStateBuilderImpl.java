@@ -17,19 +17,25 @@ final class BlockStateBuilderImpl implements BlockStateBuilder {
 
 	@Override
 	public void simple(final Consumer<BlockStateVariantBuilder> callback) {
-		this.variant = new BlockStateVariantBuilderImpl(null, null);
+		if (this.variants == null) {
+			this.variant = new BlockStateVariantBuilderImpl(null, null);
+		}
 		callback.accept(this.variant);
 	}
 
 	@Override
 	public void variants(final Consumer<BlockStateVariantsBuilder> callback) {
-		this.variants = new BlockStateVariantsBuilderImpl();
+		if (this.variants == null) {
+			this.variants = new BlockStateVariantsBuilderImpl();
+		}
 		callback.accept(this.variants);
 	}
 
 	@Override
 	public void multipart(final Consumer<BlockStateMultipartBuilder> callback) {
-		this.multipart = new BlockStateMultipartBuilderImpl();
+		if (this.multipart == null) {
+			this.multipart = new BlockStateMultipartBuilderImpl();
+		}
 		callback.accept(this.multipart);
 	}
 

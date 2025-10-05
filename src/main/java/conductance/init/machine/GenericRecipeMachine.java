@@ -62,7 +62,7 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 			handler.addChangedListener(this::setChanged);
 			handler.addChangedListener(this.recipeHandler::revalidateTick);
 		}) : null;
-		final int outputFluidLimit = this.getRecipeType().getLimit(IO.IN, NCRecipeElementTypes.FLUID);
+		final int outputFluidLimit = this.getRecipeType().getLimit(IO.OUT, NCRecipeElementTypes.FLUID);
 		this.outputFluids = outputFluidLimit > 0 ? CAPI.make(new MachineRecipeCapabilityFluids(this, outputFluidLimit, IO.OUT, CapIO.OUT, tankCount -> new MachineFluidHandler(tankCount, CAPI.BUCKET * 16)), handler -> {
 			handler.addChangedListener(this::setChanged);
 			handler.addChangedListener(this.recipeHandler::revalidateTick);

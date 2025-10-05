@@ -130,6 +130,16 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		return previous;
 	}
 
+	public void setWorkingState(final boolean working) {
+		if (this.isServerSide() && this.getBlockState().hasProperty(MachineBlock.WORKING)) {
+			final boolean current = this.getBlockState().getValue(MachineBlock.WORKING);
+			if (working != current) {
+				assert this.level != null; //Handled by isServerSide()
+				this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(MachineBlock.WORKING, working));
+			}
+		}
+	}
+
 	final void handleServerTick() {
 		if (!this.ticksPending.isEmpty()) {
 			this.ticksActive.addAll(this.ticksPending);

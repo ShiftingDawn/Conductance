@@ -54,7 +54,7 @@ public final class RecipeHandler extends MachineCapability {
 		});
 		this.progressCurrent = input.getIntOr("cur", 0);
 		this.progressMax = input.getIntOr("max", -1);
-		this.status = input.read("status", RecipeHandlerStatus.CODEC).orElse(RecipeHandlerStatus.IDLE);
+		this.setStatus(input.read("status", RecipeHandlerStatus.CODEC).orElse(RecipeHandlerStatus.IDLE));
 	}
 
 	public void tick() {
@@ -71,8 +71,16 @@ public final class RecipeHandler extends MachineCapability {
 		}
 	}
 
+	private void setStatus(final RecipeHandlerStatus status) {
+		if (status != this.status) {
+			this.status = status;
+			this.getMachine().setWorkingState(this.status == RecipeHandlerStatus.PROCESSING);
+			this.setChanged();
+		}
+	}
+
 	private void reset() {
-		this.status = RecipeHandlerStatus.IDLE;
+		this.setStatus(RecipeHandlerStatus.IDLE);
 		this.progressMax = -1;
 		this.progressCurrent = 0;
 		this.lastRecipe = null;
@@ -117,7 +125,7 @@ public final class RecipeHandler extends MachineCapability {
 		this.lastRecipe = recipe;
 		this.progressMax = recipe.getRecipeDuration();
 		this.progressCurrent = 0;
-		this.status = RecipeHandlerStatus.PROCESSING;
+		this.setStatus(RecipeHandlerStatus.PROCESSING);
 		CAPI.recipeHelper().handle(recipe, IO.IN, this.holder);
 		this.setChanged();
 	}

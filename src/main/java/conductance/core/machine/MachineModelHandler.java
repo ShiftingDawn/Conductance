@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +21,7 @@ import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.tier.Tier;
 import conductance.api.util.ModelUtils;
 import conductance.Conductance;
+import static conductance.api.machine.MachineBlock.WORKING;
 
 final class MachineModelHandler {
 
@@ -44,39 +46,83 @@ final class MachineModelHandler {
 		event.addBlockModel(Conductance.id("machine/base"), b -> b.parent(Conductance.id("block/cube_all")).particle(MachineModelHandler.BASE_CASING_TEXTURE));
 		MachineModelHandler.DEFAULT_MODELS.forEach(machineType -> {
 			final MachineBlock<?> block = machineType.getBlock().get();
-			event.addBlockState(block, blockState -> BlockRotationHelper.handleBlockStateGeneration(blockState, machineType.getRotationType(), variant -> variant.model(block)));
-			MachineModelHandler.createStandardModel(event, machineType, block, null, MachineModelHandler.BASE_CASING_TEXTURE, casing -> casing.parent(Conductance.id("block/machine/base")));
+			final boolean canBeLit = block.defaultBlockState().hasProperty(WORKING);
+			MachineModelHandler.createBlockState(event, block, machineType, canBeLit);
+			for (int i = 0; i < 2; ++i) {
+				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, null, MachineModelHandler.BASE_CASING_TEXTURE, casing -> casing.parent(Conductance.id("block/machine/base")));
+				if (!canBeLit) {
+					break;
+				}
+			}
 			event.addItemModelDelegate(block);
 		});
 		MachineModelHandler.SIMPLE_MODELS.forEach((machineType, casingTexture) -> {
 			final MachineBlock<?> block = machineType.getBlock().get();
-			event.addBlockState(block, blockState -> BlockRotationHelper.handleBlockStateGeneration(blockState, machineType.getRotationType(), variant -> variant.model(block)));
-			MachineModelHandler.createStandardModel(event, machineType, block, null, casingTexture, casing -> casing.parent(Conductance.id("block/cube_all")).particle(casingTexture));
+			final boolean canBeLit = block.defaultBlockState().hasProperty(WORKING);
+			MachineModelHandler.createBlockState(event, block, machineType, canBeLit);
+			for (int i = 0; i < 2; ++i) {
+				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, null, casingTexture, casing -> casing.parent(Conductance.id("block/cube_all")).particle(casingTexture));
+				if (!canBeLit) {
+					break;
+				}
+			}
 			event.addItemModelDelegate(block);
 		});
 		MachineModelHandler.TIERED_MODELS.forEach((machineType, modelData) -> {
 			final MachineBlock<?> block = machineType.getBlock().get();
+			final boolean canBeLit = block.defaultBlockState().hasProperty(WORKING);
 			final ResourceLocation casingTexture = modelData.getB().getId().withPrefix("block/casing/machine_");
-			event.addBlockState(block, blockState -> BlockRotationHelper.handleBlockStateGeneration(blockState, machineType.getRotationType(), variant -> variant.model(block)));
-			MachineModelHandler.createStandardModel(event, machineType, block, machineType.getId().withPath(modelData.getA()), casingTexture,
-				casing -> casing.parent(Conductance.id("block/cube_all")).particle(casingTexture));
+			MachineModelHandler.createBlockState(event, block, machineType, canBeLit);
+			for (int i = 0; i < 2; ++i) {
+				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, machineType.getId().withPath(modelData.getA()), casingTexture,
+					casing -> casing.parent(Conductance.id("block/cube_all")).particle(casingTexture));
+				if (!canBeLit) {
+					break;
+				}
+			}
 			event.addItemModelDelegate(block);
 		});
 	}
 
+	private static void createBlockState(final AddRuntimeModelEvent event, final MachineBlock<?> block, final MachineType<?> machineType, final boolean canBeLit) {
+		event.addBlockState(block, blockState -> {
+			BlockRotationHelper.handleBlockStateGeneration(blockState, machineType.getRotationType(), variant -> {
+				if (canBeLit) {
+					variant.when(WORKING, false);
+				}
+				return variant.model(block);
+			});
+			if (canBeLit) {
+				BlockRotationHelper.handleBlockStateGeneration(blockState, machineType.getRotationType(), variant -> variant.when(WORKING, true)
+					.model(BuiltInRegistries.BLOCK.getKey(block).withPath(current -> "block/" + current + "_working")));
+			}
+		});
+	}
+
 	private static void createStandardModel(
-		final AddRuntimeModelEvent event, final MachineType<?> machineType, final MachineBlock<?> block, @Nullable final ResourceLocation machineTextureLocation, final ResourceLocation particleTexture,
+		final AddRuntimeModelEvent event, final MachineType<?> machineType, final MachineBlock<?> block, final boolean working, @Nullable final ResourceLocation machineTextureLocation,
+		final ResourceLocation particleTexture,
 		final Consumer<ModelBuilder> casingCallback
 	) {
-		event.addBlockModel(block, model -> model.particle(particleTexture).renderType("cutout_mipped").composite(composite -> composite
+		ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+		if (working) {
+			id = id.withSuffix("_working");
+		}
+		event.addBlockModel(id, model -> model.particle(particleTexture).renderType("cutout_mipped").composite(composite -> composite
 			.child("casing", casingCallback)
 			.child("overlay", child -> child.element(element -> {
 				element.from(0, 0, 0).to(16, 16, 16);
 				MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), null, false);
+				if (working) {
+					MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_working", false);
+				}
 			}, true), true)
 			.child("overlay2", child -> child.element(element -> {
 				element.from(0, 0, 0).to(16, 16, 16);
 				MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_emissive", true);
+				if (working) {
+					MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_working_emissive", true);
+				}
 			}, true), true)
 			.itemRenderOrder("casing", "overlay", "overlay2")
 		));

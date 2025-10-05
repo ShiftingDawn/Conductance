@@ -5,6 +5,7 @@ import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import conductance.api.CAPI;
 import conductance.api.NCRecipeTypes;
+import conductance.api.machine.MachineBlockWorkable;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.event.RegisterMachineEvent;
 import conductance.api.plugin.ConductancePluginListener;
@@ -45,7 +46,7 @@ final class ConductanceMachines {
 			(machineType, blockPos, blockState) -> new GenericRecipeMachine(machineType, tier, blockPos, blockState),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id(name)), tier.getName())
-			).recipeType(recipeType).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup())
+			).recipeType(recipeType).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
 		));
 	}
 
