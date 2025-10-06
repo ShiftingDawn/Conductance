@@ -173,7 +173,7 @@ public final class ConductanceBlocks {
 							.from(0, 0, 0)
 							.to(16, 16, 16)
 							.shade(!emissive)
-							.faces((f, b) -> b.particle().tintIndex(0), true)
+							.faces((f, b) -> b.particle().neoforgeData(b2 -> b2.color(material.getColor().getCurrentColor())), true)
 						)
 					)
 				)
@@ -186,18 +186,6 @@ public final class ConductanceBlocks {
 		Util.make(ConductanceBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof MaterialBlock).toArray(Block[]::new), blocks -> {
 			event.register((blockState, blockAndTintGetter, blockPos, i) -> {
 				final MaterialBlock block = (MaterialBlock) blockState.getBlock();
-				return i == 0 ? block.getMaterial().getColor().getCurrentColor() : -1;
-			}, blocks);
-		});
-		Util.make(ConductanceBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof MaterialOreBlock).toArray(Block[]::new), blocks -> {
-			event.register((blockState, blockAndTintGetter, blockPos, i) -> {
-				final MaterialOreBlock block = (MaterialOreBlock) blockState.getBlock();
-				return i == 0 ? block.getMaterial().getColor().getCurrentColor() : -1;
-			}, blocks);
-		});
-		Util.make(ConductanceBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof MaterialOreRotatedPillarBlock).toArray(Block[]::new), blocks -> {
-			event.register((blockState, blockAndTintGetter, blockPos, i) -> {
-				final MaterialOreRotatedPillarBlock block = (MaterialOreRotatedPillarBlock) blockState.getBlock();
 				return i == 0 ? block.getMaterial().getColor().getCurrentColor() : -1;
 			}, blocks);
 		});
