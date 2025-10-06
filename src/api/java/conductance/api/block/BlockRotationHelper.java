@@ -18,6 +18,12 @@ import conductance.api.resource.BlockStateModelPropsBuilder;
 import conductance.api.resource.BlockStateVariantBuilder;
 import conductance.api.util.IntPos;
 import conductance.api.util.ModelUtils;
+import static net.minecraft.core.Direction.DOWN;
+import static net.minecraft.core.Direction.EAST;
+import static net.minecraft.core.Direction.NORTH;
+import static net.minecraft.core.Direction.SOUTH;
+import static net.minecraft.core.Direction.UP;
+import static net.minecraft.core.Direction.WEST;
 
 public final class BlockRotationHelper {
 
@@ -130,6 +136,173 @@ public final class BlockRotationHelper {
 				}
 			});
 		}
+	}
+
+	public static Direction getDirection(final Direction northFacing, final Direction dir) {
+		return BlockRotationHelper.getExtendedDirection(northFacing, Rotation.NONE, dir);
+	}
+
+	public static Direction getExtendedDirection(final Direction northFacing, final Rotation rotation, final Direction dir) {
+		return BlockRotationHelper.getExtendedDirection(FacingAndRotation.get(northFacing, rotation), dir);
+	}
+
+	public static Direction getExtendedDirection(final FacingAndRotation facingAndRotation, final Direction dir) {
+		return switch (facingAndRotation) {
+			case DOWN_UP -> switch (dir) {
+				case DOWN -> SOUTH;
+				case UP -> NORTH;
+				case NORTH -> DOWN;
+				case SOUTH -> UP;
+				case WEST, EAST -> dir;
+			};
+			case DOWN_DOWN -> switch (dir) {
+				case DOWN -> NORTH;
+				case UP -> SOUTH;
+				case NORTH -> DOWN;
+				case SOUTH -> UP;
+				case WEST -> EAST;
+				case EAST -> WEST;
+			};
+			case DOWN_LEFT -> switch (dir) {
+				case DOWN -> WEST;
+				case UP -> EAST;
+				case NORTH -> DOWN;
+				case SOUTH -> UP;
+				case WEST -> NORTH;
+				case EAST -> SOUTH;
+			};
+			case DOWN_RIGHT -> switch (dir) {
+				case DOWN -> EAST;
+				case UP -> WEST;
+				case NORTH -> DOWN;
+				case SOUTH -> UP;
+				case WEST -> SOUTH;
+				case EAST -> NORTH;
+			};
+			case UP_UP -> switch (dir) {
+				case DOWN -> NORTH;
+				case UP -> SOUTH;
+				case NORTH -> UP;
+				case SOUTH -> DOWN;
+				case WEST, EAST -> dir;
+			};
+			case UP_DOWN -> switch (dir) {
+				case DOWN -> SOUTH;
+				case UP -> NORTH;
+				case NORTH -> UP;
+				case SOUTH -> DOWN;
+				case WEST -> EAST;
+				case EAST -> WEST;
+			};
+			case UP_LEFT -> switch (dir) {
+				case DOWN -> WEST;
+				case UP -> EAST;
+				case NORTH -> UP;
+				case SOUTH -> DOWN;
+				case WEST -> SOUTH;
+				case EAST -> NORTH;
+			};
+			case UP_RIGHT -> switch (dir) {
+				case DOWN -> WEST;
+				case UP -> EAST;
+				case NORTH -> UP;
+				case SOUTH -> DOWN;
+				case WEST -> NORTH;
+				case EAST -> SOUTH;
+			};
+			case NORTH_UP -> dir;
+			case NORTH_DOWN -> dir.getAxis() != Direction.Axis.Z ? dir.getOpposite() : dir;
+			case NORTH_LEFT -> switch (dir) {
+				case DOWN -> WEST;
+				case UP -> EAST;
+				case NORTH, SOUTH -> dir;
+				case WEST -> UP;
+				case EAST -> DOWN;
+			};
+			case NORTH_RIGHT -> switch (dir) {
+				case DOWN -> EAST;
+				case UP -> WEST;
+				case NORTH, SOUTH -> dir;
+				case WEST -> DOWN;
+				case EAST -> UP;
+			};
+			case SOUTH_UP -> dir.getAxis() == Direction.Axis.Y ? dir : dir.getOpposite();
+			case SOUTH_DOWN -> dir.getAxis() != Direction.Axis.X ? dir.getOpposite() : dir;
+			case SOUTH_LEFT -> switch (dir) {
+				case DOWN -> EAST;
+				case UP -> WEST;
+				case NORTH, SOUTH -> dir.getOpposite();
+				case WEST -> UP;
+				case EAST -> DOWN;
+			};
+			case SOUTH_RIGHT -> switch (dir) {
+				case DOWN -> WEST;
+				case UP -> EAST;
+				case NORTH, SOUTH -> dir.getOpposite();
+				case WEST -> DOWN;
+				case EAST -> UP;
+			};
+			case WEST_UP -> switch (dir) {
+				case DOWN, UP -> dir;
+				case NORTH -> WEST;
+				case SOUTH -> EAST;
+				case WEST -> SOUTH;
+				case EAST -> NORTH;
+			};
+			case WEST_DOWN -> switch (dir) {
+				case DOWN, UP -> dir.getOpposite();
+				case NORTH -> WEST;
+				case SOUTH -> EAST;
+				case WEST -> NORTH;
+				case EAST -> SOUTH;
+			};
+			case WEST_LEFT -> switch (dir) {
+				case DOWN -> SOUTH;
+				case UP -> NORTH;
+				case NORTH -> WEST;
+				case SOUTH -> EAST;
+				case WEST -> UP;
+				case EAST -> DOWN;
+			};
+			case WEST_RIGHT -> switch (dir) {
+				case DOWN -> NORTH;
+				case UP -> SOUTH;
+				case NORTH -> WEST;
+				case SOUTH -> EAST;
+				case WEST -> DOWN;
+				case EAST -> UP;
+			};
+			case EAST_UP -> switch (dir) {
+				case DOWN, UP -> dir;
+				case NORTH -> EAST;
+				case SOUTH -> WEST;
+				case WEST -> NORTH;
+				case EAST -> SOUTH;
+			};
+			case EAST_DOWN -> switch (dir) {
+				case DOWN, UP -> dir.getOpposite();
+				case NORTH -> EAST;
+				case SOUTH -> WEST;
+				case WEST -> SOUTH;
+				case EAST -> NORTH;
+			};
+			case EAST_LEFT -> switch (dir) {
+				case DOWN -> NORTH;
+				case UP -> SOUTH;
+				case NORTH -> EAST;
+				case SOUTH -> WEST;
+				case WEST -> UP;
+				case EAST -> DOWN;
+			};
+			case EAST_RIGHT -> switch (dir) {
+				case DOWN -> SOUTH;
+				case UP -> NORTH;
+				case NORTH -> EAST;
+				case SOUTH -> WEST;
+				case WEST -> DOWN;
+				case EAST -> UP;
+			};
+		};
 	}
 
 	private BlockRotationHelper() {
