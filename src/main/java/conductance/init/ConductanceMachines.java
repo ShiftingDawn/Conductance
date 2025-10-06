@@ -3,6 +3,7 @@ package conductance.init;
 import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Blocks;
 import conductance.api.CAPI;
 import conductance.api.NCRecipeTypes;
 import conductance.api.machine.MachineBlockWorkable;
@@ -17,11 +18,13 @@ import conductance.Conductance;
 import conductance.core.machine.MachineCore;
 import conductance.init.machine.GenericRecipeMachine;
 import conductance.init.machine.GenericRecipeMachineGuiSetup;
+import conductance.init.machine.LargeBoilerMachine;
 import static conductance.api.NCMachines.BENDING_MACHINE;
 import static conductance.api.NCMachines.COMPRESSOR;
 import static conductance.api.NCMachines.CUTTING_MACHINE;
 import static conductance.api.NCMachines.EXTRACTOR;
 import static conductance.api.NCMachines.EXTRUDER;
+import static conductance.api.NCMachines.LARGE_BRONZE_BOILER;
 import static conductance.api.NCMachines.LATHE;
 import static conductance.api.NCMachines.PULVERIZER;
 import static conductance.api.NCMachines.WIREMILL;
@@ -39,6 +42,15 @@ final class ConductanceMachines {
 		EXTRACTOR = ConductanceMachines.makeTieredGenericRecipeMachine(event, "extractor", NCRecipeTypes.EXTRACTOR);
 		COMPRESSOR = ConductanceMachines.makeTieredGenericRecipeMachine(event, "compressor", NCRecipeTypes.COMPRESSOR);
 		CUTTING_MACHINE = ConductanceMachines.makeTieredGenericRecipeMachine(event, "cutting_machine", NCRecipeTypes.CUTTING_MACHINE);
+
+		LARGE_BRONZE_BOILER = event.multi("large_bronze_boiler", LargeBoilerMachine::new, b -> b
+			.structure('x', c -> c
+				.slice("aaa", "aaa", "aaa")
+				.slice("axa", "a a", "aaa")
+				.slice("aaa", "aaa", "aaa")
+				.key('a', Blocks.COBBLESTONE)
+			)
+		);
 	}
 
 	private static Map<Tier, MachineType<?>> makeTieredGenericRecipeMachine(final RegisterMachineEvent event, final String name, final MachineRecipeType recipeType) {

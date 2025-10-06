@@ -64,7 +64,7 @@ public final class CAPI {
 	}
 
 	@Contract("!null, _ -> !null; null, _ -> null")
-	public static @Nullable <T> T make(@Nullable final T object, final Consumer<@NotNull T> consumer) {
+	public static @Nullable <T> T make(@Nullable final T object, final Consumer<? super @NotNull T> consumer) {
 		if (object != null) {
 			consumer.accept(object);
 		}

@@ -28,9 +28,14 @@ import conductance.api.machine.event.MachineBlockEntityFactory;
 import conductance.api.machine.event.MachineBlockFactory;
 import conductance.api.machine.event.MachineBlockItemFactory;
 import conductance.api.machine.event.MachineBuilder;
+import conductance.api.machine.event.MultiBlockMachineBuilder;
+import conductance.api.machine.event.MultiMachineBlockEntityFactory;
 import conductance.api.machine.event.RegisterMachineEvent;
 import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.gui.MachineScreen;
+import conductance.api.machine.multi.IMultiBlockController;
+import conductance.api.machine.multi.MultiMachineBlockEntity;
+import conductance.api.machine.multi.MultiMachineType;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
@@ -67,9 +72,20 @@ public final class MachineCore {
 		Conductance.dispatch(RegisterMachineEvent.class, modid -> new RegisterMachineEventImpl(new RegisterMachineEventImpl.Delegate() {
 
 			@Override
-			public <T extends MachineBlockEntity<T>> MachineType<T> apply(final String registryName, final MachineBlockEntityFactory<T> blockEntityFactory, final Consumer<MachineBuilder<T>> builder) {
+			public <T extends MachineBlockEntity<T>> MachineType<T> simple(final String registryName, final MachineBlockEntityFactory<T> blockEntityFactory, final Consumer<MachineBuilder<T>> builder) {
 				final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
 				final MachineType<T> result = Util.make(new MachineBuilderImpl<>(registryKey, blockEntityFactory), builder).build(registryKey);
+				Conductance.REGISTRIES.register(CAPI.regs().machines(), registryKey, result);
+				return result;
+			}
+
+			@Override
+			public <T extends MultiMachineBlockEntity<T> & IMultiBlockController> MultiMachineType<T> multi(
+				final String registryName, final MultiMachineBlockEntityFactory<T> blockEntityFactory, final Consumer<MultiBlockMachineBuilder<T>> builder
+			) {
+				final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
+				final MachineBlockEntityFactory<T> realBlockEntityFactory = (machineType, blockPos, blockState) -> blockEntityFactory.apply((MultiMachineType<T>) machineType, blockPos, blockState);
+				final MultiMachineType<T> result = Util.make(new MultiBlockMachineBuilderImpl<>(registryKey, realBlockEntityFactory), builder).build(registryKey);
 				Conductance.REGISTRIES.register(CAPI.regs().machines(), registryKey, result);
 				return result;
 			}

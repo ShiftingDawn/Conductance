@@ -98,7 +98,7 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	@Override
 	protected @Nullable MenuProvider getMenuProvider(final BlockState state, final Level level, final BlockPos pos) {
 		final BlockEntity mbe = level.getBlockEntity(pos);
-		if (mbe instanceof final MachineBlockEntity<?> machine) {
+		if (mbe instanceof final MachineBlockEntity<?> machine && machine.getMachineType().getGuiSetup() != null) {
 			return new SimpleMenuProvider(
 				(containerId, playerInventory, plr) -> new MachineMenu(machine, containerId, ContainerLevelAccess.create(level, pos), plr.getInventory()),
 				this.machineType.getName()
@@ -109,12 +109,14 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 
 	@Override
 	protected InteractionResult useWithoutItem(final BlockState state, final Level level, final BlockPos pos, final Player player, final BlockHitResult hitResult) {
-		//TODO only open gui when machine has a gui
 		if (!player.isCrouching()) {
 			if (player instanceof final ServerPlayer serverPlayer) {
-				serverPlayer.openMenu(state.getMenuProvider(level, pos), buffer -> buffer.writeBlockPos(pos));
+				final MenuProvider menuProvider = state.getMenuProvider(level, pos);
+				if (menuProvider != null) {
+					serverPlayer.openMenu(menuProvider, buffer -> buffer.writeBlockPos(pos));
+					return InteractionResult.SUCCESS;
+				}
 			}
-			return InteractionResult.SUCCESS;
 		}
 		return super.useWithoutItem(state, level, pos, player, hitResult);
 	}

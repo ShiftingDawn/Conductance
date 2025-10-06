@@ -83,6 +83,22 @@ public final class BlockRotationHelper {
 		return state;
 	}
 
+	public static Direction getFacing(final BlockState state) {
+		if (state.hasProperty(BlockRotationHelper.FACING_HORIZONTAL)) {
+			return state.getValue(BlockRotationHelper.FACING_HORIZONTAL);
+		}
+		if (state.hasProperty(BlockRotationHelper.FACING_VERTICAL)) {
+			return state.getValue(BlockRotationHelper.FACING_VERTICAL);
+		}
+		if (state.hasProperty(BlockRotationHelper.FACING_ALL)) {
+			return state.getValue(BlockRotationHelper.FACING_ALL);
+		}
+		if (state.hasProperty(BlockRotationHelper.FACING_EXTENDED)) {
+			return state.getValue(BlockRotationHelper.FACING_EXTENDED).getFacing();
+		}
+		return NORTH;
+	}
+
 	public static BlockState applyRotation(final BlockState state, final Rotation rotation) {
 		for (final EnumProperty<Direction> prop : List.of(BlockRotationHelper.FACING_ALL, BlockRotationHelper.FACING_HORIZONTAL, BlockRotationHelper.FACING_VERTICAL)) {
 			if (state.hasProperty(prop)) {

@@ -143,6 +143,19 @@ public abstract class GuiWidget {
 		this.onPositionChanged(this.x, this.y, this.x, oldY);
 	}
 
+	public final void setPosAndSize(final int newX, final int newY, final int newWidth, final int newHeight) {
+		final int oldX = this.x;
+		final int oldY = this.y;
+		final int oldHeight = this.height;
+		final int oldWidth = this.width;
+		this.x = this.initialX + newX;
+		this.y = this.initialY + newY;
+		this.width = newWidth;
+		this.height = newHeight;
+		this.onPositionChanged(newX, newY, oldX, oldY);
+		this.onSizeChanged(newWidth, newHeight, oldWidth, oldHeight);
+	}
+
 	public final void setX(final int x) {
 		final int oldX = this.x;
 		this.x = x;

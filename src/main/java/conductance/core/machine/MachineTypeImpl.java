@@ -17,7 +17,7 @@ import conductance.api.machine.gui.GuiSetup;
 import conductance.api.recipe.MachineRecipeType;
 
 @RequiredArgsConstructor
-final class MachineTypeImpl<T extends MachineBlockEntity<T>> implements MachineType<T> {
+class MachineTypeImpl<T extends MachineBlockEntity<T>> implements MachineType<T> {
 
 	private final @Getter String descriptionId;
 	private final @Getter MutableComponent name;

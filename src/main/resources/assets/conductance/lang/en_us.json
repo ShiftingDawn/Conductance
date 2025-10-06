@@ -81,5 +81,8 @@
   "guiWidget.conductance.tank.stored": "§9Stored:§r %s/%s",
   "guiWidget.conductance.tank.info.1": "§6Left-click§9 with a Fluid Container to §6fill§9 the tank.",
   "guiWidget.conductance.tank.info.2": "§6Right-click§9 with a Fluid Container to §6empty§9 the tank.",
-  "guiWidget.conductance.tank.info.3": "§9Hold %s §9to fill/empty the whole stack."
+  "guiWidget.conductance.tank.info.3": "§9Hold %s §9to fill/empty the whole stack.",
+
+  "guiWidget.conductance.multiblock.structure.formed": "§aStructure formed",
+  "guiWidget.conductance.multiblock.structure.invalid": "§cInvalid structure"
 }

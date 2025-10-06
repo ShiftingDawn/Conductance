@@ -1,6 +1,6 @@
 package conductance.core.machine;
 
-public enum ModelType {
+enum ModelType {
 
 	DEFAULT,
 	SIMPLE,

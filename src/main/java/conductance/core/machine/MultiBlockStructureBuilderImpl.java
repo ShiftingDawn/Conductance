@@ -1,27 +1,37 @@
-package conductance.api.util.multiblock;
+package conductance.core.machine;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import net.minecraft.tags.TagKey;
+import java.util.function.Supplier;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.multi.MultiBlockStructure;
+import conductance.api.machine.multi.MultiBlockStructureBuilder;
+import conductance.api.machine.multi.StructureCheckCallback;
+import conductance.api.machine.multi.StructurePredicate;
 
-public final class MultiBlockStructureBuilder {
+public final class MultiBlockStructureBuilderImpl implements MultiBlockStructureBuilder {
 
-	private final List<String[]> pattern = new LinkedList<>(); // y([z][x])
+	private final List<String[]> pattern = new LinkedList<>();
 	private final Char2ObjectMap<StructurePredicate> mapping = new Char2ObjectArrayMap<>();
+	private final List<StructureCheckCallback> globalCallbacks = new ArrayList<>();
+	private final Char2ObjectMap<StructureCheckCallback> mappedCallbacks = new Char2ObjectArrayMap<>();
 	private final char controller;
 	private int sliceLengthZ = -1;
 	private int lineLengthX = -1;
 
-	public MultiBlockStructureBuilder(final char controllerKey, final Block controller) {
+	public MultiBlockStructureBuilderImpl(final char controllerKey, final Supplier<Block> controller) {
 		this.mapping.put(' ', StructurePredicate.isAir());
 		this.mapping.put(controllerKey, StructurePredicate.isBlock(controller));
 		this.controller = controllerKey;
 	}
 
+	@Override
 	public MultiBlockStructureBuilder slice(final String... slice) {
 		if (slice.length == 0) {
 			throw new IllegalStateException("Slice requires at least 1 line");
@@ -43,24 +53,22 @@ public final class MultiBlockStructureBuilder {
 		return this;
 	}
 
-	public MultiBlockStructureBuilder key(final char key, final StructurePredicate predicate) {
+	@Override
+	public MultiBlockStructureBuilder key(final char key, final StructurePredicate predicate, @Nullable final StructureCheckCallback callback) {
 		if (this.mapping.containsKey(key)) {
 			throw new IllegalStateException("Duplicate key " + key);
 		}
 		this.mapping.put(key, predicate);
+		if (callback != null) {
+			this.mappedCallbacks.put(key, callback);
+		}
 		return this;
 	}
 
-	public MultiBlockStructureBuilder key(final char key, final BlockState expectedState) {
-		return this.key(key, StructurePredicate.isState(expectedState));
-	}
-
-	public MultiBlockStructureBuilder key(final char key, final Block expectedBlock) {
-		return this.key(key, StructurePredicate.isBlock(expectedBlock));
-	}
-
-	public MultiBlockStructureBuilder key(final char key, final TagKey<Block> expectedTag) {
-		return this.key(key, StructurePredicate.isTag(expectedTag));
+	@Override
+	public MultiBlockStructureBuilder callback(final StructureCheckCallback callback) {
+		this.globalCallbacks.add(callback);
+		return this;
 	}
 
 	private int[] findControllerOffset() {
@@ -78,8 +86,9 @@ public final class MultiBlockStructureBuilder {
 		return new int[0];
 	}
 
-	private StructurePredicate[][][] validateAndBuild() {
-		final StructurePredicate[][][] result = new StructurePredicate[this.lineLengthX][][];
+	private Tuple<StructurePredicate[][][], @Nullable StructureCheckCallback[][][]> validateAndBuild() {
+		final StructurePredicate[][][] predicateArray = new StructurePredicate[this.lineLengthX][][];
+		final @Nullable StructureCheckCallback[][][] callbackArray = new StructureCheckCallback[this.lineLengthX][][];
 		for (int y = 0; y < this.pattern.size(); ++y) {
 			//Pattern is written top-to-bottom but checked bottom-to-top
 			final int realY = this.pattern.size() - 1 - y;
@@ -87,17 +96,20 @@ public final class MultiBlockStructureBuilder {
 			for (int z = 0; z < slice.length; ++z) {
 				final String line = slice[z];
 				for (int x = 0; x < line.length(); ++x) {
-					if (result[x] == null) {
-						result[x] = new StructurePredicate[this.pattern.size()][];
+					if (predicateArray[x] == null) {
+						predicateArray[x] = new StructurePredicate[this.pattern.size()][];
+						callbackArray[x] = new StructureCheckCallback[this.pattern.size()][];
 					}
-					if (result[x][y] == null) {
-						result[x][realY] = new StructurePredicate[this.sliceLengthZ];
+					if (predicateArray[x][realY] == null) {
+						predicateArray[x][realY] = new StructurePredicate[this.sliceLengthZ];
+						callbackArray[x][realY] = new StructureCheckCallback[this.sliceLengthZ];
 					}
-					result[x][realY][z] = this.mapping.get(line.charAt(x));
+					predicateArray[x][realY][z] = this.mapping.get(line.charAt(x));
+					callbackArray[x][realY][z] = this.mappedCallbacks.get(line.charAt(x));
 				}
 			}
 		}
-		return result;
+		return new Tuple<>(predicateArray, callbackArray);
 	}
 
 	public MultiBlockStructure build() {
@@ -108,8 +120,12 @@ public final class MultiBlockStructureBuilder {
 		if (controllerOffset.length == 0) {
 			throw new IllegalStateException("Controller was not found in structure");
 		}
-		final StructurePredicate[][][] statePattern = this.validateAndBuild();
-
-		return new MultiBlockStructure(statePattern, controllerOffset[0], controllerOffset[1], controllerOffset[2]);
+		final Tuple<StructurePredicate[][][], StructureCheckCallback[][][]> patternAndCallbacks = this.validateAndBuild();
+		return new MultiBlockStructure(
+			patternAndCallbacks.getA(),
+			controllerOffset[0], controllerOffset[1], controllerOffset[2],
+			patternAndCallbacks.getB(),
+			Collections.unmodifiableList(this.globalCallbacks)
+		);
 	}
 }

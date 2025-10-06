@@ -1,4 +1,4 @@
 @NCNonNull
-package conductance.api.util.multiblock;
+package conductance.api.machine.multi;
 
 import conductance.api.util.NCNonNull;

@@ -29,7 +29,6 @@ import conductance.init.block.MaterialBlockItem;
 import conductance.init.block.MaterialOreBlock;
 import conductance.init.block.MaterialOreBlockItem;
 import conductance.init.block.MaterialOreRotatedPillarBlock;
-import conductance.init.block.TestBlock;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceBlocks {
@@ -42,7 +41,6 @@ public final class ConductanceBlocks {
 		ConductanceBlocks.ITEMS.register(modEventBus);
 		CAPI.regs().materials().forEach(ConductanceBlocks::generateMaterial);
 		modEventBus.addListener(RegisterColorHandlersEvent.Block.class, ConductanceBlocks::handleMaterialBlockColors);
-		Util.make(ConductanceBlocks.REGISTRY.registerBlock("test", TestBlock::new), ConductanceBlocks.ITEMS::registerSimpleBlockItem);
 	}
 
 	private static void generateMaterial(final Material material) {
