@@ -44,14 +44,14 @@ public class MachineMenu extends AbstractContainerMenu {
 		this.playerInventory = playerInventory;
 		this.guiSetup = Objects.requireNonNull(machine.getMachineType().getGuiSetup(), "Opened a menu for a machine without a GuiSetup!");
 		this.guiSetup.addSlots(this, this::addSlot);
-		Optional.ofNullable(this.guiSetup.getPlayerInventoryPos()).ifPresent(pos -> {
+		Optional.ofNullable(this.guiSetup.getPlayerInventoryPos(this.guiSetup.getContainerSize())).ifPresent(pos -> {
 			for (int y = 0; y < 3; ++y) {
 				for (int x = 0; x < 9; ++x) {
 					this.addSlot(new Slot(playerInventory, x + (y + 1) * 9, pos.x() + x * 18, pos.y() + y * 18));
 				}
 			}
 		});
-		Optional.ofNullable(this.guiSetup.getPlayerHotbarPos()).ifPresent(pos -> {
+		Optional.ofNullable(this.guiSetup.getPlayerHotbarPos(this.guiSetup.getContainerSize())).ifPresent(pos -> {
 			for (int i = 0; i < 9; ++i) {
 				this.addSlot(new Slot(playerInventory, i, pos.x() + i * 18, pos.y()));
 			}

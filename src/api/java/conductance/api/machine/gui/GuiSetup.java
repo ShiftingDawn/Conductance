@@ -7,9 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class GuiSetup {
 
-	public static final Size DEFAULT_CONTAINER_SIZE = new Size(176, 166);
-	public static final Coordinate DEFAULT_INVENTORY_POS = new Coordinate(8, 87);
-	public static final Coordinate DEFAULT_HOTBAR_POS = new Coordinate(8, 143);
+	public static final Size DEFAULT_CONTAINER_SIZE = Size.of(176, 166);
 
 	public void addSlots(final MachineMenu menu, final Consumer<Slot> adder) {
 	}
@@ -17,7 +15,10 @@ public class GuiSetup {
 	public void addWidgets(final MachineMenu menu, final BiConsumer<String, GuiWidget> adder) {
 	}
 
-	public void init(final MachineScreen screen) {
+	public void preInit(final MachineScreen screen) {
+	}
+
+	public void init(final MachineScreen screen, final Rectangle rootBounds) {
 	}
 
 	/**
@@ -34,11 +35,11 @@ public class GuiSetup {
 		return GuiSetup.DEFAULT_CONTAINER_SIZE;
 	}
 
-	public @Nullable Coordinate getPlayerInventoryPos() {
-		return GuiSetup.DEFAULT_INVENTORY_POS;
+	public @Nullable Point getPlayerInventoryPos(final Size screenSize) {
+		return Point.of(8, screenSize.height() - 79);
 	}
 
-	public @Nullable Coordinate getPlayerHotbarPos() {
-		return GuiSetup.DEFAULT_HOTBAR_POS;
+	public @Nullable Point getPlayerHotbarPos(final Size screenSize) {
+		return Point.of(8, screenSize.height() - 23);
 	}
 }

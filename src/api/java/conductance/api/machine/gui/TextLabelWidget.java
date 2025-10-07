@@ -12,6 +12,10 @@ public class TextLabelWidget extends GuiWidget {
 
 	public TextLabelWidget(final int x, final int y, final Component text, final int color) {
 		super(x, y, 0, 0);
+		this.getBoundsUnsafe().size(MutableSize.of(
+			new ManagedInt(null, () -> this.getFont().width(this.getComponent())),
+			new ManagedInt(null, () -> this.getFont().lineHeight)
+		));
 		this.text = Either.left(text);
 		this.color = color;
 	}
@@ -37,15 +41,5 @@ public class TextLabelWidget extends GuiWidget {
 
 	public Component getComponent() {
 		return this.text.left().orElseGet(() -> this.text.right().orElseThrow().get());
-	}
-
-	@Override
-	public int getWidth() {
-		return this.getFont().width(this.getComponent());
-	}
-
-	@Override
-	public int getHeight() {
-		return this.getFont().lineHeight;
 	}
 }

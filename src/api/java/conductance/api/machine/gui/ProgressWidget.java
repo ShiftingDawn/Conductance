@@ -24,17 +24,17 @@ public class ProgressWidget extends GuiWidget {
 			return;
 		}
 		if (this.provider.getCurrentProgress() == this.provider.getMaxProgress()) {
-			this.drawable.draw(guiGraphics, mouseX, mouseY, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+			this.drawable.draw(guiGraphics, mouseX, mouseY, this.getBounds());
 			return;
 		}
 		final float factor = (float) this.provider.getCurrentProgress() / (float) this.provider.getMaxProgress();
 		if (this.direction == ProgressProvider.Direction.LEFT_TO_RIGHT || this.direction == ProgressProvider.Direction.RIGHT_TO_LEFT) {
-			final int width = Mth.ceil(this.getWidth() * factor);
-			final int uLength = (int) ((float) this.drawable.getTextureWidth() / (float) this.getWidth() * (float) width);
+			final int width = Mth.ceil(this.getSize().width() * factor);
+			final int uLength = (int) ((float) this.drawable.getTextureWidth() / (float) this.getSize().width() * (float) width);
 			if (this.direction == ProgressProvider.Direction.LEFT_TO_RIGHT) {
 				this.drawable.draw(
 					guiGraphics, mouseX, mouseY,
-					this.getX(), this.getY(), width, this.getHeight(),
+					this.getPosition().x(), this.getY(), width, this.getHeight(),
 					0, 0, uLength, this.drawable.getTextureHeight()
 				);
 			} else {

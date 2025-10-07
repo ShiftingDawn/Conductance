@@ -26,8 +26,7 @@ public final class WidgetGroup extends GuiWidget {
 		widget.setWidgetPacketHandler(this::sendToServer);
 		widget.setMenu(this::getMenu);
 		widget.setScreen(this::getScreen);
-		widget.setRelativeX(this.getX());
-		widget.setRelativeY(this.getY());
+		widget.setParentBounds(this.getBounds());
 		return this;
 	}
 
@@ -56,7 +55,6 @@ public final class WidgetGroup extends GuiWidget {
 
 	@Override
 	public void initClient() {
-		this.updateWidgetPositions();
 		for (final GuiWidget child : this.widgets.values()) {
 			child.initClient();
 		}
@@ -90,13 +88,6 @@ public final class WidgetGroup extends GuiWidget {
 	}
 
 	@Override
-	public void onPositionChanged(final int newX, final int newY, final int oldX, final int oldY) {
-		if (newX != oldX || newY != oldY) {
-			this.updateWidgetPositions();
-		}
-	}
-
-	@Override
 	public boolean onMouseClicked(final int mouseX, final int mouseY, final int button) {
 		return this.handleMouseEvent(true, mouseX, mouseY, button);
 	}
@@ -108,17 +99,14 @@ public final class WidgetGroup extends GuiWidget {
 
 	private boolean handleMouseEvent(final boolean click, final int relativeMouseX, final int relativeMouseY, final int button) {
 		//Widgets are positioned using absolute coordinates, so untranslate mouse coords
-		final int mouseX = this.getX() + relativeMouseX;
-		final int mouseY = this.getY() + relativeMouseY;
+		final int mouseX = this.getPosition().x() + relativeMouseX;
+		final int mouseY = this.getPosition().y() + relativeMouseY;
 		for (final GuiWidget widget : this.widgets.values()) {
-			if (mouseX < widget.getX() || mouseX > widget.getX() + widget.getWidth()) {
+			if (!widget.getBounds().contains(mouseX, mouseY)) {
 				continue;
 			}
-			if (mouseY < widget.getY() || mouseY > widget.getY() + widget.getHeight()) {
-				continue;
-			}
-			final int mx = mouseX - widget.getX();
-			final int my = mouseY - widget.getY();
+			final int mx = mouseX - widget.getBounds().x();
+			final int my = mouseY - widget.getBounds().y();
 			if (click) {
 				if (widget.onMouseClicked(mx, my, button)) {
 					return true;
@@ -136,13 +124,6 @@ public final class WidgetGroup extends GuiWidget {
 			}
 		}
 		return false;
-	}
-
-	private void updateWidgetPositions() {
-		for (final GuiWidget widget : this.widgets.values()) {
-			widget.setRelativeX(this.getX());
-			widget.setRelativeY(this.getY());
-		}
 	}
 
 	public @UnknownNullability GuiWidget getWidgetById(final String id) {

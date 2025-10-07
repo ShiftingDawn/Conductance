@@ -18,7 +18,7 @@ public class SlotWidget extends GuiWidget {
 
 	@Override
 	public void initClient() {
-		this.slot.x = this.getX();
-		this.slot.y = this.getY();
+		this.slot.x = this.getX() + 1;
+		this.slot.y = this.getY() + 1;
 	}
 }

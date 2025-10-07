@@ -14,7 +14,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
-import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
@@ -57,7 +56,7 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 			this.recipeType.getLimit(IO.IN, NCRecipeElementTypes.FLUID), this.recipeType.getLimit(IO.OUT, NCRecipeElementTypes.FLUID),
 			this.recipeType, new JeiProgressProvider()
 		);
-		this.width = Math.max(140, this.rootGroup.getWidth());
+		this.width = Math.max(140, this.rootGroup.getWidth() + 40);
 		this.height = this.rootGroup.getHeight() + 3 + (GenericRecipeMachineCategory.LINE_COUNT * 10);
 	}
 
@@ -65,7 +64,7 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 	public void setRecipe(final IRecipeLayoutBuilder builder, final MachineRecipe recipe, final IFocusGroup focuses) {
 		final int xOffset = (this.width - this.rootGroup.getWidth()) / 2;
 		if (recipe.getProgram() >= 0) {
-			builder.addSlot(RecipeIngredientRole.RENDER_ONLY, xOffset - 20, this.rootGroup.getHeight() / 2 - 10)
+			builder.addSlot(RecipeIngredientRole.RENDER_ONLY, xOffset - 18, this.rootGroup.getHeight() / 2 - 8)
 				.addItemStacks(List.of(ProgramCircuitItem.makeStack(recipe.getProgram())))
 				.addRichTooltipCallback((recipeSlotView, tooltip) -> {
 					tooltip.clear();
@@ -109,8 +108,8 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 		}
 		final Tuple<List<T>, RecipeElement> data = mapping.get(slotIndex);
 		final IRecipeSlotBuilder slotBuilder = switch (io) {
-			case IN -> builder.addInputSlot(xOffset + widget.getX(), yOffset + widget.getY());
-			case OUT -> builder.addOutputSlot(xOffset + widget.getX(), yOffset + widget.getY());
+			case IN -> builder.addInputSlot(xOffset + widget.getX() + 1, yOffset + widget.getY() + 1);
+			case OUT -> builder.addOutputSlot(xOffset + widget.getX() + 1, yOffset + widget.getY() + 1);
 		};
 		ingredientSetter.accept(slotBuilder, data.getA());
 		slotBuilder.addRichTooltipCallback((recipeSlotView, tooltip) -> {

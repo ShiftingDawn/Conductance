@@ -16,9 +16,13 @@ import conductance.api.machine.gui.GuiTheme;
 import conductance.api.machine.gui.GuiWidget;
 import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.gui.MachineScreen;
+import conductance.api.machine.gui.ManagedInt;
 import conductance.api.machine.gui.MarkerWidget;
+import conductance.api.machine.gui.MutablePoint;
+import conductance.api.machine.gui.MutableSize;
 import conductance.api.machine.gui.ProgressProvider;
 import conductance.api.machine.gui.ProgressWidget;
+import conductance.api.machine.gui.Rectangle;
 import conductance.api.machine.gui.RepositionableSlotItemHandler;
 import conductance.api.machine.gui.SlotWidget;
 import conductance.api.machine.gui.TankWidget;
@@ -55,7 +59,7 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 			inputItems, outputItems, inputFluids, outputFluids,
 			menu, machine.getRecipeType(), new RecipeHandlerProgressProvider(machine.getRecipeHandler())
 		), root -> {
-			root.setInitialY(10);
+			root.setY(10);
 			Util.make(new ShowRecipeViewerHandlers(menu.getMachine()), handler -> {
 				final GuiWidget widget = root.getWidgetById("progress");
 				widget.addTooltipCallback(handler);
@@ -95,18 +99,24 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 				new GuiDrawableTexture(recipeType.getGuiArrow()),
 				progressProvider,
 				recipeType.getGuiArrowDirection(),
-				5, 0, 20, 20
+				0, 0, 20, 20
 			), progressWidget -> root.addWidget("progress", progressWidget));
-			final int totalWidth = Math.max(inputGroup.getWidth(), outputGroup.getWidth()) * 2 + 20 + progress.getWidth();
-			final int totalHeight = Math.max(Math.max(inputGroup.getHeight(), progress.getHeight()), outputGroup.getHeight());
-			root.setWidth(totalWidth);
-			root.setHeight(totalHeight);
-			progress.setInitialX(totalWidth / 2 - 10);
-			progress.setInitialY(totalHeight / 2 - 10);
-			inputGroup.setInitialX(totalWidth / 2 - 10 - progress.getWidth() / 2 - inputGroup.getWidth());
-			inputGroup.setInitialY((totalHeight - inputGroup.getHeight()) / 2);
-			outputGroup.setInitialX(totalWidth / 2 + progress.getWidth() / 2 + 10);
-			outputGroup.setInitialY((totalHeight - outputGroup.getHeight()) / 2);
+			root.setSize(MutableSize.of(
+				new ManagedInt(null, () -> Math.max(inputGroup.getWidth(), outputGroup.getWidth()) * 2 + 20 + progress.getWidth()),
+				new ManagedInt(null, () -> Math.max(Math.max(inputGroup.getHeight(), progress.getHeight()), outputGroup.getHeight()))
+			));
+			progress.setPosition(MutablePoint.of(
+				new ManagedInt(null, () -> root.getX() + (root.getWidth() - progress.getWidth()) / 2),
+				new ManagedInt(null, () -> (root.getHeight() - progress.getHeight()) / 2)
+			));
+			inputGroup.setPosition(MutablePoint.of(
+				new ManagedInt(null, () -> progress.getX() - inputGroup.getWidth() - 10),
+				new ManagedInt(null, () -> (root.getHeight() - inputGroup.getHeight()) / 2)
+			));
+			outputGroup.setPosition(MutablePoint.of(
+				new ManagedInt(null, () -> progress.getBounds().maxX() + 10),
+				new ManagedInt(null, () -> (root.getHeight() - outputGroup.getHeight()) / 2)
+			));
 		});
 	}
 
@@ -145,7 +155,7 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 				group.setHeight(rows * 18);
 				for (int i = 0; i < itemCount; ++i) {
 					final String slotName = "items_" + io + "_" + i;
-					group.addWidget(slotName, itemWidgetFactory.apply(i, (i % cols) * 18 + 1, (i / cols) * 18 + 1));
+					group.addWidget(slotName, itemWidgetFactory.apply(i, (i % cols) * 18, (i / cols) * 18));
 				}
 				group.setBackground(theme.getItemSlots(itemCount, io == IO.OUT));
 			});
@@ -162,18 +172,17 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 			});
 			mainGroup.setWidth(Math.max(itemGroup.getWidth(), fluidGroup.getWidth()));
 			mainGroup.setHeight(itemGroup.getHeight() + fluidGroup.getHeight());
-			itemGroup.setInitialX(mainGroup.getWidth() - itemGroup.getWidth());
+			itemGroup.setX(mainGroup.getWidth() - itemGroup.getWidth());
 			mainGroup.addWidget("items_" + io, itemGroup);
-			fluidGroup.setInitialX(mainGroup.getWidth() - fluidGroup.getWidth());
-			fluidGroup.setInitialY(itemGroup.getHeight());
+			fluidGroup.setX(mainGroup.getWidth() - fluidGroup.getWidth());
+			fluidGroup.setY(itemGroup.getHeight());
 			mainGroup.addWidget("fluids_" + io, fluidGroup);
 		});
 	}
 
 	@Override
-	public void init(final MachineScreen screen) {
+	public void init(final MachineScreen screen, final Rectangle rootBounds) {
 		final GuiWidget root = screen.getMenu().getWidgetById("root");
-		root.setX((screen.getXSize() - root.getWidth()) / 2);
-		root.setY((74 - root.getHeight()) / 2);
+		root.setBounds(rootBounds);
 	}
 }

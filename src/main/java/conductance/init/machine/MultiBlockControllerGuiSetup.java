@@ -8,6 +8,7 @@ import conductance.api.machine.gui.GuiSetup;
 import conductance.api.machine.gui.GuiWidget;
 import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.gui.MachineScreen;
+import conductance.api.machine.gui.Rectangle;
 import conductance.api.machine.gui.TextLabelWidget;
 import conductance.api.machine.gui.WidgetGroup;
 import conductance.api.machine.multi.MultiControllerMachineBlockEntity;
@@ -31,8 +32,8 @@ public class MultiBlockControllerGuiSetup extends GuiSetup {
 	}
 
 	@Override
-	public void init(final MachineScreen screen) {
+	public void init(final MachineScreen screen, final Rectangle rootBounds) {
 		final GuiWidget root = screen.getMenu().getWidgetById("root");
-		root.setPosAndSize(7, 7, screen.getXSize() - 14, 67);
+		root.setBounds(rootBounds);
 	}
 }

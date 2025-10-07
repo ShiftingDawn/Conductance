@@ -17,19 +17,22 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 
 	private final @Getter MachineBlockEntity<?> machine;
 	private final @Getter GuiSetup guiSetup;
+	private final MutableRectangle screenBounds = MutableRectangle.of(
+		MutablePoint.of(new ManagedInt(null, () -> super.leftPos), new ManagedInt(null, () -> super.topPos)),
+		MutableSize.of(new ManagedInt(i -> super.imageWidth = i, () -> super.imageWidth), new ManagedInt(i -> super.imageHeight = i, () -> super.imageHeight))
+	);
+	private final MutableRectangle contentBounds = MutableRectangle.of(
+		MutablePoint.of(7, 7),
+		MutableSize.of(new ManagedInt(null, () -> this.getXSize() - 14), new ManagedInt(null, () -> 67 + (this.getYSize() - GuiSetup.DEFAULT_CONTAINER_SIZE.height())))
+	);
 
 	public MachineScreen(final MachineMenu menu, final Inventory playerInventory, final Component title) {
 		super(menu, playerInventory, title);
 		this.machine = menu.getMachine();
 		this.guiSetup = menu.getGuiSetup();
-		this.imageWidth = this.guiSetup.getContainerSize().width();
-		this.imageHeight = this.guiSetup.getContainerSize().height();
+		this.screenBounds.size(this.guiSetup.getContainerSize());
 		this.titleLabelX = 4;
 		this.titleLabelY = -10;
-		Optional.ofNullable(this.guiSetup.getPlayerInventoryPos()).ifPresent(pos -> {
-			this.inventoryLabelX = pos.x() - 1;
-			this.inventoryLabelY = pos.y() - 11;
-		});
 		menu.getWidgets().values().forEach(widget -> {
 			widget.setWidgetPacketHandler(this::sendToServer);
 			widget.setScreen(() -> this);
@@ -39,7 +42,12 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 	@Override
 	protected void init() {
 		super.init();
-		this.guiSetup.init(this);
+		this.guiSetup.preInit(this);
+		Optional.ofNullable(this.guiSetup.getPlayerInventoryPos(this.screenBounds)).ifPresent(pos -> {
+			this.inventoryLabelX = pos.x() - 1;
+			this.inventoryLabelY = pos.y() - 11;
+		});
+		this.guiSetup.init(this, this.contentBounds);
 		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
 			widget.initClient();
 		}
@@ -49,11 +57,11 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 	protected void renderBg(final GuiGraphics guiGraphics, final float partialTick, final int mouseX, final int mouseY) {
 		this.translated(guiGraphics, () -> {
 			this.getTheme().getTitleBackground().draw(guiGraphics, mouseX, mouseY, 0, this.titleLabelY - 4, this.font.width(this.title) + 8, 14);
-			this.getTheme().getBackground().draw(guiGraphics, mouseX, mouseY, 0, 0, this.imageWidth, this.imageHeight);
-			Optional.ofNullable(this.guiSetup.getPlayerInventoryPos()).ifPresent(pos -> {
+			this.getTheme().getBackground().draw(guiGraphics, mouseX, mouseY, 0, 0, this.getXSize(), this.getYSize());
+			Optional.ofNullable(this.guiSetup.getPlayerInventoryPos(this.screenBounds)).ifPresent(pos -> {
 				this.getTheme().getPlayerInventory().draw(guiGraphics, mouseX, mouseY, pos.x() - 1, pos.y() - 1, 162, 54);
 			});
-			Optional.ofNullable(this.guiSetup.getPlayerHotbarPos()).ifPresent(pos -> {
+			Optional.ofNullable(this.guiSetup.getPlayerHotbarPos(this.screenBounds)).ifPresent(pos -> {
 				this.getTheme().getPlayerHotbar().draw(guiGraphics, mouseX, mouseY, pos.x() - 1, pos.y() - 1, 162, 18);
 			});
 
@@ -129,14 +137,11 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 		final int mouseX = (int) (absoluteMouseX - this.leftPos);
 		final int mouseY = (int) (absoluteMouseY - this.topPos);
 		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
-			if (mouseX < widget.getX() || mouseX > widget.getX() + widget.getWidth()) {
+			if (!widget.getBounds().contains(mouseX, mouseY)) {
 				continue;
 			}
-			if (mouseY < widget.getY() || mouseY > widget.getY() + widget.getHeight()) {
-				continue;
-			}
-			final int mx = mouseX - widget.getX();
-			final int my = mouseY - widget.getY();
+			final int mx = mouseX - widget.getPosition().x();
+			final int my = mouseY - widget.getPosition().y();
 			if (click) {
 				if (widget.onMouseClicked(mx, my, button)) {
 					return true;

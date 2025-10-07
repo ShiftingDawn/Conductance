@@ -12,7 +12,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,27 +19,26 @@ public abstract class GuiWidget {
 
 	private final List<MouseEventListener> mouseEventListeners = new ArrayList<>();
 	private final List<TooltipCallback> tooltipCallbacks = new ArrayList<>();
+	private final MutableRectangle bounds;
+	@Setter(AccessLevel.PACKAGE)
+	private @Nullable Rectangle parentBounds;
 	@Setter(AccessLevel.PACKAGE)
 	private Supplier<MachineMenu> menu;
 	@Setter(AccessLevel.PACKAGE)
 	private Supplier<MachineScreen> screen;
 	@Setter(AccessLevel.PACKAGE)
 	private WidgetPacketHandler widgetPacketHandler;
-	private @Getter int initialX;
-	private @Getter int initialY;
-	private @Getter int x;
-	private @Getter int y;
-	private @Getter int width;
-	private @Getter int height;
+	private ManagedInt offsetX;
+	private ManagedInt offsetY;
+	private boolean useAbsolutePositioning = false;
 	private @Nullable GuiDrawable background;
 
 	protected GuiWidget(final int x, final int y, final int width, final int height) {
-		this.initialX = x;
-		this.initialY = y;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+		this.offsetX = new ManagedInt(x);
+		this.offsetY = new ManagedInt(y);
+		final ManagedInt managedX = new ManagedInt(this.offsetX, () -> this.parentBounds == null || this.useAbsolutePositioning ? this.offsetX.getAsInt() : this.parentBounds.x() + this.offsetX.getAsInt());
+		final ManagedInt managedY = new ManagedInt(this.offsetY, () -> this.parentBounds == null || this.useAbsolutePositioning ? this.offsetY.getAsInt() : this.parentBounds.y() + this.offsetY.getAsInt());
+		this.bounds = MutableRectangle.of(MutablePoint.of(managedX, managedY), Size.of(width, height));
 	}
 
 	public void initClient() {
@@ -69,7 +67,7 @@ public abstract class GuiWidget {
 	//region Rendering
 	public void renderBackground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
 		if (this.background != null) {
-			this.background.draw(guiGraphics, mouseX, mouseY, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+			this.background.draw(guiGraphics, mouseX, mouseY, this.getBounds());
 		}
 	}
 
@@ -120,76 +118,89 @@ public abstract class GuiWidget {
 	}
 
 	public final boolean containsMouse(final int mouseX, final int mouseY) {
-		final int mx = mouseX - this.getScreen().getGuiLeft();
-		final int my = mouseY - this.getScreen().getGuiTop();
-		return mx >= this.getX() && mx <= this.getX() + this.getWidth() && my >= this.getY() && my <= this.getY() + this.getHeight();
+		return this.bounds.contains(mouseX - this.getScreen().getGuiLeft(), mouseY - this.getScreen().getGuiTop());
 	}
 	//endregion
 
 	//region Properties
-	public final void setInitialX(final int initialX) {
-		final int oldX = this.x;
-		final int offset = this.x - this.initialX;
-		this.initialX = initialX;
-		this.x = this.initialX + offset;
-		this.onPositionChanged(this.x, this.y, oldX, this.y);
+	public final void setBounds(final Rectangle newBounds) {
+		final int oldX = this.getX();
+		final int oldY = this.getY();
+		final int oldWidth = this.getWidth();
+		final int oldHeight = this.getHeight();
+		if (newBounds instanceof final MutableRectangle mut) {
+			this.bounds.position(mut.position());
+			this.bounds.size(mut.size());
+		} else {
+			this.offsetX.accept(newBounds.x());
+			this.offsetY.accept(newBounds.y());
+			this.bounds.width(newBounds.width());
+			this.bounds.height(newBounds.height());
+		}
+		this.onPositionChanged(this.getX(), this.getY(), oldX, oldY);
+		this.onSizeChanged(this.getWidth(), this.getHeight(), oldWidth, oldHeight);
 	}
 
-	public final void setInitialY(final int initialY) {
-		final int oldY = this.y;
-		final int offset = this.y - this.initialY;
-		this.initialY = initialY;
-		this.y = this.initialY + offset;
-		this.onPositionChanged(this.x, this.y, this.x, oldY);
+	public final void setX(final ManagedInt newX) {
+		this.offsetX = newX;
 	}
 
-	public final void setPosAndSize(final int newX, final int newY, final int newWidth, final int newHeight) {
-		final int oldX = this.x;
-		final int oldY = this.y;
-		final int oldHeight = this.height;
-		final int oldWidth = this.width;
-		this.x = this.initialX + newX;
-		this.y = this.initialY + newY;
-		this.width = newWidth;
-		this.height = newHeight;
-		this.onPositionChanged(newX, newY, oldX, oldY);
-		this.onSizeChanged(newWidth, newHeight, oldWidth, oldHeight);
+	public final void setX(final int newX) {
+		final int oldX = this.getX();
+		this.offsetX.accept(newX);
+		this.onPositionChanged(this.getX(), this.getY(), oldX, this.getY());
 	}
 
-	public final void setX(final int x) {
-		final int oldX = this.x;
-		this.x = x;
-		this.onPositionChanged(x, this.y, oldX, this.y);
+	public final void setY(final ManagedInt newY) {
+		this.offsetY = newY;
 	}
 
-	public final void setY(final int y) {
-		final int oldY = this.y;
-		this.y = y;
-		this.onPositionChanged(this.x, this.y, this.x, oldY);
+	public final void setY(final int newY) {
+		final int oldY = this.getY();
+		this.offsetY.accept(newY);
+		this.onPositionChanged(this.getX(), this.getY(), this.getX(), oldY);
 	}
 
-	public final void setRelativeX(final int newX) {
-		final int oldX = this.x;
-		this.x = this.initialX + newX;
-		this.onPositionChanged(this.x, this.y, oldX, this.y);
-	}
-
-	public final void setRelativeY(final int newY) {
-		final int oldY = this.y;
-		this.y = this.initialY + newY;
-		this.onPositionChanged(this.x, this.y, this.x, oldY);
+	public final void setPosition(final Point newPosition) {
+		final int oldX = this.getX();
+		final int oldY = this.getY();
+		if (newPosition instanceof final MutablePoint mut) {
+			this.offsetX = mut.holderX();
+			this.offsetY = mut.holderY();
+			this.useAbsolutePositioning = true;
+		} else {
+			if (this.useAbsolutePositioning) {
+				this.offsetX = new ManagedInt(newPosition.x());
+				this.offsetY = new ManagedInt(newPosition.y());
+				this.useAbsolutePositioning = false;
+			} else {
+				this.offsetX.accept(newPosition.x());
+				this.offsetY.accept(newPosition.y());
+			}
+		}
+		this.onPositionChanged(this.getX(), this.getY(), oldX, oldY);
 	}
 
 	public final void setWidth(final int width) {
-		final int oldWidth = this.width;
-		this.width = width;
-		this.onSizeChanged(this.width, this.height, oldWidth, this.height);
+		final int oldWidth = this.bounds.width(width);
+		this.onSizeChanged(this.getWidth(), this.getHeight(), oldWidth, this.getHeight());
 	}
 
 	public final void setHeight(final int height) {
-		final int oldHeight = this.height;
-		this.height = height;
-		this.onSizeChanged(this.width, this.height, this.width, oldHeight);
+		final int oldHeight = this.bounds.height(height);
+		this.onSizeChanged(this.getWidth(), this.getHeight(), this.getWidth(), oldHeight);
+	}
+
+	public final void setSize(final Size newSize) {
+		final int oldWidth = this.getWidth();
+		final int oldHeight = this.getHeight();
+		if (newSize instanceof final MutableSize mut) {
+			this.bounds.size(mut);
+		} else {
+			this.bounds.width(newSize.width());
+			this.bounds.height(newSize.height());
+		}
+		this.onSizeChanged(this.getWidth(), this.getHeight(), oldWidth, oldHeight);
 	}
 
 	public final GuiWidget addTooltipCallback(final TooltipCallback listener) {
@@ -217,5 +228,38 @@ public abstract class GuiWidget {
 	public final Font getFont() {
 		return this.getScreen().getFont();
 	}
+
+	public final MutableRectangle getBoundsUnsafe() {
+		return this.bounds;
+	}
+
+	public final Rectangle getBounds() {
+		return this.bounds;
+	}
+
+	public final Point getPosition() {
+		return this.getBounds();
+	}
+
+	public final Size getSize() {
+		return this.getBounds();
+	}
+
+	public final int getX() {
+		return this.getPosition().x();
+	}
+
+	public final int getY() {
+		return this.getPosition().y();
+	}
+
+	public final int getWidth() {
+		return this.getSize().width();
+	}
+
+	public final int getHeight() {
+		return this.getSize().height();
+	}
+
 	//endregion
 }
