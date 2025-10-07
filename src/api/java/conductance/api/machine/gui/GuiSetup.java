@@ -12,7 +12,7 @@ public class GuiSetup {
 	public void addSlots(final MachineMenu menu, final Consumer<Slot> adder) {
 	}
 
-	public void addWidgets(final MachineMenu menu, final BiConsumer<String, GuiWidget> adder) {
+	public void addWidgets(final MachineMenu menu, final BiConsumer<String, IGuiWidget> adder) {
 	}
 
 	public void preInit(final MachineScreen screen) {

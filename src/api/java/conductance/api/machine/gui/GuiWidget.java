@@ -4,18 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class GuiWidget {
+public abstract class GuiWidget implements IGuiWidget {
 
 	private final List<MouseEventListener> mouseEventListeners = new ArrayList<>();
 	private final List<TooltipCallback> tooltipCallbacks = new ArrayList<>();
@@ -41,9 +39,7 @@ public abstract class GuiWidget {
 		this.bounds = MutableRectangle.of(MutablePoint.of(managedX, managedY), Size.of(width, height));
 	}
 
-	public void initClient() {
-	}
-
+	@Override
 	public final void sendToServer(final int requestId, @Nullable final Consumer<ValueOutput> output) {
 		if (this.getMenu().getPlayerInventory().player instanceof ServerPlayer) {
 			throw new IllegalStateException("Already on server!");
@@ -51,6 +47,7 @@ public abstract class GuiWidget {
 		this.widgetPacketHandler.sendPacket(this, requestId, output);
 	}
 
+	@Override
 	public final void sendToClient(final int requestId, @Nullable final Consumer<ValueOutput> output) {
 		if (!(this.getMenu().getPlayerInventory().player instanceof ServerPlayer)) {
 			throw new IllegalStateException("Already on client!");
@@ -58,71 +55,34 @@ public abstract class GuiWidget {
 		this.widgetPacketHandler.sendPacket(this, requestId, output);
 	}
 
-	protected void handleClientRequest(final int requestId, final ValueInput input) {
-	}
-
-	protected void handleServerRequest(final int requestId, final ValueInput input) {
-	}
-
 	//region Rendering
+	@Override
 	public void renderBackground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
 		if (this.background != null) {
 			this.background.draw(guiGraphics, mouseX, mouseY, this.getBounds());
 		}
 	}
 
-	public void renderForeground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
+	@Override
+	public final void addTooltipCallback(final TooltipCallback listener) {
+		this.tooltipCallbacks.add(listener);
 	}
 
-	public void renderTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
-	}
-
-	final void handleTooltipCallbacks(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
-		final List<ClientTooltipComponent> tooltip = new ArrayList<>();
-		for (final TooltipCallback callback : this.tooltipCallbacks) {
-			callback.onTooltip(tooltip);
-		}
-		if (!tooltip.isEmpty()) {
-			guiGraphics.renderTooltip(this.getFont(), tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
-		}
+	@Override
+	public final void setBackground(@Nullable final GuiDrawable background) {
+		this.background = background;
 	}
 	//endregion
 
 	//region Events
-	public final GuiWidget addMouseListener(final MouseEventListener listener) {
+	@Override
+	public void addMouseListener(final MouseEventListener listener) {
 		this.mouseEventListeners.add(listener);
-		return this;
-	}
-
-	public void onPositionChanged(final int newX, final int newY, final int oldX, final int oldY) {
-	}
-
-	public void onSizeChanged(final int newWidth, final int newHeight, final int oldWidth, final int oldHeight) {
-	}
-
-	final boolean notifyMouseEventListeners(final MouseEventListener.Event event, final int button, final int mouseX, final int mouseY) {
-		for (final MouseEventListener listener : new ArrayList<>(this.mouseEventListeners)) {
-			if (listener.onMouseEvent(this, event, button, mouseX, mouseY)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean onMouseClicked(final int mouseX, final int mouseY, final int button) {
-		return false;
-	}
-
-	public boolean onMouseReleased(final int mouseX, final int mouseY, final int button) {
-		return false;
-	}
-
-	public final boolean containsMouse(final int mouseX, final int mouseY) {
-		return this.bounds.contains(mouseX - this.getScreen().getGuiLeft(), mouseY - this.getScreen().getGuiTop());
 	}
 	//endregion
 
 	//region Properties
+	@Override
 	public final void setBounds(final Rectangle newBounds) {
 		final int oldX = this.getX();
 		final int oldY = this.getY();
@@ -141,26 +101,31 @@ public abstract class GuiWidget {
 		this.onSizeChanged(this.getWidth(), this.getHeight(), oldWidth, oldHeight);
 	}
 
+	@Override
 	public final void setX(final ManagedInt newX) {
 		this.offsetX = newX;
 	}
 
+	@Override
 	public final void setX(final int newX) {
 		final int oldX = this.getX();
 		this.offsetX.accept(newX);
 		this.onPositionChanged(this.getX(), this.getY(), oldX, this.getY());
 	}
 
+	@Override
 	public final void setY(final ManagedInt newY) {
 		this.offsetY = newY;
 	}
 
+	@Override
 	public final void setY(final int newY) {
 		final int oldY = this.getY();
 		this.offsetY.accept(newY);
 		this.onPositionChanged(this.getX(), this.getY(), this.getX(), oldY);
 	}
 
+	@Override
 	public final void setPosition(final Point newPosition) {
 		final int oldX = this.getX();
 		final int oldY = this.getY();
@@ -181,16 +146,19 @@ public abstract class GuiWidget {
 		this.onPositionChanged(this.getX(), this.getY(), oldX, oldY);
 	}
 
+	@Override
 	public final void setWidth(final int width) {
 		final int oldWidth = this.bounds.width(width);
 		this.onSizeChanged(this.getWidth(), this.getHeight(), oldWidth, this.getHeight());
 	}
 
+	@Override
 	public final void setHeight(final int height) {
 		final int oldHeight = this.bounds.height(height);
 		this.onSizeChanged(this.getWidth(), this.getHeight(), this.getWidth(), oldHeight);
 	}
 
+	@Override
 	public final void setSize(final Size newSize) {
 		final int oldWidth = this.getWidth();
 		final int oldHeight = this.getHeight();
@@ -203,63 +171,55 @@ public abstract class GuiWidget {
 		this.onSizeChanged(this.getWidth(), this.getHeight(), oldWidth, oldHeight);
 	}
 
-	public final GuiWidget addTooltipCallback(final TooltipCallback listener) {
-		this.tooltipCallbacks.add(listener);
-		return this;
-	}
-
-	public final GuiWidget setBackground(@Nullable final GuiDrawable background) {
-		this.background = background;
-		return this;
-	}
-
+	@Override
 	public final MachineMenu getMenu() {
 		return this.menu.get();
 	}
 
+	@Override
 	public final MachineScreen getScreen() {
 		return this.screen.get();
 	}
 
-	public final GuiTheme getTheme() {
-		return this.screen.get().getTheme();
-	}
-
-	public final Font getFont() {
-		return this.getScreen().getFont();
-	}
-
-	public final MutableRectangle getBoundsUnsafe() {
-		return this.bounds;
-	}
-
+	@Override
 	public final Rectangle getBounds() {
 		return this.bounds;
 	}
+	//endregion
 
-	public final Point getPosition() {
-		return this.getBounds();
+	//region Internal
+	@Override
+	public final MutableRectangle internalGetBounds() {
+		return this.bounds;
 	}
 
-	public final Size getSize() {
-		return this.getBounds();
+	@Override
+	public final void internalBindToParentWidget(final WidgetBindingInfo info) {
+		this.widgetPacketHandler = info.packetHandler();
+		this.menu = info.menuSupplier();
+		this.screen = info.screenSupplier();
+		this.parentBounds = info.parentBounds();
 	}
 
-	public final int getX() {
-		return this.getPosition().x();
+	@Override
+	public final void internalHandleTooltipCallbacks(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
+		final List<ClientTooltipComponent> tooltip = new ArrayList<>();
+		for (final TooltipCallback callback : this.tooltipCallbacks) {
+			callback.onTooltip(tooltip);
+		}
+		if (!tooltip.isEmpty()) {
+			guiGraphics.renderTooltip(this.getFont(), tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+		}
 	}
 
-	public final int getY() {
-		return this.getPosition().y();
+	@Override
+	public boolean internalNotifyMouseEventListeners(final MouseEventListener.Event event, final int button, final int mouseX, final int mouseY) {
+		for (final MouseEventListener listener : new ArrayList<>(this.mouseEventListeners)) {
+			if (listener.onMouseEvent(this, event, button, mouseX, mouseY)) {
+				return true;
+			}
+		}
+		return false;
 	}
-
-	public final int getWidth() {
-		return this.getSize().width();
-	}
-
-	public final int getHeight() {
-		return this.getSize().height();
-	}
-
 	//endregion
 }

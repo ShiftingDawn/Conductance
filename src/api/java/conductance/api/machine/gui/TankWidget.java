@@ -143,7 +143,7 @@ public final class TankWidget extends GuiWidget {
 	}
 
 	@Override
-	protected void handleClientRequest(final int requestId, final ValueInput input) {
+	public void handleClientRequest(final int requestId, final ValueInput input) {
 		super.handleClientRequest(requestId, input);
 		if (requestId == 1) {
 			final boolean fill = input.getBooleanOr("fill", true);

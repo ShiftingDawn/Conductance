@@ -25,7 +25,7 @@ import mezz.jei.api.recipe.types.IRecipeType;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.gui.GuiTheme;
-import conductance.api.machine.gui.GuiWidget;
+import conductance.api.machine.gui.IGuiWidget;
 import conductance.api.machine.gui.WidgetGroup;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
@@ -72,8 +72,8 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 				});
 		}
 		final SimulatedRecipeCapabilityHolder holder = new SimulatedRecipeCapabilityHolder(recipe);
-		final Map<String, GuiWidget> allWidgets = this.rootGroup.getWidgetsFlattened();
-		for (final Map.Entry<String, GuiWidget> entry : allWidgets.entrySet()) {
+		final Map<String, IGuiWidget> allWidgets = this.rootGroup.getWidgetsFlattened();
+		for (final Map.Entry<String, IGuiWidget> entry : allWidgets.entrySet()) {
 			final String key = entry.getKey();
 			if (key.startsWith("items_")) {
 				final IO io = key.startsWith("items_in_") ? IO.IN : key.startsWith("items_out_") ? IO.OUT : null;
@@ -90,7 +90,7 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 					continue;
 				}
 				final List<Tuple<List<FluidStack>, RecipeElement>> mapping = io == IO.IN ? holder.getInputFluids() : holder.getOutputFluids();
-				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset + 1, 1, entry.getValue(), key, io, mapping,
+				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset, 0, entry.getValue(), key, io, mapping,
 					(slotBuilder, fluidStacks) -> slotBuilder.addIngredients(NeoForgeTypes.FLUID_STACK, fluidStacks).setFluidRenderer(1, false, 16, 16),
 					fluidStacks -> !fluidStacks.isEmpty() ? Component.literal(TextHelper.getFormattedFluidAmount(fluidStacks.getFirst().getAmount())) : null
 				);
@@ -99,7 +99,7 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 	}
 
 	private static <T> void makeRecipeSlotEntry(
-		final IRecipeLayoutBuilder builder, final int xOffset, final int yOffset, final GuiWidget widget, final String widgetKey, final IO io, final List<Tuple<List<T>, RecipeElement>> mapping,
+		final IRecipeLayoutBuilder builder, final int xOffset, final int yOffset, final IGuiWidget widget, final String widgetKey, final IO io, final List<Tuple<List<T>, RecipeElement>> mapping,
 		final BiConsumer<IRecipeSlotBuilder, List<T>> ingredientSetter, @Nullable final Function<List<T>, @Nullable Component> bottomText
 	) {
 		final int slotIndex = Integer.parseInt(widgetKey.substring(widgetKey.lastIndexOf('_') + 1));

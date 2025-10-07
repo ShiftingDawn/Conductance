@@ -5,7 +5,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import lombok.RequiredArgsConstructor;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.RecipeCapabilityHolder;
-import conductance.api.machine.gui.GuiWidget;
+import conductance.api.machine.gui.IGuiWidget;
 import conductance.api.machine.gui.MouseEventListener;
 import conductance.api.machine.gui.TooltipCallback;
 import conductance.api.recipe.MachineRecipeType;
@@ -25,7 +25,7 @@ final class ShowRecipeViewerHandlers implements TooltipCallback, MouseEventListe
 	}
 
 	@Override
-	public boolean onMouseEvent(final GuiWidget widget, final Event event, final int button, final int mouseX, final int mouseY) {
+	public boolean onMouseEvent(final IGuiWidget widget, final Event event, final int button, final int mouseX, final int mouseY) {
 		if (event == MouseEventListener.Event.PRESS && button == 0) {
 			if (this.machine instanceof final RecipeCapabilityHolder recipeCapabilityHolder) {
 				CompatHelper.showRecipes(recipeCapabilityHolder.getRecipeType());

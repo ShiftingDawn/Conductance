@@ -1,6 +1,5 @@
 package conductance.api.machine.gui;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -9,30 +8,32 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
-public final class WidgetGroup extends GuiWidget {
+public final class WidgetGroup extends GuiWidget implements IWidgetContainer {
 
-	private final Map<String, GuiWidget> widgets = new HashMap<>();
-	private final Map<GuiWidget, String> widgetsReversed = new HashMap<>();
+	private final Map<String, IGuiWidget> widgets = new HashMap<>();
+	private final Map<IGuiWidget, String> widgetsReversed = new HashMap<>();
 
 	public WidgetGroup(final int x, final int y, final int width, final int height) {
 		super(x, y, width, height);
 	}
 
-	public WidgetGroup addWidget(final String id, final GuiWidget widget) {
-		this.widgets.put(id, widget);
-		this.widgetsReversed.put(widget, id);
-		widget.setWidgetPacketHandler(this::sendToServer);
-		widget.setMenu(this::getMenu);
-		widget.setScreen(this::getScreen);
-		widget.setParentBounds(this.getBounds());
-		return this;
+	//region Data
+	@Override
+	public void handleClientRequest(final int requestId, final ValueInput input) {
+		super.handleClientRequest(requestId, input);
+		if (requestId == 0) {
+			final String key = input.getString("w").orElseThrow(() -> new IllegalStateException("Missing widget key in client widget request"));
+			final int req = input.getInt("r").orElseThrow(() -> new IllegalStateException("Missing request id in client widget request"));
+			final ValueInput data = input.childOrEmpty("d");
+			final IGuiWidget widget = Objects.requireNonNull(this.widgets.get(key), "Invalid widget key in client widget request");
+			widget.handleClientRequest(req, data);
+		}
 	}
 
-	private void sendToServer(final GuiWidget widget, final int requestId, @Nullable final Consumer<ValueOutput> payloadFactory) {
+	private void sendToServer(final IGuiWidget widget, final int requestId, @Nullable final Consumer<ValueOutput> payloadFactory) {
 		this.sendToServer(0, contentFactory -> {
-			final String key = Objects.requireNonNull(this.getMenu().getWidgetId(widget), "Cannot send client request for unknown widget.");
+			final String key = Objects.requireNonNull(this.getWidgetId(widget), "Cannot send client request for unknown widget.");
 			contentFactory.putString("w", key);
 			contentFactory.putInt("r", requestId);
 			if (payloadFactory != null) {
@@ -40,135 +41,36 @@ public final class WidgetGroup extends GuiWidget {
 			}
 		});
 	}
+	//endregion
 
-	@Override
-	protected void handleClientRequest(final int requestId, final ValueInput input) {
-		super.handleClientRequest(requestId, input);
-		if (requestId == 0) {
-			final String key = input.getString("w").orElseThrow(() -> new IllegalStateException("Missing widget key in client widget request"));
-			final int req = input.getInt("r").orElseThrow(() -> new IllegalStateException("Missing request id in client widget request"));
-			final ValueInput data = input.childOrEmpty("d");
-			final GuiWidget widget = Objects.requireNonNull(this.widgets.get(key), "Invalid widget key in client widget request");
-			widget.handleClientRequest(req, data);
-		}
-	}
-
-	@Override
-	public void initClient() {
-		for (final GuiWidget child : this.widgets.values()) {
-			child.initClient();
-		}
-	}
-
+	//region Rendering
 	@Override
 	public void renderBackground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
 		super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-		for (final GuiWidget child : this.widgets.values()) {
-			child.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-		}
+		IWidgetContainer.super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
 	@Override
 	public void renderForeground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
-		super.renderForeground(guiGraphics, mouseX, mouseY, partialTick);
-		for (final GuiWidget child : this.widgets.values()) {
-			child.renderForeground(guiGraphics, mouseX, mouseY, partialTick);
-		}
+		IWidgetContainer.super.renderForeground(guiGraphics, mouseX, mouseY, partialTick);
+	}
+
+	//endregion
+
+	//region Internal
+	@Override
+	public WidgetBindingInfo internalCreateBindingInfo(final IGuiWidget targetChild) {
+		return new WidgetBindingInfo(this::sendToServer, this::getMenu, this::getScreen, this.internalGetBounds());
 	}
 
 	@Override
-	public void renderTooltips(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
-		super.renderTooltips(guiGraphics, mouseX, mouseY, partialTick);
-		for (final GuiWidget child : this.widgets.values()) {
-			child.renderTooltips(guiGraphics, mouseX, mouseY, partialTick);
-			if (child.containsMouse(mouseX, mouseY)) {
-				child.handleTooltipCallbacks(guiGraphics, mouseX, mouseY);
-			}
-		}
+	public Map<String, IGuiWidget> internalGetWidgets() {
+		return this.widgets;
 	}
 
 	@Override
-	public boolean onMouseClicked(final int mouseX, final int mouseY, final int button) {
-		return this.handleMouseEvent(true, mouseX, mouseY, button);
+	public Map<IGuiWidget, String> internalGetWidgetsReversed() {
+		return this.widgetsReversed;
 	}
-
-	@Override
-	public boolean onMouseReleased(final int mouseX, final int mouseY, final int button) {
-		return this.handleMouseEvent(false, mouseX, mouseY, button);
-	}
-
-	private boolean handleMouseEvent(final boolean click, final int relativeMouseX, final int relativeMouseY, final int button) {
-		//Widgets are positioned using absolute coordinates, so untranslate mouse coords
-		final int mouseX = this.getPosition().x() + relativeMouseX;
-		final int mouseY = this.getPosition().y() + relativeMouseY;
-		for (final GuiWidget widget : this.widgets.values()) {
-			if (!widget.getBounds().contains(mouseX, mouseY)) {
-				continue;
-			}
-			final int mx = mouseX - widget.getBounds().x();
-			final int my = mouseY - widget.getBounds().y();
-			if (click) {
-				if (widget.onMouseClicked(mx, my, button)) {
-					return true;
-				}
-				if (widget.notifyMouseEventListeners(MouseEventListener.Event.PRESS, button, mx, my)) {
-					return true;
-				}
-			} else {
-				if (widget.onMouseReleased(mx, my, button)) {
-					return true;
-				}
-				if (widget.notifyMouseEventListeners(MouseEventListener.Event.RELEASE, button, mx, my)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	public @UnknownNullability GuiWidget getWidgetById(final String id) {
-		GuiWidget result = this.widgets.get(id);
-		if (result == null) {
-			for (final GuiWidget widget : this.widgets.values()) {
-				if (widget instanceof final WidgetGroup group) {
-					result = group.getWidgetById(id);
-					if (result != null) {
-						return result;
-					}
-				}
-			}
-		}
-		return result;
-	}
-
-	public @UnknownNullability String getWidgetId(final GuiWidget widget) {
-		String result = this.widgetsReversed.get(widget);
-		if (result == null) {
-			for (final GuiWidget childWidget : this.widgets.values()) {
-				if (childWidget instanceof final WidgetGroup group) {
-					result = group.getWidgetId(widget);
-					if (result != null) {
-						return result;
-					}
-				}
-			}
-		}
-		return result;
-	}
-
-	public final Map<String, GuiWidget> getWidgets() {
-		return Collections.unmodifiableMap(this.widgets);
-	}
-
-	public final Map<String, GuiWidget> getWidgetsFlattened() {
-		final Map<String, GuiWidget> result = new HashMap<>();
-		this.widgets.forEach((key, widget) -> {
-			if (widget instanceof final WidgetGroup group) {
-				result.putAll(group.getWidgetsFlattened());
-			} else {
-				result.put(key, widget);
-			}
-		});
-		return result;
-	}
+	//endregion
 }

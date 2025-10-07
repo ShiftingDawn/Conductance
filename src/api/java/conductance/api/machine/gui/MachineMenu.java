@@ -1,6 +1,5 @@
 package conductance.api.machine.gui;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,16 +25,15 @@ import conductance.api.machine.MachineBlockEntity;
 import conductance.api.util.Internal;
 import conductance.api.util.Lazy;
 
-public class MachineMenu extends AbstractContainerMenu {
+public class MachineMenu extends AbstractContainerMenu implements WidgetHolder {
 
 	public static final Supplier<MenuType<?>> MENU_TYPE = Lazy.of(() -> BuiltInRegistries.MENU.getValue(ResourceLocation.fromNamespaceAndPath(CAPI.MOD_ID, "machine")));
 
-	private final @Getter(AccessLevel.PACKAGE) Map<String, GuiWidget> widgets = new HashMap<>();
-	private final @Getter(AccessLevel.PACKAGE) Map<GuiWidget, String> widgetsReversed = new HashMap<>();
 	private final @Getter MachineBlockEntity<?> machine;
 	private final @Getter ContainerLevelAccess access;
 	private final @Getter Inventory playerInventory;
 	private final @Getter GuiSetup guiSetup;
+	private final @Getter(AccessLevel.PACKAGE) WidgetGroup rootWidget;
 
 	public MachineMenu(final MachineBlockEntity<?> machine, final int containerId, final ContainerLevelAccess access, final Inventory playerInventory) {
 		super(MachineMenu.MENU_TYPE.get(), containerId);
@@ -43,7 +41,12 @@ public class MachineMenu extends AbstractContainerMenu {
 		this.access = access;
 		this.playerInventory = playerInventory;
 		this.guiSetup = Objects.requireNonNull(machine.getMachineType().getGuiSetup(), "Opened a menu for a machine without a GuiSetup!");
+		this.rootWidget = new WidgetGroup(0, 0, this.guiSetup.getContainerSize().width(), this.guiSetup.getContainerSize().height());
+		this.rootWidget.setMenu(() -> this);
 		this.guiSetup.addSlots(this, this::addSlot);
+		if (playerInventory.player instanceof final ServerPlayer serverPlayer) {
+			this.rootWidget.setWidgetPacketHandler(this.sendToClient(serverPlayer));
+		}
 		Optional.ofNullable(this.guiSetup.getPlayerInventoryPos(this.guiSetup.getContainerSize())).ifPresent(pos -> {
 			for (int y = 0; y < 3; ++y) {
 				for (int x = 0; x < 9; ++x) {
@@ -59,55 +62,28 @@ public class MachineMenu extends AbstractContainerMenu {
 		this.guiSetup.addWidgets(this, this::addWidget);
 	}
 
-	public final <T extends GuiWidget> T addWidget(final String id, final T widget) {
-		this.widgets.put(id, widget);
-		this.widgetsReversed.put(widget, id);
-		widget.setMenu(() -> this);
-		if (this.playerInventory.player instanceof final ServerPlayer serverPlayer) {
-			widget.setWidgetPacketHandler(this.sendToClient(serverPlayer));
-		}
-		return widget;
+	@Override
+	public ItemStack quickMoveStack(final Player player, final int i) {
+		//TODO implement
+		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public boolean stillValid(final Player player) {
+		return AbstractContainerMenu.stillValid(this.access, player, this.machine.getMachineType().getBlock().get());
 	}
 
 	private WidgetPacketHandler sendToClient(final ServerPlayer player) {
 		return (widget, requestId, packetFiller) -> {
 			Internal.MACHINE_SCREEN_PACKET_SENDER.accept(this, player, contentFactory -> {
-				final String key = Objects.requireNonNull(this.getWidgetId(widget), "Cannot send client request for unknown widget.");
+				final String key = Objects.requireNonNull(this.rootWidget.getWidgetId(widget), "Cannot send client request for unknown widget.");
 				contentFactory.putString("w", key);
 				contentFactory.putInt("r", requestId);
-				packetFiller.accept(contentFactory.child("d"));
+				if (packetFiller != null) {
+					packetFiller.accept(contentFactory.child("d"));
+				}
 			});
 		};
-	}
-
-	public final @UnknownNullability GuiWidget getWidgetById(final String id) {
-		GuiWidget result = this.widgets.get(id);
-		if (result == null) {
-			for (final GuiWidget widget : this.widgets.values()) {
-				if (widget instanceof final WidgetGroup group) {
-					result = group.getWidgetById(id);
-					if (result != null) {
-						return result;
-					}
-				}
-			}
-		}
-		return result;
-	}
-
-	public final @UnknownNullability String getWidgetId(final GuiWidget widget) {
-		String result = this.widgetsReversed.get(widget);
-		if (result == null) {
-			for (final GuiWidget childWidget : this.widgets.values()) {
-				if (childWidget instanceof final WidgetGroup group) {
-					result = group.getWidgetId(widget);
-					if (result != null) {
-						return result;
-					}
-				}
-			}
-		}
-		return result;
 	}
 
 	public @UnknownNullability Slot getSlot(final IItemHandler inv, final int index) {
@@ -125,23 +101,12 @@ public class MachineMenu extends AbstractContainerMenu {
 		return null;
 	}
 
-	@Override
-	public ItemStack quickMoveStack(final Player player, final int i) {
-		//TODO implement
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public boolean stillValid(final Player player) {
-		return AbstractContainerMenu.stillValid(this.access, player, this.machine.getMachineType().getBlock().get());
-	}
-
 	@SuppressWarnings("unused")
 	private void handlePacket(final boolean isServer, final ValueInput input) {
 		final String key = input.getString("w").orElseThrow(() -> new IllegalStateException("Missing widget key"));
 		final int req = input.getInt("r").orElseThrow(() -> new IllegalStateException("Missing request id"));
 		final ValueInput data = input.childOrEmpty("d");
-		final GuiWidget widget = Objects.requireNonNull(this.widgets.get(key), "Invalid widget key");
+		final IGuiWidget widget = Objects.requireNonNull(this.rootWidget.getWidgets().get(key), "Invalid widget key");
 		if (isServer) {
 			widget.handleClientRequest(req, data);
 		} else {
@@ -154,8 +119,26 @@ public class MachineMenu extends AbstractContainerMenu {
 	}
 
 	private void handleServerRequestPacket(final ValueInput input) {
-		this.handlePacket(true, input);
+		this.handlePacket(false, input);
 	}
+
+	//region WidgetHolder
+
+	@Override
+	public WidgetBindingInfo internalCreateBindingInfo(final IGuiWidget targetChild) {
+		return this.rootWidget.internalCreateBindingInfo(targetChild);
+	}
+
+	@Override
+	public Map<String, IGuiWidget> internalGetWidgets() {
+		return this.rootWidget.internalGetWidgets();
+	}
+
+	@Override
+	public Map<IGuiWidget, String> internalGetWidgetsReversed() {
+		return this.rootWidget.internalGetWidgetsReversed();
+	}
+	//endregion
 
 	static {
 		Internal.MACHINE_SCREEN_PACKET_RECEIVER_SERVER = machine -> machine::handleClientRequestPacket;

@@ -5,7 +5,8 @@ import net.minecraft.network.chat.Component;
 import conductance.api.CAPI;
 import conductance.api.machine.gui.GuiDrawableTexture;
 import conductance.api.machine.gui.GuiSetup;
-import conductance.api.machine.gui.GuiWidget;
+import conductance.api.machine.gui.GuiTheme;
+import conductance.api.machine.gui.IGuiWidget;
 import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.gui.MachineScreen;
 import conductance.api.machine.gui.Rectangle;
@@ -17,7 +18,7 @@ import conductance.Conductance;
 public class MultiBlockControllerGuiSetup extends GuiSetup {
 
 	@Override
-	public void addWidgets(final MachineMenu menu, final BiConsumer<String, GuiWidget> adder) {
+	public void addWidgets(final MachineMenu menu, final BiConsumer<String, IGuiWidget> adder) {
 		final MultiControllerMachineBlockEntity<?> machine = (MultiControllerMachineBlockEntity<?>) menu.getMachine();
 		adder.accept("root", CAPI.make(new WidgetGroup(0, 0, 0, 0), root -> {
 			root.setBackground(new GuiDrawableTexture(Conductance.id(Conductance.MODID + "/screen")));
@@ -33,7 +34,7 @@ public class MultiBlockControllerGuiSetup extends GuiSetup {
 
 	@Override
 	public void init(final MachineScreen screen, final Rectangle rootBounds) {
-		final GuiWidget root = screen.getMenu().getWidgetById("root");
+		final IGuiWidget root = screen.getMenu().getWidgetById("root");
 		root.setBounds(rootBounds);
 	}
 }

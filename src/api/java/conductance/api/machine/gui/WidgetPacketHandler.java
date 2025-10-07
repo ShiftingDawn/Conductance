@@ -6,5 +6,5 @@ import org.jetbrains.annotations.Nullable;
 
 interface WidgetPacketHandler {
 
-	void sendPacket(GuiWidget widget, int requestId, @Nullable Consumer<ValueOutput> packetFiller);
+	void sendPacket(IGuiWidget widget, int requestId, @Nullable Consumer<ValueOutput> packetFiller);
 }

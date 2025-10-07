@@ -13,7 +13,7 @@ import conductance.api.machine.CapIO;
 import conductance.api.machine.gui.GuiDrawableTexture;
 import conductance.api.machine.gui.GuiSetup;
 import conductance.api.machine.gui.GuiTheme;
-import conductance.api.machine.gui.GuiWidget;
+import conductance.api.machine.gui.IGuiWidget;
 import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.gui.MachineScreen;
 import conductance.api.machine.gui.ManagedInt;
@@ -48,7 +48,7 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 	}
 
 	@Override
-	public void addWidgets(final MachineMenu menu, final BiConsumer<String, GuiWidget> adder) {
+	public void addWidgets(final MachineMenu menu, final BiConsumer<String, IGuiWidget> adder) {
 		final GenericRecipeMachine machine = (GenericRecipeMachine) menu.getMachine();
 		final IItemHandler inputItems = machine.getInputItems() != null ? machine.getInputItems().getInventory() : null;
 		final IItemHandler outputItems = machine.getOutputItems() != null ? machine.getOutputItems().getInventory() : null;
@@ -61,7 +61,7 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 		), root -> {
 			root.setY(10);
 			Util.make(new ShowRecipeViewerHandlers(menu.getMachine()), handler -> {
-				final GuiWidget widget = root.getWidgetById("progress");
+				final IGuiWidget widget = root.getWidgetById("progress");
 				widget.addTooltipCallback(handler);
 				widget.addMouseListener(handler);
 			});
@@ -93,9 +93,9 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 
 	private static WidgetGroup makeRootGroup(final MachineRecipeType recipeType, final ProgressProvider progressProvider, final Function<IO, WidgetGroup> groupFactory) {
 		return Util.make(new WidgetGroup(0, 0, 0, 0), root -> {
-			final GuiWidget inputGroup = Util.make(groupFactory.apply(IO.IN), group -> root.addWidget("in", group));
-			final GuiWidget outputGroup = Util.make(groupFactory.apply(IO.OUT), group -> root.addWidget("out", group));
-			final GuiWidget progress = Util.make(new ProgressWidget(
+			final IGuiWidget inputGroup = Util.make(groupFactory.apply(IO.IN), group -> root.addWidget("in", group));
+			final IGuiWidget outputGroup = Util.make(groupFactory.apply(IO.OUT), group -> root.addWidget("out", group));
+			final IGuiWidget progress = Util.make(new ProgressWidget(
 				new GuiDrawableTexture(recipeType.getGuiArrow()),
 				progressProvider,
 				recipeType.getGuiArrowDirection(),
@@ -144,8 +144,8 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 	}
 
 	private static WidgetGroup makeGroup(
-		final GuiTheme theme, final IO io, final int itemCount, final int fluidCount, final TriFunction<Integer, Integer, Integer, GuiWidget> itemWidgetFactory,
-		final TriFunction<Integer, Integer, Integer, GuiWidget> fluidWidgetFactory
+		final GuiTheme theme, final IO io, final int itemCount, final int fluidCount, final TriFunction<Integer, Integer, Integer, IGuiWidget> itemWidgetFactory,
+		final TriFunction<Integer, Integer, Integer, IGuiWidget> fluidWidgetFactory
 	) {
 		return Util.make(new WidgetGroup(0, 0, 0, 0), mainGroup -> {
 			final WidgetGroup itemGroup = Util.make(new WidgetGroup(0, 0, 0, 0), group -> {
@@ -182,7 +182,7 @@ public class GenericRecipeMachineGuiSetup extends GuiSetup {
 
 	@Override
 	public void init(final MachineScreen screen, final Rectangle rootBounds) {
-		final GuiWidget root = screen.getMenu().getWidgetById("root");
+		final IGuiWidget root = screen.getMenu().getWidgetById("root");
 		root.setBounds(rootBounds);
 	}
 }

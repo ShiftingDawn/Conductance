@@ -6,7 +6,7 @@ import mezz.jei.api.gui.builder.IClickableIngredientFactory;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.runtime.IClickableIngredient;
-import conductance.api.machine.gui.GuiWidget;
+import conductance.api.machine.gui.IGuiWidget;
 import conductance.api.machine.gui.MachineScreen;
 import conductance.api.machine.gui.TankWidget;
 
@@ -14,7 +14,7 @@ final class MachineScreenGuiHandler implements IGuiContainerHandler<MachineScree
 
 	@Override
 	public Optional<? extends IClickableIngredient<?>> getClickableIngredientUnderMouse(final IClickableIngredientFactory builder, final MachineScreen containerScreen, final double mouseX, final double mouseY) {
-		final GuiWidget widget = containerScreen.getWidgetUnderMouse((int) mouseX, (int) mouseY);
+		final IGuiWidget widget = containerScreen.getMenu().getWidgetUnderMouse((int) mouseX, (int) mouseY);
 		if (widget instanceof final TankWidget tankWidget) {
 			final FluidStack fluid = tankWidget.getHandler().getFluidInTank(tankWidget.getTank()).copy();
 			if (!fluid.isEmpty()) {

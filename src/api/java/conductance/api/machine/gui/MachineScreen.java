@@ -33,10 +33,8 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 		this.screenBounds.size(this.guiSetup.getContainerSize());
 		this.titleLabelX = 4;
 		this.titleLabelY = -10;
-		menu.getWidgets().values().forEach(widget -> {
-			widget.setWidgetPacketHandler(this::sendToServer);
-			widget.setScreen(() -> this);
-		});
+		menu.getRootWidget().setWidgetPacketHandler(this::sendToServer);
+		menu.getRootWidget().setScreen(() -> this);
 	}
 
 	@Override
@@ -48,9 +46,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 			this.inventoryLabelY = pos.y() - 11;
 		});
 		this.guiSetup.init(this, this.contentBounds);
-		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
-			widget.initClient();
-		}
+		this.menu.getRootWidget().initClient();
 	}
 
 	@Override
@@ -64,10 +60,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 			Optional.ofNullable(this.guiSetup.getPlayerHotbarPos(this.screenBounds)).ifPresent(pos -> {
 				this.getTheme().getPlayerHotbar().draw(guiGraphics, mouseX, mouseY, pos.x() - 1, pos.y() - 1, 162, 18);
 			});
-
-			for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
-				widget.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-			}
+			this.getMenu().getRootWidget().renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 		});
 	}
 
@@ -81,22 +74,16 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 	public void render(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
-		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
-			widget.renderTooltips(guiGraphics, mouseX, mouseY, partialTick);
-			if (widget.containsMouse(mouseX, mouseY)) {
-				widget.handleTooltipCallbacks(guiGraphics, mouseX, mouseY);
-			}
+		this.getMenu().getRootWidget().renderTooltips(guiGraphics, mouseX, mouseY, partialTick);
+		if (this.getMenu().getRootWidget().containsMouse(mouseX, mouseY)) {
+			this.getMenu().getRootWidget().internalHandleTooltipCallbacks(guiGraphics, mouseX, mouseY);
 		}
 	}
 
 	@Override
 	public void renderContents(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
 		super.renderContents(guiGraphics, mouseX, mouseY, partialTick);
-		this.translated(guiGraphics, () -> {
-			for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
-				widget.renderForeground(guiGraphics, mouseX, mouseY, partialTick);
-			}
-		});
+		this.translated(guiGraphics, () -> this.getMenu().getRootWidget().renderForeground(guiGraphics, mouseX, mouseY, partialTick));
 	}
 
 	private void translated(final GuiGraphics guiGraphics, final Runnable callback) {
@@ -119,7 +106,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 
 	@Override
 	public boolean mouseClicked(final double absoluteMouseX, final double absoluteMouseY, final int button) {
-		if (this.handleMouseEvent(true, absoluteMouseX, absoluteMouseY, button)) {
+		if (this.handleMouseEvent(MouseEventListener.Event.PRESS, absoluteMouseX, absoluteMouseY, button)) {
 			return true;
 		}
 		return super.mouseClicked(absoluteMouseX, absoluteMouseY, button);
@@ -127,62 +114,20 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 
 	@Override
 	public boolean mouseReleased(final double absoluteMouseX, final double absoluteMouseY, final int button) {
-		if (this.handleMouseEvent(false, absoluteMouseX, absoluteMouseY, button)) {
+		if (this.handleMouseEvent(MouseEventListener.Event.RELEASE, absoluteMouseX, absoluteMouseY, button)) {
+
 			return true;
 		}
 		return super.mouseReleased(absoluteMouseX, absoluteMouseY, button);
 	}
 
-	private boolean handleMouseEvent(final boolean click, final double absoluteMouseX, final double absoluteMouseY, final int button) {
+	private boolean handleMouseEvent(final MouseEventListener.Event event, final double absoluteMouseX, final double absoluteMouseY, final int button) {
 		final int mouseX = (int) (absoluteMouseX - this.leftPos);
 		final int mouseY = (int) (absoluteMouseY - this.topPos);
-		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
-			if (!widget.getBounds().contains(mouseX, mouseY)) {
-				continue;
-			}
-			final int mx = mouseX - widget.getPosition().x();
-			final int my = mouseY - widget.getPosition().y();
-			if (click) {
-				if (widget.onMouseClicked(mx, my, button)) {
-					return true;
-				}
-				if (widget.notifyMouseEventListeners(MouseEventListener.Event.PRESS, button, mx, my)) {
-					return true;
-				}
-			} else {
-				if (widget.onMouseReleased(mx, my, button)) {
-					return true;
-				}
-				if (widget.notifyMouseEventListeners(MouseEventListener.Event.RELEASE, button, mx, my)) {
-					return true;
-				}
-			}
+		if (this.getMenu().getRootWidget().internalHandleMouseEvent(event, mouseX, mouseY, button)) {
+			return true;
 		}
 		return false;
-	}
-
-	public @Nullable GuiWidget getWidgetUnderMouse(final int mouseX, final int mouseY) {
-		for (final GuiWidget widget : this.getMenu().getWidgets().values()) {
-			if (widget.containsMouse(mouseX, mouseY)) {
-				if (widget instanceof final WidgetGroup widgetGroup) {
-					return this.getWidgetUnderMouse(widgetGroup, mouseX, mouseY);
-				}
-				return widget;
-			}
-		}
-		return null;
-	}
-
-	private GuiWidget getWidgetUnderMouse(final WidgetGroup group, final int mouseX, final int mouseY) {
-		for (final GuiWidget widget : group.getWidgets().values()) {
-			if (widget.containsMouse(mouseX, mouseY)) {
-				if (widget instanceof final WidgetGroup widgetGroup) {
-					return this.getWidgetUnderMouse(widgetGroup, mouseX, mouseY);
-				}
-				return widget;
-			}
-		}
-		return group;
 	}
 
 	public final GuiTheme getTheme() {
@@ -193,9 +138,9 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 		return this.getTheme().getTextColor();
 	}
 
-	private void sendToServer(final GuiWidget widget, final int requestId, @Nullable final Consumer<ValueOutput> payloadFactory) {
+	private void sendToServer(final IGuiWidget widget, final int requestId, @Nullable final Consumer<ValueOutput> payloadFactory) {
 		Internal.MACHINE_SCREEN_PACKET_SENDER.accept(this.getMenu(), null, contentFactory -> {
-			final String key = Objects.requireNonNull(this.getMenu().getWidgetId(widget), "Cannot send client request for unknown widget.");
+			final String key = Objects.requireNonNull(this.getMenu().getRootWidget().getWidgetId(widget), "Cannot send client request for unknown widget.");
 			contentFactory.putString("w", key);
 			contentFactory.putInt("r", requestId);
 			if (payloadFactory != null) {
