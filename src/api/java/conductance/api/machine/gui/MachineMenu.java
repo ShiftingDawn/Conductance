@@ -2,11 +2,11 @@ package conductance.api.machine.gui;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -47,19 +47,9 @@ public class MachineMenu extends AbstractContainerMenu implements WidgetHolder {
 		if (playerInventory.player instanceof final ServerPlayer serverPlayer) {
 			this.rootWidget.setWidgetPacketHandler(this.sendToClient(serverPlayer));
 		}
-		Optional.ofNullable(this.guiSetup.getPlayerInventoryPos(this.guiSetup.getContainerSize())).ifPresent(pos -> {
-			for (int y = 0; y < 3; ++y) {
-				for (int x = 0; x < 9; ++x) {
-					this.addSlot(new Slot(playerInventory, x + (y + 1) * 9, pos.x() + x * 18, pos.y() + y * 18));
-				}
-			}
-		});
-		Optional.ofNullable(this.guiSetup.getPlayerHotbarPos(this.guiSetup.getContainerSize())).ifPresent(pos -> {
-			for (int i = 0; i < 9; ++i) {
-				this.addSlot(new Slot(playerInventory, i, pos.x() + i * 18, pos.y()));
-			}
-		});
+		this.guiSetup.addPlayerInventorySlots(playerInventory, this::addSlot);
 		this.guiSetup.addWidgets(this, this::addWidget);
+		this.guiSetup.addPlayerInventoryWidget(this, this::addWidget);
 	}
 
 	@Override
@@ -76,8 +66,6 @@ public class MachineMenu extends AbstractContainerMenu implements WidgetHolder {
 	private WidgetPacketHandler sendToClient(final ServerPlayer player) {
 		return (widget, requestId, packetFiller) -> {
 			Internal.MACHINE_SCREEN_PACKET_SENDER.accept(this, player, contentFactory -> {
-				final String key = Objects.requireNonNull(this.rootWidget.getWidgetId(widget), "Cannot send client request for unknown widget.");
-				contentFactory.putString("w", key);
 				contentFactory.putInt("r", requestId);
 				if (packetFiller != null) {
 					packetFiller.accept(contentFactory.child("d"));
@@ -101,17 +89,25 @@ public class MachineMenu extends AbstractContainerMenu implements WidgetHolder {
 		return null;
 	}
 
+	public @UnknownNullability Slot getSlot(final Container inv, final int index) {
+		for (final Slot slot : this.slots) {
+			if (slot.getContainerSlot() == index && slot.container == inv) {
+				return slot;
+			}
+		}
+		return null;
+	}
+
 	@SuppressWarnings("unused")
 	private void handlePacket(final boolean isServer, final ValueInput input) {
-		final String key = input.getString("w").orElseThrow(() -> new IllegalStateException("Missing widget key"));
 		final int req = input.getInt("r").orElseThrow(() -> new IllegalStateException("Missing request id"));
-		final ValueInput data = input.childOrEmpty("d");
-		final IGuiWidget widget = Objects.requireNonNull(this.rootWidget.getWidgets().get(key), "Invalid widget key");
-		if (isServer) {
-			widget.handleClientRequest(req, data);
-		} else {
-			widget.handleServerRequest(req, data);
-		}
+		input.child("d").ifPresent(data -> {
+			if (isServer) {
+				this.rootWidget.handleClientRequest(req, data);
+			} else {
+				this.rootWidget.handleServerRequest(req, data);
+			}
+		});
 	}
 
 	private void handleClientRequestPacket(final ValueInput input) {

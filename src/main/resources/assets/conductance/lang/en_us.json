@@ -23,6 +23,8 @@
   "item.conductance.resistor": "Resistor",
   "item.conductance.transistor": "Transistor",
 
+  "block.conductance.bronze_casing": "Bronze Casing",
+
   "tooltip.material_bucket.temperature": "§eTemperature: §r%sK",
   "tooltip.material_bucket.density": "§eDensity: §r%s",
   "tooltip.material_bucket.viscosity": "§eViscosity: §r%s",
@@ -75,6 +77,13 @@
   "machine.conductance.extractor": "%s Extractor",
   "machine.conductance.compressor": "%s Compressor",
   "machine.conductance.cutting_machine": "%s Cutting Machine",
+
+  "machine.conductance.large_bronze_boiler": "Large Bronze Boiler",
+
+  "machine.conductance.input_bus": "%s Input Bus",
+  "machine.conductance.output_bus": "%s Output Bus",
+  "machine.conductance.input_hatch": "%s Input Hatch",
+  "machine.conductance.output_hatch": "%s Output Hatch",
 
   "guiWidget.conductance.tank.empty": "Empty",
   "guiWidget.conductance.tank.capacity": "§9Capacity:§r %s",

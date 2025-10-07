@@ -1,5 +1,6 @@
 package conductance.api.machine.multi;
 
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,6 +30,14 @@ public interface MultiBlockStructureBuilder {
 
 	default MultiBlockStructureBuilder key(final char key, final Block expectedBlock) {
 		return this.key(key, StructurePredicate.isBlock(expectedBlock));
+	}
+
+	default MultiBlockStructureBuilder key(final char key, final Holder<Block> expectedBlock, @Nullable final StructureCheckCallback callback) {
+		return this.key(key, StructurePredicate.isBlock(expectedBlock::value), callback);
+	}
+
+	default MultiBlockStructureBuilder key(final char key, final Holder<Block> expectedBlock) {
+		return this.key(key, StructurePredicate.isBlock(expectedBlock::value));
 	}
 
 	default MultiBlockStructureBuilder key(final char key, final TagKey<Block> expectedTag, @Nullable final StructureCheckCallback callback) {

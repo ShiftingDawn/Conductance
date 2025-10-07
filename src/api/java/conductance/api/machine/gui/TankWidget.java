@@ -144,7 +144,6 @@ public final class TankWidget extends GuiWidget {
 
 	@Override
 	public void handleClientRequest(final int requestId, final ValueInput input) {
-		super.handleClientRequest(requestId, input);
 		if (requestId == 1) {
 			final boolean fill = input.getBooleanOr("fill", true);
 			final boolean multiple = input.getBooleanOr("mult", false);

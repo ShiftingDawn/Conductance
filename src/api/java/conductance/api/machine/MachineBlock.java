@@ -4,7 +4,6 @@ import java.util.List;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
@@ -24,7 +23,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
@@ -33,12 +31,15 @@ import conductance.api.block.BlockRotationHelper;
 import conductance.api.block.BlockRotationType;
 import conductance.api.block.IGeneratedMiningTags;
 import conductance.api.machine.gui.MachineMenu;
+import conductance.api.machine.multi.IMultiBlockController;
+import conductance.api.machine.multi.MultiControllerMachineBlockEntity;
 
 public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements EntityBlock, IGeneratedMiningTags {
 
 	private static final ThreadLocal<BlockRotationType> CURRENT_ROTATION_TYPE = new ThreadLocal<>();
-	public static final BooleanProperty WORKING = BlockStateProperties.LIT;
 	public static final BooleanProperty TICKING = BooleanProperty.create("ticking");
+	public static final BooleanProperty WORKING = BooleanProperty.create("working");
+	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 	private final @Getter MachineType<T> machineType;
 
 	public MachineBlock(final BlockBehaviour.Properties properties, final MachineType<T> machineType) {
@@ -99,6 +100,9 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	protected @Nullable MenuProvider getMenuProvider(final BlockState state, final Level level, final BlockPos pos) {
 		final BlockEntity mbe = level.getBlockEntity(pos);
 		if (mbe instanceof final MachineBlockEntity<?> machine && machine.getMachineType().getGuiSetup() != null) {
+			if (machine instanceof final IMultiBlockController multiBlockController && !MultiControllerMachineBlockEntity.checkStructure(multiBlockController, true)) {
+				return null;
+			}
 			return new SimpleMenuProvider(
 				(containerId, playerInventory, plr) -> new MachineMenu(machine, containerId, ContainerLevelAccess.create(level, pos), plr.getInventory()),
 				this.machineType.getName()
@@ -110,12 +114,12 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	@Override
 	protected InteractionResult useWithoutItem(final BlockState state, final Level level, final BlockPos pos, final Player player, final BlockHitResult hitResult) {
 		if (!player.isCrouching()) {
-			if (player instanceof final ServerPlayer serverPlayer) {
-				final MenuProvider menuProvider = state.getMenuProvider(level, pos);
-				if (menuProvider != null) {
-					serverPlayer.openMenu(menuProvider, buffer -> buffer.writeBlockPos(pos));
-					return InteractionResult.SUCCESS;
+			final MenuProvider menuProvider = state.getMenuProvider(level, pos);
+			if (menuProvider != null) {
+				if (!level.isClientSide) {
+					player.openMenu(menuProvider, buffer -> buffer.writeBlockPos(pos));
 				}
+				return InteractionResult.SUCCESS;
 			}
 		}
 		return super.useWithoutItem(state, level, pos, player, hitResult);

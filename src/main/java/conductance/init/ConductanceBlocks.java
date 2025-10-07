@@ -1,8 +1,11 @@
 package conductance.init;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Objects;
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -14,7 +17,9 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.NCBlocks;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreBearer;
@@ -23,6 +28,7 @@ import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
 import conductance.Conductance;
+import conductance.core.CreativeTabHelper;
 import conductance.core.material.MaterialColorTintSource;
 import conductance.init.block.MaterialBlock;
 import conductance.init.block.MaterialBlockItem;
@@ -35,12 +41,23 @@ public final class ConductanceBlocks {
 
 	private static final DeferredRegister.Blocks REGISTRY = DeferredRegister.createBlocks(Conductance.MODID);
 	private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Conductance.MODID);
+	private static final Map<Holder<Block>, ResourceLocation> SIMPLE_BLOCKS = new IdentityHashMap<>();
 
 	public static void initialize(final IEventBus modEventBus) {
 		ConductanceBlocks.REGISTRY.register(modEventBus);
 		ConductanceBlocks.ITEMS.register(modEventBus);
 		CAPI.regs().materials().forEach(ConductanceBlocks::generateMaterial);
 		modEventBus.addListener(RegisterColorHandlersEvent.Block.class, ConductanceBlocks::handleMaterialBlockColors);
+		NCBlocks.CASING_BRONZE = ConductanceBlocks.makeSimpleBlock("bronze_casing", "casing/bronze");
+	}
+
+	private static Holder<Block> makeSimpleBlock(final String blockName, @Nullable final String texture) {
+		final Holder<Block> result = ConductanceBlocks.REGISTRY.registerBlock(blockName, props -> Util.make(new Block(props), block -> {
+			CreativeTabHelper.addToTab(block, CreativeTabHelper.Tabs.GENERAL);
+		}));
+		ConductanceBlocks.ITEMS.registerSimpleBlockItem(result);
+		ConductanceBlocks.SIMPLE_BLOCKS.put(result, Conductance.id("block/" + Objects.requireNonNullElseGet(texture, () -> result.getKey().location().getPath())));
+		return result;
 	}
 
 	private static void generateMaterial(final Material material) {
@@ -180,6 +197,11 @@ public final class ConductanceBlocks {
 			);
 			event.addItemModelDelegate(block);
 		}));
+		ConductanceBlocks.SIMPLE_BLOCKS.forEach((blockHolder, texture) -> {
+			event.addBlockState(blockHolder.value(), b -> b.simple(b2 -> b2.model(blockHolder.value())));
+			event.addBlockModel(blockHolder.value(), b -> b.parent(Conductance.id("block/cube_all")).particle(texture));
+			event.addItemModelDelegate(blockHolder.value());
+		});
 	}
 
 	private static void handleMaterialBlockColors(final RegisterColorHandlersEvent.Block event) {

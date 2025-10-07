@@ -31,9 +31,11 @@ import conductance.api.machine.event.MachineBuilder;
 import conductance.api.machine.event.MultiBlockMachineBuilder;
 import conductance.api.machine.event.MultiMachineBlockEntityFactory;
 import conductance.api.machine.event.RegisterMachineEvent;
+import conductance.api.machine.event.RegisterMultiBlockPartCapabilityEvent;
 import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.gui.MachineScreen;
 import conductance.api.machine.multi.IMultiBlockController;
+import conductance.api.machine.multi.MultiBlockPartCapability;
 import conductance.api.machine.multi.MultiMachineBlockEntity;
 import conductance.api.machine.multi.MultiMachineType;
 import conductance.api.plugin.ConductancePluginListener;
@@ -68,6 +70,13 @@ public final class MachineCore {
 		modEventBus.addListener(RegisterMenuScreensEvent.class, event -> {
 			event.register(menuType.get(), MachineScreen::new);
 		});
+
+		Conductance.dispatch(RegisterMultiBlockPartCapabilityEvent.class, modid -> new RegisterMultiBlockPartCapabilityEventImpl(registryName -> {
+			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
+			final MultiBlockPartCapability result = new MultiBlockPartCapabilityImpl();
+			Conductance.REGISTRIES.register(CAPI.regs().multiBlockPartCapabilities(), registryKey, result);
+			return result;
+		}));
 
 		Conductance.dispatch(RegisterMachineEvent.class, modid -> new RegisterMachineEventImpl(new RegisterMachineEventImpl.Delegate() {
 

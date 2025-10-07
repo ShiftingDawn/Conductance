@@ -22,8 +22,8 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import org.slf4j.Logger;
 import conductance.api.CAPI;
 import conductance.api.plugin.IConductancePluginEvent;
-import conductance.api.registry.RegistryProvider;
 import conductance.api.resource.ResourceFinder;
+import conductance.api.util.RegistryProvider;
 import conductance.core.machine.MachineCore;
 import conductance.core.material.MaterialCore;
 import conductance.core.material.MaterialRegistryImpl;
@@ -80,13 +80,14 @@ public abstract class Conductance {
 
 		TierCore.initialize();
 		RecipeCore.initialize();
-		MachineCore.initialize(Conductance.MODBUS);
 
 		ConductanceMenuTypes.initialize(Conductance.MODBUS);
 		ConductanceDataComponents.initialize(Conductance.MODBUS);
 		ConductanceBlocks.initialize(Conductance.MODBUS);
 		ConductanceItems.initialize(Conductance.MODBUS);
 		ConductanceFluids.initialize(Conductance.MODBUS);
+
+		MachineCore.initialize(Conductance.MODBUS);
 	}
 
 	private void onRegisterPayloadHandlers(final RegisterPayloadHandlersEvent event) {

@@ -17,9 +17,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.material.MaterialRegistry;
 import conductance.api.recipe.RecipeHelper;
-import conductance.api.registry.RegistryProvider;
 import conductance.api.resource.ResourceFinder;
 import conductance.api.tier.TierRegistry;
+import conductance.api.util.RegistryProvider;
 
 @SuppressWarnings({"unused", "NotNullFieldNotInitialized"})
 public final class CAPI {

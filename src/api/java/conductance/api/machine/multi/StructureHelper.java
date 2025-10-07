@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import conductance.api.CAPI;
+import conductance.api.machine.MachineBlock;
 import static conductance.api.block.BlockRotationHelper.getDirection;
 
 public final class StructureHelper {
@@ -36,6 +38,16 @@ public final class StructureHelper {
 					if (!predicate.test(level, currentPos, currentState, ctx)) {
 						return false;
 					} else {
+						if (currentPos != controllerPos) {
+							if (currentState.hasProperty(MachineBlock.ACTIVE)) {
+								ctx.get(StructureCheckContext.ACTIVE_BLOCKS).add(currentPos);
+							}
+							CAPI.make(level.getBlockEntity(currentPos), blockEntity -> {
+								if (blockEntity instanceof final IMultiBlockPart part) {
+									ctx.get(StructureCheckContext.PARTS).add(part);
+								}
+							});
+						}
 						if (callback != null) {
 							callback.onBlockChecked(level, currentPos, currentState, ctx);
 						}

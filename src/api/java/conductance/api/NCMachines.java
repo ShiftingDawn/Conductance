@@ -17,6 +17,11 @@ public final class NCMachines {
 	public static Map<Tier, MachineType<?>> COMPRESSOR;
 	public static Map<Tier, MachineType<?>> CUTTING_MACHINE;
 
+	public static Map<Tier, MachineType<?>> INPUT_BUSES;
+	public static Map<Tier, MachineType<?>> OUTPUT_BUSES;
+	public static Map<Tier, MachineType<?>> INPUT_HATCHES;
+	public static Map<Tier, MachineType<?>> OUTPUT_HATCHES;
+
 	public static MultiMachineType<?> LARGE_BRONZE_BOILER;
 
 	private NCMachines() {

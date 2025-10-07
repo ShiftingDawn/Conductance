@@ -4,9 +4,7 @@ import net.minecraft.core.BlockPos;
 
 public interface IMultiBlockPart {
 
-	default boolean sharable() {
-		return true;
-	}
+	MultiBlockPartCapability getPartCapability();
 
 	boolean isConnectedTo(BlockPos controllerPos);
 
