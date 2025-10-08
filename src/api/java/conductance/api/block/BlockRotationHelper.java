@@ -1,6 +1,7 @@
 package conductance.api.block;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -12,6 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.resource.BlockStateBuilder;
 import conductance.api.resource.BlockStateModelPropsBuilder;
@@ -117,9 +119,17 @@ public final class BlockRotationHelper {
 		return state;
 	}
 
-	public static void handleBlockStateGeneration(final BlockStateBuilder builder, final BlockRotationType type, final Function<BlockStateVariantBuilder, BlockStateModelPropsBuilder> variantCallback) {
+	public static void handleBlockStateGeneration(
+		final BlockStateBuilder builder, final BlockRotationType type, final Function<BlockStateVariantBuilder, BlockStateModelPropsBuilder> variantCallback,
+		@Nullable final Consumer<BlockStateModelPropsBuilder> modelModifier
+	) {
 		if (type == BlockRotationType.NONE) {
-			builder.simple(variantCallback::apply);
+			builder.simple(variant -> {
+				final BlockStateModelPropsBuilder model = variantCallback.apply(variant);
+				if (modelModifier != null) {
+					modelModifier.accept(model);
+				}
+			});
 			return;
 		}
 		final EnumProperty<Direction> prop = switch (type) {
@@ -132,14 +142,17 @@ public final class BlockRotationHelper {
 			builder.variants(variants -> {
 				for (final Direction facing : prop.getPossibleValues()) {
 					final IntPos rotation = ModelUtils.MODEL_ROTATION.get(facing);
-					variantCallback.apply(variants.variant(prop, facing)).x(rotation.x()).y(rotation.y());
+					final BlockStateModelPropsBuilder model = variantCallback.apply(variants.variant(prop, facing)).x(rotation.x()).y(rotation.y());
+					if (modelModifier != null) {
+						modelModifier.accept(model);
+					}
 				}
 			});
 		} else if (type == BlockRotationType.EXTENDED) {
 			builder.variants(variants -> {
 				for (final FacingAndRotation facingAndRotation : FacingAndRotation.values()) {
 					final IntPos rotationXY = ModelUtils.MODEL_ROTATION.get(facingAndRotation.getFacing());
-					variantCallback.apply(variants.variant(BlockRotationHelper.FACING_EXTENDED, facingAndRotation))
+					final BlockStateModelPropsBuilder model = variantCallback.apply(variants.variant(BlockRotationHelper.FACING_EXTENDED, facingAndRotation))
 						.addProperty("type", BlockRotationHelper.LOADER_ID)
 						.x(rotationXY.x())
 						.y(rotationXY.y())
@@ -149,9 +162,16 @@ public final class BlockRotationHelper {
 							case CLOCKWISE_180 -> 180;
 							case COUNTERCLOCKWISE_90 -> -90;
 						});
+					if (modelModifier != null) {
+						modelModifier.accept(model);
+					}
 				}
 			});
 		}
+	}
+
+	public static void handleBlockStateGeneration(final BlockStateBuilder builder, final BlockRotationType type, final Function<BlockStateVariantBuilder, BlockStateModelPropsBuilder> variantCallback) {
+		BlockRotationHelper.handleBlockStateGeneration(builder, type, variantCallback, null);
 	}
 
 	public static Direction getDirection(final Direction northFacing, final Direction dir) {

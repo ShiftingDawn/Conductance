@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -58,6 +59,9 @@ public final class MachineCore {
 		MachineCore.ITEMS.register(modEventBus);
 		MachineCore.BLOCK_ENTITIES.register(modEventBus);
 		MachineCore.MENU_TYPES.register(modEventBus);
+		modEventBus.addListener(RegisterBlockStateModels.class, event -> {
+			event.registerModel(Conductance.id("machine"), MachineUnbakedModel.MAP_CODEC);
+		});
 		modEventBus.addListener(RegisterCapabilitiesEvent.class, MachineCore::attachCapabilities);
 
 		final Supplier<MenuType<MachineMenu>> menuType = MachineCore.MENU_TYPES.register("machine", () -> IMenuTypeExtension.create(

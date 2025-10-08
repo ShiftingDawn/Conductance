@@ -91,10 +91,13 @@ final class MachineModelHandler {
 					variant.when(WORKING, false);
 				}
 				return variant.model(block);
-			});
+			}, model -> model.addProperty("type", Conductance.id("machine")));
 			if (canBeLit) {
-				BlockRotationHelper.handleBlockStateGeneration(blockState, machineType.getRotationType(), variant -> variant.when(WORKING, true)
-					.model(BuiltInRegistries.BLOCK.getKey(block).withPath(current -> "block/" + current + "_working")));
+				BlockRotationHelper.handleBlockStateGeneration(
+					blockState, machineType.getRotationType(),
+					variant -> variant.when(WORKING, true).model(BuiltInRegistries.BLOCK.getKey(block).withPath(current -> "block/" + current + "_working")),
+					model -> model.addProperty("type", Conductance.id("machine"))
+				);
 			}
 		});
 	}

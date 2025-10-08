@@ -29,7 +29,7 @@ import org.joml.Quaternionf;
  * @see net.minecraft.client.renderer.block.model.Variant
  * @see <a href="https://github.com/AppliedEnergistics/Applied-Energistics-2">Applied Energistics 2</a>
  */
-record ExtendedRotationVariant(ResourceLocation modelLocation, ExtendedRotationVariant.SimpleModelState modelState) implements BlockModelPart.Unbaked {
+public record ExtendedRotationVariant(ResourceLocation modelLocation, ExtendedRotationVariant.SimpleModelState modelState) implements BlockModelPart.Unbaked {
 	public static final MapCodec<ExtendedRotationVariant> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 		ResourceLocation.CODEC.fieldOf("model").forGetter(ExtendedRotationVariant::modelLocation),
 		ExtendedRotationVariant.SimpleModelState.MAP_CODEC.forGetter(ExtendedRotationVariant::modelState)

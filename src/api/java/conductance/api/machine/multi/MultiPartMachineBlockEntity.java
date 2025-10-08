@@ -1,22 +1,19 @@
 package conductance.api.machine.multi;
 
-import java.util.HashSet;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import lombok.Getter;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineType;
 
 public abstract class MultiPartMachineBlockEntity<T extends MultiPartMachineBlockEntity<T>> extends MachineBlockEntity<T> implements IMultiBlockPart {
 
-	private final HashSet<BlockPos> controllers = new HashSet<>();
+	private final @Getter SortedSet<BlockPos> controllers = new TreeSet<>();
 
 	public MultiPartMachineBlockEntity(final MachineType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
-	}
-
-	@Override
-	public boolean isConnectedTo(final BlockPos controllerPos) {
-		return this.controllers.contains(controllerPos);
 	}
 
 	@Override
@@ -30,5 +27,6 @@ public abstract class MultiPartMachineBlockEntity<T extends MultiPartMachineBloc
 			this.controllers.remove(controllerPos);
 		}
 		this.setChanged();
+		this.syncToClient();
 	}
 }

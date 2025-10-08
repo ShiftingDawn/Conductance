@@ -1,10 +1,14 @@
 package conductance.api.machine.multi;
 
-public interface IMultiBlockController {
+public interface IMultiBlockController<T extends MultiMachineBlockEntity<T>> {
+
+	MultiMachineType<T> getMachineType();
 
 	MultiBlockStructure getStructure();
 
 	MultiBlockInfo getMultiBlockInfo();
+
+	boolean isStructureFormed();
 
 	void onStructureFormed(StructureCheckContext ctx);
 

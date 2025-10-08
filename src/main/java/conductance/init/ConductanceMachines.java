@@ -101,6 +101,7 @@ final class ConductanceMachines {
 				.key('a', StructurePredicate.isBlock(NCBlocks.CASING_BRONZE).or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ITEMS_IN)))
 			)
 			.guiSetup(new MultiBlockControllerGuiSetup(GuiTheme.THEME_BRONZE))
+			.casingAppearance(() -> NCBlocks.CASING_BRONZE.value().defaultBlockState())
 		);
 	}
 

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import lombok.Getter;
 import conductance.api.CAPI;
 import conductance.api.block.BlockRotationHelper;
 
@@ -11,18 +12,27 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 
 	private final int structureCheckTimerOffset = CAPI.RANDOM.nextInt(100);
 	private final Set<IMultiBlockPart> parts = new HashSet<>();
+	private @Getter boolean structureFormed = false;
 
 	public MultiControllerMachineBlockEntity(final MultiMachineType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
 	}
 
 	@Override
+	public void onLoad() {
+		super.onLoad();
+		MultiControllerMachineBlockEntity.checkStructure(this, true);
+	}
+
+	@Override
 	public void onStructureFormed(final StructureCheckContext ctx) {
+		this.structureFormed = true;
 		ctx.get(StructureCheckContext.PARTS).forEach(this::addPart);
 	}
 
 	@Override
 	public void onStructureInvalid(final StructureCheckContext ctx) {
+		this.structureFormed = false;
 		new HashSet<>(this.parts).forEach(this::removePart);
 	}
 
