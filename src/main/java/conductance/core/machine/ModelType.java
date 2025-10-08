@@ -5,6 +5,6 @@ enum ModelType {
 	DEFAULT,
 	SIMPLE,
 	TIERED,
-	BRONZE_MACHINE,
+	SIDED_MACHINE,
 	CUSTOM;
 }

@@ -80,8 +80,9 @@ abstract class AbstractMachineBuilderImpl<T extends MachineBlockEntity<T>, BUILD
 	}
 
 	@Override
-	public BUILDER bronzeMachineModel() {
-		this.modelType = ModelType.BRONZE_MACHINE;
+	public BUILDER sidedMachineModel(final ResourceLocation textureBaseLocation) {
+		this.modelType = ModelType.SIDED_MACHINE;
+		this.modelTypeData = textureBaseLocation;
 		return this.self();
 	}
 
@@ -113,7 +114,7 @@ abstract class AbstractMachineBuilderImpl<T extends MachineBlockEntity<T>, BUILD
 			case DEFAULT -> MachineModelHandler.addDefault(result);
 			case SIMPLE -> MachineModelHandler.addSimple(result, (ResourceLocation) this.modelTypeData);
 			case TIERED -> MachineModelHandler.addTiered(result, (String) ((Object[]) this.modelTypeData)[0], (Tier) ((Object[]) this.modelTypeData)[1]);
-			case BRONZE_MACHINE -> MachineModelHandler.addBronze(result);
+			case SIDED_MACHINE -> MachineModelHandler.addSided(result, (ResourceLocation) this.modelTypeData);
 		}
 		return result;
 	}

@@ -23,7 +23,7 @@ public interface AbstractMachineBuilder<T extends MachineBlockEntity<T>, BUILDER
 
 	BUILDER simpleModel(ResourceLocation casingTexture);
 
-	BUILDER bronzeMachineModel();
+	BUILDER sidedMachineModel(ResourceLocation textureBaseLocation);
 
 	BUILDER customModel();
 

@@ -26,11 +26,10 @@ import static conductance.api.machine.MachineBlock.WORKING;
 final class MachineModelHandler {
 
 	private static final ResourceLocation BASE_CASING_TEXTURE = Conductance.id("block/casing/machine_base");
-	private static final ResourceLocation BRONZE_CASING_TEXTURE = Conductance.id("block/casing/bronze/front");
 	private static final List<MachineType<?>> DEFAULT_MODELS = Collections.synchronizedList(new ArrayList<>());
 	private static final Map<MachineType<?>, ResourceLocation> SIMPLE_MODELS = new ConcurrentHashMap<>();
 	private static final Map<MachineType<?>, Tuple<String, Tier>> TIERED_MODELS = new ConcurrentHashMap<>();
-	private static final List<MachineType<?>> BRONZE_MODELS = Collections.synchronizedList(new ArrayList<>());
+	private static final Map<MachineType<?>, ResourceLocation> SIDED_MODELS = new ConcurrentHashMap<>();
 
 	static void addDefault(final MachineType<?> machineType) {
 		MachineModelHandler.DEFAULT_MODELS.add(machineType);
@@ -44,8 +43,8 @@ final class MachineModelHandler {
 		MachineModelHandler.TIERED_MODELS.put(machineType, new Tuple<>(baseName, tier));
 	}
 
-	static void addBronze(final MachineType<?> machineType) {
-		MachineModelHandler.BRONZE_MODELS.add(machineType);
+	static void addSided(final MachineType<?> machineType, final ResourceLocation textureBaseLocation) {
+		MachineModelHandler.SIDED_MODELS.put(machineType, textureBaseLocation);
 	}
 
 	static void generate(final AddRuntimeModelEvent event) {
@@ -87,12 +86,18 @@ final class MachineModelHandler {
 			}
 			event.addItemModelDelegate(block);
 		});
-		MachineModelHandler.BRONZE_MODELS.forEach((machineType) -> {
+		MachineModelHandler.SIDED_MODELS.forEach((machineType, textureBaseLocation) -> {
 			final MachineBlock<?> block = machineType.getBlock().get();
 			final boolean canBeLit = block.defaultBlockState().hasProperty(WORKING);
 			MachineModelHandler.createBlockState(event, block, machineType, canBeLit);
+			final ResourceLocation particleTexture = textureBaseLocation.withSuffix("/front");
 			for (int i = 0; i < 2; ++i) {
-				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, null, MachineModelHandler.BRONZE_CASING_TEXTURE, casing -> casing.parent(Conductance.id("block/machine_bronze")));
+				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, null, particleTexture, casing -> {
+					casing.parent(Conductance.id("block/machine_sided"));
+					for (final String logicalSide : ModelUtils.LOGICAL_SIDES.values()) {
+						casing.texture(logicalSide, textureBaseLocation.withSuffix("/" + logicalSide));
+					}
+				});
 				if (!canBeLit) {
 					break;
 				}
