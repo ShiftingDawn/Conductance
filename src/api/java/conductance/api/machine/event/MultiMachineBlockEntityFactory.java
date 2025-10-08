@@ -7,7 +7,7 @@ import conductance.api.machine.multi.MultiMachineBlockEntity;
 import conductance.api.machine.multi.MultiMachineType;
 
 @FunctionalInterface
-public interface MultiMachineBlockEntityFactory<T extends MultiMachineBlockEntity<T> & IMultiBlockController> {
+public interface MultiMachineBlockEntityFactory<T extends MultiMachineBlockEntity<T> & IMultiBlockController<T>> {
 
 	T apply(MultiMachineType<T> machineType, BlockPos blockPos, BlockState blockState);
 }

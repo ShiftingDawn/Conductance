@@ -7,9 +7,6 @@
     "defaultRequire": 1,
     "maxShiftBy": 5
   },
-  "mixins": [
-    "DataComponentMapBuilderMixin", "HolderSetNamedMixin", "ItemPropertiesMixin",
-    "RecipeManagerMixin", "ReloadableServerResourcesMixin", "TagLoaderMixin"
-  ],
+  "mixins": ["DataComponentMapBuilderMixin", "HolderSetNamedMixin", "ItemPropertiesMixin", "LevelMixin", "RecipeManagerMixin", "ReloadableServerResourcesMixin", "ServerChunkCacheMixin", "TagLoaderMixin"],
   "client": ["AbstractContainerScreenMixin", "LanguageManagerMixin", "ModelManagerMixin"]
 }

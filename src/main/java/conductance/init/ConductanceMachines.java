@@ -67,13 +67,13 @@ final class ConductanceMachines {
 
 	private static void initMultiParts(final RegisterMachineEvent event) {
 		INPUT_BUSES = CAPI.tiers().newMap(tier -> event.<MultiBlockItemBusPartMachine>register(tier.getId().getPath() + "_input_bus",
-			(machineType, blockPos, blockState) -> new MultiBlockItemBusPartMachine(machineType, blockPos, blockState, IO.IN, Math.max(Mth.square(tier.getIndex() + 2), 100)),
+			(machineType, blockPos, blockState) -> new MultiBlockItemBusPartMachine(machineType, blockPos, blockState, IO.IN, Math.min(Mth.square(tier.getIndex() + 2), 100)),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("input_bus")), tier.getName())
 			).rotationType(BlockRotationType.ALL).tieredModel("input_bus", tier).guiSetup(new MultiBlockItemBusPartMachineGuiSetup())
 		));
 		OUTPUT_BUSES = CAPI.tiers().newMap(tier -> event.<MultiBlockItemBusPartMachine>register(tier.getId().getPath() + "_output_bus",
-			(machineType, blockPos, blockState) -> new MultiBlockItemBusPartMachine(machineType, blockPos, blockState, IO.OUT, Math.max(Mth.square(tier.getIndex() + 2), 100)),
+			(machineType, blockPos, blockState) -> new MultiBlockItemBusPartMachine(machineType, blockPos, blockState, IO.OUT, Math.min(Mth.square(tier.getIndex() + 2), 100)),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("output_bus")), tier.getName())
 			).rotationType(BlockRotationType.ALL).tieredModel("output_bus", tier).guiSetup(new MultiBlockItemBusPartMachineGuiSetup())

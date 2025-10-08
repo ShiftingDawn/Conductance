@@ -7,6 +7,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import conductance.api.NCMultiBlockPartCapabilities;
 import conductance.api.NCRecipeElementTypes;
@@ -82,8 +83,10 @@ public interface StructurePredicate {
 	}
 
 	static StructurePredicate isCapability(final MultiBlockPartCapability capability) {
-		return (level, pos, state, ctx) ->
-			level.getBlockEntity(pos) instanceof final IMultiBlockPart part && part.getPartCapability() == capability;
+		return (level, pos, state, ctx) -> {
+			final BlockEntity blockEntity = level.getBlockEntity(pos);
+			return blockEntity instanceof final IMultiBlockPart part && part.getPartCapability() == capability;
+		};
 	}
 
 	static StructurePredicate autoCapabilities(final MachineRecipeType recipeType) {

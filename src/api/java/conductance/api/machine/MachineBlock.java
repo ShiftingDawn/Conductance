@@ -100,7 +100,7 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	protected @Nullable MenuProvider getMenuProvider(final BlockState state, final Level level, final BlockPos pos) {
 		final BlockEntity mbe = level.getBlockEntity(pos);
 		if (mbe instanceof final MachineBlockEntity<?> machine && machine.getMachineType().getGuiSetup() != null) {
-			if (machine instanceof final IMultiBlockController multiBlockController && !MultiControllerMachineBlockEntity.checkStructure(multiBlockController, true)) {
+			if (machine instanceof final IMultiBlockController<?> multiBlockController && !MultiControllerMachineBlockEntity.checkStructure(multiBlockController, true)) {
 				return null;
 			}
 			return new SimpleMenuProvider(

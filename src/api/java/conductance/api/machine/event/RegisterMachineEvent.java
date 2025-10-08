@@ -12,6 +12,6 @@ public interface RegisterMachineEvent extends IConductancePluginEvent {
 
 	<T extends MachineBlockEntity<T>> MachineType<T> register(String registryName, MachineBlockEntityFactory<T> blockEntityFactory, Consumer<MachineBuilder<T>> builder);
 
-	<T extends MultiMachineBlockEntity<T> & IMultiBlockController> MultiMachineType<T> multi(String registryName, MultiMachineBlockEntityFactory<T> blockEntityFactory, Consumer<MultiBlockMachineBuilder<T>> builder);
+	<T extends MultiMachineBlockEntity<T> & IMultiBlockController<T>> MultiMachineType<T> multi(String registryName, MultiMachineBlockEntityFactory<T> blockEntityFactory, Consumer<MultiBlockMachineBuilder<T>> builder);
 
 }

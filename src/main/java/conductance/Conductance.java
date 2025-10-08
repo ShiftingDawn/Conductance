@@ -4,11 +4,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.logging.LogUtils;
 import net.neoforged.api.distmarker.Dist;
@@ -19,6 +21,7 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
 import conductance.api.CAPI;
 import conductance.api.plugin.IConductancePluginEvent;
@@ -131,5 +134,14 @@ public abstract class Conductance {
 
 	public static <T extends IConductancePluginEvent> void dispatchAll(final Class<T> eventClass, final T event) {
 		Conductance.dispatch(eventClass, ignored -> event);
+	}
+
+	public static boolean isSafeToAccessLevel() {
+		if (CAPI.isClient()) {
+			return Minecraft.getInstance().level != null;
+		}
+		return Optional.ofNullable(ServerLifecycleHooks.getCurrentServer())
+			.map(server -> !server.isStopped() && !server.isShutdown() && server.isRunning() && !server.isCurrentlySaving())
+			.orElse(false);
 	}
 }

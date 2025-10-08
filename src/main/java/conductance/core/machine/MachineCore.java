@@ -42,6 +42,7 @@ import conductance.api.machine.multi.MultiMachineType;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
+import conductance.api.util.Internal;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
 import conductance.lib.network.RegisterPacketEvent;
@@ -75,6 +76,8 @@ public final class MachineCore {
 			event.register(menuType.get(), MachineScreen::new);
 		});
 
+		Internal.MULTIBLOCK_CONTROLLER_LOAD = MultiStructureChecker::onMultiBlockControllerLoad;
+		Internal.MULTIBLOCK_CONTROLLER_UNLOAD = MultiStructureChecker::onMultiBlockControllerUnload;
 		Conductance.dispatch(RegisterMultiBlockPartCapabilityEvent.class, modid -> new RegisterMultiBlockPartCapabilityEventImpl(registryName -> {
 			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
 			final MultiBlockPartCapability result = new MultiBlockPartCapabilityImpl();
@@ -93,7 +96,7 @@ public final class MachineCore {
 			}
 
 			@Override
-			public <T extends MultiMachineBlockEntity<T> & IMultiBlockController> MultiMachineType<T> multi(
+			public <T extends MultiMachineBlockEntity<T> & IMultiBlockController<T>> MultiMachineType<T> multi(
 				final String registryName, final MultiMachineBlockEntityFactory<T> blockEntityFactory, final Consumer<MultiBlockMachineBuilder<T>> builder
 			) {
 				final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
@@ -155,6 +158,7 @@ public final class MachineCore {
 
 	@EventListener
 	private static void registerPackets(final RegisterPacketEvent event) {
+		MachineRpcRequestPacket.register(event.getRegistrar());
 		MachineScreenRequestPacket.register(event.getRegistrar());
 	}
 

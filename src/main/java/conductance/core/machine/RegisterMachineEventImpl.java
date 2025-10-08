@@ -19,7 +19,8 @@ final class RegisterMachineEventImpl implements RegisterMachineEvent {
 	interface Delegate {
 		<T extends MachineBlockEntity<T>> MachineType<T> simple(String registryName, MachineBlockEntityFactory<T> blockEntityFactory, Consumer<MachineBuilder<T>> builder);
 
-		<T extends MultiMachineBlockEntity<T> & IMultiBlockController> MultiMachineType<T> multi(String registryName, MultiMachineBlockEntityFactory<T> blockEntityFactory, Consumer<MultiBlockMachineBuilder<T>> builder);
+		<T extends MultiMachineBlockEntity<T> & IMultiBlockController<T>> MultiMachineType<T> multi(String registryName, MultiMachineBlockEntityFactory<T> blockEntityFactory,
+		                                                                                            Consumer<MultiBlockMachineBuilder<T>> builder);
 	}
 
 	private final Delegate delegate;
@@ -30,7 +31,7 @@ final class RegisterMachineEventImpl implements RegisterMachineEvent {
 	}
 
 	@Override
-	public <T extends MultiMachineBlockEntity<T> & IMultiBlockController> MultiMachineType<T> multi(
+	public <T extends MultiMachineBlockEntity<T> & IMultiBlockController<T>> MultiMachineType<T> multi(
 		final String registryName, final MultiMachineBlockEntityFactory<T> blockEntityFactory, final Consumer<MultiBlockMachineBuilder<T>> builder
 	) {
 		return this.delegate.multi(registryName, blockEntityFactory, builder);

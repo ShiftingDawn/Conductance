@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,6 +31,7 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import conductance.api.util.Internal;
 
 public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity {
 
@@ -236,6 +238,52 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		final BlockState state = this.getBlockState();
 		this.getLevel().sendBlockUpdated(this.getBlockPos(), state, state, MachineBlock.UPDATE_ALL);
 	}
+
+	public final void sendToClient(final int requestId, final @Nullable Consumer<ValueOutput> packetFiller) {
+		if (this.level instanceof final ServerLevel serverLevel) {
+			Internal.MACHINE_RPC_PACKET_SENDER.accept(this, serverLevel, payload -> {
+				payload.putInt("r", requestId);
+				if (packetFiller != null) {
+					packetFiller.accept(payload.child("d"));
+				}
+			});
+		}
+	}
+
+	public final void sendToServer(final int requestId, final @Nullable Consumer<ValueOutput> packetFiller) {
+		if (this.isClientSide()) {
+			Internal.MACHINE_RPC_PACKET_SENDER.accept(this, null, payload -> {
+				payload.putInt("r", requestId);
+				if (packetFiller != null) {
+					packetFiller.accept(payload.child("d"));
+				}
+			});
+		}
+	}
+
+	protected void handleServerRequest(final int requestId, final ValueInput input) {
+	}
+
+	protected void handleClientRequest(final int requestId, final ValueInput input) {
+	}
+
+	private void handleServerRequestPacket(final ValueInput input) {
+		this.handleRpcPacket(false, input);
+	}
+
+	private void handleClientRequestPacket(final ValueInput input) {
+		this.handleRpcPacket(true, input);
+	}
+
+	private void handleRpcPacket(final boolean isServer, final ValueInput input) {
+		final int req = input.getInt("r").orElseThrow(() -> new IllegalStateException("Missing request id"));
+		final ValueInput data = input.childOrEmpty("d");
+		if (isServer) {
+			this.handleClientRequest(req, data);
+		} else {
+			this.handleServerRequest(req, data);
+		}
+	}
 	//endregion
 
 	//region Helpers
@@ -252,9 +300,26 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		return level != null && level.isClientSide;
 	}
 
+	public final void onClient(final Consumer<Level> callback) {
+		if (this.isClientSide()) {
+			callback.accept(this.level);
+		}
+	}
+
 	public final boolean isServerSide() {
 		final Level level = this.getLevel();
 		return level != null && !level.isClientSide;
 	}
+
+	public final void onServer(final Consumer<ServerLevel> callback) {
+		if (this.level instanceof final ServerLevel serverLevel) {
+			callback.accept(serverLevel);
+		}
+	}
 	//endregion
+
+	static {
+		Internal.MACHINE_RPC_PACKET_RECEIVER_SERVER = machine -> machine::handleClientRequestPacket;
+		Internal.MACHINE_RPC_PACKET_RECEIVER_CLIENT = machine -> machine::handleServerRequestPacket;
+	}
 }
