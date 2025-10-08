@@ -80,6 +80,12 @@ abstract class AbstractMachineBuilderImpl<T extends MachineBlockEntity<T>, BUILD
 	}
 
 	@Override
+	public BUILDER bronzeMachineModel() {
+		this.modelType = ModelType.BRONZE_MACHINE;
+		return this.self();
+	}
+
+	@Override
 	public BUILDER customModel() {
 		this.modelType = ModelType.CUSTOM;
 		return this.self();
@@ -107,6 +113,7 @@ abstract class AbstractMachineBuilderImpl<T extends MachineBlockEntity<T>, BUILD
 			case DEFAULT -> MachineModelHandler.addDefault(result);
 			case SIMPLE -> MachineModelHandler.addSimple(result, (ResourceLocation) this.modelTypeData);
 			case TIERED -> MachineModelHandler.addTiered(result, (String) ((Object[]) this.modelTypeData)[0], (Tier) ((Object[]) this.modelTypeData)[1]);
+			case BRONZE_MACHINE -> MachineModelHandler.addBronze(result);
 		}
 		return result;
 	}

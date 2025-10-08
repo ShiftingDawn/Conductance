@@ -26,9 +26,11 @@ import static conductance.api.machine.MachineBlock.WORKING;
 final class MachineModelHandler {
 
 	private static final ResourceLocation BASE_CASING_TEXTURE = Conductance.id("block/casing/machine_base");
+	private static final ResourceLocation BRONZE_CASING_TEXTURE = Conductance.id("block/casing/bronze/front");
 	private static final List<MachineType<?>> DEFAULT_MODELS = Collections.synchronizedList(new ArrayList<>());
 	private static final Map<MachineType<?>, ResourceLocation> SIMPLE_MODELS = new ConcurrentHashMap<>();
 	private static final Map<MachineType<?>, Tuple<String, Tier>> TIERED_MODELS = new ConcurrentHashMap<>();
+	private static final List<MachineType<?>> BRONZE_MODELS = Collections.synchronizedList(new ArrayList<>());
 
 	static void addDefault(final MachineType<?> machineType) {
 		MachineModelHandler.DEFAULT_MODELS.add(machineType);
@@ -42,14 +44,17 @@ final class MachineModelHandler {
 		MachineModelHandler.TIERED_MODELS.put(machineType, new Tuple<>(baseName, tier));
 	}
 
+	static void addBronze(final MachineType<?> machineType) {
+		MachineModelHandler.BRONZE_MODELS.add(machineType);
+	}
+
 	static void generate(final AddRuntimeModelEvent event) {
-		event.addBlockModel(Conductance.id("machine/base"), b -> b.parent(Conductance.id("block/cube_all")).particle(MachineModelHandler.BASE_CASING_TEXTURE));
 		MachineModelHandler.DEFAULT_MODELS.forEach(machineType -> {
 			final MachineBlock<?> block = machineType.getBlock().get();
 			final boolean canBeLit = block.defaultBlockState().hasProperty(WORKING);
 			MachineModelHandler.createBlockState(event, block, machineType, canBeLit);
 			for (int i = 0; i < 2; ++i) {
-				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, null, MachineModelHandler.BASE_CASING_TEXTURE, casing -> casing.parent(Conductance.id("block/machine/base")));
+				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, null, MachineModelHandler.BASE_CASING_TEXTURE, casing -> casing.parent(Conductance.id("block/machine_base")));
 				if (!canBeLit) {
 					break;
 				}
@@ -76,6 +81,18 @@ final class MachineModelHandler {
 			for (int i = 0; i < 2; ++i) {
 				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, machineType.getId().withPath(modelData.getA()), casingTexture,
 					casing -> casing.parent(Conductance.id("block/cube_all")).particle(casingTexture));
+				if (!canBeLit) {
+					break;
+				}
+			}
+			event.addItemModelDelegate(block);
+		});
+		MachineModelHandler.BRONZE_MODELS.forEach((machineType) -> {
+			final MachineBlock<?> block = machineType.getBlock().get();
+			final boolean canBeLit = block.defaultBlockState().hasProperty(WORKING);
+			MachineModelHandler.createBlockState(event, block, machineType, canBeLit);
+			for (int i = 0; i < 2; ++i) {
+				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, null, MachineModelHandler.BRONZE_CASING_TEXTURE, casing -> casing.parent(Conductance.id("block/machine_bronze")));
 				if (!canBeLit) {
 					break;
 				}

@@ -1,0 +1,6 @@
+{
+  "parent": "conductance:block/cube_all",
+  "textures": {
+    "particle": "conductance:block/casing/machine_base"
+  }
+}

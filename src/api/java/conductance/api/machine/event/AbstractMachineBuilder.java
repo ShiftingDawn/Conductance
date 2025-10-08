@@ -23,6 +23,8 @@ public interface AbstractMachineBuilder<T extends MachineBlockEntity<T>, BUILDER
 
 	BUILDER simpleModel(ResourceLocation casingTexture);
 
+	BUILDER bronzeMachineModel();
+
 	BUILDER customModel();
 
 	BUILDER customName(Function<String, MutableComponent> nameFactory);

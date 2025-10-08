@@ -31,11 +31,13 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import conductance.api.CAPI;
 import conductance.api.util.Internal;
 
 public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity {
 
 	public static final Logger LOGGER = LogUtils.getLogger();
+	private final int timerOffset = CAPI.RANDOM.nextInt(20);
 	private final @Getter Map<String, MachineCapability> capabilities = new ConcurrentHashMap<>();
 	private final @Getter MachineType<T> machineType;
 	private final List<MachineTick> ticksActive = new ArrayList<>();
@@ -287,6 +289,14 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 	//endregion
 
 	//region Helpers
+	public final long getTimerOffset() {
+		return this.level != null ? this.level.getGameTime() + this.timerOffset : this.timerOffset;
+	}
+
+	public final boolean haveTicksPassed(final int tickAmount) {
+		return this.getTimerOffset() % tickAmount == 0;
+	}
+
 	public final boolean isValid() {
 		return !this.isRemoved();
 	}

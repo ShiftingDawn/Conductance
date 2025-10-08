@@ -53,9 +53,7 @@ final class ConductanceMachines {
 	@EventListener(priority = -100)
 	private static void init(final RegisterMachineEvent event) {
 		STEAM_SOLID_FUEL_BOILER = event.register("steam_solid_fuel_boiler", SteamSolidFuelBoilerMachine::new, b -> b
-			.recipeType(NCRecipeTypes.STEAM_BOILER)
-			.simpleModel(Conductance.id("block/casing/machine_bronze"))
-			.guiSetup(new SteamSolidFuelBoilerMachineGuiSetup())
+			.blockFactory(MachineBlockWorkable::new).bronzeMachineModel().guiSetup(new SteamSolidFuelBoilerMachineGuiSetup())
 		);
 		ConductanceMachines.initRecipeMachines(event);
 		ConductanceMachines.initMultiBlocks(event);

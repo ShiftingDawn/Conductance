@@ -27,6 +27,7 @@ public final class CAPI {
 	public static final String MOD_ID = "conductance";
 	public static final long UNIT = 3628800;
 	public static final int BUCKET = FluidType.BUCKET_VOLUME;
+	public static final int STEAM_TO_POWER_RATIO = 2;
 	public static final RandomSource RANDOM = RandomSource.createNewThreadLocalInstance();
 	public static final Gson GSON;
 	public static final TagKey<Item> TAG_WRENCHES = Tags.Items.TOOLS_WRENCH;
