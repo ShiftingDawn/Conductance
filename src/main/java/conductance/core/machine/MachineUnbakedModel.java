@@ -90,6 +90,7 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 		return result;
 	}
 
+	@SuppressWarnings("deprecation")
 	private record WrappedModelPart(BlockModelPart original, BakedQuad[] quads) implements BlockModelPart {
 
 		@Override

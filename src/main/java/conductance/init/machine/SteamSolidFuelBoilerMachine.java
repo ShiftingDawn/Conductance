@@ -19,7 +19,7 @@ public class SteamSolidFuelBoilerMachine extends AbstractSteamBoilerMachine<Stea
 		this.inputItems = new MachineCapabilityInventory("input", this, new MachineInventory(1));
 		this.inputItems.setIoMode(CapIO.IN);
 		this.inputItems.addChangedListener(this::setChanged);
-		this.inputItems.addChangedListener(this::revalidateTick);
+		this.inputItems.addChangedListener(this.getBoilerHandler()::revalidateTick);
 	}
 
 	@Override
@@ -29,6 +29,7 @@ public class SteamSolidFuelBoilerMachine extends AbstractSteamBoilerMachine<Stea
 			return 0;
 		}
 		final ItemStack copy = stack.copyWithCount(1);
+		assert this.level != null;
 		final int result = copy.getBurnTime(RecipeType.SMELTING, this.level.fuelValues());
 		if (result > 0) {
 			this.inputItems.extractItemInternal(0, 1, false);
