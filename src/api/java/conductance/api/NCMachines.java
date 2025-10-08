@@ -8,6 +8,9 @@ import conductance.api.tier.Tier;
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCMachines {
 
+	public static MachineType<?> STEAM_SOLID_FUEL_BOILER;
+	public static MachineType<?> STEAM_LIQUID_FUEL_BOILER;
+
 	public static Map<Tier, MachineType<?>> BENDING_MACHINE;
 	public static Map<Tier, MachineType<?>> PULVERIZER;
 	public static Map<Tier, MachineType<?>> EXTRUDER;

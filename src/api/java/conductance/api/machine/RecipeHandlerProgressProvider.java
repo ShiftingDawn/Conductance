@@ -1,4 +1,4 @@
-package conductance.init.machine;
+package conductance.api.machine;
 
 import lombok.RequiredArgsConstructor;
 import conductance.api.machine.gui.ProgressProvider;

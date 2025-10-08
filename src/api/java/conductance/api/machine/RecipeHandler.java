@@ -1,4 +1,4 @@
-package conductance.init.machine;
+package conductance.api.machine;
 
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
@@ -8,17 +8,13 @@ import net.minecraft.world.level.storage.ValueOutput;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.machine.MachineBlockEntity;
-import conductance.api.machine.MachineCapability;
-import conductance.api.machine.MachineTick;
-import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.util.IO;
 
 public final class RecipeHandler extends MachineCapability {
 
-	private final RecipeCapabilityHolder holder;
+	private final @Getter RecipeCapabilityHolder holder;
 	private @Nullable MachineTick tick;
 	private @Nullable MachineRecipe lastRecipe;
 	private @Getter int progressMax = -1;

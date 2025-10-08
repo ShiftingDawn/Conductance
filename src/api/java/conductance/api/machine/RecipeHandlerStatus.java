@@ -1,4 +1,4 @@
-package conductance.init.machine;
+package conductance.api.machine;
 
 import java.util.Locale;
 import com.mojang.serialization.Codec;

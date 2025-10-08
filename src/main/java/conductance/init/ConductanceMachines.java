@@ -30,6 +30,8 @@ import conductance.init.machine.MultiBlockFluidHatchPartMachine;
 import conductance.init.machine.MultiBlockFluidHatchPartMachineGuiSetup;
 import conductance.init.machine.MultiBlockItemBusPartMachine;
 import conductance.init.machine.MultiBlockItemBusPartMachineGuiSetup;
+import conductance.init.machine.SteamSolidFuelBoilerMachine;
+import conductance.init.machine.SteamSolidFuelBoilerMachineGuiSetup;
 import static conductance.api.NCMachines.BENDING_MACHINE;
 import static conductance.api.NCMachines.COMPRESSOR;
 import static conductance.api.NCMachines.CUTTING_MACHINE;
@@ -42,6 +44,7 @@ import static conductance.api.NCMachines.LATHE;
 import static conductance.api.NCMachines.OUTPUT_BUSES;
 import static conductance.api.NCMachines.OUTPUT_HATCHES;
 import static conductance.api.NCMachines.PULVERIZER;
+import static conductance.api.NCMachines.STEAM_SOLID_FUEL_BOILER;
 import static conductance.api.NCMachines.WIREMILL;
 
 @ConductancePluginListener(modid = Conductance.MODID)
@@ -49,6 +52,11 @@ final class ConductanceMachines {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterMachineEvent event) {
+		STEAM_SOLID_FUEL_BOILER = event.register("steam_solid_fuel_boiler", SteamSolidFuelBoilerMachine::new, b -> b
+			.recipeType(NCRecipeTypes.STEAM_BOILER)
+			.simpleModel(Conductance.id("block/casing/machine_bronze"))
+			.guiSetup(new SteamSolidFuelBoilerMachineGuiSetup())
+		);
 		ConductanceMachines.initRecipeMachines(event);
 		ConductanceMachines.initMultiBlocks(event);
 		ConductanceMachines.initMultiParts(event);

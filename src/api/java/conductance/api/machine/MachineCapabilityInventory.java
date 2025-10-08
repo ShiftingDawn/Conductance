@@ -4,16 +4,29 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import lombok.Getter;
+import lombok.Setter;
 
 //TODO add overflow toggle
-public class MachineCapabilityInventory extends MachineCapability implements IBlockCapabilityHandler, IItemHandlerModifiable {
+public class MachineCapabilityInventory extends MachineCapability implements IBlockCapabilityHandler, IDelegatedItemHandler {
 
-	public final MachineInventory inventory;
+	private final @Getter MachineInventory inventory;
+	private @Setter CapIO ioMode = CapIO.BOTH;
 
 	public MachineCapabilityInventory(final String key, final MachineBlockEntity<?> machine, final MachineInventory inventory) {
 		super(key, machine);
 		this.inventory = inventory;
 		this.inventory.setChangeListener(this::onContentsChanged);
+	}
+
+	@Override
+	public CapIO getCapabilityIoMode() {
+		return this.ioMode;
+	}
+
+	@Override
+	public IItemHandlerModifiable getRealItemHandler() {
+		return this.inventory;
 	}
 
 	@Override
@@ -28,26 +41,6 @@ public class MachineCapabilityInventory extends MachineCapability implements IBl
 
 	public void onContentsChanged() {
 		this.setChanged();
-	}
-
-	@Override
-	public CapIO getCapabilityIoMode() {
-		return CapIO.BOTH;
-	}
-
-	@Override
-	public void setStackInSlot(final int slot, final ItemStack stack) {
-		this.inventory.setStackInSlot(slot, stack);
-	}
-
-	@Override
-	public int getSlots() {
-		return this.inventory.getSlots();
-	}
-
-	@Override
-	public ItemStack getStackInSlot(final int slot) {
-		return this.inventory.getStackInSlot(slot);
 	}
 
 	@Override
@@ -72,15 +65,5 @@ public class MachineCapabilityInventory extends MachineCapability implements IBl
 
 	public ItemStack extractItemInternal(final int slot, final int count, final boolean simulate) {
 		return this.inventory.extractItem(slot, count, simulate);
-	}
-
-	@Override
-	public int getSlotLimit(final int slot) {
-		return this.inventory.getSlotLimit(slot);
-	}
-
-	@Override
-	public boolean isItemValid(final int slot, final ItemStack stack) {
-		return this.inventory.isItemValid(slot, stack);
 	}
 }

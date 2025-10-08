@@ -5,6 +5,8 @@ import conductance.api.recipe.MachineRecipeType;
 @SuppressWarnings("NotNullFieldNotInitialized")
 public final class NCRecipeTypes {
 
+	public static MachineRecipeType STEAM_BOILER;
+
 	public static MachineRecipeType BENDING_MACHINE;
 	public static MachineRecipeType PULVERIZER;
 	public static MachineRecipeType EXTRUDER;

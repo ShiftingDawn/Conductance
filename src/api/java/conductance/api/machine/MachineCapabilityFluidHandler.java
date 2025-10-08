@@ -3,10 +3,13 @@ package conductance.api.machine;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
+import lombok.Getter;
+import lombok.Setter;
 
 public class MachineCapabilityFluidHandler extends MachineCapability implements IBlockCapabilityHandler, IDelegatedFluidHandler {
 
-	public final MachineFluidHandler handler;
+	private final @Getter MachineFluidHandler handler;
+	private @Setter CapIO ioMode = CapIO.BOTH;
 
 	public MachineCapabilityFluidHandler(final String key, final MachineBlockEntity<?> machine, final MachineFluidHandler handler) {
 		super(key, machine);
@@ -16,7 +19,7 @@ public class MachineCapabilityFluidHandler extends MachineCapability implements 
 
 	@Override
 	public CapIO getCapabilityIoMode() {
-		return CapIO.BOTH;
+		return this.ioMode;
 	}
 
 	@Override
