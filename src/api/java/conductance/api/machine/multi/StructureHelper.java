@@ -1,5 +1,7 @@
 package conductance.api.machine.multi;
 
+import java.util.HashSet;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -58,9 +60,29 @@ public final class StructureHelper {
 				}
 			}
 		}
+		final Set<StructurePredicate> allPredicates = new HashSet<>();
+
+		for (final StructurePredicate predicate : structure.predicates()) {
+			StructureHelper.collectPredicates(allPredicates, predicate);
+		}
+		for (final StructurePredicate predicate : allPredicates) {
+			final int matchCount = ctx.get(StructureCheckContext.MATCH_COUNT).getOrDefault(predicate, 0);
+			if (predicate.getMinMatches() != -1 && matchCount < predicate.getMinMatches()) {
+				return false;
+			}
+			if (predicate.getMaxMatches() != -1 && matchCount > predicate.getMaxMatches()) {
+				return false;
+			}
+		}
 		return true;
 	}
 
+	private static void collectPredicates(final Set<StructurePredicate> set, final StructurePredicate predicate) {
+		set.add(predicate);
+		for (final StructurePredicate child : predicate.getChildren()) {
+			StructureHelper.collectPredicates(set, child);
+		}
+	}
 
 	private StructureHelper() {
 	}

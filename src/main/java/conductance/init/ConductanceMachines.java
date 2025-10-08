@@ -104,7 +104,11 @@ final class ConductanceMachines {
 				.slice("aaa", "aaa", "aaa")
 				.slice("axa", "a a", "aaa")
 				.slice("aaa", "aaa", "aaa")
-				.key('a', StructurePredicate.isBlock(NCBlocks.CASING_BRONZE).or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ITEMS_IN)))
+				.key('a', StructurePredicate.isBlock(NCBlocks.CASING_BRONZE).or(
+					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.FLUIDS_IN).exact(1),
+					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.FLUIDS_OUT).exact(1),
+					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ITEMS_IN).exact(1)
+				))
 			)
 			.guiSetup(new MultiBlockControllerGuiSetup(GuiTheme.THEME_BRONZE))
 			.casingAppearance(() -> NCBlocks.CASING_BRONZE.value().defaultBlockState())

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
@@ -125,7 +126,8 @@ public final class MultiBlockStructureBuilderImpl implements MultiBlockStructure
 			patternAndCallbacks.getA(),
 			controllerOffset[0], controllerOffset[1], controllerOffset[2],
 			patternAndCallbacks.getB(),
-			Collections.unmodifiableList(this.globalCallbacks)
+			Collections.unmodifiableList(this.globalCallbacks),
+			Set.copyOf(this.mapping.values())
 		);
 	}
 }
