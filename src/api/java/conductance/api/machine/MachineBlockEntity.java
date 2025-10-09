@@ -32,6 +32,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import conductance.api.CAPI;
+import conductance.api.NCBlockStateProperties;
 import conductance.api.util.Internal;
 
 public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity {
@@ -42,6 +43,7 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 	private final @Getter MachineType<T> machineType;
 	private final List<MachineTick> ticksActive = new ArrayList<>();
 	private final List<MachineTick> ticksPending = new ArrayList<>();
+	private @Getter boolean currentlyWorking = false;
 
 	public MachineBlockEntity(final MachineType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type.getBlockEntityType().get(), pos, blockState);
@@ -135,11 +137,15 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 	}
 
 	public void setWorkingState(final boolean working) {
-		if (this.isServerSide() && this.getBlockState().hasProperty(MachineBlock.WORKING)) {
-			final boolean current = this.getBlockState().getValue(MachineBlock.WORKING);
+		if (this.currentlyWorking == working) {
+			return;
+		}
+		this.currentlyWorking = working;
+		if (this.isServerSide() && this.getBlockState().hasProperty(NCBlockStateProperties.WORKING)) {
+			final boolean current = this.getBlockState().getValue(NCBlockStateProperties.WORKING);
 			if (working != current) {
 				assert this.level != null; //Handled by isServerSide()
-				this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(MachineBlock.WORKING, working));
+				this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(NCBlockStateProperties.WORKING, working));
 			}
 		}
 	}
@@ -172,6 +178,7 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 	@Override
 	public void onLoad() {
 		super.onLoad();
+		this.currentlyWorking = this.getBlockState().getValueOrElse(NCBlockStateProperties.WORKING, false);
 		for (final MachineCapability capability : this.capabilities.values()) {
 			capability.onLoad();
 		}

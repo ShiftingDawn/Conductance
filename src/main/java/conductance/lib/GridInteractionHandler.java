@@ -14,10 +14,10 @@ import conductance.api.block.FacingAndRotation;
 import conductance.api.block.GridInteractionHelper;
 import conductance.api.block.IGridInteractable;
 import conductance.api.block.InteractType;
-import static conductance.api.block.BlockRotationHelper.FACING_ALL;
-import static conductance.api.block.BlockRotationHelper.FACING_EXTENDED;
-import static conductance.api.block.BlockRotationHelper.FACING_HORIZONTAL;
-import static conductance.api.block.BlockRotationHelper.FACING_VERTICAL;
+import static conductance.api.NCBlockStateProperties.FACING_ALL;
+import static conductance.api.NCBlockStateProperties.FACING_EXTENDED;
+import static conductance.api.NCBlockStateProperties.FACING_HORIZONTAL;
+import static conductance.api.NCBlockStateProperties.FACING_VERTICAL;
 
 public final class GridInteractionHandler {
 

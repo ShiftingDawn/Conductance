@@ -7,7 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import conductance.api.CAPI;
-import conductance.api.machine.MachineBlock;
+import conductance.api.NCBlockStateProperties;
 import static conductance.api.block.BlockRotationHelper.getDirection;
 
 public final class StructureHelper {
@@ -41,7 +41,7 @@ public final class StructureHelper {
 						return false;
 					} else {
 						if (currentPos != controllerPos) {
-							if (currentState.hasProperty(MachineBlock.ACTIVE)) {
+							if (currentState.hasProperty(NCBlockStateProperties.ACTIVE)) {
 								ctx.get(StructureCheckContext.ACTIVE_BLOCKS).add(currentPos);
 							}
 							CAPI.make(level.getBlockEntity(currentPos), blockEntity -> {

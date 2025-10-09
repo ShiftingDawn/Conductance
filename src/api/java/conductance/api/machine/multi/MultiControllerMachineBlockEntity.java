@@ -10,6 +10,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import lombok.Getter;
 import conductance.api.CAPI;
+import conductance.api.NCBlockStateProperties;
 import conductance.api.block.BlockRotationHelper;
 import conductance.api.util.Internal;
 
@@ -19,6 +20,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 	public static final int REQUEST_STRUCTURE_INVALID = 2;
 	private final int structureCheckTimerOffset = CAPI.RANDOM.nextInt(100);
 	private final @Getter Set<IMultiBlockPart> parts = new HashSet<>();
+	private final Set<BlockPos> activeBlocks = new HashSet<>();
 	private @Getter boolean structureFormed = false;
 
 	public MultiControllerMachineBlockEntity(final MultiMachineType<T> type, final BlockPos pos, final BlockState blockState) {
@@ -52,6 +54,8 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 		this.structureFormed = true;
 		this.onLoad();
 		ctx.get(StructureCheckContext.PARTS).forEach(this::addPart);
+		this.activeBlocks.addAll(ctx.get(StructureCheckContext.ACTIVE_BLOCKS));
+		this.setWorkingState(this.isCurrentlyWorking());
 		this.sendToClient(MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_FORMED, output -> {
 			final ValueOutput.TypedOutputList<BlockPos> list = output.list("parts", BlockPos.CODEC);
 			for (final IMultiBlockPart part : this.parts) {
@@ -70,11 +74,24 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 		this.structureFormed = false;
 		this.onUnload();
 		this.removeAllParts();
+		this.setWorkingState(false);
+		this.activeBlocks.clear();
 		this.sendToClient(MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_INVALID, null);
 	}
 
 	private void removeAllParts() {
 		new HashSet<>(this.parts).forEach(this::removePart);
+	}
+
+	@Override
+	public void setWorkingState(final boolean working) {
+		super.setWorkingState(working);
+		for (final BlockPos activeBlockPos : this.activeBlocks) {
+			final BlockState state = this.level.getBlockState(activeBlockPos);
+			if (state.hasProperty(NCBlockStateProperties.ACTIVE)) {
+				this.level.setBlockAndUpdate(activeBlockPos, state.setValue(NCBlockStateProperties.ACTIVE, working));
+			}
+		}
 	}
 
 	@Override

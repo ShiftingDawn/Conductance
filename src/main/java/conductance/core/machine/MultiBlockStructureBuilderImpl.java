@@ -79,7 +79,8 @@ public final class MultiBlockStructureBuilderImpl implements MultiBlockStructure
 				final String line = slice[z];
 				for (int x = 0; x < line.length(); ++x) {
 					if (line.charAt(x) == this.controller) {
-						return new int[] {x, y, z};
+						//Pattern is written top-to-bottom but checked bottom-to-top
+						return new int[] {x, this.pattern.size() - 1 - y, z};
 					}
 				}
 			}

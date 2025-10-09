@@ -3,6 +3,7 @@ package conductance.init;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -29,6 +30,7 @@ import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
+import conductance.core.block.ActiveBlock;
 import conductance.core.material.MaterialColorTintSource;
 import conductance.init.block.MaterialBlock;
 import conductance.init.block.MaterialBlockItem;
@@ -49,15 +51,20 @@ public final class ConductanceBlocks {
 		CAPI.regs().materials().forEach(ConductanceBlocks::generateMaterial);
 		modEventBus.addListener(RegisterColorHandlersEvent.Block.class, ConductanceBlocks::handleMaterialBlockColors);
 		NCBlocks.CASING_BRONZE = ConductanceBlocks.makeSimpleBlock("bronze_casing", "casing/bronze");
+		NCBlocks.CASING_BRONZE_FIREBOX = ConductanceBlocks.makeSimpleBlock("bronze_firebox_casing", "casing/bronze_firebox", ActiveBlock::new);
 	}
 
-	private static Holder<Block> makeSimpleBlock(final String blockName, @Nullable final String texture) {
-		final Holder<Block> result = ConductanceBlocks.REGISTRY.registerBlock(blockName, props -> Util.make(new Block(props), block -> {
+	private static Holder<Block> makeSimpleBlock(final String blockName, @Nullable final String texture, final Function<BlockBehaviour.Properties, Block> factory) {
+		final Holder<Block> result = ConductanceBlocks.REGISTRY.registerBlock(blockName, props -> Util.make(factory.apply(props), block -> {
 			CreativeTabHelper.addToTab(block, CreativeTabHelper.Tabs.GENERAL);
 		}));
 		ConductanceBlocks.ITEMS.registerSimpleBlockItem(result);
 		ConductanceBlocks.SIMPLE_BLOCKS.put(result, Conductance.id("block/" + Objects.requireNonNullElseGet(texture, () -> result.getKey().location().getPath())));
 		return result;
+	}
+
+	private static Holder<Block> makeSimpleBlock(final String blockName, @Nullable final String texture) {
+		return ConductanceBlocks.makeSimpleBlock(blockName, texture, Block::new);
 	}
 
 	private static void generateMaterial(final Material material) {

@@ -38,8 +38,6 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 
 	private static final ThreadLocal<BlockRotationType> CURRENT_ROTATION_TYPE = new ThreadLocal<>();
 	public static final BooleanProperty TICKING = BooleanProperty.create("ticking");
-	public static final BooleanProperty WORKING = BooleanProperty.create("working");
-	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 	private final @Getter MachineType<T> machineType;
 
 	public MachineBlock(final BlockBehaviour.Properties properties, final MachineType<T> machineType) {

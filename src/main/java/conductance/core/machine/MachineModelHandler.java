@@ -21,7 +21,7 @@ import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.tier.Tier;
 import conductance.api.util.ModelUtils;
 import conductance.Conductance;
-import static conductance.api.machine.MachineBlock.WORKING;
+import static conductance.api.NCBlockStateProperties.WORKING;
 
 final class MachineModelHandler {
 

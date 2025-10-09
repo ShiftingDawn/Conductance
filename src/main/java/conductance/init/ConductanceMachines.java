@@ -104,14 +104,18 @@ final class ConductanceMachines {
 				.slice("aaa", "aaa", "aaa")
 				.slice("axa", "a a", "aaa")
 				.slice("aaa", "aaa", "aaa")
+				.slice("bbb", "bbb", "bbb")
 				.key('a', StructurePredicate.isBlock(NCBlocks.CASING_BRONZE).or(
 					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.FLUIDS_IN).exact(1),
 					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.FLUIDS_OUT).exact(1),
 					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ITEMS_IN).exact(1)
 				))
+				.key('b', StructurePredicate.isBlock(NCBlocks.CASING_BRONZE_FIREBOX))
 			)
 			.guiSetup(new MultiBlockControllerGuiSetup(GuiTheme.THEME_BRONZE))
+			.simpleModel(Conductance.id("block/casing/bronze"))
 			.casingAppearance(() -> NCBlocks.CASING_BRONZE.value().defaultBlockState())
+			.blockFactory(MachineBlockWorkable::new)
 		);
 	}
 

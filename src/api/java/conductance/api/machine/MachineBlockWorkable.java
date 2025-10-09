@@ -3,6 +3,7 @@ package conductance.api.machine;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import conductance.api.NCBlockStateProperties;
 
 public class MachineBlockWorkable<T extends MachineBlockEntity<T>> extends MachineBlock<T> {
 
@@ -12,12 +13,12 @@ public class MachineBlockWorkable<T extends MachineBlockEntity<T>> extends Machi
 
 	@Override
 	protected BlockState createDefaultState() {
-		return super.createDefaultState().setValue(MachineBlock.WORKING, false);
+		return super.createDefaultState().setValue(NCBlockStateProperties.WORKING, false);
 	}
 
 	@Override
 	protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
-		builder.add(MachineBlock.WORKING);
+		builder.add(NCBlockStateProperties.WORKING);
 	}
 }

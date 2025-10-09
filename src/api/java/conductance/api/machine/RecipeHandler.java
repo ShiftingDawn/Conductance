@@ -109,6 +109,7 @@ public class RecipeHandler extends MachineCapability {
 	public void onLoad() {
 		super.onLoad();
 		this.revalidateTick();
+		this.getMachine().setWorkingState(this.status == RecipeHandlerStatus.PROCESSING);
 	}
 
 	protected @Nullable MachineRecipe findRecipe() {

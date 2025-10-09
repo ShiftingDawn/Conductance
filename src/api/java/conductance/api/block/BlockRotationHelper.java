@@ -11,10 +11,10 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.NCBlockStateProperties;
 import conductance.api.resource.BlockStateBuilder;
 import conductance.api.resource.BlockStateModelPropsBuilder;
 import conductance.api.resource.BlockStateVariantBuilder;
@@ -30,45 +30,41 @@ import static net.minecraft.core.Direction.WEST;
 public final class BlockRotationHelper {
 
 	public static final ResourceLocation LOADER_ID = ResourceLocation.fromNamespaceAndPath(CAPI.MOD_ID, "extended_rotation");
-	public static final EnumProperty<Direction> FACING_ALL = BlockStateProperties.FACING;
-	public static final EnumProperty<Direction> FACING_HORIZONTAL = BlockStateProperties.HORIZONTAL_FACING;
-	public static final EnumProperty<Direction> FACING_VERTICAL = BlockStateProperties.VERTICAL_DIRECTION;
-	public static final EnumProperty<FacingAndRotation> FACING_EXTENDED = EnumProperty.create("facing", FacingAndRotation.class);
 
 	public static void addToBlockStateDefinition(final BlockRotationType rotationType, final StateDefinition.Builder<Block, BlockState> builder) {
 		if (rotationType == BlockRotationType.NONE) {
 			return;
 		}
 		builder.add(switch (rotationType) {
-			case ALL -> BlockRotationHelper.FACING_ALL;
-			case HORIZONTAL -> BlockRotationHelper.FACING_HORIZONTAL;
-			case VERTICAL -> BlockRotationHelper.FACING_VERTICAL;
-			case EXTENDED -> BlockRotationHelper.FACING_EXTENDED;
+			case ALL -> NCBlockStateProperties.FACING_ALL;
+			case HORIZONTAL -> NCBlockStateProperties.FACING_HORIZONTAL;
+			case VERTICAL -> NCBlockStateProperties.FACING_VERTICAL;
+			case EXTENDED -> NCBlockStateProperties.FACING_EXTENDED;
 			default -> throw new AssertionError("Encountered unknown rotation type " + rotationType);
 		});
 	}
 
 	public static BlockState addToDefaultState(final BlockRotationType type, final BlockState state) {
 		return switch (type) {
-			case ALL -> state.setValue(BlockRotationHelper.FACING_ALL, Direction.NORTH);
-			case HORIZONTAL -> state.setValue(BlockRotationHelper.FACING_HORIZONTAL, Direction.NORTH);
-			case VERTICAL -> state.setValue(BlockRotationHelper.FACING_VERTICAL, Direction.UP);
-			case EXTENDED -> state.setValue(BlockRotationHelper.FACING_EXTENDED, FacingAndRotation.NORTH_UP);
+			case ALL -> state.setValue(NCBlockStateProperties.FACING_ALL, Direction.NORTH);
+			case HORIZONTAL -> state.setValue(NCBlockStateProperties.FACING_HORIZONTAL, Direction.NORTH);
+			case VERTICAL -> state.setValue(NCBlockStateProperties.FACING_VERTICAL, Direction.UP);
+			case EXTENDED -> state.setValue(NCBlockStateProperties.FACING_EXTENDED, FacingAndRotation.NORTH_UP);
 			default -> state;
 		};
 	}
 
 	public static BlockState setFacingOnPlacement(final BlockState state, final BlockPlaceContext ctx) {
-		if (state.hasProperty(BlockRotationHelper.FACING_HORIZONTAL)) {
-			return state.setValue(BlockRotationHelper.FACING_HORIZONTAL, ctx.getHorizontalDirection().getOpposite());
+		if (state.hasProperty(NCBlockStateProperties.FACING_HORIZONTAL)) {
+			return state.setValue(NCBlockStateProperties.FACING_HORIZONTAL, ctx.getHorizontalDirection().getOpposite());
 		}
-		if (state.hasProperty(BlockRotationHelper.FACING_VERTICAL)) {
-			return state.setValue(BlockRotationHelper.FACING_VERTICAL, ctx.getNearestLookingVerticalDirection().getOpposite());
+		if (state.hasProperty(NCBlockStateProperties.FACING_VERTICAL)) {
+			return state.setValue(NCBlockStateProperties.FACING_VERTICAL, ctx.getNearestLookingVerticalDirection().getOpposite());
 		}
-		if (state.hasProperty(BlockRotationHelper.FACING_ALL)) {
-			return state.setValue(BlockRotationHelper.FACING_ALL, ctx.getNearestLookingDirection().getOpposite());
+		if (state.hasProperty(NCBlockStateProperties.FACING_ALL)) {
+			return state.setValue(NCBlockStateProperties.FACING_ALL, ctx.getNearestLookingDirection().getOpposite());
 		}
-		if (state.hasProperty(BlockRotationHelper.FACING_EXTENDED)) {
+		if (state.hasProperty(NCBlockStateProperties.FACING_EXTENDED)) {
 			final Direction facing = ctx.getNearestLookingDirection().getOpposite();
 			Rotation rotation = Rotation.NONE;
 			if (facing.getAxis().isVertical()) {
@@ -80,29 +76,29 @@ public final class BlockRotationHelper {
 					default -> throw new AssertionError();
 				};
 			}
-			return state.setValue(BlockRotationHelper.FACING_EXTENDED, FacingAndRotation.get(facing, rotation));
+			return state.setValue(NCBlockStateProperties.FACING_EXTENDED, FacingAndRotation.get(facing, rotation));
 		}
 		return state;
 	}
 
 	public static Direction getFacing(final BlockState state) {
-		if (state.hasProperty(BlockRotationHelper.FACING_HORIZONTAL)) {
-			return state.getValue(BlockRotationHelper.FACING_HORIZONTAL);
+		if (state.hasProperty(NCBlockStateProperties.FACING_HORIZONTAL)) {
+			return state.getValue(NCBlockStateProperties.FACING_HORIZONTAL);
 		}
-		if (state.hasProperty(BlockRotationHelper.FACING_VERTICAL)) {
-			return state.getValue(BlockRotationHelper.FACING_VERTICAL);
+		if (state.hasProperty(NCBlockStateProperties.FACING_VERTICAL)) {
+			return state.getValue(NCBlockStateProperties.FACING_VERTICAL);
 		}
-		if (state.hasProperty(BlockRotationHelper.FACING_ALL)) {
-			return state.getValue(BlockRotationHelper.FACING_ALL);
+		if (state.hasProperty(NCBlockStateProperties.FACING_ALL)) {
+			return state.getValue(NCBlockStateProperties.FACING_ALL);
 		}
-		if (state.hasProperty(BlockRotationHelper.FACING_EXTENDED)) {
-			return state.getValue(BlockRotationHelper.FACING_EXTENDED).getFacing();
+		if (state.hasProperty(NCBlockStateProperties.FACING_EXTENDED)) {
+			return state.getValue(NCBlockStateProperties.FACING_EXTENDED).getFacing();
 		}
 		return NORTH;
 	}
 
 	public static BlockState applyRotation(final BlockState state, final Rotation rotation) {
-		for (final EnumProperty<Direction> prop : List.of(BlockRotationHelper.FACING_ALL, BlockRotationHelper.FACING_HORIZONTAL, BlockRotationHelper.FACING_VERTICAL)) {
+		for (final EnumProperty<Direction> prop : List.of(NCBlockStateProperties.FACING_ALL, NCBlockStateProperties.FACING_HORIZONTAL, NCBlockStateProperties.FACING_VERTICAL)) {
 			if (state.hasProperty(prop)) {
 				return state.setValue(prop, rotation.rotate(state.getValue(prop)));
 			}
@@ -111,7 +107,7 @@ public final class BlockRotationHelper {
 	}
 
 	public static BlockState applyMirror(final BlockState state, final Mirror mirror) {
-		for (final EnumProperty<Direction> prop : List.of(BlockRotationHelper.FACING_ALL, BlockRotationHelper.FACING_HORIZONTAL, BlockRotationHelper.FACING_VERTICAL)) {
+		for (final EnumProperty<Direction> prop : List.of(NCBlockStateProperties.FACING_ALL, NCBlockStateProperties.FACING_HORIZONTAL, NCBlockStateProperties.FACING_VERTICAL)) {
 			if (state.hasProperty(prop)) {
 				return state.setValue(prop, mirror.mirror(state.getValue(prop)));
 			}
@@ -133,9 +129,9 @@ public final class BlockRotationHelper {
 			return;
 		}
 		final EnumProperty<Direction> prop = switch (type) {
-			case ALL -> BlockRotationHelper.FACING_ALL;
-			case HORIZONTAL -> BlockRotationHelper.FACING_HORIZONTAL;
-			case VERTICAL -> BlockRotationHelper.FACING_VERTICAL;
+			case ALL -> NCBlockStateProperties.FACING_ALL;
+			case HORIZONTAL -> NCBlockStateProperties.FACING_HORIZONTAL;
+			case VERTICAL -> NCBlockStateProperties.FACING_VERTICAL;
 			default -> null;
 		};
 		if (prop != null) {
@@ -152,7 +148,7 @@ public final class BlockRotationHelper {
 			builder.variants(variants -> {
 				for (final FacingAndRotation facingAndRotation : FacingAndRotation.values()) {
 					final IntPos rotationXY = ModelUtils.MODEL_ROTATION.get(facingAndRotation.getFacing());
-					final BlockStateModelPropsBuilder model = variantCallback.apply(variants.variant(BlockRotationHelper.FACING_EXTENDED, facingAndRotation))
+					final BlockStateModelPropsBuilder model = variantCallback.apply(variants.variant(NCBlockStateProperties.FACING_EXTENDED, facingAndRotation))
 						.addProperty("type", BlockRotationHelper.LOADER_ID)
 						.x(rotationXY.x())
 						.y(rotationXY.y())

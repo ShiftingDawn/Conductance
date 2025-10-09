@@ -6,10 +6,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import static conductance.api.block.BlockRotationHelper.FACING_ALL;
-import static conductance.api.block.BlockRotationHelper.FACING_EXTENDED;
-import static conductance.api.block.BlockRotationHelper.FACING_HORIZONTAL;
-import static conductance.api.block.BlockRotationHelper.FACING_VERTICAL;
+import static conductance.api.NCBlockStateProperties.FACING_ALL;
+import static conductance.api.NCBlockStateProperties.FACING_EXTENDED;
+import static conductance.api.NCBlockStateProperties.FACING_HORIZONTAL;
+import static conductance.api.NCBlockStateProperties.FACING_VERTICAL;
 
 public final class GridInteractionHelper {
 
