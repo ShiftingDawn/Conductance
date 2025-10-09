@@ -20,6 +20,10 @@ public interface MachineRecipe extends Recipe<RecipeInput> {
 
 	Map<RecipeElementType<?>, List<RecipeElement>> getOutputs();
 
+	Map<RecipeElementType<?>, List<RecipeElement>> getPerTickInputs();
+
+	Map<RecipeElementType<?>, List<RecipeElement>> getPerTickOutputs();
+
 	int getRecipeDuration();
 
 	/**

@@ -16,8 +16,8 @@ import conductance.api.CAPI;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
-import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.RecipeElement;
+import conductance.api.recipe.RecipeElementType;
 import conductance.api.util.IO;
 
 public interface MachineRecipeBuilder {
@@ -27,6 +27,8 @@ public interface MachineRecipeBuilder {
 	default MachineRecipeBuilder change1() {
 		return this.chance(1);
 	}
+
+	MachineRecipeBuilder perTick(boolean perTick);
 
 	<T> MachineRecipeBuilder add(IO io, RecipeElementType<T> elementType, T obj);
 

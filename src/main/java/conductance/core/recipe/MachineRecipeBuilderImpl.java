@@ -30,8 +30,11 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 
 	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> inputs = new HashMap<>();
 	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> outputs = new HashMap<>();
+	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> perTickInputs = new HashMap<>();
+	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> perTickOutputs = new HashMap<>();
 	private final MachineRecipeType recipeType;
 	private final HolderLookup.Provider registries;
+	private boolean buildingPerTick = false;
 	private @Getter double currentChance = 1;
 	private @Getter int duration = 200;
 	private @Getter int program = -1;
@@ -48,11 +51,14 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 	}
 
 	@Override
+	public MachineRecipeBuilder perTick(final boolean perTick) {
+		this.buildingPerTick = perTick;
+		return this;
+	}
+
+	@Override
 	public <T> MachineRecipeBuilder add(final IO io, final RecipeElementType<T> elementType, final T obj) {
-		switch (io) {
-			case IN -> this.inputs.computeIfAbsent(elementType, k -> new ArrayList<>()).add(new RecipeElement(obj, this.currentChance));
-			case OUT -> this.outputs.computeIfAbsent(elementType, k -> new ArrayList<>()).add(new RecipeElement(obj, this.currentChance));
-		}
+		this.getMap(io).computeIfAbsent(elementType, k -> new ArrayList<>()).add(new RecipeElement(obj, this.currentChance));
 		return this;
 	}
 
@@ -112,7 +118,7 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 				copy.save(newRecipeId, output);
 			});
 		}
-		final MachineRecipeImpl recipe = new MachineRecipeImpl(this.recipeType, this.inputs, this.outputs, this.duration, this.program);
+		final MachineRecipeImpl recipe = new MachineRecipeImpl(this.recipeType, this.inputs, this.outputs, this.perTickInputs, this.perTickOutputs, this.duration, this.program);
 		output.accept(ResourceKey.create(Registries.RECIPE, recipeId), recipe, null);
 	}
 
@@ -121,10 +127,19 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 		return Util.make(new MachineRecipeBuilderImpl(this.recipeType, this.registries), builder -> {
 			this.inputs.forEach((elementType, elements) -> builder.inputs.put(elementType, this.copyContentList(elementType, elements)));
 			this.outputs.forEach((elementType, elements) -> builder.outputs.put(elementType, this.copyContentList(elementType, elements)));
+			this.perTickInputs.forEach((elementType, elements) -> builder.perTickInputs.put(elementType, this.copyContentList(elementType, elements)));
+			this.perTickOutputs.forEach((elementType, elements) -> builder.perTickOutputs.put(elementType, this.copyContentList(elementType, elements)));
 			builder.duration = this.duration;
 			builder.program = this.program;
 			builder.currentChance = this.currentChance;
 		});
+	}
+
+	private Map<RecipeElementType<?>, List<RecipeElement>> getMap(final IO io) {
+		return switch (io) {
+			case IN -> this.buildingPerTick ? this.perTickInputs : this.inputs;
+			case OUT -> this.buildingPerTick ? this.perTickOutputs : this.outputs;
+		};
 	}
 
 	private List<RecipeElement> copyContentList(final RecipeElementType<?> type, final List<RecipeElement> list) {

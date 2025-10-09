@@ -13,4 +13,8 @@ public interface RecipeCapabilityHolder {
 	List<MachineRecipeCapability<?>> getRecipeCapabilities(RecipeElementType<?> elementType, IO io);
 
 	IntSortedSet getRecipePrograms();
+
+	default RecipePerTickFailureAction getPerTickFailureAction() {
+		return RecipePerTickFailureAction.REGRESS;
+	}
 }

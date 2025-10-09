@@ -8,11 +8,12 @@ import net.minecraft.world.level.storage.ValueOutput;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.recipe.DummyMachineRecipe;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.util.IO;
 
-public final class RecipeHandler extends MachineCapability {
+public class RecipeHandler extends MachineCapability {
 
 	private final @Getter RecipeCapabilityHolder holder;
 	private @Nullable MachineTick tick;
@@ -21,15 +22,19 @@ public final class RecipeHandler extends MachineCapability {
 	private @Getter int progressCurrent = 0;
 	private RecipeHandlerStatus status = RecipeHandlerStatus.IDLE;
 
-	public RecipeHandler(final MachineBlockEntity<?> machine, final RecipeCapabilityHolder holder) {
-		super("recipe", machine);
+	protected RecipeHandler(final String key, final MachineBlockEntity<?> machine, final RecipeCapabilityHolder holder) {
+		super(key, machine);
 		this.holder = holder;
 		this.addChangedListener(machine::syncToClient);
 	}
 
+	public RecipeHandler(final MachineBlockEntity<?> machine, final RecipeCapabilityHolder holder) {
+		this("recipe", machine, holder);
+	}
+
 	@Override
 	public void serialize(final ValueOutput output) {
-		if (this.lastRecipe != null) {
+		if (this.lastRecipe != null && !(this.lastRecipe instanceof DummyMachineRecipe)) {
 			output.putString("type", this.lastRecipe.getType().getId().toString());
 			output.store("data", this.lastRecipe.getType().getRecipeSerializer().codec().codec(), this.lastRecipe);
 		}
@@ -55,19 +60,23 @@ public final class RecipeHandler extends MachineCapability {
 
 	public void tick() {
 		if (this.status == RecipeHandlerStatus.IDLE) {
-			final MachineRecipe newRecipe = this.findRecipe();
-			if (newRecipe == null) {
-				this.reset();
-			} else {
-				this.setupRecipe(newRecipe);
-			}
+			this.findAndSetupRecipe();
 		}
 		if (this.status == RecipeHandlerStatus.PROCESSING) {
 			this.progressRecipe(this.lastRecipe);
 		}
 	}
 
-	private void setStatus(final RecipeHandlerStatus status) {
+	protected void findAndSetupRecipe() {
+		final MachineRecipe newRecipe = this.findRecipe();
+		if (newRecipe == null) {
+			this.reset();
+		} else {
+			this.setupRecipe(newRecipe);
+		}
+	}
+
+	protected void setStatus(final RecipeHandlerStatus status) {
 		if (status != this.status) {
 			this.status = status;
 			this.getMachine().setWorkingState(this.status == RecipeHandlerStatus.PROCESSING);
@@ -75,7 +84,7 @@ public final class RecipeHandler extends MachineCapability {
 		}
 	}
 
-	private void reset() {
+	protected void reset() {
 		this.setStatus(RecipeHandlerStatus.IDLE);
 		this.progressMax = -1;
 		this.progressCurrent = 0;
@@ -98,7 +107,7 @@ public final class RecipeHandler extends MachineCapability {
 		this.revalidateTick();
 	}
 
-	private @Nullable MachineRecipe findRecipe() {
+	protected @Nullable MachineRecipe findRecipe() {
 		//TODO cache recipes for the machine's recipetype
 		final ServerLevel level = (ServerLevel) this.getMachine().getLevel();
 		assert level != null;
@@ -113,27 +122,49 @@ public final class RecipeHandler extends MachineCapability {
 		return null;
 	}
 
-	private boolean testRecipe(final MachineRecipe recipe) {
-		return CAPI.recipeHelper().test(recipe, this.holder);
+	protected boolean testRecipe(final MachineRecipe recipe) {
+		return CAPI.recipeHelper().test(recipe, this.holder) && CAPI.recipeHelper().testPerTick(recipe, this.holder);
 	}
 
-	private void setupRecipe(final MachineRecipe recipe) {
+	protected void setupRecipe(final MachineRecipe recipe) {
 		this.lastRecipe = recipe;
 		this.progressMax = recipe.getRecipeDuration();
 		this.progressCurrent = 0;
 		this.setStatus(RecipeHandlerStatus.PROCESSING);
 		CAPI.recipeHelper().handle(recipe, IO.IN, this.holder);
+		CAPI.recipeHelper().handlePerTick(recipe, IO.IN, this.holder);
+		CAPI.recipeHelper().handlePerTick(recipe, IO.OUT, this.holder);
 		this.setChanged();
 	}
 
-	private void progressRecipe(final MachineRecipe recipe) {
+	protected void progressRecipe(final MachineRecipe recipe) {
+		if (!CAPI.recipeHelper().testPerTick(recipe, this.holder)) {
+			switch (this.holder.getPerTickFailureAction()) {
+				case NOTHING -> {
+					if (this.tick != null) {
+						this.tick.invalidate();
+					}
+				}
+				case REGRESS -> {
+					this.progressCurrent = Math.min(0, this.progressCurrent - 2);
+					this.setChanged();
+				}
+				case VOID -> {
+					this.reset();
+					this.setChanged();
+				}
+			}
+			return;
+		}
+		CAPI.recipeHelper().handlePerTick(recipe, IO.IN, this.holder);
+		CAPI.recipeHelper().handlePerTick(recipe, IO.OUT, this.holder);
 		++this.progressCurrent;
 		if (this.progressCurrent >= this.progressMax) {
 			CAPI.recipeHelper().handle(recipe, IO.OUT, this.holder);
 			if (this.testRecipe(recipe)) {
 				this.setupRecipe(recipe);
 			} else {
-				this.reset();
+				this.findAndSetupRecipe();
 			}
 		}
 		this.setChanged();

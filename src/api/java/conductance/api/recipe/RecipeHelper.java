@@ -28,6 +28,12 @@ public final class RecipeHelper {
 		return ins & outs;
 	}
 
+	public boolean testPerTick(final MachineRecipe recipe, final RecipeCapabilityHolder holder) {
+		final boolean ins = this.testInternal(recipe, holder, IO.IN, recipe.getPerTickInputs());
+		final boolean outs = this.testInternal(recipe, holder, IO.OUT, recipe.getPerTickOutputs());
+		return ins & outs;
+	}
+
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private boolean testInternal(final MachineRecipe recipe, final RecipeCapabilityHolder holder, final IO io, final Map<RecipeElementType<?>, List<RecipeElement>> map) {
 		for (final Map.Entry<RecipeElementType<?>, List<RecipeElement>> entry : map.entrySet()) {
@@ -55,6 +61,13 @@ public final class RecipeHelper {
 		this.handleInternal(recipe, holder, io, switch (io) {
 			case IN -> recipe.getInputs();
 			case OUT -> recipe.getOutputs();
+		});
+	}
+
+	public void handlePerTick(final MachineRecipe recipe, final IO io, final RecipeCapabilityHolder holder) {
+		this.handleInternal(recipe, holder, io, switch (io) {
+			case IN -> recipe.getPerTickInputs();
+			case OUT -> recipe.getPerTickOutputs();
 		});
 	}
 

@@ -7,6 +7,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.recipe.MachineRecipe;
@@ -15,7 +16,7 @@ import conductance.api.util.IO;
 //TODO add overflow toggle
 public final class MachineRecipeCapabilityFluids extends MachineRecipeCapability<SizedFluidIngredient> implements IBlockCapabilityHandler, IDelegatedFluidHandler {
 
-	private final MachineFluidHandler handler;
+	private final @Getter MachineFluidHandler handler;
 
 	public MachineRecipeCapabilityFluids(final MachineBlockEntity<?> machine, final int tankCount, final IO recipeIoMode, final CapIO capabilityIoMode, final IntFunction<MachineFluidHandler> fluidHandlerFactory) {
 		super(machine, NCRecipeElementTypes.FLUID, recipeIoMode, capabilityIoMode);

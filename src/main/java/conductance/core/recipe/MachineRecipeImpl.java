@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
@@ -20,17 +19,22 @@ final class MachineRecipeImpl implements MachineRecipe {
 	private final MachineRecipeType recipeType;
 	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> inputs;
 	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> outputs;
+	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> perTickInputs;
+	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> perTickOutputs;
 	private final @Getter int recipeDuration;
 	private final @Getter int program;
 
 	MachineRecipeImpl(
 		final MachineRecipeType recipeType,
 		final Map<RecipeElementType<?>, List<RecipeElement>> inputs, final Map<RecipeElementType<?>, List<RecipeElement>> outputs,
+		final Map<RecipeElementType<?>, List<RecipeElement>> perTickInputs, final Map<RecipeElementType<?>, List<RecipeElement>> perTickOutputs,
 		final int recipeDuration, final int program
 	) {
 		this.recipeType = recipeType;
 		this.inputs = MachineRecipeImpl.toImmutableMap(inputs);
 		this.outputs = MachineRecipeImpl.toImmutableMap(outputs);
+		this.perTickInputs = MachineRecipeImpl.toImmutableMap(perTickInputs);
+		this.perTickOutputs = MachineRecipeImpl.toImmutableMap(perTickOutputs);
 		this.recipeDuration = recipeDuration;
 		this.program = program;
 	}
