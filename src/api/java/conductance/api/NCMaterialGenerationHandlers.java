@@ -46,6 +46,13 @@ public final class NCMaterialGenerationHandlers {
 	public static MaterialGenerationHandler FINE_WIRE;
 	public static MaterialGenerationHandler FRAME_BOX;
 
+	public static MaterialGenerationHandler WIRE_1X;
+	public static MaterialGenerationHandler WIRE_2X;
+	public static MaterialGenerationHandler WIRE_4X;
+	public static MaterialGenerationHandler WIRE_8X;
+	public static MaterialGenerationHandler WIRE_12X;
+	public static MaterialGenerationHandler WIRE_16X;
+
 	public static MaterialGenerationHandler LIQUID;
 	public static MaterialGenerationHandler GAS;
 	public static MaterialGenerationHandler PLASMA;

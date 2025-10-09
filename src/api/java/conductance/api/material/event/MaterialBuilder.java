@@ -13,6 +13,8 @@ import conductance.api.material.MaterialTrait;
 import conductance.api.material.MaterialTraitFluid;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.MaterialTraitOre;
+import conductance.api.material.MaterialTraitWire;
+import conductance.api.tier.Tier;
 
 public interface MaterialBuilder {
 
@@ -196,6 +198,10 @@ public interface MaterialBuilder {
 
 	default MaterialBuilder ore() {
 		return this.ore(1, 1, false);
+	}
+
+	default MaterialBuilder wire(final Tier tier, final int amperage) {
+		return this.trait(NCMaterialTraits.WIRE, new MaterialTraitWire(tier, amperage));
 	}
 
 	<T> MaterialBuilder prop(MaterialProp<T> property, T value);

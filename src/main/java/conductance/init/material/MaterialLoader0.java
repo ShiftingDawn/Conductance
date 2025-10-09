@@ -4,6 +4,7 @@ import net.minecraft.tags.BlockTags;
 import conductance.api.NCMaterialProps;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCPeriodicElements;
+import conductance.api.NCTiers;
 import conductance.api.material.event.RegisterMaterialEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
@@ -400,6 +401,7 @@ final class MaterialLoader0 {
 			.metalAll().fineWire()
 			.liquid(505)
 			.ore()
+			.wire(NCTiers.LV, 1)
 			.color(0xDCDCDC)
 		);
 		ANTIMONY = event.register("antimony", NCPeriodicElements.ANTIMONY, b -> b

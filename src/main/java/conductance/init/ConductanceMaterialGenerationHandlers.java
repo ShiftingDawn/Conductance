@@ -59,6 +59,12 @@ import static conductance.api.NCMaterialGenerationHandlers.ROD;
 import static conductance.api.NCMaterialGenerationHandlers.ROTOR;
 import static conductance.api.NCMaterialGenerationHandlers.SCREW;
 import static conductance.api.NCMaterialGenerationHandlers.STORAGE_BLOCK;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_12X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_16X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_1X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_2X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_4X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_8X;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 //TODO add correct unit values
@@ -319,6 +325,55 @@ final class ConductanceMaterialGenerationHandlers {
 			.setHasBlock(true, true, false, BlockTags.MINEABLE_WITH_PICKAXE)
 			.requiredFlag(NCMaterialFlags.FRAME_BOX)
 			.unitValue(UNIT * 2)
+		);
+
+		WIRE_1X = event.register("1x_wire", "1x_%s_wire", b -> b
+			.groupTag("conductance:1x_wires", "1x Wires")
+			.entryTag("conductance:1x_wires/%s", "1x %s Wires")
+			.setHasBlock(true, false, false, BlockTags.MINEABLE_WITH_PICKAXE)
+			.requiredTrait(NCMaterialTraits.WIRE)
+			.unitValue(UNIT / 2)
+			.textureType(Conductance.id("wire"))
+		);
+		WIRE_2X = event.register("2x_wire", "2x_%s_wire", b -> b
+			.groupTag("conductance:2x_wires", "2x Wires")
+			.entryTag("conductance:2x_wires/%s", "2x %s Wires")
+			.setHasBlock(true, false, false, BlockTags.MINEABLE_WITH_PICKAXE)
+			.requiredTrait(NCMaterialTraits.WIRE)
+			.unitValue(UNIT)
+			.textureType(Conductance.id("wire"))
+		);
+		WIRE_4X = event.register("4x_wire", "4x_%s_wire", b -> b
+			.groupTag("conductance:4x_wires", "4x Wires")
+			.entryTag("conductance:4x_wires/%s", "4x %s Wires")
+			.setHasBlock(true, false, false, BlockTags.MINEABLE_WITH_PICKAXE)
+			.requiredTrait(NCMaterialTraits.WIRE)
+			.unitValue(UNIT * 2)
+			.textureType(Conductance.id("wire"))
+		);
+		WIRE_8X = event.register("8x_wire", "8x_%s_wire", b -> b
+			.groupTag("conductance:8x_wires", "8x Wires")
+			.entryTag("conductance:8x_wires/%s", "8x %s Wires")
+			.setHasBlock(true, false, false, BlockTags.MINEABLE_WITH_PICKAXE)
+			.requiredTrait(NCMaterialTraits.WIRE)
+			.unitValue(UNIT * 4)
+			.textureType(Conductance.id("wire"))
+		);
+		WIRE_12X = event.register("12x_wire", "12x_%s_wire", b -> b
+			.groupTag("conductance:12x_wires", "12x Wires")
+			.entryTag("conductance:12x_wires/%s", "12x %s Wires")
+			.setHasBlock(true, false, false, BlockTags.MINEABLE_WITH_PICKAXE)
+			.requiredTrait(NCMaterialTraits.WIRE)
+			.unitValue(UNIT * 6)
+			.textureType(Conductance.id("wire"))
+		);
+		WIRE_16X = event.register("16x_wire", "16x_%s_wire", b -> b
+			.groupTag("conductance:16x_wires", "16x Wires")
+			.entryTag("conductance:16x_wires/%s", "16x %s Wires")
+			.setHasBlock(true, false, false, BlockTags.MINEABLE_WITH_PICKAXE)
+			.requiredTrait(NCMaterialTraits.WIRE)
+			.unitValue(UNIT * 8)
+			.textureType(Conductance.id("wire"))
 		);
 
 		LIQUID = event.register("liquid", ConductanceMaterialGenerationHandlers::liquidUnlocalizedNameFactory, b -> b

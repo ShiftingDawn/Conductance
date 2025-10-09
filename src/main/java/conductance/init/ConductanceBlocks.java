@@ -38,6 +38,10 @@ import conductance.init.block.MaterialBlockItem;
 import conductance.init.block.MaterialOreBlock;
 import conductance.init.block.MaterialOreBlockItem;
 import conductance.init.block.MaterialOreRotatedPillarBlock;
+import conductance.init.block.WireBlock;
+import conductance.init.block.WireBlockItem;
+import conductance.lib.pipenet.WireRegistry;
+import conductance.lib.pipenet.WireType;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 public final class ConductanceBlocks {
@@ -129,6 +133,28 @@ public final class ConductanceBlocks {
 					});
 				});
 			});
+		if (material.hasTrait(NCMaterialTraits.WIRE)) {
+			for (final WireType wireType : WireType.values()) {
+				final String name = wireType.getHandler().getUnlocalizedName(material);
+				final DeferredBlock<WireBlock> holder = ConductanceBlocks.REGISTRY.registerBlock(name, props -> {
+					if (wireType.getHandler().getBlockBuilderCallback() != null) {
+						props = wireType.getHandler().getBlockBuilderCallback().apply(material, props);
+					}
+					return Util.make(new WireBlock(props, material, wireType), block -> {
+						Conductance.MATERIALS.register(material, wireType.getHandler(), block);
+						WireRegistry.register(wireType, material, block);
+					});
+				}, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
+				ConductanceBlocks.ITEMS.registerItem(name, props -> {
+					if (wireType.getHandler().getBlockItemBuilderCallback() != null) {
+						props = wireType.getHandler().getBlockItemBuilderCallback().apply(material, props);
+					}
+					return Util.make(new WireBlockItem(holder.value(), props.useBlockDescriptionPrefix()), item -> {
+						Conductance.MATERIALS.register(material, wireType.getHandler(), item);
+					});
+				});
+			}
+		}
 	}
 
 	@EventListener(priority = -100)

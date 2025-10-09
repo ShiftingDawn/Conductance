@@ -78,10 +78,11 @@ public abstract class Conductance {
 		if (Conductance.HAS_REGISTERED.getAndSet(true)) {
 			return;
 		}
+		TierCore.initialize();
+
 		PeriodicElementCore.initialize();
 		MaterialCore.initialize(Conductance.MODBUS);
 
-		TierCore.initialize();
 		RecipeCore.initialize();
 
 		ConductanceMenuTypes.initialize(Conductance.MODBUS);
