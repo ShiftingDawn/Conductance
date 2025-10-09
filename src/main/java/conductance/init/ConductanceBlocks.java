@@ -20,6 +20,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.NCBlockStateProperties;
 import conductance.api.NCBlocks;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.Material;
@@ -44,6 +45,7 @@ public final class ConductanceBlocks {
 	private static final DeferredRegister.Blocks REGISTRY = DeferredRegister.createBlocks(Conductance.MODID);
 	private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Conductance.MODID);
 	private static final Map<Holder<Block>, ResourceLocation> SIMPLE_BLOCKS = new IdentityHashMap<>();
+	private static final Map<Holder<Block>, ResourceLocation> ACTIVE_BLOCKS = new IdentityHashMap<>();
 
 	public static void initialize(final IEventBus modEventBus) {
 		ConductanceBlocks.REGISTRY.register(modEventBus);
@@ -51,20 +53,27 @@ public final class ConductanceBlocks {
 		CAPI.regs().materials().forEach(ConductanceBlocks::generateMaterial);
 		modEventBus.addListener(RegisterColorHandlersEvent.Block.class, ConductanceBlocks::handleMaterialBlockColors);
 		NCBlocks.CASING_BRONZE = ConductanceBlocks.makeSimpleBlock("bronze_casing", "casing/bronze");
-		NCBlocks.CASING_BRONZE_FIREBOX = ConductanceBlocks.makeSimpleBlock("bronze_firebox_casing", "casing/bronze_firebox", ActiveBlock::new);
+		NCBlocks.CASING_BRONZE_FIREBOX = ConductanceBlocks.makeActiveBlock("bronze_firebox_casing", "casing/bronze_firebox");
 	}
 
-	private static Holder<Block> makeSimpleBlock(final String blockName, @Nullable final String texture, final Function<BlockBehaviour.Properties, Block> factory) {
+	private static Holder<Block> makeBlock(final String blockName, @Nullable final String texture, final Function<BlockBehaviour.Properties, Block> factory) {
 		final Holder<Block> result = ConductanceBlocks.REGISTRY.registerBlock(blockName, props -> Util.make(factory.apply(props), block -> {
 			CreativeTabHelper.addToTab(block, CreativeTabHelper.Tabs.GENERAL);
 		}));
 		ConductanceBlocks.ITEMS.registerSimpleBlockItem(result);
-		ConductanceBlocks.SIMPLE_BLOCKS.put(result, Conductance.id("block/" + Objects.requireNonNullElseGet(texture, () -> result.getKey().location().getPath())));
 		return result;
 	}
 
 	private static Holder<Block> makeSimpleBlock(final String blockName, @Nullable final String texture) {
-		return ConductanceBlocks.makeSimpleBlock(blockName, texture, Block::new);
+		return CAPI.make(ConductanceBlocks.makeBlock(blockName, texture, Block::new), result -> {
+			ConductanceBlocks.SIMPLE_BLOCKS.put(result, Conductance.id("block/" + Objects.requireNonNullElseGet(texture, () -> result.getKey().location().getPath())));
+		});
+	}
+
+	private static Holder<Block> makeActiveBlock(final String blockName, @Nullable final String texture) {
+		return CAPI.make(ConductanceBlocks.makeBlock(blockName, texture, ActiveBlock::new), result -> {
+			ConductanceBlocks.ACTIVE_BLOCKS.put(result, Conductance.id("block/" + Objects.requireNonNullElseGet(texture, () -> result.getKey().location().getPath())));
+		});
 	}
 
 	private static void generateMaterial(final Material material) {
@@ -207,6 +216,16 @@ public final class ConductanceBlocks {
 		ConductanceBlocks.SIMPLE_BLOCKS.forEach((blockHolder, texture) -> {
 			event.addBlockState(blockHolder.value(), b -> b.simple(b2 -> b2.model(blockHolder.value())));
 			event.addBlockModel(blockHolder.value(), b -> b.parent(Conductance.id("block/cube_all")).particle(texture));
+			event.addItemModelDelegate(blockHolder.value());
+		});
+		ConductanceBlocks.ACTIVE_BLOCKS.forEach((blockHolder, texture) -> {
+			final ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(blockHolder.value());
+			event.addBlockState(blockHolder.value(), b -> b.variants(b2 -> {
+				b2.variant(NCBlockStateProperties.ACTIVE, false).model(blockId.withPrefix("block/"));
+				b2.variant(NCBlockStateProperties.ACTIVE, true).model(blockId.withPath(current -> "block/" + current + "_active"));
+			}));
+			event.addBlockModel(blockId, b -> b.parent(Conductance.id("block/cube_all")).particle(texture));
+			event.addBlockModel(blockId.withSuffix("_active"), b -> b.parent(Conductance.id("block/cube_all")).particle(texture.withSuffix("_active")));
 			event.addItemModelDelegate(blockHolder.value());
 		});
 	}

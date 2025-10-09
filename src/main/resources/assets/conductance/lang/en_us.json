@@ -24,6 +24,7 @@
   "item.conductance.transistor": "Transistor",
 
   "block.conductance.bronze_casing": "Bronze Casing",
+  "block.conductance.bronze_firebox_casing": "Bronze Firebox Casing",
 
   "tooltip.material_bucket.temperature": "§eTemperature: §r%sK",
   "tooltip.material_bucket.density": "§eDensity: §r%s",
