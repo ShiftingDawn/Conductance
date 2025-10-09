@@ -48,6 +48,43 @@ public interface IWidgetContainer extends IGuiWidget, WidgetHolder {
 	default boolean onMouseReleased(final int mouseX, final int mouseY, final int button) {
 		return this.internalHandleMouseEvent(MouseEventListener.Event.RELEASE, mouseX, mouseY, button);
 	}
+
+	@Override
+	default boolean onMouseScrolled(final int mouseX, final int mouseY, final double deltaX, final double deltaY) {
+		//Widgets are positioned using absolute coordinates, so untranslate mouse coords
+		final int absoluteMouseX = this.getPosition().x() + mouseX;
+		final int absoluteMouseY = this.getPosition().y() + mouseY;
+		for (final IGuiWidget widget : this.getWidgets().values()) {
+			if (!widget.getBounds().contains(absoluteMouseX, absoluteMouseY)) {
+				continue;
+			}
+			final int mx = absoluteMouseX - widget.getBounds().x();
+			final int my = absoluteMouseY - widget.getBounds().y();
+			if (widget.onMouseScrolled(mx, my, deltaX, deltaY)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	default boolean onMouseDragged(final int mouseX, final int mouseY, final int button, final double dragX, final double dragY) {
+		//Widgets are positioned using absolute coordinates, so untranslate mouse coords
+		final int absoluteMouseX = this.getPosition().x() + mouseX;
+		final int absoluteMouseY = this.getPosition().y() + mouseY;
+		for (final IGuiWidget widget : this.getWidgets().values()) {
+			if (!widget.getBounds().contains(absoluteMouseX, absoluteMouseY)) {
+				continue;
+			}
+			final int mx = absoluteMouseX - widget.getBounds().x();
+			final int my = absoluteMouseY - widget.getBounds().y();
+			if (widget.onMouseDragged(mx, my, button, dragX, dragY)) {
+				return true;
+			}
+		}
+		return IGuiWidget.super.onMouseDragged(mouseX, mouseY, button, dragX, dragY);
+	}
+
 	//endregion
 
 	//region Internal

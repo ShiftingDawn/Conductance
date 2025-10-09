@@ -94,5 +94,9 @@
   "guiWidget.conductance.tank.info.3": "§9Hold %s §9to fill/empty the whole stack.",
 
   "guiWidget.conductance.multiblock.structure.formed": "§aStructure formed",
-  "guiWidget.conductance.multiblock.structure.invalid": "§cInvalid structure"
+  "guiWidget.conductance.multiblock.structure.invalid": "§cInvalid structure",
+  "guiWidget.conductance.multiblock.recipe.idle": "§eReady for work...",
+  "guiWidget.conductance.multiblock.recipe.paused": "§6Paused...",
+  "guiWidget.conductance.multiblock.recipe.processing": "Processing recipe",
+  "guiWidget.conductance.multiblock.recipe.progress": "%ss / %ss"
 }

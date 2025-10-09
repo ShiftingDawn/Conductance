@@ -20,7 +20,7 @@ public class RecipeHandler extends MachineCapability {
 	private @Nullable MachineRecipe lastRecipe;
 	private @Getter int progressMax = -1;
 	private @Getter int progressCurrent = 0;
-	private RecipeHandlerStatus status = RecipeHandlerStatus.IDLE;
+	private @Getter RecipeHandlerStatus status = RecipeHandlerStatus.IDLE;
 
 	protected RecipeHandler(final String key, final MachineBlockEntity<?> machine, final RecipeCapabilityHolder holder) {
 		super(key, machine);

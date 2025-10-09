@@ -59,6 +59,14 @@ public interface IGuiWidget {
 	default boolean containsMouse(final int mouseX, final int mouseY) {
 		return this.getBounds().contains(mouseX - this.getScreen().getGuiLeft(), mouseY - this.getScreen().getGuiTop());
 	}
+
+	default boolean onMouseDragged(final int mouseX, final int mouseY, final int button, final double dragX, final double dragY) {
+		return false;
+	}
+
+	default boolean onMouseScrolled(final int mouseX, final int mouseY, final double deltaX, final double deltaY) {
+		return false;
+	}
 	//endregion
 
 	//region Properties

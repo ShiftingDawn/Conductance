@@ -24,7 +24,7 @@ import conductance.Conductance;
 import conductance.core.machine.MachineCore;
 import conductance.init.machine.GenericRecipeMachine;
 import conductance.init.machine.GenericRecipeMachineGuiSetup;
-import conductance.init.machine.MultiBlockControllerGuiSetup;
+import conductance.api.machine.multi.MultiBlockControllerGuiSetup;
 import conductance.init.machine.MultiBlockFluidHatchPartMachine;
 import conductance.init.machine.MultiBlockFluidHatchPartMachineGuiSetup;
 import conductance.init.machine.MultiBlockItemBusPartMachine;
@@ -103,7 +103,7 @@ final class ConductanceMachines {
 			.structure('x', c -> c
 				.slice("aaa", "aaa", "aaa")
 				.slice("axa", "a a", "aaa")
-				.slice("aaa", "aaa", "aaa")
+				.slice("aaa", "a a", "aaa")
 				.slice("bbb", "bbb", "bbb")
 				.key('a', StructurePredicate.isBlock(NCBlocks.CASING_BRONZE).or(
 					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.FLUIDS_IN).exact(1),

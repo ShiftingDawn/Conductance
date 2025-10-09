@@ -40,14 +40,21 @@ public class TankAwareFluidHandler implements IFluidHandlerModifiable {
 		if (resource.isEmpty() || !this.isFluidValid(0, resource)) {
 			return 0;
 		}
-		if (this.getFluidInTank(0).isEmpty()) {
+		final FluidStack current = this.getFluidInTank(0);
+		if (current.isEmpty()) {
 			final int filled = Math.min(resource.getAmount(), this.getTankCapacity(0));
 			if (action.execute()) {
 				this.setFluidInTank(0, resource.copyWithAmount(filled));
 			}
 			return filled;
+		} else {
+			final int space = this.getTankCapacity(0) - current.getAmount();
+			final int filled = Math.min(space, resource.getAmount());
+			if (action.execute()) {
+				this.setFluidInTank(0, current.copyWithAmount(current.getAmount() + filled));
+			}
+			return filled;
 		}
-		return 0;
 	}
 
 	@Override

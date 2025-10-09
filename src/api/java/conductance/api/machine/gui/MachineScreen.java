@@ -111,7 +111,6 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 	@Override
 	public boolean mouseReleased(final double absoluteMouseX, final double absoluteMouseY, final int button) {
 		if (this.handleMouseEvent(MouseEventListener.Event.RELEASE, absoluteMouseX, absoluteMouseY, button)) {
-
 			return true;
 		}
 		return super.mouseReleased(absoluteMouseX, absoluteMouseY, button);
@@ -120,10 +119,27 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 	private boolean handleMouseEvent(final MouseEventListener.Event event, final double absoluteMouseX, final double absoluteMouseY, final int button) {
 		final int mouseX = (int) (absoluteMouseX - this.leftPos);
 		final int mouseY = (int) (absoluteMouseY - this.topPos);
-		if (this.getMenu().getRootWidget().internalHandleMouseEvent(event, mouseX, mouseY, button)) {
+		return this.getMenu().getRootWidget().internalHandleMouseEvent(event, mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseDragged(final double absoluteMouseX, final double absoluteMouseY, final int button, final double dragX, final double dragY) {
+		final int mouseX = (int) (absoluteMouseX - this.leftPos);
+		final int mouseY = (int) (absoluteMouseY - this.topPos);
+		if (this.getMenu().getRootWidget().onMouseDragged(mouseX, mouseY, button, dragX, dragY)) {
 			return true;
 		}
-		return false;
+		return super.mouseDragged(absoluteMouseX, absoluteMouseY, button, dragX, dragY);
+	}
+
+	@Override
+	public boolean mouseScrolled(final double absoluteMouseX, final double absoluteMouseY, final double deltaX, final double deltaY) {
+		final int mouseX = (int) (absoluteMouseX - this.leftPos);
+		final int mouseY = (int) (absoluteMouseY - this.topPos);
+		if (this.getMenu().getRootWidget().onMouseScrolled(mouseX, mouseY, deltaX, deltaY)) {
+			return true;
+		}
+		return super.mouseScrolled(absoluteMouseX, absoluteMouseY, deltaX, deltaY);
 	}
 
 	public final void setImageWidth(final int width) {

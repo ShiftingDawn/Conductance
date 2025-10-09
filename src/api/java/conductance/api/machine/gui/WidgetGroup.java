@@ -9,7 +9,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
-public final class WidgetGroup extends GuiWidget implements IWidgetContainer {
+public class WidgetGroup extends GuiWidget implements IWidgetContainer {
 
 	private final Map<String, IGuiWidget> widgets = new HashMap<>();
 	private final Map<IGuiWidget, String> widgetsReversed = new HashMap<>();
@@ -49,12 +49,6 @@ public final class WidgetGroup extends GuiWidget implements IWidgetContainer {
 		super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 		IWidgetContainer.super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 	}
-
-	@Override
-	public void renderForeground(final GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTick) {
-		IWidgetContainer.super.renderForeground(guiGraphics, mouseX, mouseY, partialTick);
-	}
-
 	//endregion
 
 	//region Internal

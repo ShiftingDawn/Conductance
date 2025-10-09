@@ -12,7 +12,7 @@ import conductance.api.machine.event.MachineBlockEntityFactory;
 import conductance.api.machine.event.MultiBlockMachineBuilder;
 import conductance.api.machine.multi.MultiBlockStructureBuilder;
 import conductance.api.machine.multi.MultiMachineBlockEntity;
-import conductance.init.machine.MultiBlockControllerGuiSetup;
+import conductance.api.machine.multi.MultiBlockControllerGuiSetup;
 
 final class MultiBlockMachineBuilderImpl<T extends MultiMachineBlockEntity<T>> extends AbstractMachineBuilderImpl<T, MultiBlockMachineBuilder<T>> implements MultiBlockMachineBuilder<T> {
 
