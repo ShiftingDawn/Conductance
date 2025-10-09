@@ -18,7 +18,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 	public static final int REQUEST_STRUCTURE_FORMED = 1;
 	public static final int REQUEST_STRUCTURE_INVALID = 2;
 	private final int structureCheckTimerOffset = CAPI.RANDOM.nextInt(100);
-	private final Set<IMultiBlockPart> parts = new HashSet<>();
+	private final @Getter Set<IMultiBlockPart> parts = new HashSet<>();
 	private @Getter boolean structureFormed = false;
 
 	public MultiControllerMachineBlockEntity(final MultiMachineType<T> type, final BlockPos pos, final BlockState blockState) {
@@ -27,16 +27,18 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 
 	@Override
 	public void onLoad() {
-		super.onLoad();
 		MultiControllerMachineBlockEntity.checkStructure(this, true);
+		if (this.isStructureFormed()) {
+			super.onLoad();
+		}
 		if (this.level instanceof final ServerLevel serverLevel) {
 			Internal.MULTIBLOCK_CONTROLLER_LOAD.accept(serverLevel, this);
 		}
 	}
 
 	@Override
-	public void onUnload() {
-		super.onUnload();
+	public void setRemoved() {
+		super.setRemoved();
 		if (this.level instanceof final ServerLevel serverLevel) {
 			Internal.MULTIBLOCK_CONTROLLER_UNLOAD.accept(serverLevel, this);
 		}
@@ -48,6 +50,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 			return;
 		}
 		this.structureFormed = true;
+		this.onLoad();
 		ctx.get(StructureCheckContext.PARTS).forEach(this::addPart);
 		this.sendToClient(MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_FORMED, output -> {
 			final ValueOutput.TypedOutputList<BlockPos> list = output.list("parts", BlockPos.CODEC);
@@ -65,6 +68,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 			return;
 		}
 		this.structureFormed = false;
+		this.onUnload();
 		this.removeAllParts();
 		this.sendToClient(MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_INVALID, null);
 	}

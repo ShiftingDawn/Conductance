@@ -57,8 +57,10 @@ final class MultiStructureChecker {
 	}
 
 	public void addController(final IMultiBlockController<?> controller) {
-		this.controllers.add(controller);
-		this.initialize();
+		if (!this.controllers.contains(controller)) {
+			this.controllers.add(controller);
+			this.initialize();
+		}
 	}
 
 	public void removeController(final IMultiBlockController<?> controller) {

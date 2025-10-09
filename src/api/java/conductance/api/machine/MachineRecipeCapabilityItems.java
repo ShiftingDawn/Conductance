@@ -1,13 +1,16 @@
 package conductance.api.machine;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.IntFunction;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCRecipeElementTypes;
@@ -87,6 +90,28 @@ public final class MachineRecipeCapabilityItems extends MachineRecipeCapability<
 				yield !leftOvers.isEmpty() ? leftOvers : null;
 			}
 		};
+	}
+
+	@Override
+	public List<SizedIngredient> getAvailableContent() {
+		final ArrayList<SizedIngredient> result = new ArrayList<>();
+		for (int i = 0; i < this.inventory.getSlots(); ++i) {
+			final ItemStack stack = this.inventory.getStackInSlot(i);
+			if (!stack.isEmpty()) {
+				result.add(SizedIngredient.of(stack.getItem(), stack.getCount()));
+			}
+		}
+		return Collections.unmodifiableList(result);
+	}
+
+	@Override
+	public int getMaxSpaceForContent(final SizedIngredient object) {
+		if (object.ingredient().getValues().size() == 0) {
+			return 0;
+		}
+		final Item item = object.ingredient().getValues().get(0).value();
+		final ItemStack leftOver = ItemHandlerHelper.insertItem(this.inventory, new ItemStack(item, object.count()), true);
+		return leftOver.isEmpty() ? object.count() : object.count() - leftOver.getCount();
 	}
 
 	@Override

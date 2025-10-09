@@ -1,19 +1,21 @@
-package conductance.init.machine;
+package conductance.init.machine.boiler;
 
 import java.util.function.BiConsumer;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import conductance.api.machine.MachineRecipeCapabilityFluids;
+import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.MachineRecipeCapability;
 import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.machine.RecipePerTickFailureAction;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
 
-public interface BoilerFakeRecipeCapabilityHolder extends RecipeCapabilityHolder {
+interface BoilerFakeRecipeCapabilityHolder extends RecipeCapabilityHolder {
 
-	MachineRecipeCapabilityFluids getWaterTank();
+	@Nullable MachineRecipeCapability<SizedFluidIngredient> getWaterTank();
 
-	MachineRecipeCapabilityFluids getSteamTank();
+	@Nullable MachineRecipeCapability<SizedFluidIngredient> getSteamTank();
 
 	int getFuelForInput();
 

@@ -1,5 +1,7 @@
 package conductance.api.machine.multi;
 
+import java.util.Set;
+
 public interface IMultiBlockController<T extends MultiMachineBlockEntity<T>> {
 
 	MultiMachineType<T> getMachineType();
@@ -25,4 +27,6 @@ public interface IMultiBlockController<T extends MultiMachineBlockEntity<T>> {
 	void addPart(IMultiBlockPart part);
 
 	void removePart(IMultiBlockPart part);
+
+	Set<IMultiBlockPart> getParts();
 }

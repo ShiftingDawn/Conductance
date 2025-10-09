@@ -24,10 +24,13 @@ public abstract class MachineRecipeCapability<T> extends MachineCapability imple
 	@Nullable
 	protected abstract List<T> handleInternal(IO io, MachineRecipe recipe, List<T> inputs, boolean simulate);
 
+	public abstract List<T> getAvailableContent();
+
+	public abstract int getMaxSpaceForContent(T object);
+
 	@Nullable
 	public final List<T> handle(final IO io, final MachineRecipe recipe, final List<T> inputs, final boolean simulate) {
 		if (this.getMachine().getLevel() == null) {
-			//TODO maybe log?
 			return inputs;
 		}
 		return this.handleInternal(io, recipe, new ArrayList<>(inputs.stream().map(obj -> this.elementType.getCloner().copy(obj)).toList()), simulate);

@@ -63,7 +63,11 @@ public class RecipeHandler extends MachineCapability {
 			this.findAndSetupRecipe();
 		}
 		if (this.status == RecipeHandlerStatus.PROCESSING) {
-			this.progressRecipe(this.lastRecipe);
+			if (this.lastRecipe != null) {
+				this.progressRecipe(this.lastRecipe);
+			} else {
+				this.setStatus(RecipeHandlerStatus.IDLE);
+			}
 		}
 	}
 

@@ -1,7 +1,8 @@
-package conductance.init.machine;
+package conductance.init.machine.boiler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
@@ -21,7 +22,7 @@ import conductance.api.recipe.DummyMachineRecipe;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.RecipeElement;
 
-public class BoilerFakeRecipeHandler extends RecipeHandler {
+final class BoilerFakeRecipeHandler extends RecipeHandler {
 
 	private static final int MAX_PRODUCTION = 120 / 4; //4 Times per second
 	private static final int WATER_TO_STEAM = 10;
@@ -29,7 +30,7 @@ public class BoilerFakeRecipeHandler extends RecipeHandler {
 	private final BoilerFakeRecipeCapabilityHolder holder;
 	private int fuelTime;
 
-	public BoilerFakeRecipeHandler(final MachineBlockEntity<?> machine, final BoilerFakeRecipeCapabilityHolder holder) {
+	BoilerFakeRecipeHandler(final MachineBlockEntity<?> machine, final BoilerFakeRecipeCapabilityHolder holder) {
 		super("boiler", machine, holder);
 		this.holder = holder;
 	}
@@ -48,6 +49,9 @@ public class BoilerFakeRecipeHandler extends RecipeHandler {
 
 	@Override
 	protected @Nullable MachineRecipe findRecipe() {
+		if (this.holder.getWaterTank() == null || this.holder.getSteamTank() == null) {
+			return null;
+		}
 		final boolean hadFuel = this.fuelTime > 0;
 		if (this.fuelTime == 0) {
 			final int fuel = this.holder.getFuelForInput();
@@ -57,14 +61,14 @@ public class BoilerFakeRecipeHandler extends RecipeHandler {
 			this.fuelTime = fuel;
 			this.setChanged();
 		}
-		int water = this.holder.getWaterTank().getFluidInTank(0).getAmount();
+		int water = this.holder.getWaterTank().getAvailableContent().stream().mapToInt(SizedFluidIngredient::amount).sum();
 		if (water == 0) {
 			return null;
 		}
 		if (water > BoilerFakeRecipeHandler.MAX_WATER) {
 			water = BoilerFakeRecipeHandler.MAX_WATER;
 		}
-		final int space = this.holder.getSteamTank().getTankCapacity(0) - this.holder.getSteamTank().getFluidInTank(0).getAmount();
+		final int space = this.holder.getSteamTank().getMaxSpaceForContent(BoilerFakeRecipeHandler.makeSteamIngredient(BoilerFakeRecipeHandler.MAX_PRODUCTION));
 		if (space == 0) {
 			return null;
 		}
@@ -86,7 +90,7 @@ public class BoilerFakeRecipeHandler extends RecipeHandler {
 		}
 		final int finalProduce = maxProduce;
 		return new DummyMachineRecipe(
-			null,
+			this.holder.getRecipeType(),
 			CAPI.make(new HashMap<>(), map -> {
 				if (!hadFuel) {
 					this.holder.addInputs((type, data) -> {
@@ -94,18 +98,24 @@ public class BoilerFakeRecipeHandler extends RecipeHandler {
 							.add(new RecipeElement(data, 1));
 					});
 				}
-				final TagKey<Fluid> waterTag = CAPI.materials().getFluidTag(NCMaterials.WATER, NCMaterialGenerationHandlers.LIQUID);
 				map.computeIfAbsent(NCRecipeElementTypes.FLUID, k -> new ArrayList<>())
-					.add(new RecipeElement(new SizedFluidIngredient(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow(waterTag)), finalProduce / BoilerFakeRecipeHandler.WATER_TO_STEAM), 1));
+					.add(new RecipeElement(BoilerFakeRecipeHandler.makeWaterIngredient(finalProduce / BoilerFakeRecipeHandler.WATER_TO_STEAM), 1));
 			}),
-			Map.of(NCRecipeElementTypes.FLUID, CAPI.make(new ArrayList<>(), list -> {
-				final TagKey<Fluid> steamTag = CAPI.materials().getFluidTag(NCMaterials.STEAM, NCMaterialGenerationHandlers.GAS);
-				list.add(new RecipeElement(new SizedFluidIngredient(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow(steamTag)), finalProduce), 1));
-			})),
+			Map.of(NCRecipeElementTypes.FLUID, List.of(new RecipeElement(BoilerFakeRecipeHandler.makeSteamIngredient(finalProduce), 1))),
 			Map.of(),
 			Map.of(),
 			5,
 			0
 		);
+	}
+
+	private static SizedFluidIngredient makeWaterIngredient(final int amount) {
+		final TagKey<Fluid> waterTag = CAPI.materials().getFluidTag(NCMaterials.WATER, NCMaterialGenerationHandlers.LIQUID);
+		return new SizedFluidIngredient(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow(waterTag)), amount);
+	}
+
+	private static SizedFluidIngredient makeSteamIngredient(final int amount) {
+		final TagKey<Fluid> waterTag = CAPI.materials().getFluidTag(NCMaterials.STEAM, NCMaterialGenerationHandlers.GAS);
+		return new SizedFluidIngredient(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow(waterTag)), amount);
 	}
 }

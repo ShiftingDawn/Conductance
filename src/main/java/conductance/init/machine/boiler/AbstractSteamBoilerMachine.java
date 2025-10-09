@@ -1,4 +1,4 @@
-package conductance.init.machine;
+package conductance.init.machine.boiler;
 
 import java.util.List;
 import net.minecraft.core.BlockPos;

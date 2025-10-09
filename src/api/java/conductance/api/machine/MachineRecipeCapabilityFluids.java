@@ -1,8 +1,10 @@
 package conductance.api.machine;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.IntFunction;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -87,6 +89,27 @@ public final class MachineRecipeCapabilityFluids extends MachineRecipeCapability
 				yield !leftOvers.isEmpty() ? leftOvers : null;
 			}
 		};
+	}
+
+	@Override
+	public List<SizedFluidIngredient> getAvailableContent() {
+		final ArrayList<SizedFluidIngredient> result = new ArrayList<>();
+		for (int i = 0; i < this.handler.getTanks(); ++i) {
+			final FluidStack stack = this.handler.getFluidInTank(i);
+			if (!stack.isEmpty()) {
+				result.add(SizedFluidIngredient.of(stack.getFluid(), stack.getAmount()));
+			}
+		}
+		return Collections.unmodifiableList(result);
+	}
+
+	@Override
+	public int getMaxSpaceForContent(final SizedFluidIngredient object) {
+		if (object.ingredient().fluids().isEmpty()) {
+			return 0;
+		}
+		final Fluid fluid = object.ingredient().fluids().getFirst().value();
+		return this.handler.fill(new FluidStack(fluid, object.amount()), FluidAction.SIMULATE);
 	}
 
 	@Override

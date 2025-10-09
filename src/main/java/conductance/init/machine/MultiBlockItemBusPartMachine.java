@@ -1,11 +1,13 @@
 package conductance.init.machine;
 
+import java.util.function.BiConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import lombok.Getter;
 import conductance.api.NCMultiBlockPartCapabilities;
 import conductance.api.machine.CapIO;
 import conductance.api.machine.MachineInventory;
+import conductance.api.machine.MachineRecipeCapability;
 import conductance.api.machine.MachineRecipeCapabilityItems;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.multi.MultiBlockPartCapability;
@@ -31,5 +33,10 @@ public final class MultiBlockItemBusPartMachine extends MultiPartMachineBlockEnt
 			case IN -> NCMultiBlockPartCapabilities.ITEMS_IN;
 			case OUT -> NCMultiBlockPartCapabilities.ITEMS_OUT;
 		};
+	}
+
+	@Override
+	public void attachCapabilities(final BiConsumer<IO, MachineRecipeCapability<?>> consumer) {
+		consumer.accept(this.io, this.items);
 	}
 }

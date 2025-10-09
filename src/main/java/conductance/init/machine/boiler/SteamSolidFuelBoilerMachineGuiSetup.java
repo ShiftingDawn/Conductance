@@ -1,4 +1,4 @@
-package conductance.init.machine;
+package conductance.init.machine.boiler;
 
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import conductance.api.machine.MachineBlockEntity;
