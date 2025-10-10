@@ -137,8 +137,6 @@ public class RecipeHandler extends MachineCapability {
 		this.progressCurrent = 0;
 		this.setStatus(RecipeHandlerStatus.PROCESSING);
 		CAPI.recipeHelper().handle(recipe, IO.IN, this.holder);
-		CAPI.recipeHelper().handlePerTick(recipe, IO.IN, this.holder);
-		CAPI.recipeHelper().handlePerTick(recipe, IO.OUT, this.holder);
 		this.setChanged();
 	}
 
