@@ -20,11 +20,12 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import conductance.api.CAPI;
-import conductance.api.machine.CapabilityMode;
+import conductance.api.NCCapabilities;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineBlockItem;
 import conductance.api.machine.MachineType;
+import conductance.api.machine.energy.IEnergyHandler;
 import conductance.api.machine.event.MachineBlockEntityFactory;
 import conductance.api.machine.event.MachineBlockFactory;
 import conductance.api.machine.event.MachineBlockItemFactory;
@@ -142,13 +143,22 @@ public final class MachineCore {
 			if (block instanceof final MachineBlock<?> machineBlock) {
 				event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
 					if (blockEntity instanceof final MachineBlockEntity<?> machine) {
-						return machine.getItemTransferCapability(direction, CapabilityMode.DEFAULT).orElse(null);
+						return machine.getItemHandlerCapability(direction).orElse(null);
 					}
 					return null;
 				}, machineBlock);
 				event.registerBlock(Capabilities.FluidHandler.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
 					if (blockEntity instanceof final MachineBlockEntity<?> machine) {
-						return machine.getFluidTransferCapability(direction, CapabilityMode.DEFAULT).orElse(null);
+						return machine.getFluidHandlerCapability(direction).orElse(null);
+					}
+					return null;
+				}, machineBlock);
+				event.registerBlock(NCCapabilities.ENERGY_HANDLER_BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
+					if (blockEntity instanceof final IEnergyHandler handler) {
+						return handler;
+					}
+					if (blockEntity instanceof final MachineBlockEntity<?> machine) {
+						return machine.getEnergyHandlerCapability(direction).orElse(null);
 					}
 					return null;
 				}, machineBlock);

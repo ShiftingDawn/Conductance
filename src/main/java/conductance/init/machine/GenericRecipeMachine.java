@@ -20,6 +20,7 @@ import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineFluidHandler;
 import conductance.api.machine.MachineInventory;
 import conductance.api.machine.MachineRecipeCapability;
+import conductance.api.machine.MachineRecipeCapabilityEnergy;
 import conductance.api.machine.MachineRecipeCapabilityFluids;
 import conductance.api.machine.MachineRecipeCapabilityItems;
 import conductance.api.machine.MachineType;
@@ -42,10 +43,12 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 	private final @Nullable MachineRecipeCapabilityFluids inputFluids;
 	@Getter
 	private final @Nullable MachineRecipeCapabilityFluids outputFluids;
+	@Getter
+	private final MachineRecipeCapabilityEnergy energy;
 	private final Table<RecipeElementType<?>, IO, List<MachineRecipeCapability<?>>> recipeCapabilities;
 	private final Lazy<IntSortedSet> recipePrograms;
 
-	public GenericRecipeMachine(final MachineType<GenericRecipeMachine> type, final Tier tier, final BlockPos pos, final BlockState blockState, final Object... additionalProps) {
+	public GenericRecipeMachine(final MachineType<GenericRecipeMachine> type, final Tier tier, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
 		this.recipeHandler = new RecipeHandler(this, this);
 		final int inputItemLimit = this.getRecipeType().getLimit(IO.IN, NCRecipeElementTypes.ITEM);
@@ -68,11 +71,15 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 			handler.addChangedListener(this::setChanged);
 			handler.addChangedListener(this.recipeHandler::revalidateTick);
 		}) : null;
+		this.energy = this.isEnergyGenerator()
+			? MachineRecipeCapabilityEnergy.createOutput(this, IO.OUT, tier.getVoltage() * 64, tier.getVoltage(), this.getMaxEnergyAmperage())
+			: MachineRecipeCapabilityEnergy.createInput(this, IO.IN, tier.getVoltage() * 64, tier.getVoltage(), this.getMaxEnergyAmperage());
 		this.recipeCapabilities = Tables.unmodifiableTable(Util.make(HashBasedTable.create(), table -> {
 			table.put(NCRecipeElementTypes.ITEM, IO.IN, this.inputItems != null ? List.of(this.inputItems) : List.of());
 			table.put(NCRecipeElementTypes.ITEM, IO.OUT, this.outputItems != null ? List.of(this.outputItems) : List.of());
 			table.put(NCRecipeElementTypes.FLUID, IO.IN, this.inputFluids != null ? List.of(this.inputFluids) : List.of());
 			table.put(NCRecipeElementTypes.FLUID, IO.OUT, this.outputFluids != null ? List.of(this.outputFluids) : List.of());
+			table.put(NCRecipeElementTypes.ENERGY, this.isEnergyGenerator() ? IO.OUT : IO.IN, List.of(this.energy));
 		}));
 		if (this.inputItems != null) {
 			this.recipePrograms = Lazy.of(() -> RecipeHelper.findPrograms(this.inputItems.getInventory()));
@@ -80,6 +87,14 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 		} else {
 			this.recipePrograms = Lazy.of(() -> IntSortedSets.EMPTY_SET);
 		}
+	}
+
+	protected boolean isEnergyGenerator() {
+		return false;
+	}
+
+	protected long getMaxEnergyAmperage() {
+		return 2L;
 	}
 
 	@Override

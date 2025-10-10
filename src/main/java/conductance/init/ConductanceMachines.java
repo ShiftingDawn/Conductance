@@ -13,6 +13,7 @@ import conductance.api.machine.MachineBlockWorkable;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.event.RegisterMachineEvent;
 import conductance.api.machine.gui.GuiTheme;
+import conductance.api.machine.multi.MultiBlockControllerGuiSetup;
 import conductance.api.machine.multi.StructurePredicate;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
@@ -22,9 +23,9 @@ import conductance.api.tier.Tier;
 import conductance.api.util.IO;
 import conductance.Conductance;
 import conductance.core.machine.MachineCore;
+import conductance.init.machine.GenericGeneratorMachine;
 import conductance.init.machine.GenericRecipeMachine;
 import conductance.init.machine.GenericRecipeMachineGuiSetup;
-import conductance.api.machine.multi.MultiBlockControllerGuiSetup;
 import conductance.init.machine.MultiBlockFluidHatchPartMachine;
 import conductance.init.machine.MultiBlockFluidHatchPartMachineGuiSetup;
 import conductance.init.machine.MultiBlockItemBusPartMachine;
@@ -45,6 +46,7 @@ import static conductance.api.NCMachines.OUTPUT_BUSES;
 import static conductance.api.NCMachines.OUTPUT_HATCHES;
 import static conductance.api.NCMachines.PULVERIZER;
 import static conductance.api.NCMachines.STEAM_SOLID_FUEL_BOILER;
+import static conductance.api.NCMachines.STEAM_TURBINES;
 import static conductance.api.NCMachines.WIREMILL;
 
 @ConductancePluginListener(modid = Conductance.MODID)
@@ -55,9 +57,14 @@ final class ConductanceMachines {
 		STEAM_SOLID_FUEL_BOILER = event.register("steam_solid_fuel_boiler", SteamSolidFuelBoilerMachine::new, b -> b
 			.blockFactory(MachineBlockWorkable::new).sidedMachineModel(Conductance.id("block/casing/bronze")).guiSetup(new SteamSolidFuelBoilerMachineGuiSetup())
 		);
+		ConductanceMachines.initGenerators(event);
 		ConductanceMachines.initRecipeMachines(event);
 		ConductanceMachines.initMultiBlocks(event);
 		ConductanceMachines.initMultiParts(event);
+	}
+
+	private static void initGenerators(final RegisterMachineEvent event) {
+		STEAM_TURBINES = ConductanceMachines.makeTieredGenericGeneratorMachine(event, "steam_turbine", NCRecipeTypes.STEAM_TURBINE);
 	}
 
 	private static void initRecipeMachines(final RegisterMachineEvent event) {
@@ -122,6 +129,15 @@ final class ConductanceMachines {
 	private static Map<Tier, MachineType<?>> makeTieredGenericRecipeMachine(final RegisterMachineEvent event, final String name, final MachineRecipeType recipeType) {
 		return CAPI.tiers().newMap(tier -> event.<GenericRecipeMachine>register(tier.getId().getPath() + "_" + name,
 			(machineType, blockPos, blockState) -> new GenericRecipeMachine(machineType, tier, blockPos, blockState),
+			b -> b.customName(ignored ->
+				Component.translatable(Util.makeDescriptionId("machine", Conductance.id(name)), tier.getName())
+			).recipeType(recipeType).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
+		));
+	}
+
+	private static Map<Tier, MachineType<?>> makeTieredGenericGeneratorMachine(final RegisterMachineEvent event, final String name, final MachineRecipeType recipeType) {
+		return CAPI.tiers().newMap(tier -> event.<GenericRecipeMachine>register(tier.getId().getPath() + "_" + name,
+			(machineType, blockPos, blockState) -> new GenericGeneratorMachine(machineType, tier, blockPos, blockState),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id(name)), tier.getName())
 			).recipeType(recipeType).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)

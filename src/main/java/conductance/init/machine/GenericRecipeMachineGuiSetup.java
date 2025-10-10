@@ -10,12 +10,12 @@ import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineRecipeCapabilityFluids;
 import conductance.api.machine.MachineRecipeCapabilityItems;
 import conductance.api.machine.RecipeHandler;
-import conductance.api.machine.SimpleAutomaticGuiSetup;
+import conductance.api.machine.energy.IEnergyHandler;
 import conductance.api.machine.gui.GuiTheme;
 import conductance.api.machine.gui.IGuiWidget;
 import conductance.api.machine.gui.IWidgetContainer;
 import conductance.api.machine.gui.MachineMenu;
-import conductance.api.machine.gui.WidgetGroup;
+import conductance.api.machine.gui.SimpleAutomaticGuiSetup;
 
 @RequiredArgsConstructor
 public class GenericRecipeMachineGuiSetup extends SimpleAutomaticGuiSetup {
@@ -48,6 +48,11 @@ public class GenericRecipeMachineGuiSetup extends SimpleAutomaticGuiSetup {
 	protected @Nullable IFluidHandlerModifiable getOutputFluids(final MachineBlockEntity<?> machine) {
 		final MachineRecipeCapabilityFluids capability = ((GenericRecipeMachine) machine).getOutputFluids();
 		return capability != null ? capability.getRealFluidHandler() : null;
+	}
+
+	@Override
+	protected IEnergyHandler getEnergyHandler(final MachineBlockEntity<?> machine) {
+		return ((GenericRecipeMachine) machine).getEnergy();
 	}
 
 	@Override

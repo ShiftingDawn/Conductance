@@ -15,6 +15,7 @@ final class ConductanceRecipeLoader {
 		MaterialOreRecipes.add(event);
 		MaterialRecycleRecipes.add(event);
 		CircuitRecipes.add(event);
+		FuelAndPowerRecipes.add(event);
 	}
 
 	private ConductanceRecipeLoader() {

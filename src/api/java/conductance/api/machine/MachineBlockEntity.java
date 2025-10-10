@@ -33,6 +33,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import conductance.api.CAPI;
 import conductance.api.NCBlockStateProperties;
+import conductance.api.block.BlockRotationHelper;
+import conductance.api.machine.energy.IEnergyHandler;
 import conductance.api.util.Internal;
 
 public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEntity {
@@ -75,19 +77,11 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		return this.getCapability(type, false);
 	}
 
-	public Optional<IItemHandler> getItemTransferCapability(@Nullable final Direction side, final CapabilityMode mode) {
+	public Optional<IItemHandler> getItemHandlerCapability(@Nullable final Direction side) {
 		final List<IItemHandlerModifiable> itemHandlers = new ArrayList<>();
 		for (final MachineCapability capability : this.capabilities.values()) {
 			if (capability instanceof final IItemHandlerModifiable itemHandler && capability.isValid(side)) {
-				if (mode == CapabilityMode.INTERNAL) {
-					IItemHandlerModifiable handler = itemHandler;
-					if (itemHandler instanceof final MachineRecipeCapabilityItems recipeCapabilityItems) {
-						handler = recipeCapabilityItems.getInventory();
-					}
-					itemHandlers.add(handler);
-				} else {
-					itemHandlers.add(itemHandler);
-				}
+				itemHandlers.add(itemHandler);
 			}
 		}
 		if (itemHandlers.isEmpty()) {
@@ -98,11 +92,10 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		return Optional.of(handlerList);
 	}
 
-	public Optional<IFluidHandler> getFluidTransferCapability(@Nullable final Direction side, final CapabilityMode mode) {
+	public Optional<IFluidHandler> getFluidHandlerCapability(@Nullable final Direction side) {
 		final List<IFluidHandler> fluidHandlers = new ArrayList<>();
 		for (final MachineCapability capability : this.capabilities.values()) {
 			if (capability instanceof final IFluidHandler fluidHandler && capability.isValid(side)) {
-				//TODO handle internal mode
 				fluidHandlers.add(fluidHandler);
 			}
 		}
@@ -111,6 +104,21 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		}
 		final CapIO io = CapIO.BOTH;
 		final IOFluidHandlerList handlerList = new IOFluidHandlerList(fluidHandlers, io);
+		return Optional.of(handlerList);
+	}
+
+	public Optional<IEnergyHandler> getEnergyHandlerCapability(@Nullable final Direction side) {
+		final List<IEnergyHandler> energyHandlers = new ArrayList<>();
+		for (final MachineCapability capability : this.capabilities.values()) {
+			if (capability instanceof final IEnergyHandler energyHandler && capability.isValid(side)) {
+				energyHandlers.add(energyHandler);
+			}
+		}
+		if (energyHandlers.isEmpty()) {
+			return Optional.empty();
+		}
+		final CapIO io = CapIO.BOTH;
+		final IOEnergyHandlerList handlerList = new IOEnergyHandlerList(energyHandlers, io);
 		return Optional.of(handlerList);
 	}
 	//endregion
@@ -332,6 +340,10 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		if (this.level instanceof final ServerLevel serverLevel) {
 			callback.accept(serverLevel);
 		}
+	}
+
+	public Direction getFacing() {
+		return BlockRotationHelper.getFacing(this.getBlockState());
 	}
 	//endregion
 

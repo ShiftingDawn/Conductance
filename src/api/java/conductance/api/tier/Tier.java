@@ -19,7 +19,7 @@ public interface Tier {
 
 	long getVoltage();
 
-	default long getTierVoltage() {
+	default long getRecipeVoltage() {
 		return (long) (this.getVoltage() * 0.8);
 	}
 

@@ -6,7 +6,7 @@ public interface ProgressProvider {
 		LEFT_TO_RIGHT, RIGHT_TO_LEFT, UP_TO_DOWN, DOWN_TO_UP
 	}
 
-	int getMaxProgress();
+	long getMaxProgress();
 
-	int getCurrentProgress();
+	long getCurrentProgress();
 }

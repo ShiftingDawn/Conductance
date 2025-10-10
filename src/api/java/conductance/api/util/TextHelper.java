@@ -9,8 +9,8 @@ import conductance.api.CAPI;
 public final class TextHelper {
 
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getIntegerInstance();
-	public static final Component ENERGY_FORMAT = Component.literal(ChatFormatting.BOLD + "⚡" + ChatFormatting.RESET);
-	public static final Component ENERGY_FORMAT_PER_TICK = Component.literal(ChatFormatting.BOLD + "⚡" + ChatFormatting.RESET + "/t");
+	public static final Component ENERGY_FORMAT = Component.literal(ChatFormatting.YELLOW + "" + ChatFormatting.BOLD + "⚡" + ChatFormatting.RESET);
+	public static final Component ENERGY_FORMAT_PER_TICK = Component.literal(TextHelper.ENERGY_FORMAT + "/t");
 	private static final DecimalFormat BUCKET_FORMAT = new DecimalFormat("0.##");
 	private static final DecimalFormat TIME_FORMAT = new DecimalFormat("0.00");
 
@@ -57,6 +57,10 @@ public final class TextHelper {
 		} else {
 			return Component.translatable("info.conductance.generic.duration.seconds", TextHelper.BUCKET_FORMAT.format(ticks / 20.0));
 		}
+	}
+
+	public static Component getFormattedEnergy(final long energy) {
+		return Component.literal(TextHelper.NUMBER_FORMAT.format(energy)).append(TextHelper.ENERGY_FORMAT);
 	}
 
 	public static String getFormattedTicks(final int ticks) {

@@ -1,7 +1,7 @@
-package conductance.api.machine;
+package conductance.api.machine.gui;
 
 import lombok.RequiredArgsConstructor;
-import conductance.api.machine.gui.ProgressProvider;
+import conductance.api.machine.RecipeHandler;
 
 @RequiredArgsConstructor
 public final class RecipeHandlerProgressProvider implements ProgressProvider {
@@ -9,12 +9,12 @@ public final class RecipeHandlerProgressProvider implements ProgressProvider {
 	private final RecipeHandler handler;
 
 	@Override
-	public int getMaxProgress() {
+	public long getMaxProgress() {
 		return this.handler.getProgressMax();
 	}
 
 	@Override
-	public int getCurrentProgress() {
+	public long getCurrentProgress() {
 		return this.handler.getProgressCurrent();
 	}
 }

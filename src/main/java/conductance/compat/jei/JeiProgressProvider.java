@@ -5,12 +5,12 @@ import conductance.api.machine.gui.ProgressProvider;
 final class JeiProgressProvider implements ProgressProvider {
 
 	@Override
-	public int getMaxProgress() {
+	public long getMaxProgress() {
 		return 200;
 	}
 
 	@Override
-	public int getCurrentProgress() {
+	public long getCurrentProgress() {
 		return (int) (System.currentTimeMillis() % 10_000) / 50;
 	}
 }

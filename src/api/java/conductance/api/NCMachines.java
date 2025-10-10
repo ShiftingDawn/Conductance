@@ -9,7 +9,8 @@ import conductance.api.tier.Tier;
 public final class NCMachines {
 
 	public static MachineType<?> STEAM_SOLID_FUEL_BOILER;
-	public static MachineType<?> STEAM_LIQUID_FUEL_BOILER;
+
+	public static Map<Tier, MachineType<?>> STEAM_TURBINES;
 
 	public static Map<Tier, MachineType<?>> BENDING_MACHINE;
 	public static Map<Tier, MachineType<?>> PULVERIZER;

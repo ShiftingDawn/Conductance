@@ -1,5 +1,8 @@
 package conductance.init;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import com.mojang.serialization.Codec;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import conductance.api.NCRecipeElementTypes;
@@ -16,6 +19,7 @@ final class ConductanceRecipeElementTypes {
 	private static void init(final RegisterRecipeElementTypeEvent event) {
 		NCRecipeElementTypes.ITEM = event.register("item", SizedIngredient.NESTED_CODEC, SizedIngredient.STREAM_CODEC, ConductanceRecipeElementTypes::itemCloner);
 		NCRecipeElementTypes.FLUID = event.register("fluid", SizedFluidIngredient.CODEC, SizedFluidIngredient.STREAM_CODEC, ConductanceRecipeElementTypes::fluidCloner);
+		NCRecipeElementTypes.ENERGY = event.register("energy", Codec.LONG, StreamCodec.of(FriendlyByteBuf::writeVarLong, FriendlyByteBuf::readVarLong), ConductanceRecipeElementTypes::energyCloner);
 	}
 
 	private static SizedIngredient itemCloner(final SizedIngredient ingredient, final RecipeModifier modifier) {
@@ -24,6 +28,10 @@ final class ConductanceRecipeElementTypes {
 
 	private static SizedFluidIngredient fluidCloner(final SizedFluidIngredient ingredient, final RecipeModifier modifier) {
 		return new SizedFluidIngredient(ingredient.ingredient(), modifier.apply(ingredient.amount()).intValue());
+	}
+
+	private static Long energyCloner(final Long energy, final RecipeModifier modifier) {
+		return modifier.apply(energy).longValue();
 	}
 
 	private ConductanceRecipeElementTypes() {

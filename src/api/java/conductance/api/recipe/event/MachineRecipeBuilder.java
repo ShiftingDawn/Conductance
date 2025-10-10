@@ -18,6 +18,7 @@ import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.recipe.RecipeElement;
 import conductance.api.recipe.RecipeElementType;
+import conductance.api.tier.Tier;
 import conductance.api.util.IO;
 
 public interface MachineRecipeBuilder {
@@ -227,6 +228,18 @@ public interface MachineRecipeBuilder {
 	MachineRecipeBuilder duration(int recipeDuration);
 
 	MachineRecipeBuilder program(int program);
+
+	default MachineRecipeBuilder energyIn(final long energyPerTick) {
+		return this.perTick(true).in(NCRecipeElementTypes.ENERGY, energyPerTick).perTick(false);
+	}
+
+	default MachineRecipeBuilder energyIn(final Tier tier) {
+		return this.energyIn(tier.getRecipeVoltage());
+	}
+
+	default MachineRecipeBuilder energyOut(final long energyPerTick) {
+		return this.perTick(true).out(NCRecipeElementTypes.ENERGY, energyPerTick).perTick(false);
+	}
 
 	MachineRecipeBuilder copy();
 

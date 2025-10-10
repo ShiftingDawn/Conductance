@@ -1,10 +1,9 @@
-package conductance.api.machine;
+package conductance.api.machine.gui;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import net.minecraft.Util;
 import net.minecraft.world.inventory.Slot;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -12,23 +11,11 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.machine.gui.GuiDrawableTexture;
-import conductance.api.machine.gui.GuiSetup;
-import conductance.api.machine.gui.GuiTheme;
-import conductance.api.machine.gui.IGuiWidget;
-import conductance.api.machine.gui.MachineMenu;
-import conductance.api.machine.gui.MachineScreen;
-import conductance.api.machine.gui.ManagedInt;
-import conductance.api.machine.gui.MarkerWidget;
-import conductance.api.machine.gui.MutablePoint;
-import conductance.api.machine.gui.MutableSize;
-import conductance.api.machine.gui.ProgressProvider;
-import conductance.api.machine.gui.ProgressWidget;
-import conductance.api.machine.gui.Rectangle;
-import conductance.api.machine.gui.RepositionableSlotItemHandler;
-import conductance.api.machine.gui.SlotWidget;
-import conductance.api.machine.gui.TankWidget;
-import conductance.api.machine.gui.WidgetGroup;
+import conductance.api.machine.CapIO;
+import conductance.api.machine.IFluidHandlerModifiable;
+import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.RecipeHandler;
+import conductance.api.machine.energy.IEnergyHandler;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.util.IO;
 
@@ -41,6 +28,8 @@ public abstract class SimpleAutomaticGuiSetup extends GuiSetup {
 	protected abstract @Nullable IFluidHandlerModifiable getInputFluids(MachineBlockEntity<?> machine);
 
 	protected abstract @Nullable IFluidHandlerModifiable getOutputFluids(MachineBlockEntity<?> machine);
+
+	protected abstract @Nullable IEnergyHandler getEnergyHandler(MachineBlockEntity<?> machine);
 
 	protected abstract @Nullable RecipeHandler getRecipeHandler(MachineBlockEntity<?> machine);
 
@@ -61,13 +50,16 @@ public abstract class SimpleAutomaticGuiSetup extends GuiSetup {
 	@Override
 	public void addWidgets(final MachineMenu menu, final BiConsumer<String, IGuiWidget> adder) {
 		final MachineBlockEntity<?> machine = menu.getMachine();
-		adder.accept("root", Util.make(SimpleAutomaticGuiSetup.makeRootGroup(
+		adder.accept("root", CAPI.make(SimpleAutomaticGuiSetup.makeRootGroup(
 			this.getTheme(),
 			this.getInputItems(machine), this.getOutputItems(machine), this.getInputFluids(machine), this.getOutputFluids(machine),
 			menu,
 			Optional.ofNullable(this.getRecipeHandler(machine)).map(recipeHandler -> recipeHandler.getHolder().getRecipeType()).orElse(null),
 			Optional.ofNullable(this.getRecipeHandler(machine)).map(RecipeHandlerProgressProvider::new).orElse(null)
 		), root -> root.setY(10)));
+		Optional.ofNullable(this.getEnergyHandler(machine)).ifPresent(handler ->
+			adder.accept("energy", new EnergyBarWidget(0, 0, this.getTheme(), handler))
+		);
 	}
 
 	public static WidgetGroup makeRootGroup(
@@ -94,19 +86,19 @@ public abstract class SimpleAutomaticGuiSetup extends GuiSetup {
 	}
 
 	private static WidgetGroup makeRootGroup(final @Nullable MachineRecipeType recipeType, final @Nullable ProgressProvider progressProvider, final Function<IO, WidgetGroup> groupFactory) {
-		return Util.make(new WidgetGroup(0, 0, 0, 0), root -> {
-			final IGuiWidget inputGroup = Util.make(groupFactory.apply(IO.IN), group -> root.addWidget("in", group));
-			final IGuiWidget outputGroup = Util.make(groupFactory.apply(IO.OUT), group -> root.addWidget("out", group));
+		return CAPI.make(new WidgetGroup(0, 0, 0, 0), root -> {
+			final IGuiWidget inputGroup = CAPI.make(groupFactory.apply(IO.IN), group -> root.addWidget("in", group));
+			final IGuiWidget outputGroup = CAPI.make(groupFactory.apply(IO.OUT), group -> root.addWidget("out", group));
 			final IGuiWidget progress;
 			if (recipeType != null && progressProvider != null) {
-				progress = Util.make(new ProgressWidget(
+				progress = CAPI.make(new ProgressWidget(
+					0, 0, 20, 20,
 					new GuiDrawableTexture(recipeType.getGuiArrow()),
 					progressProvider,
-					recipeType.getGuiArrowDirection(),
-					0, 0, 20, 20
+					recipeType.getGuiArrowDirection()
 				), progressWidget -> root.addWidget("progress", progressWidget));
 			} else {
-				progress = Util.make(new MarkerWidget(0, 0, 20, 20),
+				progress = CAPI.make(new MarkerWidget(0, 0, 20, 20),
 					progressWidget -> root.addWidget("progress", progressWidget));
 			}
 			root.setSize(MutableSize.of(
@@ -155,8 +147,8 @@ public abstract class SimpleAutomaticGuiSetup extends GuiSetup {
 		final GuiTheme theme, final IO io, final int itemCount, final int fluidCount, final TriFunction<Integer, Integer, Integer, IGuiWidget> itemWidgetFactory,
 		final TriFunction<Integer, Integer, Integer, IGuiWidget> fluidWidgetFactory
 	) {
-		return Util.make(new WidgetGroup(0, 0, 0, 0), mainGroup -> {
-			final WidgetGroup itemGroup = Util.make(new WidgetGroup(0, 0, 0, 0), group -> {
+		return CAPI.make(new WidgetGroup(0, 0, 0, 0), mainGroup -> {
+			final WidgetGroup itemGroup = CAPI.make(new WidgetGroup(0, 0, 0, 0), group -> {
 				final int cols = itemCount == 4 ? 2 : Math.min(itemCount, 3);
 				final int rows = itemCount == 0 ? 0 : itemCount / cols + Math.min(1, itemCount % cols);
 				group.setWidth(cols * 18);
@@ -167,7 +159,7 @@ public abstract class SimpleAutomaticGuiSetup extends GuiSetup {
 				}
 				group.setBackground(theme.getItemSlots(itemCount, io == IO.OUT));
 			});
-			final WidgetGroup fluidGroup = Util.make(new WidgetGroup(0, 0, 0, 0), group -> {
+			final WidgetGroup fluidGroup = CAPI.make(new WidgetGroup(0, 0, 0, 0), group -> {
 				final int cols = fluidCount == 4 ? 2 : Math.min(fluidCount, 3);
 				final int rows = fluidCount == 0 ? 0 : fluidCount / cols + Math.min(1, fluidCount % cols);
 				group.setWidth(cols * 18);
@@ -190,7 +182,18 @@ public abstract class SimpleAutomaticGuiSetup extends GuiSetup {
 
 	@Override
 	public void init(final MachineScreen screen, final Rectangle rootBounds) {
+		final IGuiWidget energyBar = screen.getMenu().getWidgetById("energy");
+		if (energyBar != null) {
+			energyBar.setPosition(Point.of(rootBounds.x(), rootBounds.maxY() - 6));
+		}
 		final IGuiWidget root = screen.getMenu().getWidgetById("root");
-		root.setBounds(rootBounds);
+		if (energyBar == null) {
+			root.setBounds(rootBounds);
+		} else {
+			root.setBounds(MutableRectangle.of(rootBounds.position(), MutableSize.of(
+				new ManagedInt(null, rootBounds::width),
+				new ManagedInt(null, () -> rootBounds.height() - 8)
+			)));
+		}
 	}
 }
