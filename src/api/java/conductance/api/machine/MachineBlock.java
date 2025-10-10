@@ -3,14 +3,17 @@ package conductance.api.machine;
 import java.util.List;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -121,6 +124,22 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 			}
 		}
 		return super.useWithoutItem(state, level, pos, player, hitResult);
+	}
+
+	@Override
+	public void setPlacedBy(final Level level, final BlockPos pos, final BlockState state, @Nullable final LivingEntity placer, final ItemStack stack) {
+		if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
+			machine.onPlaced();
+			final Direction facing = BlockRotationHelper.getFacing(state);
+			for (final MachineCapability capability : machine.getCapabilities().values()) {
+				if (capability instanceof final IItemAutoOutput itemAutoOutput) {
+					itemAutoOutput.setItemAutoOutputSide(facing.getOpposite());
+				}
+				if (capability instanceof final IFluidAutoOutput fluidAutoOutput) {
+					fluidAutoOutput.setFluidAutoOutputSide(facing.getOpposite());
+				}
+			}
+		}
 	}
 
 	@Override

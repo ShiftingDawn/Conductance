@@ -200,6 +200,9 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		}
 	}
 
+	public void onPlaced() {
+	}
+
 	@Override
 	public void setRemoved() {
 		super.setRemoved();
