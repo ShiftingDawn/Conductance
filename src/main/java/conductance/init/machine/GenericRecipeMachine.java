@@ -17,6 +17,7 @@ import conductance.api.CAPI;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.CapIO;
 import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.MachineCapabilityItemAutoOutput;
 import conductance.api.machine.MachineFluidHandler;
 import conductance.api.machine.MachineInventory;
 import conductance.api.machine.MachineRecipeCapability;
@@ -47,6 +48,8 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 	private final MachineRecipeCapabilityEnergy energy;
 	private final Table<RecipeElementType<?>, IO, List<MachineRecipeCapability<?>>> recipeCapabilities;
 	private final Lazy<IntSortedSet> recipePrograms;
+	@Getter
+	private final @Nullable MachineCapabilityItemAutoOutput itemAutoOutput;
 
 	public GenericRecipeMachine(final MachineType<GenericRecipeMachine> type, final Tier tier, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
@@ -86,6 +89,11 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 			this.inputItems.addChangedListener(this.recipePrograms::invalidate);
 		} else {
 			this.recipePrograms = Lazy.of(() -> IntSortedSets.EMPTY_SET);
+		}
+		if (this.outputItems != null) {
+			this.itemAutoOutput = new MachineCapabilityItemAutoOutput("item_auto_output", this, this.outputItems.getInventory());
+		} else {
+			this.itemAutoOutput = null;
 		}
 	}
 

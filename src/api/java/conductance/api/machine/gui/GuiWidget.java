@@ -9,7 +9,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.ValueOutput;
 import lombok.AccessLevel;
 import lombok.Setter;
@@ -43,7 +42,7 @@ public abstract class GuiWidget implements IGuiWidget {
 
 	@Override
 	public final void sendToServer(final int requestId, @Nullable final Consumer<ValueOutput> output) {
-		if (this.getMenu().getPlayerInventory().player instanceof ServerPlayer) {
+		if (this.isServer()) {
 			throw new IllegalStateException("Already on server!");
 		}
 		this.widgetPacketHandler.sendPacket(this, requestId, output);
@@ -51,7 +50,7 @@ public abstract class GuiWidget implements IGuiWidget {
 
 	@Override
 	public final void sendToClient(final int requestId, @Nullable final Consumer<ValueOutput> output) {
-		if (!(this.getMenu().getPlayerInventory().player instanceof ServerPlayer)) {
+		if (this.isClient()) {
 			throw new IllegalStateException("Already on client!");
 		}
 		this.widgetPacketHandler.sendPacket(this, requestId, output);
@@ -195,6 +194,11 @@ public abstract class GuiWidget implements IGuiWidget {
 	//endregion
 
 	//region Internal
+	@Override
+	public Rectangle getRelativeBounds() {
+		return Rectangle.of(this.offsetX.getAsInt(), this.offsetY.getAsInt(), this.getSize().copy());
+	}
+
 	@Override
 	public final MutableRectangle internalGetBounds() {
 		return this.bounds;

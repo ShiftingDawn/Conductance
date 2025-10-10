@@ -16,6 +16,8 @@ public class MachineInventory extends ItemStackHandler implements IChangeAware {
 	@Getter
 	@Setter
 	private InventoryPredicate filter = (slot, stack) -> true;
+	@Nullable
+	private Boolean isEmpty;
 
 	public MachineInventory() {
 	}
@@ -35,9 +37,23 @@ public class MachineInventory extends ItemStackHandler implements IChangeAware {
 
 	@Override
 	protected void onContentsChanged(final int slot) {
+		this.isEmpty = null;
 		if (this.changeListener != null) {
 			this.changeListener.run();
 		}
+	}
+
+	public boolean isEmpty() {
+		if (this.isEmpty == null) {
+			this.isEmpty = true;
+			for (int i = 0; i < this.getSlots(); i++) {
+				if (!this.getStackInSlot(i).isEmpty()) {
+					this.isEmpty = false;
+					break;
+				}
+			}
+		}
+		return this.isEmpty;
 	}
 
 	/**

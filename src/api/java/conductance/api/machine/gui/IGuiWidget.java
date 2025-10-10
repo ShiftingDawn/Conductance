@@ -3,6 +3,7 @@ package conductance.api.machine.gui;
 import java.util.function.Consumer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
@@ -125,9 +126,19 @@ public interface IGuiWidget {
 	default Font getFont() {
 		return this.getScreen().getFont();
 	}
+
+	default boolean isClient() {
+		return !this.isServer();
+	}
+
+	default boolean isServer() {
+		return this.getMenu().getPlayerInventory().player instanceof ServerPlayer;
+	}
 	//endregion
 
 	//region Internal
+	Rectangle getRelativeBounds();
+
 	MutableRectangle internalGetBounds();
 
 	void internalBindToParentWidget(WidgetBindingInfo info);

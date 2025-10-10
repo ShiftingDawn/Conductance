@@ -57,6 +57,11 @@ public interface Rectangle extends Point, Size {
 		return x >= this.x() && x <= this.maxX() && y >= this.y() && y <= this.maxY();
 	}
 
+	@Override
+	default Rectangle copy() {
+		return Rectangle.of(this.position().copy(), this.size().copy());
+	}
+
 	static Rectangle of(final Point position, final Size size) {
 		return new RectangleFixed(position, size);
 	}

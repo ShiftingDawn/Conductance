@@ -14,6 +14,7 @@ public class GuiTheme {
 	private final @Getter int textColor;
 	private final Later<GuiDrawable> textureBackground = new Later<>();
 	private final Later<GuiDrawable> textureTitleBackground = new Later<>();
+	private final Later<GuiDrawable> textureSidePanelBackground = new Later<>();
 	private final Later<GuiDrawable> textureInfoDisplay = new Later<>();
 	private final Later<GuiDrawable> texturePlayerInventory = new Later<>();
 	private final Later<GuiDrawable> texturePlayerHotbar = new Later<>();
@@ -35,6 +36,8 @@ public class GuiTheme {
 	private final Later<GuiDrawable> textureSlotFluid9 = new Later<>();
 	private final Later<GuiDrawable> textureSlotHighlightBack = new Later<>();
 	private final Later<GuiDrawable> textureSlotHighlightFront = new Later<>();
+	private final Later<GuiDrawable> textureButton = new Later<>();
+	private final Later<GuiDrawable> textureButtonActive = new Later<>();
 
 	private final Later<GuiDrawable> textureEnergyBar = new Later<>();
 	private final Later<GuiDrawable> textureEnergyBarOverlay = new Later<>();
@@ -50,6 +53,10 @@ public class GuiTheme {
 
 	public GuiDrawable getTitleBackground() {
 		return this.textureTitleBackground.getOrSet(() -> new GuiDrawableTexture(this.getPath("title_background")));
+	}
+
+	public GuiDrawable getSidePanel() {
+		return this.textureSidePanelBackground.getOrSet(() -> new GuiDrawableTexture(this.getPath("side_panel")));
 	}
 
 	public GuiDrawable getInfoDisplay() {
@@ -158,6 +165,14 @@ public class GuiTheme {
 
 	public GuiDrawable getSlotHighlightFront() {
 		return this.textureSlotHighlightFront.getOrSet(() -> new GuiDrawableTexture(this.getPath("slot_highlight_front")));
+	}
+
+	public GuiDrawable getButton() {
+		return this.textureButton.getOrSet(() -> new GuiDrawableTexture(this.getPath("button")));
+	}
+
+	public GuiDrawable getButtonActive() {
+		return this.textureButtonActive.getOrSet(() -> new GuiDrawableTexture(this.getPath("button_active")));
 	}
 
 	public GuiDrawable getEnergyBar() {
