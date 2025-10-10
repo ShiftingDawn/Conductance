@@ -54,9 +54,6 @@ final class ConductanceMachines {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterMachineEvent event) {
-		STEAM_SOLID_FUEL_BOILER = event.register("steam_solid_fuel_boiler", SteamSolidFuelBoilerMachine::new, b -> b
-			.blockFactory(MachineBlockWorkable::new).sidedMachineModel(Conductance.id("block/casing/bronze")).guiSetup(new SteamSolidFuelBoilerMachineGuiSetup())
-		);
 		ConductanceMachines.initGenerators(event);
 		ConductanceMachines.initRecipeMachines(event);
 		ConductanceMachines.initMultiBlocks(event);
@@ -64,6 +61,9 @@ final class ConductanceMachines {
 	}
 
 	private static void initGenerators(final RegisterMachineEvent event) {
+		STEAM_SOLID_FUEL_BOILER = event.register("solid_fuel_steam_boiler", SteamSolidFuelBoilerMachine::new, b -> b
+			.blockFactory(MachineBlockWorkable::new).sidedMachineModel(Conductance.id("block/casing/bronze")).guiSetup(new SteamSolidFuelBoilerMachineGuiSetup())
+		);
 		STEAM_TURBINES = ConductanceMachines.makeTieredGenericGeneratorMachine(event, "steam_turbine", NCRecipeTypes.STEAM_TURBINE);
 	}
 

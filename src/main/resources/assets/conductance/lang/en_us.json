@@ -70,6 +70,8 @@
   "recipeType.conductance.compressor": "Compressor",
   "recipeType.conductance.cutting_machine": "Cutting Machine",
 
+  "machine.conductance.solid_fuel_steam_boiler": "Solid Fuel Steam Boiler",
+
   "machine.conductance.bending_machine": "%s Bending Machine",
   "machine.conductance.pulverizer": "%s Pulverizer",
   "machine.conductance.extruder": "%s Extruder",
