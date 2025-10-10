@@ -149,7 +149,7 @@ public class RecipeHandler extends MachineCapability {
 					}
 				}
 				case REGRESS -> {
-					this.progressCurrent = Math.min(0, this.progressCurrent - 2);
+					this.progressCurrent = Math.max(0, this.progressCurrent - 2);
 					this.setChanged();
 				}
 				case VOID -> {
