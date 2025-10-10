@@ -28,10 +28,12 @@ public final class ConductanceCreativeTabs {
 		@Override
 		public void accept(final CreativeModeTab.ItemDisplayParameters itemDisplayParameters, final CreativeModeTab.Output output) {
 			//TODO fillItemCategory ported from old mc
-			CreativeTabHelper.getTabContent(this.tabType).forEach(entry -> {
-				entry.ifLeft(output::accept);
-				entry.ifRight(output::accept);
-			});
+			for (final CreativeTabHelper.TabSection section : CreativeTabHelper.TabSection.values()) {
+				CreativeTabHelper.getTabContent(this.tabType, section).forEach(entry -> {
+					entry.ifLeft(output::accept);
+					entry.ifRight(output::accept);
+				});
+			}
 		}
 	}
 
