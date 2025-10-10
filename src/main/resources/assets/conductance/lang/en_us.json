@@ -61,6 +61,8 @@
   "tier.conductance.max": "§lMAX",
   "tier.conductance.lv": "§9LV",
 
+  "recipeType.conductance.steam_turbine": "Steam Turbine",
+
   "recipeType.conductance.bending_machine": "Bending Machine",
   "recipeType.conductance.pulverizer": "Pulverizer",
   "recipeType.conductance.extruder": "Extruder",
@@ -71,6 +73,8 @@
   "recipeType.conductance.cutting_machine": "Cutting Machine",
 
   "machine.conductance.solid_fuel_steam_boiler": "Solid Fuel Steam Boiler",
+
+  "machine.conductance.steam_turbine": "%s Steam Turbine",
 
   "machine.conductance.bending_machine": "%s Bending Machine",
   "machine.conductance.pulverizer": "%s Pulverizer",

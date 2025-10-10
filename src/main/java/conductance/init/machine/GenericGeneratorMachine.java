@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import conductance.api.block.BlockRotationHelper;
 import conductance.api.machine.MachineType;
+import conductance.api.machine.RecipePerTickFailureAction;
 import conductance.api.tier.Tier;
 
 public class GenericGeneratorMachine extends GenericRecipeMachine {
@@ -34,5 +35,10 @@ public class GenericGeneratorMachine extends GenericRecipeMachine {
 	@Override
 	protected long getMaxEnergyAmperage() {
 		return 1;
+	}
+
+	@Override
+	public RecipePerTickFailureAction getPerTickFailureAction() {
+		return RecipePerTickFailureAction.NOTHING;
 	}
 }
