@@ -23,6 +23,7 @@ import conductance.api.machine.multi.IMultiBlockPart;
 import conductance.api.machine.multi.MultiControllerMachineBlockEntity;
 import conductance.api.machine.multi.MultiMachineType;
 import conductance.api.machine.multi.StructureCheckContext;
+import conductance.api.recipe.DummyMachineRecipe;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.RecipeElement;
 import conductance.api.recipe.RecipeElementType;
@@ -38,7 +39,7 @@ public class LargeBoilerMachine extends MultiControllerMachineBlockEntity<LargeB
 
 	public LargeBoilerMachine(final MultiMachineType<LargeBoilerMachine> type, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
-		this.recipeHandler = new BoilerFakeRecipeHandler(this, this, BoilerFakeRecipeHandler.BASE_MAX_PRODUCTION * 8);
+		this.recipeHandler = new BoilerFakeRecipeHandler(this, this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -117,9 +118,11 @@ public class LargeBoilerMachine extends MultiControllerMachineBlockEntity<LargeB
 	}
 
 	public static MachineRecipe recipeModifier(final MachineRecipe original) {
-		return new MachineRecipe(
+		return new DummyMachineRecipe(
 			original.getType(),
-			CAPI.make(new HashMap<>(), map -> original.getInputs().forEach((key, list) -> {
+			original.getInputs(),
+			original.getOutputs(),
+			CAPI.make(new HashMap<>(), map -> original.getPerTickInputs().forEach((key, list) -> {
 				final List<RecipeElement> list2 = new ArrayList<>();
 				if (key == NCRecipeElementTypes.FLUID) {
 					for (final RecipeElement element : list) {
@@ -131,11 +134,11 @@ public class LargeBoilerMachine extends MultiControllerMachineBlockEntity<LargeB
 						}
 					}
 				} else {
-					list.addAll(list2);
+					list2.addAll(list);
 				}
 				map.put(key, list2);
 			})),
-			CAPI.make(new HashMap<>(), map -> original.getOutputs().forEach((key, list) -> {
+			CAPI.make(new HashMap<>(), map -> original.getPerTickOutputs().forEach((key, list) -> {
 				final List<RecipeElement> list2 = new ArrayList<>();
 				if (key == NCRecipeElementTypes.FLUID) {
 					for (final RecipeElement element : list) {
@@ -147,12 +150,10 @@ public class LargeBoilerMachine extends MultiControllerMachineBlockEntity<LargeB
 						}
 					}
 				} else {
-					list.addAll(list2);
+					list2.addAll(list);
 				}
 				map.put(key, list2);
 			})),
-			original.getPerTickInputs(),
-			original.getPerTickOutputs(),
 			original.getRecipeDuration(),
 			original.getProgram()
 		);

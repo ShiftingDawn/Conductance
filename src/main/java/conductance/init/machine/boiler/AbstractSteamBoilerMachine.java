@@ -27,7 +27,7 @@ public abstract class AbstractSteamBoilerMachine<T extends AbstractSteamBoilerMa
 
 	public AbstractSteamBoilerMachine(final MachineType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
-		this.boilerHandler = new BoilerFakeRecipeHandler(this, this, BoilerFakeRecipeHandler.BASE_MAX_PRODUCTION);
+		this.boilerHandler = new BoilerFakeRecipeHandler(this, this);
 		this.waterTank = new MachineRecipeCapabilityFluids(this, 1, IO.IN, CapIO.IN, tanks -> new MachineFluidHandler(tanks, CAPI.BUCKET * 4));
 		this.waterTank.getHandler().setFilter((tank, stack) -> stack.is(CAPI.materials().getFluidTag(NCMaterials.WATER, NCMaterialGenerationHandlers.LIQUID)));
 		this.waterTank.addChangedListener(this::setChanged);

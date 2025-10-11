@@ -3,6 +3,7 @@ package conductance.api.machine.multi;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import lombok.Getter;
 import conductance.api.machine.MachineBlockEntity;
@@ -18,9 +19,6 @@ public abstract class MultiPartMachineBlockEntity<T extends MultiPartMachineBloc
 
 	@Override
 	public void setConnectedTo(final BlockPos controllerPos, final boolean connect) {
-		if (connect == this.controllers.contains(controllerPos)) {
-			return;
-		}
 		if (connect) {
 			this.controllers.add(controllerPos);
 		} else {
@@ -28,5 +26,17 @@ public abstract class MultiPartMachineBlockEntity<T extends MultiPartMachineBloc
 		}
 		this.setChanged();
 		this.syncToClient();
+	}
+
+	@Override
+	public void onUnload() {
+		super.onUnload();
+		if (this.level instanceof final ServerLevel serverLevel) {
+			for (final BlockPos controllerPos : this.controllers) {
+				if (serverLevel.getBlockEntity(controllerPos) instanceof final IMultiBlockController<?> controller) {
+					controller.removePart(this);
+				}
+			}
+		}
 	}
 }

@@ -5,6 +5,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
@@ -37,7 +38,6 @@ import conductance.api.block.BlockRotationType;
 import conductance.api.block.IGeneratedMiningTags;
 import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.multi.IMultiBlockController;
-import conductance.api.machine.multi.MultiControllerMachineBlockEntity;
 
 public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements EntityBlock, IGeneratedMiningTags {
 
@@ -103,7 +103,7 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	protected @Nullable MenuProvider getMenuProvider(final BlockState state, final Level level, final BlockPos pos) {
 		final BlockEntity mbe = level.getBlockEntity(pos);
 		if (mbe instanceof final MachineBlockEntity<?> machine && machine.getMachineType().getGuiSetup() != null) {
-			if (machine instanceof final IMultiBlockController<?> multiBlockController && !MultiControllerMachineBlockEntity.checkStructure(multiBlockController, true)) {
+			if (machine instanceof final IMultiBlockController<?> multiBlockController && !multiBlockController.isStructureFormed()) {
 				return null;
 			}
 			return new SimpleMenuProvider(
@@ -133,6 +133,11 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 		if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
 			machine.onBlockStateChanged(oldState, newState);
 		}
+	}
+
+	@Override
+	protected void spawnAfterBreak(final BlockState state, final ServerLevel level, final BlockPos pos, final ItemStack stack, final boolean dropExperience) {
+		super.spawnAfterBreak(state, level, pos, stack, dropExperience);
 	}
 
 	@Override

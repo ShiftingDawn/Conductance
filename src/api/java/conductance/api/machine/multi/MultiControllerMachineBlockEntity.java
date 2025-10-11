@@ -2,6 +2,8 @@ package conductance.api.machine.multi;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,9 +20,10 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 
 	public static final int REQUEST_STRUCTURE_FORMED = 1;
 	public static final int REQUEST_STRUCTURE_INVALID = 2;
-	private final int structureCheckTimerOffset = CAPI.RANDOM.nextInt(100);
+	private final int structureCheckTimerOffset = CAPI.RANDOM.nextInt(60);
 	private final @Getter Set<IMultiBlockPart> parts = new HashSet<>();
 	private final Set<BlockPos> activeBlocks = new HashSet<>();
+	private final @Getter Lock structureCheckLock = new ReentrantLock();
 	private @Getter boolean structureFormed = false;
 
 	public MultiControllerMachineBlockEntity(final MultiMachineType<T> type, final BlockPos pos, final BlockState blockState) {
@@ -29,18 +32,15 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 
 	@Override
 	public void onLoad() {
-		MultiControllerMachineBlockEntity.checkStructure(this, true);
-		if (this.isStructureFormed()) {
-			super.onLoad();
-		}
+		super.onLoad();
 		if (this.level instanceof final ServerLevel serverLevel) {
 			Internal.MULTIBLOCK_CONTROLLER_LOAD.accept(serverLevel, this);
 		}
 	}
 
 	@Override
-	public void setRemoved() {
-		super.setRemoved();
+	public void onUnload() {
+		super.onUnload();
 		if (this.level instanceof final ServerLevel serverLevel) {
 			Internal.MULTIBLOCK_CONTROLLER_UNLOAD.accept(serverLevel, this);
 		}
@@ -48,11 +48,8 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 
 	@Override
 	public void onStructureFormed(final StructureCheckContext ctx) {
-		if (this.structureFormed) {
-			return;
-		}
 		this.structureFormed = true;
-		this.onLoad();
+		this.parts.clear();
 		ctx.get(StructureCheckContext.PARTS).forEach(this::addPart);
 		this.activeBlocks.addAll(ctx.get(StructureCheckContext.ACTIVE_BLOCKS));
 		this.setWorkingState(this.isCurrentlyWorking());
@@ -68,15 +65,25 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 
 	@Override
 	public void onStructureInvalid(final StructureCheckContext ctx) {
-		if (!this.structureFormed) {
-			return;
-		}
 		this.structureFormed = false;
-		this.onUnload();
-		this.removeAllParts();
-		this.setWorkingState(false);
-		this.activeBlocks.clear();
+		this.invalidateController(false);
 		this.sendToClient(MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_INVALID, null);
+	}
+
+	@Override
+	public void preRemoveSideEffects(final BlockPos pos, final BlockState state) {
+		super.preRemoveSideEffects(pos, state);
+		this.invalidateController(true);
+	}
+
+	private void invalidateController(final boolean isRemoved) {
+		this.removeAllParts();
+		if (isRemoved) {
+			this.setActiveBlocks(false);
+		} else {
+			this.setWorkingState(false);
+		}
+		this.activeBlocks.clear();
 	}
 
 	private void removeAllParts() {
@@ -86,10 +93,14 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 	@Override
 	public void setWorkingState(final boolean working) {
 		super.setWorkingState(working);
+		this.setActiveBlocks(working);
+	}
+
+	private void setActiveBlocks(final boolean active) {
 		for (final BlockPos activeBlockPos : this.activeBlocks) {
 			final BlockState state = this.level.getBlockState(activeBlockPos);
 			if (state.hasProperty(NCBlockStateProperties.ACTIVE)) {
-				this.level.setBlockAndUpdate(activeBlockPos, state.setValue(NCBlockStateProperties.ACTIVE, working));
+				this.level.setBlockAndUpdate(activeBlockPos, state.setValue(NCBlockStateProperties.ACTIVE, active));
 			}
 		}
 	}
@@ -97,14 +108,18 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 	@Override
 	protected void handleServerRequest(final int requestId, final ValueInput input) {
 		switch (requestId) {
-			case MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_FORMED -> this.onClient(level -> input.list("parts", BlockPos.CODEC).ifPresent(list -> {
-				for (final BlockPos partPos : list) {
-					if (level.getBlockEntity(partPos) instanceof final IMultiBlockPart part) {
-						this.addPart(part);
+			case MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_FORMED -> {
+				this.structureFormed = true;
+				this.onClient(level -> input.list("parts", BlockPos.CODEC).ifPresent(list -> {
+					for (final BlockPos partPos : list) {
+						if (level.getBlockEntity(partPos) instanceof final IMultiBlockPart part) {
+							this.addPart(part);
+						}
 					}
-				}
-			}));
+				}));
+			}
 			case MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_INVALID -> {
+				this.structureFormed = false;
 				this.removeAllParts();
 				this.syncToClient();
 			}
@@ -140,19 +155,31 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 		}
 	}
 
-	public static boolean checkStructure(final IMultiBlockController<?> controller, final boolean forceCheck) {
+	public static void checkStructure(final IMultiBlockController<?> controller, final boolean forceCheck) {
 		if (!forceCheck && controller instanceof final MultiControllerMachineBlockEntity<?> blockEntity) {
 			if (blockEntity.level != null && blockEntity.level.getGameTime() % blockEntity.structureCheckTimerOffset != 0) {
-				return true;
+				return;
 			}
 		}
-		final StructureCheckContext ctx = new StructureCheckContext();
-		if (controller.checkStructure(ctx)) {
-			controller.onStructureFormed(ctx);
-			return true;
+		if (controller.checkStructureAsyncLocked(new StructureCheckContext())) {
+			if (controller.getLevel() instanceof final ServerLevel serverLevel) {
+				serverLevel.getServer().execute(() -> {
+					final Lock lock = controller.getStructureCheckLock();
+					lock.lock();
+					final StructureCheckContext ctx = new StructureCheckContext();
+					if (controller.checkStructureAsyncLockedBlocking(ctx)) {
+						controller.onStructureFormed(ctx);
+					} else {
+						controller.onStructureInvalid(ctx);
+					}
+					lock.unlock();
+				});
+			}
 		} else {
-			controller.onStructureInvalid(ctx);
-			return false;
+			final Lock lock = controller.getStructureCheckLock();
+			lock.lock();
+			controller.onStructureInvalid(new StructureCheckContext());
+			lock.unlock();
 		}
 	}
 }
