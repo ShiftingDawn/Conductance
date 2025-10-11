@@ -158,14 +158,9 @@ final class MachineModelHandler {
 			final ResourceLocation texture = machineKey.withPath(current -> "block/machine/%s/%s%s".formatted(current, side, Objects.requireNonNullElse(suffix, "")));
 			if (CAPI.resourceFinder().isTextureValid(texture)) {
 				builder.texture(side, texture);
-				element.face(face, f -> {
-					f.texture(side).cullFace(face);
-					if (emissive) {
-						f.tintIndex(-100);
-					}
-				});
+				element.face(face, f -> f.texture(side).cullFace(face));
 				if (emissive) {
-					element.shade(false);
+					element.shade(false).lightEmission(15);
 				}
 			}
 		});

@@ -228,12 +228,13 @@ public final class ConductanceBlocks {
 					.child("bearer", child -> child.parent(handler.getOreBearer().getBearingBlockModel()))
 					.child("ore_overlay", child -> child.parent("block/block")
 						.particle(oreTexture)
-						.element(element -> element
-							.from(0, 0, 0)
-							.to(16, 16, 16)
-							.shade(!emissive)
-							.faces((f, b) -> b.particle().neoforgeData(b2 -> b2.color(material.getColor().getCurrentColor())), true)
-						)
+						.element(element -> {
+							element.from(0, 0, 0).to(16, 16, 16);
+							if (emissive) {
+								element.shade(false).lightEmission(15);
+							}
+							element.faces((f, b) -> b.particle().neoforgeData(b2 -> b2.color(material.getColor().getCurrentColor())), true);
+						})
 					)
 				)
 			);

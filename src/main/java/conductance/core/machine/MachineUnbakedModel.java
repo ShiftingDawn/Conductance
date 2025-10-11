@@ -101,10 +101,10 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 			if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
 				if (parts.getFirst() instanceof final SimpleModelWrapper modelWrapper) {
 					if (MachineUnbakedModel.TEXTURE_CACHE.isEmpty()) {
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_ITEM);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_FLUID);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_BOTH);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT, true);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_ITEM, false);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_FLUID, false);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_BOTH, false);
 					}
 					Direction itemSide = null;
 					Direction fluidSide = null;
@@ -125,7 +125,7 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 								quads.put(itemSide, List.of(portQuad, overlayQuad));
 							}
 						}
-						if (fluidSide != null) {
+						if (itemSide != fluidSide) {
 							final BakedQuad portQuad = MachineUnbakedModel.TEXTURE_CACHE.get(MachineUnbakedModel.TEXTURE_IO_PORT, fluidSide);
 							final BakedQuad overlayQuad = MachineUnbakedModel.TEXTURE_CACHE.get(MachineUnbakedModel.TEXTURE_IO_PORT_FLUID, fluidSide);
 							if (portQuad != null && overlayQuad != null) {
@@ -141,15 +141,15 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 		}
 	}
 
-	private static void fillCache(final QuadCollection quadCollection, final ResourceLocation texture) {
+	private static void fillCache(final QuadCollection quadCollection, final ResourceLocation texture, final boolean shade) {
 		for (final Direction face : Direction.values()) {
 			quadCollection.getQuads(face).stream().findFirst().ifPresent(
-				quad -> MachineUnbakedModel.TEXTURE_CACHE.put(texture, face, MachineUnbakedModel.retextureQuad(quad, ModelUtils.getBlockSprite(texture)))
+				quad -> MachineUnbakedModel.TEXTURE_CACHE.put(texture, face, MachineUnbakedModel.retextureQuad(quad, ModelUtils.getBlockSprite(texture), shade))
 			);
 		}
 	}
 
-	private static BakedQuad retextureQuad(final BakedQuad quad, final TextureAtlasSprite sprite) {
+	private static BakedQuad retextureQuad(final BakedQuad quad, final TextureAtlasSprite sprite, final boolean shade) {
 		final TextureAtlasSprite oldSprite = quad.sprite();
 		final int[] vertices = quad.vertices().clone();
 		for (int i = 0; i < 4; i++) {
@@ -161,7 +161,7 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 			vertices[offset] = Float.floatToRawIntBits(u);
 			vertices[offset + 1] = Float.floatToRawIntBits(v);
 		}
-		return new BakedQuad(vertices, quad.tintIndex(), quad.direction(), sprite, quad.shade(), quad.lightEmission(), quad.hasAmbientOcclusion());
+		return new BakedQuad(vertices, quad.tintIndex(), quad.direction(), sprite, shade, shade ? quad.lightEmission() : 15, quad.hasAmbientOcclusion());
 	}
 
 	private static BakedQuad[] getBlockStateQuads(final BlockState state, final BlockAndTintGetter level, final BlockPos pos, final RandomSource random) {
@@ -177,7 +177,6 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 		return result;
 	}
 
-	@SuppressWarnings("deprecation")
 	private record WrappedModelPart(BlockModelPart original, BakedQuad[] quads) implements BlockModelPart {
 
 		@Override
@@ -206,6 +205,7 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 			return this.original.ambientOcclusion();
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public boolean useAmbientOcclusion() {
 			return this.original.useAmbientOcclusion();
