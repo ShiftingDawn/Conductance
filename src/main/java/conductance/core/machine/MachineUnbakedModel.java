@@ -20,9 +20,12 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.TriState;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import com.mojang.serialization.MapCodec;
@@ -49,8 +52,14 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 	public static final ResourceLocation TEXTURE_IO_PORT_BOTH = Conductance.id("block/machine/io_port_both");
 
 	public static final MapCodec<MachineUnbakedModel> MAP_CODEC = ExtendedRotationVariant.MAP_CODEC.xmap(MachineUnbakedModel::new, MachineUnbakedModel::variant);
+	static final SimplePreparableReloadListener<Void> RELOAD_LISTENER;
 	private static final Map<BlockState, BakedQuad[]> QUAD_CACHE = new IdentityHashMap<>();
 	private static final Table<ResourceLocation, Direction, BakedQuad> TEXTURE_CACHE = HashBasedTable.create();
+
+	private static void reset() {
+		MachineUnbakedModel.QUAD_CACHE.clear();
+		MachineUnbakedModel.TEXTURE_CACHE.clear();
+	}
 
 	@Override
 	public BlockStateModel bake(final ModelBaker baker) {
@@ -234,5 +243,19 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 		public ChunkSectionLayer getRenderType(final BlockState state) {
 			return ChunkSectionLayer.CUTOUT_MIPPED;
 		}
+	}
+
+	static {
+		RELOAD_LISTENER = new SimplePreparableReloadListener<>() {
+			@Override
+			protected Void prepare(final ResourceManager resourceManager, final ProfilerFiller profiler) {
+				return null;
+			}
+
+			@Override
+			protected void apply(final Void object, final ResourceManager resourceManager, final ProfilerFiller profiler) {
+				MachineUnbakedModel.reset();
+			}
+		};
 	}
 }

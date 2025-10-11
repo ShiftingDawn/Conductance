@@ -13,38 +13,58 @@ import org.jetbrains.annotations.Nullable;
 
 public final class CapabilityHelper {
 
-	public static void tryTransferInventory(final IItemHandler source, final Level level, final BlockPos destPos, final @Nullable Direction side) {
-		final IItemHandler dest = level.getCapability(Capabilities.ItemHandler.BLOCK, destPos, side);
-		if (dest == null) {
-			return;
+	public static void tryImportItems(final IItemHandler destination, final Level level, final BlockPos sourcePos, final @Nullable Direction sourceSide) {
+		final IItemHandler source = level.getCapability(Capabilities.ItemHandler.BLOCK, sourcePos, sourceSide);
+		if (source != null) {
+			CapabilityHelper.tryTransferItems(source, destination);
 		}
+	}
+
+	public static void tryExportItems(final IItemHandler source, final Level level, final BlockPos destinationPos, final @Nullable Direction destinationSide) {
+		final IItemHandler destination = level.getCapability(Capabilities.ItemHandler.BLOCK, destinationPos, destinationSide);
+		if (destination != null) {
+			CapabilityHelper.tryTransferItems(source, destination);
+		}
+	}
+
+	public static void tryTransferItems(final IItemHandler source, final IItemHandler destination) {
 		for (int i = 0; i < source.getSlots(); ++i) {
 			ItemStack stack = source.extractItem(i, Integer.MAX_VALUE, true);
 			if (stack.isEmpty()) {
 				continue;
 			}
-			final ItemStack leftOver = ItemHandlerHelper.insertItemStacked(dest, stack, true);
+			final ItemStack leftOver = ItemHandlerHelper.insertItemStacked(destination, stack, true);
 			final int inserted = stack.getCount() - leftOver.getCount();
 			if (inserted > 0) {
 				stack = source.extractItem(i, inserted, false);
-				ItemHandlerHelper.insertItemStacked(dest, stack, false);
+				ItemHandlerHelper.insertItemStacked(destination, stack, false);
 			}
 		}
 	}
 
-	public static void tryTransferFluids(final IFluidHandler source, final Level level, final BlockPos destPos, final @Nullable Direction side) {
-		final IFluidHandler dest = level.getCapability(Capabilities.FluidHandler.BLOCK, destPos, side);
-		if (dest == null) {
-			return;
+	public static void tryImportFluids(final IFluidHandler destination, final Level level, final BlockPos sourcePos, final @Nullable Direction sourceSide) {
+		final IFluidHandler source = level.getCapability(Capabilities.FluidHandler.BLOCK, sourcePos, sourceSide);
+		if (source != null) {
+			CapabilityHelper.tryTransferFluids(source, destination);
 		}
+	}
+
+	public static void tryExportFluids(final IFluidHandler source, final Level level, final BlockPos destinationPos, final @Nullable Direction destinationSide) {
+		final IFluidHandler destination = level.getCapability(Capabilities.FluidHandler.BLOCK, destinationPos, destinationSide);
+		if (destination != null) {
+			CapabilityHelper.tryTransferFluids(source, destination);
+		}
+	}
+
+	public static void tryTransferFluids(final IFluidHandler source, final IFluidHandler destination) {
 		FluidStack stack = source.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
 		if (stack.isEmpty()) {
 			return;
 		}
-		final int accepted = dest.fill(stack, IFluidHandler.FluidAction.SIMULATE);
+		final int accepted = destination.fill(stack, IFluidHandler.FluidAction.SIMULATE);
 		if (accepted > 0) {
 			stack = source.drain(accepted, IFluidHandler.FluidAction.EXECUTE);
-			dest.fill(stack.copyWithAmount(accepted), IFluidHandler.FluidAction.EXECUTE);
+			destination.fill(stack.copyWithAmount(accepted), IFluidHandler.FluidAction.EXECUTE);
 		}
 	}
 

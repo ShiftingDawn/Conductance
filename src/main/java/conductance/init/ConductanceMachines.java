@@ -83,25 +83,25 @@ final class ConductanceMachines {
 			(machineType, blockPos, blockState) -> new MultiBlockItemBusPartMachine(machineType, blockPos, blockState, IO.IN, Math.min(Mth.square(tier.getIndex() + 2), 100)),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("input_bus")), tier.getName())
-			).rotationType(BlockRotationType.ALL).tieredModel("input_bus", tier).guiSetup(new MultiBlockItemBusPartMachineGuiSetup())
+			).rotationType(BlockRotationType.ALL).tieredModel("input_bus", tier).guiSetup(new MultiBlockItemBusPartMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
 		));
 		OUTPUT_BUSES = CAPI.tiers().newMap(tier -> event.<MultiBlockItemBusPartMachine>register(tier.getId().getPath() + "_output_bus",
 			(machineType, blockPos, blockState) -> new MultiBlockItemBusPartMachine(machineType, blockPos, blockState, IO.OUT, Math.min(Mth.square(tier.getIndex() + 2), 100)),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("output_bus")), tier.getName())
-			).rotationType(BlockRotationType.ALL).tieredModel("output_bus", tier).guiSetup(new MultiBlockItemBusPartMachineGuiSetup())
+			).rotationType(BlockRotationType.ALL).tieredModel("output_bus", tier).guiSetup(new MultiBlockItemBusPartMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
 		));
 		INPUT_HATCHES = CAPI.tiers().newMap(tier -> event.<MultiBlockFluidHatchPartMachine>register(tier.getId().getPath() + "_input_hatch",
 			(machineType, blockPos, blockState) -> new MultiBlockFluidHatchPartMachine(machineType, blockPos, blockState, IO.IN, 1, (int) Math.pow(2, 3 + tier.getIndex()) * CAPI.BUCKET),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("input_hatch")), tier.getName())
-			).rotationType(BlockRotationType.ALL).tieredModel("input_hatch", tier).guiSetup(new MultiBlockFluidHatchPartMachineGuiSetup())
+			).rotationType(BlockRotationType.ALL).tieredModel("input_hatch", tier).guiSetup(new MultiBlockFluidHatchPartMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
 		));
 		OUTPUT_HATCHES = CAPI.tiers().newMap(tier -> event.<MultiBlockFluidHatchPartMachine>register(tier.getId().getPath() + "_output_hatch",
 			(machineType, blockPos, blockState) -> new MultiBlockFluidHatchPartMachine(machineType, blockPos, blockState, IO.OUT, 1, (int) Math.pow(2, 3 + tier.getIndex()) * CAPI.BUCKET),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("output_hatch")), tier.getName())
-			).rotationType(BlockRotationType.ALL).tieredModel("output_hatch", tier).guiSetup(new MultiBlockFluidHatchPartMachineGuiSetup())
+			).rotationType(BlockRotationType.ALL).tieredModel("output_hatch", tier).guiSetup(new MultiBlockFluidHatchPartMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
 		));
 	}
 

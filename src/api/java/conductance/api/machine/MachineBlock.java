@@ -16,6 +16,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.NCBlockStateProperties;
 import conductance.api.block.BlockRotationHelper;
 import conductance.api.block.BlockRotationType;
 import conductance.api.block.IGeneratedMiningTags;
@@ -127,8 +129,18 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	}
 
 	@Override
+	public void onBlockStateChange(final LevelReader level, final BlockPos pos, final BlockState oldState, final BlockState newState) {
+		if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
+			machine.onBlockStateChanged(oldState, newState);
+		}
+	}
+
+	@Override
 	public void setPlacedBy(final Level level, final BlockPos pos, final BlockState state, @Nullable final LivingEntity placer, final ItemStack stack) {
 		if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
+			if (state.hasProperty(NCBlockStateProperties.WORKING) && state.getValue(NCBlockStateProperties.WORKING) != machine.getDefaultWorkingState()) {
+				level.setBlockAndUpdate(pos, state.setValue(NCBlockStateProperties.WORKING, machine.getDefaultWorkingState()));
+			}
 			machine.onPlaced();
 			final Direction facing = BlockRotationHelper.getFacing(state);
 			for (final MachineCapability capability : machine.getCapabilities().values()) {

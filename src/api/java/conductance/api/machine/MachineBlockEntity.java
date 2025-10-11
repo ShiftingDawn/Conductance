@@ -45,7 +45,7 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 	private final @Getter MachineType<T> machineType;
 	private final List<MachineTick> ticksActive = new ArrayList<>();
 	private final List<MachineTick> ticksPending = new ArrayList<>();
-	private @Getter boolean currentlyWorking = false;
+	private @Getter boolean currentlyWorking = this.getDefaultWorkingState();
 
 	public MachineBlockEntity(final MachineType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type.getBlockEntityType().get(), pos, blockState);
@@ -144,6 +144,10 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		return previous;
 	}
 
+	public boolean getDefaultWorkingState() {
+		return false;
+	}
+
 	public void setWorkingState(final boolean working) {
 		if (this.currentlyWorking == working) {
 			return;
@@ -203,6 +207,10 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 	public void onPlaced() {
 	}
 
+	public void onBlockStateChanged(final BlockState oldState, final BlockState newState) {
+		this.currentlyWorking = newState.getValueOrElse(NCBlockStateProperties.WORKING, false);
+	}
+
 	@Override
 	public void setRemoved() {
 		super.setRemoved();
@@ -239,9 +247,13 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 						capability.clearChanged();
 					}
 				});
+				this.addAdditionalSyncData(output);
 				return output.buildResult();
 			}
 		});
+	}
+
+	protected void addAdditionalSyncData(final ValueOutput output) {
 	}
 
 	@Override
@@ -249,6 +261,10 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		this.capabilities.forEach((key, capability) -> {
 			valueInput.child(key).ifPresent(capability::deserialize);
 		});
+		this.loadAdditionalSyncData(valueInput);
+	}
+
+	protected void loadAdditionalSyncData(final ValueInput input) {
 	}
 
 	public final void syncToClient() {

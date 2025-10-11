@@ -67,6 +67,9 @@ public class GuiSetup {
 	public void addWidgets(final MachineMenu menu, final BiConsumer<String, IGuiWidget> adder) {
 	}
 
+	public void addControlWidgets(final MachineMenu menu, final BiConsumer<String, IGuiWidget> adder) {
+	}
+
 	public void preInit(final MachineScreen screen) {
 	}
 

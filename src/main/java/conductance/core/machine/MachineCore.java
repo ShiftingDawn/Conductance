@@ -15,8 +15,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.resources.VanillaClientListeners;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import conductance.api.CAPI;
@@ -63,6 +65,10 @@ public final class MachineCore {
 		MachineCore.MENU_TYPES.register(modEventBus);
 		modEventBus.addListener(RegisterBlockStateModels.class, event -> {
 			event.registerModel(Conductance.id("machine"), MachineUnbakedModel.MAP_CODEC);
+		});
+		modEventBus.addListener(AddClientReloadListenersEvent.class, event -> {
+			event.addListener(Conductance.id("machine"), MachineUnbakedModel.RELOAD_LISTENER);
+			event.addDependency(Conductance.id("machine"), VanillaClientListeners.MODELS);
 		});
 		modEventBus.addListener(RegisterCapabilitiesEvent.class, MachineCore::attachCapabilities);
 

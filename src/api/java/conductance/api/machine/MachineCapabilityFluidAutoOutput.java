@@ -33,7 +33,7 @@ public class MachineCapabilityFluidAutoOutput extends MachineCapability implemen
 			return;
 		}
 		if (this.getMachine().haveTicksPassed(10)) {
-			CapabilityHelper.tryTransferFluids(this.handler, this.getMachine().getLevel(), this.getMachine().getBlockPos().relative(this.side), this.side.getOpposite());
+			CapabilityHelper.tryExportFluids(this.handler, this.getMachine().getLevel(), this.getMachine().getBlockPos().relative(this.side), this.side.getOpposite());
 		}
 	}
 

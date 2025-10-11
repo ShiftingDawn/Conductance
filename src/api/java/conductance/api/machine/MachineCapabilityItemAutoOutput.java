@@ -33,7 +33,7 @@ public class MachineCapabilityItemAutoOutput extends MachineCapability implement
 			return;
 		}
 		if (this.getMachine().haveTicksPassed(10)) {
-			CapabilityHelper.tryTransferInventory(this.handler, this.getMachine().getLevel(), this.getMachine().getBlockPos().relative(this.side), this.side.getOpposite());
+			CapabilityHelper.tryExportItems(this.handler, this.getMachine().getLevel(), this.getMachine().getBlockPos().relative(this.side), this.side.getOpposite());
 		}
 	}
 

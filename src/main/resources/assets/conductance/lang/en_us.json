@@ -101,8 +101,12 @@
   "guiWidget.conductance.energy_bar.energy_state": "%s / %s",
   "guiWidget.conductance.auto_output.item.enable": "Enable automatic item export (currently disabled)",
   "guiWidget.conductance.auto_output.item.disable": "Disable automatic item export (currently enabled)",
+  "guiWidget.conductance.auto_input.item.enable": "Enable automatic item import (currently disabled)",
+  "guiWidget.conductance.auto_input.item.disable": "Disable automatic item import (currently enabled)",
   "guiWidget.conductance.auto_output.fluid.enable": "Enable automatic fluid export (currently disabled)",
   "guiWidget.conductance.auto_output.fluid.disable": "Disable automatic fluid export (currently enabled)",
+  "guiWidget.conductance.auto_input.fluid.enable": "Enable automatic fluid import (currently disabled)",
+  "guiWidget.conductance.auto_input.fluid.disable": "Disable automatic fluid import (currently enabled)",
 
   "guiWidget.conductance.multiblock.structure.formed": "§aStructure formed",
   "guiWidget.conductance.multiblock.structure.invalid": "§cInvalid structure",

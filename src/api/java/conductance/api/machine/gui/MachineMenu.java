@@ -49,6 +49,17 @@ public class MachineMenu extends AbstractContainerMenu implements WidgetHolder {
 		}
 		this.guiSetup.addPlayerInventorySlots(playerInventory, this::addSlot);
 		this.guiSetup.addWidgets(this, this::addWidget);
+		CAPI.make(new WidgetGroup(3, 3, 0, 0), controlGroup -> {
+			controlGroup.setLayout(new WidgetLayouts.VerticalList(16, 16, 2, true));
+			this.guiSetup.addControlWidgets(this, controlGroup::addWidget);
+			if (!controlGroup.getWidgets().isEmpty()) {
+				this.addWidget("control_container", CAPI.make(new WidgetGroup(-20, 0, 20, controlGroup.getHeight() + 4), group -> {
+					group.setBackground(this.guiSetup.getTheme().getSidePanel());
+					group.setSize(MutableSize.of(new ManagedInt(20), new ManagedInt(null, () -> controlGroup.getHeight() + 6)));
+					group.addWidget("controls", controlGroup);
+				}));
+			}
+		});
 		this.guiSetup.addPlayerInventoryWidget(this, this::addWidget);
 	}
 

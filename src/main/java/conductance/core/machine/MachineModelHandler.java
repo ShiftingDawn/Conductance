@@ -135,30 +135,41 @@ final class MachineModelHandler {
 		}
 		event.addBlockModel(id, model -> model.particle(particleTexture).renderType("cutout_mipped").composite(composite -> composite
 			.child("casing", casingCallback)
-			.child("overlay", child -> child.element(element -> {
-				element.from(0, 0, 0).to(16, 16, 16);
-				MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), null, false);
+			.child("overlay", child -> {
+				child.element(element -> {
+					element.from(0, 0, 0).to(16, 16, 16);
+					MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), null, false);
+				}, true);
 				if (working) {
-					MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_working", false);
+					child.element(element -> {
+						element.from(0, 0, 0).to(16, 16, 16);
+						MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_working", false);
+					}, true);
 				}
-			}, true), true)
-			.child("overlay2", child -> child.element(element -> {
-				element.from(0, 0, 0).to(16, 16, 16);
-				MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_emissive", true);
+			}, true)
+			.child("overlay2", child -> {
+				child.element(element -> {
+					element.from(0, 0, 0).to(16, 16, 16);
+					MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_emissive", true);
+				}, true);
 				if (working) {
-					MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_working_emissive", true);
+					child.element(element -> {
+						element.from(0, 0, 0).to(16, 16, 16);
+						MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_working_emissive", true);
+					}, true);
 				}
-			}, true), true)
+			}, true)
 			.itemRenderOrder("casing", "overlay", "overlay2")
 		));
 	}
 
 	private static void addSides(final ModelBuilder builder, final ModelElementBuilder element, final ResourceLocation machineKey, @Nullable final String suffix, final boolean emissive) {
+		final String realSuffix = Objects.requireNonNullElse(suffix, "");
 		ModelUtils.LOGICAL_SIDES.forEach((face, side) -> {
-			final ResourceLocation texture = machineKey.withPath(current -> "block/machine/%s/%s%s".formatted(current, side, Objects.requireNonNullElse(suffix, "")));
+			final ResourceLocation texture = machineKey.withPath(current -> "block/machine/%s/%s%s".formatted(current, side, realSuffix));
 			if (CAPI.resourceFinder().isTextureValid(texture)) {
-				builder.texture(side, texture);
-				element.face(face, f -> f.texture(side).cullFace(face));
+				builder.texture(side + realSuffix, texture);
+				element.face(face, f -> f.texture(side + realSuffix).cullFace(face));
 				if (emissive) {
 					element.shade(false).lightEmission(15);
 				}
