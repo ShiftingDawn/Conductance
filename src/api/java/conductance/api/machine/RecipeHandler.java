@@ -17,6 +17,7 @@ public class RecipeHandler extends MachineCapability {
 
 	private final @Getter RecipeCapabilityHolder holder;
 	private @Nullable MachineTick tick;
+	private @Nullable MachineRecipe lastRecipeReal;
 	private @Nullable MachineRecipe lastRecipe;
 	private @Getter int progressMax = -1;
 	private @Getter int progressCurrent = 0;
@@ -38,6 +39,10 @@ public class RecipeHandler extends MachineCapability {
 			output.putString("type", this.lastRecipe.getType().getId().toString());
 			output.store("data", this.lastRecipe.getType().getRecipeSerializer().codec().codec(), this.lastRecipe);
 		}
+		if (this.lastRecipeReal != null && !(this.lastRecipeReal instanceof DummyMachineRecipe)) {
+			output.putString("realtype", this.lastRecipeReal.getType().getId().toString());
+			output.store("realdata", this.lastRecipeReal.getType().getRecipeSerializer().codec().codec(), this.lastRecipeReal);
+		}
 		output.putInt("cur", this.progressCurrent);
 		output.putInt("max", this.progressMax);
 		output.store("status", RecipeHandlerStatus.CODEC, this.status);
@@ -50,6 +55,14 @@ public class RecipeHandler extends MachineCapability {
 			if (recipeType == this.holder.getRecipeType()) {
 				input.read("data", recipeType.getRecipeSerializer().codec().codec()).ifPresent(recipe -> {
 					this.lastRecipe = recipe;
+				});
+			}
+		});
+		input.getString("realtype").ifPresent(typeString -> {
+			final MachineRecipeType recipeType = CAPI.regs().recipeTypes().getValue(ResourceLocation.parse(typeString));
+			if (recipeType == this.holder.getRecipeType()) {
+				input.read("realdata", recipeType.getRecipeSerializer().codec().codec()).ifPresent(recipe -> {
+					this.lastRecipeReal = recipe;
 				});
 			}
 		});
@@ -72,7 +85,7 @@ public class RecipeHandler extends MachineCapability {
 	}
 
 	protected void findAndSetupRecipe() {
-		final MachineRecipe newRecipe = this.findRecipe();
+		final @Nullable RecipePair newRecipe = this.findRecipe();
 		if (newRecipe == null) {
 			this.reset();
 		} else {
@@ -112,7 +125,7 @@ public class RecipeHandler extends MachineCapability {
 		this.getMachine().setWorkingState(this.status == RecipeHandlerStatus.PROCESSING);
 	}
 
-	protected @Nullable MachineRecipe findRecipe() {
+	protected @Nullable RecipePair findRecipe() {
 		//TODO cache recipes for the machine's recipetype
 		final ServerLevel level = (ServerLevel) this.getMachine().getLevel();
 		assert level != null;
@@ -120,8 +133,9 @@ public class RecipeHandler extends MachineCapability {
 			.filter(recipeHolder -> recipeHolder.value().getType() == this.holder.getRecipeType())
 			.map(recipeHolder -> (MachineRecipe) recipeHolder.value()).toList();
 		for (final MachineRecipe candidate : allRecipes) {
-			if (this.testRecipe(candidate)) {
-				return candidate;
+			final MachineRecipe recipe = this.holder.getRecipeModifier() == null ? candidate : this.holder.getRecipeModifier().modifyRecipe(candidate);
+			if (this.testRecipe(recipe)) {
+				return new RecipePair(candidate, recipe);
 			}
 		}
 		return null;
@@ -131,12 +145,13 @@ public class RecipeHandler extends MachineCapability {
 		return CAPI.recipeHelper().test(recipe, this.holder) && CAPI.recipeHelper().testPerTick(recipe, this.holder);
 	}
 
-	protected void setupRecipe(final MachineRecipe recipe) {
-		this.lastRecipe = recipe;
-		this.progressMax = recipe.getRecipeDuration();
+	protected void setupRecipe(final RecipePair recipe) {
+		this.lastRecipeReal = recipe.realRecipe();
+		this.lastRecipe = recipe.getUsableRecipe();
+		this.progressMax = this.lastRecipe.getRecipeDuration();
 		this.progressCurrent = 0;
 		this.setStatus(RecipeHandlerStatus.PROCESSING);
-		CAPI.recipeHelper().handle(recipe, IO.IN, this.holder);
+		CAPI.recipeHelper().handle(this.lastRecipe, IO.IN, this.holder);
 		this.setChanged();
 	}
 
@@ -165,7 +180,7 @@ public class RecipeHandler extends MachineCapability {
 		if (this.progressCurrent >= this.progressMax) {
 			CAPI.recipeHelper().handle(recipe, IO.OUT, this.holder);
 			if (this.testRecipe(recipe)) {
-				this.setupRecipe(recipe);
+				this.setupRecipe(new RecipePair(this.lastRecipeReal, this.lastRecipe));
 			} else {
 				this.findAndSetupRecipe();
 			}

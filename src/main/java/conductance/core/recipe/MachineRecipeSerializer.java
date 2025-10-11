@@ -46,7 +46,7 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 
 	private static MachineRecipe fromNetwork(final RegistryFriendlyByteBuf buf) {
 		final ResourceLocation recipeType = buf.readResourceLocation();
-		return new MachineRecipeImpl(
+		return new MachineRecipe(
 			Objects.requireNonNull(CAPI.regs().recipeTypes().getValue(recipeType), () -> "Cannot load unknown recipe type " + recipeType),
 			MachineRecipeSerializer.loadRecipeMap(buf),
 			MachineRecipeSerializer.loadRecipeMap(buf),
@@ -89,7 +89,7 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("per_tick_outputs").forGetter(MachineRecipe::getPerTickOutputs),
 			Codec.INT.fieldOf("duration").forGetter(MachineRecipe::getRecipeDuration),
 			Codec.INT.fieldOf("program").forGetter(MachineRecipe::getProgram)
-		).apply(instance, MachineRecipeImpl::new));
+		).apply(instance, MachineRecipe::new));
 		STREAM_CODEC = StreamCodec.of(MachineRecipeSerializer::toNetwork, MachineRecipeSerializer::fromNetwork);
 	}
 }

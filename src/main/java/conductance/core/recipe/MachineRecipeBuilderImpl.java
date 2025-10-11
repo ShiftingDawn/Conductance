@@ -18,6 +18,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElement;
 import conductance.api.recipe.RecipeElementType;
@@ -118,7 +119,7 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 				copy.save(newRecipeId, output);
 			});
 		}
-		final MachineRecipeImpl recipe = new MachineRecipeImpl(this.recipeType, this.inputs, this.outputs, this.perTickInputs, this.perTickOutputs, this.duration, this.program);
+		final MachineRecipe recipe = new MachineRecipe(this.recipeType, this.inputs, this.outputs, this.perTickInputs, this.perTickOutputs, this.duration, this.program);
 		output.accept(ResourceKey.create(Registries.RECIPE, recipeId), recipe, null);
 	}
 

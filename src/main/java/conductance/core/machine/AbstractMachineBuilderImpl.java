@@ -17,6 +17,7 @@ import conductance.api.machine.event.AbstractMachineBuilder;
 import conductance.api.machine.event.MachineBlockEntityFactory;
 import conductance.api.machine.event.MachineBlockFactory;
 import conductance.api.machine.event.MachineBlockItemFactory;
+import conductance.api.machine.event.MachineRecipeModifier;
 import conductance.api.machine.gui.GuiSetup;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.tier.Tier;
@@ -29,6 +30,7 @@ abstract class AbstractMachineBuilderImpl<T extends MachineBlockEntity<T>, BUILD
 	private MachineBlockFactory<T> blockFactory = MachineBlock::new;
 	private MachineBlockItemFactory<T> itemFactory = MachineBlockItem::new;
 	private MachineRecipeType[] recipeTypes = new MachineRecipeType[0];
+	private @Nullable MachineRecipeModifier recipeModifier = null;
 	private @Nullable GuiSetup guiSetup = new GuiSetup();
 	private BlockRotationType rotationType = BlockRotationType.HORIZONTAL;
 	private ModelType modelType = ModelType.DEFAULT;
@@ -57,6 +59,12 @@ abstract class AbstractMachineBuilderImpl<T extends MachineBlockEntity<T>, BUILD
 		this.recipeTypes = new MachineRecipeType[1 + additionalRecipeTypes.length];
 		this.recipeTypes[0] = recipeType;
 		System.arraycopy(additionalRecipeTypes, 0, this.recipeTypes, 1, additionalRecipeTypes.length);
+		return this.self();
+	}
+
+	@Override
+	public BUILDER recipeModifier(final MachineRecipeModifier modifier) {
+		this.recipeModifier = modifier;
 		return this.self();
 	}
 
@@ -107,6 +115,7 @@ abstract class AbstractMachineBuilderImpl<T extends MachineBlockEntity<T>, BUILD
 			type.setItem(MachineCore.createItem(this.registryKey.getPath(), type.getDescriptionId(), type.getBlock(), this.itemFactory));
 			type.setBlockEntityType(MachineCore.createBlockEntityType(this.registryKey.getPath(), type, type.getBlock(), this.blockEntityFactory));
 			type.setRecipeTypes(this.recipeTypes);
+			type.setRecipeModifier(this.recipeModifier);
 			type.setGuiSetup(this.guiSetup);
 			type.setRotationType(this.rotationType);
 		});

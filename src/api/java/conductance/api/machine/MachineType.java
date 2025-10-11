@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.block.BlockRotationType;
+import conductance.api.machine.event.MachineRecipeModifier;
 import conductance.api.machine.gui.GuiSetup;
 import conductance.api.recipe.MachineRecipeType;
 
@@ -20,6 +21,8 @@ public interface MachineType<T extends MachineBlockEntity<T>> {
 	Supplier<BlockEntityType<T>> getBlockEntityType();
 
 	MachineRecipeType[] getRecipeTypes();
+
+	@Nullable MachineRecipeModifier getRecipeModifier();
 
 	@Nullable GuiSetup getGuiSetup();
 

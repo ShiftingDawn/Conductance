@@ -119,6 +119,7 @@ final class ConductanceMachines {
 				))
 				.key('b', StructurePredicate.isBlock(NCBlocks.CASING_BRONZE_FIREBOX))
 			)
+			.recipeModifier(LargeBoilerMachine::recipeModifier)
 			.guiSetup(new MultiBlockControllerGuiSetup(GuiTheme.THEME_BRONZE))
 			.simpleModel(Conductance.id("block/casing/bronze"))
 			.casingAppearance(() -> NCBlocks.CASING_BRONZE.value().defaultBlockState())
@@ -140,7 +141,7 @@ final class ConductanceMachines {
 			(machineType, blockPos, blockState) -> new GenericGeneratorMachine(machineType, tier, blockPos, blockState),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id(name)), tier.getName())
-			).recipeType(recipeType).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
+			).recipeType(recipeType).rotationType(BlockRotationType.ALL).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
 		));
 	}
 

@@ -28,6 +28,7 @@ import conductance.api.machine.MachineRecipeCapabilityItems;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.machine.RecipeHandler;
+import conductance.api.machine.event.MachineRecipeModifier;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.RecipeHelper;
@@ -121,6 +122,11 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 	@Override
 	public MachineRecipeType getRecipeType() {
 		return this.getMachineType().getRecipeTypes()[0];
+	}
+
+	@Override
+	public @Nullable MachineRecipeModifier getRecipeModifier() {
+		return this.getMachineType().getRecipeModifier();
 	}
 
 	@Override

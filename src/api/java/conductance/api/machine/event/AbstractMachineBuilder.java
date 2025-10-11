@@ -17,6 +17,8 @@ public interface AbstractMachineBuilder<T extends MachineBlockEntity<T>, BUILDER
 
 	BUILDER recipeType(MachineRecipeType recipeType, MachineRecipeType... additionalRecipeTypes);
 
+	BUILDER recipeModifier(MachineRecipeModifier modifier);
+
 	BUILDER guiSetup(@Nullable GuiSetup guiSetup);
 
 	BUILDER rotationType(BlockRotationType type);

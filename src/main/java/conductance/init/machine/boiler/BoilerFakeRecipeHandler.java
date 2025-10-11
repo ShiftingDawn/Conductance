@@ -18,21 +18,25 @@ import conductance.api.NCMaterials;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.RecipeHandler;
+import conductance.api.machine.RecipePair;
 import conductance.api.recipe.DummyMachineRecipe;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.RecipeElement;
 
 final class BoilerFakeRecipeHandler extends RecipeHandler {
 
-	private static final int MAX_PRODUCTION = 120 / 4; //4 Times per second
+	public static final int BASE_MAX_PRODUCTION = 120 / 4; //4 Times per second
 	private static final int WATER_TO_STEAM = 10;
-	private static final int MAX_WATER = BoilerFakeRecipeHandler.MAX_PRODUCTION / BoilerFakeRecipeHandler.WATER_TO_STEAM;
 	private final BoilerFakeRecipeCapabilityHolder holder;
+	private final int maxProduction;
+	private final int maxWater;
 	private int fuelTime;
 
-	BoilerFakeRecipeHandler(final MachineBlockEntity<?> machine, final BoilerFakeRecipeCapabilityHolder holder) {
+	BoilerFakeRecipeHandler(final MachineBlockEntity<?> machine, final BoilerFakeRecipeCapabilityHolder holder, final int maxProduction) {
 		super("boiler", machine, holder);
 		this.holder = holder;
+		this.maxProduction = maxProduction;
+		this.maxWater = this.maxProduction / BoilerFakeRecipeHandler.WATER_TO_STEAM;
 	}
 
 	@Override
@@ -48,7 +52,7 @@ final class BoilerFakeRecipeHandler extends RecipeHandler {
 	}
 
 	@Override
-	protected @Nullable MachineRecipe findRecipe() {
+	protected @Nullable RecipePair findRecipe() {
 		if (this.holder.getWaterTank() == null || this.holder.getSteamTank() == null) {
 			return null;
 		}
@@ -65,16 +69,16 @@ final class BoilerFakeRecipeHandler extends RecipeHandler {
 		if (water == 0) {
 			return null;
 		}
-		if (water > BoilerFakeRecipeHandler.MAX_WATER) {
-			water = BoilerFakeRecipeHandler.MAX_WATER;
+		if (water > this.maxWater) {
+			water = this.maxWater;
 		}
-		final int space = this.holder.getSteamTank().getMaxSpaceForContent(BoilerFakeRecipeHandler.makeSteamIngredient(BoilerFakeRecipeHandler.MAX_PRODUCTION));
+		final int space = this.holder.getSteamTank().getMaxSpaceForContent(BoilerFakeRecipeHandler.makeSteamIngredient(this.maxProduction));
 		if (space == 0) {
 			return null;
 		}
 		int maxProduce = this.fuelTime * 12;
-		if (maxProduce > BoilerFakeRecipeHandler.MAX_PRODUCTION) {
-			maxProduce = BoilerFakeRecipeHandler.MAX_PRODUCTION;
+		if (maxProduce > this.maxProduction) {
+			maxProduce = this.maxProduction;
 		}
 		if (maxProduce > space) {
 			maxProduce = space;
@@ -89,7 +93,7 @@ final class BoilerFakeRecipeHandler extends RecipeHandler {
 			return null;
 		}
 		final int finalProduce = maxProduce;
-		return new DummyMachineRecipe(
+		final MachineRecipe recipe = new DummyMachineRecipe(
 			this.holder.getRecipeType(),
 			CAPI.make(new HashMap<>(), map -> {
 				if (!hadFuel) {
@@ -107,6 +111,7 @@ final class BoilerFakeRecipeHandler extends RecipeHandler {
 			5,
 			0
 		);
+		return new RecipePair(recipe, null);
 	}
 
 	private static SizedFluidIngredient makeWaterIngredient(final int amount) {
