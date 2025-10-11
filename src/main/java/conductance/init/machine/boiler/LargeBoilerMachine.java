@@ -119,7 +119,22 @@ public class LargeBoilerMachine extends MultiControllerMachineBlockEntity<LargeB
 	public static MachineRecipe recipeModifier(final MachineRecipe original) {
 		return new MachineRecipe(
 			original.getType(),
-			original.getInputs(),
+			CAPI.make(new HashMap<>(), map -> original.getInputs().forEach((key, list) -> {
+				final List<RecipeElement> list2 = new ArrayList<>();
+				if (key == NCRecipeElementTypes.FLUID) {
+					for (final RecipeElement element : list) {
+						final SizedFluidIngredient ingredient = (SizedFluidIngredient) element.data();
+						if (ingredient.ingredient().test(CAPI.materials().getFluid(NCMaterials.WATER, NCMaterialGenerationHandlers.LIQUID, 1))) {
+							list2.add(element.copy(NCRecipeElementTypes.FLUID, RecipeModifier.multiply(4)));
+						} else {
+							list2.add(element);
+						}
+					}
+				} else {
+					list.addAll(list2);
+				}
+				map.put(key, list2);
+			})),
 			CAPI.make(new HashMap<>(), map -> original.getOutputs().forEach((key, list) -> {
 				final List<RecipeElement> list2 = new ArrayList<>();
 				if (key == NCRecipeElementTypes.FLUID) {
