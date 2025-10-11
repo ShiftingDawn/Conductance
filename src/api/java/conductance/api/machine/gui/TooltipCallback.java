@@ -5,5 +5,5 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
 public interface TooltipCallback {
 
-	void onTooltip(List<ClientTooltipComponent> tooltip);
+	void onTooltip(IGuiWidget widget, List<ClientTooltipComponent> tooltip);
 }

@@ -8,19 +8,38 @@ import org.jetbrains.annotations.Nullable;
 public class ToggleButtonWidget extends GuiWidget {
 
 	private final ManagedBoolean handler;
-	private final Boolean2ObjectFunction<@Nullable GuiDrawable> foregroundTextureProvider;
+	private final @Nullable Boolean2ObjectFunction<@Nullable GuiDrawable> backgroundTextureProvider;
+	private final @Nullable Boolean2ObjectFunction<@Nullable GuiDrawable> foregroundTextureProvider;
 
-	public ToggleButtonWidget(final int x, final int y, final int width, final int height, final ManagedBoolean handler, final Boolean2ObjectFunction<@Nullable GuiDrawable> foregroundTextureProvider) {
+	public ToggleButtonWidget(
+		final int x, final int y, final int width, final int height, final ManagedBoolean handler,
+		@Nullable final Boolean2ObjectFunction<@Nullable GuiDrawable> backgroundTextureProvider, @Nullable final Boolean2ObjectFunction<@Nullable GuiDrawable> foregroundTextureProvider
+	) {
 		super(x, y, width, height);
 		this.handler = handler;
+		this.backgroundTextureProvider = backgroundTextureProvider;
 		this.foregroundTextureProvider = foregroundTextureProvider;
 	}
 
+	public ToggleButtonWidget(final int x, final int y, final int width, final int height, final ManagedBoolean handler, @Nullable final Boolean2ObjectFunction<@Nullable GuiDrawable> foregroundTextureProvider) {
+		this(x, y, width, height, handler, null, foregroundTextureProvider);
+	}
+
+	public boolean isToggled() {
+		return this.handler.getAsBoolean();
+	}
+
 	protected @Nullable GuiDrawable getBackground(final boolean toggled) {
-		return toggled ? this.getTheme().getButtonActive() : this.getTheme().getButton();
+		if (this.backgroundTextureProvider == null) {
+			return toggled ? this.getTheme().getButtonActive() : this.getTheme().getButton();
+		}
+		return this.backgroundTextureProvider.get(toggled);
 	}
 
 	protected @Nullable GuiDrawable getForeground(final boolean toggled) {
+		if (this.foregroundTextureProvider == null) {
+			return null;
+		}
 		return this.foregroundTextureProvider.get(toggled);
 	}
 

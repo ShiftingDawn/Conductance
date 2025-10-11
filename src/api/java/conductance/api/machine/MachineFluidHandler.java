@@ -27,6 +27,8 @@ public class MachineFluidHandler implements IFluidHandlerModifiable, IChangeAwar
 	@Getter
 	@Setter
 	private boolean allowOverflow = false;
+	@Nullable
+	private Boolean isEmpty;
 
 	public MachineFluidHandler(final NonNullList<FluidStack> stacks, final IntUnaryOperator capacityFactory) {
 		this.stacks = stacks;
@@ -297,9 +299,23 @@ public class MachineFluidHandler implements IFluidHandlerModifiable, IChangeAwar
 	}
 
 	protected void onContentsChanged(final int tank) {
+		this.isEmpty = null;
 		if (this.changeListener != null) {
 			this.changeListener.run();
 		}
+	}
+
+	public boolean isEmpty() {
+		if (this.isEmpty == null) {
+			this.isEmpty = true;
+			for (int i = 0; i < this.getTanks(); ++i) {
+				if (!this.getFluidInTank(i).isEmpty()) {
+					this.isEmpty = false;
+					break;
+				}
+			}
+		}
+		return this.isEmpty;
 	}
 
 	/**

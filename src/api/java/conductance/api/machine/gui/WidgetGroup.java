@@ -28,7 +28,7 @@ public class WidgetGroup extends GuiWidget implements IWidgetContainer {
 	public void initClient() {
 		super.initClient();
 		if (this.layout != null) {
-			Rectangle lastBounds = Rectangle.of(0, 0, 0, 0);
+			Rectangle lastBounds = Rectangle.of(-1, -1, -1, -1);
 			for (final IGuiWidget child : this.widgets.values()) {
 				this.layout.apply(lastBounds.x(), lastBounds.y(), lastBounds.width(), lastBounds.height(), child);
 				lastBounds = child.getRelativeBounds();

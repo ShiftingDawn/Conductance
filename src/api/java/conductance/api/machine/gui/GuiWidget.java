@@ -216,7 +216,7 @@ public abstract class GuiWidget implements IGuiWidget {
 	public final void internalHandleTooltipCallbacks(final GuiGraphics guiGraphics, final int mouseX, final int mouseY) {
 		final List<ClientTooltipComponent> tooltip = new ArrayList<>();
 		for (final TooltipCallback callback : this.tooltipCallbacks) {
-			callback.onTooltip(tooltip);
+			callback.onTooltip(this, tooltip);
 		}
 		if (!tooltip.isEmpty()) {
 			guiGraphics.renderTooltip(this.getFont(), tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);

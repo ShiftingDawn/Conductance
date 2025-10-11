@@ -16,8 +16,10 @@ public final class WidgetLayouts {
 
 		@Override
 		public void apply(final int lastWidgetX, final int lastWidgetY, final int lastWidth, final int lastHeight, final IGuiWidget widget) {
-			widget.setX(lastWidgetX);
-			if (lastWidgetY > 0) {
+			if (lastWidgetX >= 0) {
+				widget.setX(lastWidgetX);
+			}
+			if (lastWidgetY >= 0) {
 				widget.setY(lastWidgetY + lastHeight + Math.max(this.spacing, 0));
 			}
 			if (this.widgetWidth > 0) {

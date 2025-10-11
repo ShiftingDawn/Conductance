@@ -18,7 +18,7 @@ final class ShowRecipeViewerHandlers implements TooltipCallback, MouseEventListe
 	private final MachineBlockEntity<?> machine;
 
 	@Override
-	public void onTooltip(final List<ClientTooltipComponent> tooltip) {
+	public void onTooltip(final IGuiWidget widget, final List<ClientTooltipComponent> tooltip) {
 		if (this.machine.getMachineType().getRecipeTypes().length > 0) {
 			GuiUtils.tooltipTranslatable(tooltip, "info.conductance.jei.open_recipe_viewer");
 		}

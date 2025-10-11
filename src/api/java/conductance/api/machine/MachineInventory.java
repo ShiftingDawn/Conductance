@@ -46,7 +46,7 @@ public class MachineInventory extends ItemStackHandler implements IChangeAware {
 	public boolean isEmpty() {
 		if (this.isEmpty == null) {
 			this.isEmpty = true;
-			for (int i = 0; i < this.getSlots(); i++) {
+			for (int i = 0; i < this.getSlots(); ++i) {
 				if (!this.getStackInSlot(i).isEmpty()) {
 					this.isEmpty = false;
 					break;

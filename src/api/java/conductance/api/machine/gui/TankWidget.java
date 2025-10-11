@@ -43,7 +43,7 @@ public final class TankWidget extends GuiWidget {
 			this.handler = handler;
 		}
 		this.tank = tank;
-		this.addTooltipCallback(tooltip -> {
+		this.addTooltipCallback((self, tooltip) -> {
 			if (this.getMenu().getCarried().isEmpty()) {
 				final int capacity = this.handler.getTankCapacity(this.tank);
 				final FluidStack fluid = this.handler.getFluidInTank(this.tank);

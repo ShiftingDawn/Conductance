@@ -24,6 +24,7 @@ import conductance.api.machine.gui.SimpleAutomaticGuiSetup;
 import conductance.api.machine.gui.ToggleButtonWidget;
 import conductance.api.machine.gui.WidgetGroup;
 import conductance.api.machine.gui.WidgetLayouts;
+import conductance.api.util.GuiUtils;
 import conductance.api.util.Lazy;
 import conductance.Conductance;
 
@@ -32,6 +33,8 @@ public class GenericRecipeMachineGuiSetup extends SimpleAutomaticGuiSetup {
 
 	private static final Lazy<GuiDrawableTexture> TEXTURE_AUTO_ITEM_OFF = Lazy.of(() -> new GuiDrawableTexture(Conductance.id("conductance/item_auto_output_off")));
 	private static final Lazy<GuiDrawableTexture> TEXTURE_AUTO_ITEM_ON = Lazy.of(() -> new GuiDrawableTexture(Conductance.id("conductance/item_auto_output_on")));
+	private static final Lazy<GuiDrawableTexture> TEXTURE_AUTO_FLUID_OFF = Lazy.of(() -> new GuiDrawableTexture(Conductance.id("conductance/fluid_auto_output_off")));
+	private static final Lazy<GuiDrawableTexture> TEXTURE_AUTO_FLUID_ON = Lazy.of(() -> new GuiDrawableTexture(Conductance.id("conductance/fluid_auto_output_on")));
 
 	private final GuiTheme theme;
 
@@ -86,19 +89,34 @@ public class GenericRecipeMachineGuiSetup extends SimpleAutomaticGuiSetup {
 			});
 		}
 		final WidgetGroup buttonGroup = new WidgetGroup(3, 3, 0, 0);
-		buttonGroup.setLayout(new WidgetLayouts.VerticalList(18, 18, 2, true));
+		buttonGroup.setLayout(new WidgetLayouts.VerticalList(16, 16, 2, true));
 		final GenericRecipeMachine machine = (GenericRecipeMachine) menu.getMachine();
 		if (machine.getItemAutoOutput() != null) {
-			buttonGroup.addWidget("item_auto_out", new ToggleButtonWidget(
+			buttonGroup.addWidget("item_auto_out", CAPI.make(new ToggleButtonWidget(
 				0, 0, 0, 0,
 				new ManagedBoolean(toggled -> machine.getItemAutoOutput().setItemAutoOutputEnabled(toggled), () -> machine.getItemAutoOutput().isItemAutoOutputEnabled()),
-				toggled -> toggled ? GenericRecipeMachineGuiSetup.TEXTURE_AUTO_ITEM_ON.get() : GenericRecipeMachineGuiSetup.TEXTURE_AUTO_ITEM_OFF.get()
-			));
+				toggled -> toggled ? GenericRecipeMachineGuiSetup.TEXTURE_AUTO_ITEM_ON.get() : GenericRecipeMachineGuiSetup.TEXTURE_AUTO_ITEM_OFF.get(),
+				null
+			), button -> button.addTooltipCallback((widget, tooltip) -> {
+				final ToggleButtonWidget btn = (ToggleButtonWidget) widget;
+				GuiUtils.tooltipTranslatable(tooltip, btn.isToggled() ? "guiWidget.conductance.auto_output.item.disable" : "guiWidget.conductance.auto_output.item.enable");
+			})));
+		}
+		if (machine.getFluidAutoOutput() != null) {
+			buttonGroup.addWidget("fluid_auto_out", CAPI.make(new ToggleButtonWidget(
+				0, 0, 0, 0,
+				new ManagedBoolean(toggled -> machine.getFluidAutoOutput().setFluidAutoOutputEnabled(toggled), () -> machine.getFluidAutoOutput().isFluidAutoOutputEnabled()),
+				toggled -> toggled ? GenericRecipeMachineGuiSetup.TEXTURE_AUTO_FLUID_ON.get() : GenericRecipeMachineGuiSetup.TEXTURE_AUTO_FLUID_OFF.get(),
+				null
+			), button -> button.addTooltipCallback((widget, tooltip) -> {
+				final ToggleButtonWidget btn = (ToggleButtonWidget) widget;
+				GuiUtils.tooltipTranslatable(tooltip, btn.isToggled() ? "guiWidget.conductance.auto_output.fluid.disable" : "guiWidget.conductance.auto_output.fluid.enable");
+			})));
 		}
 		if (!buttonGroup.getWidgets().isEmpty()) {
-			adder.accept("control_container", CAPI.make(new WidgetGroup(-22, 0, 22, buttonGroup.getHeight() + 4), group -> {
+			adder.accept("control_container", CAPI.make(new WidgetGroup(-20, 0, 20, buttonGroup.getHeight() + 4), group -> {
 				group.setBackground(this.getTheme().getSidePanel());
-				group.setSize(MutableSize.of(new ManagedInt(22), new ManagedInt(null, () -> buttonGroup.getHeight() + 6)));
+				group.setSize(MutableSize.of(new ManagedInt(20), new ManagedInt(null, () -> buttonGroup.getHeight() + 6)));
 				group.addWidget("controls", buttonGroup);
 			}));
 		}
