@@ -61,6 +61,8 @@ public class ToggleButtonWidget extends GuiWidget {
 
 	@Override
 	public boolean onMouseClicked(final int mouseX, final int mouseY, final int button) {
+		final boolean newState = !this.handler.getAsBoolean();
+		this.handler.accept(newState);
 		this.sendToServer(1, null);
 		return true;
 	}
