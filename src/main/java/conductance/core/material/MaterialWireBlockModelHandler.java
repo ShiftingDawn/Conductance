@@ -35,7 +35,7 @@ final class MaterialWireBlockModelHandler {
 			event.addBlockModel(MaterialWireBlockModelHandler.getExtensionLocation(wireType), builder ->
 				builder.element(element -> element
 					.from(start, start, 0).to(end, end, start)
-					.faces((side, face) -> face.particle().tintIndex(0), true, UP, DOWN, NORTH, EAST, WEST)
+					.faces((side, face) -> face.particle().tintIndex(0), false, UP, DOWN, NORTH, EAST, WEST)
 				)
 			);
 		}

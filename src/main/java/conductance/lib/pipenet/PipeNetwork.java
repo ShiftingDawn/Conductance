@@ -2,6 +2,7 @@ package conductance.lib.pipenet;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -126,7 +127,7 @@ public abstract class PipeNetwork<NODE extends INetworkNode<NODE, DATA>, DATA> {
 				}
 				final GraphPath<BlockPos, DefaultEdge> shortestPath = shortestPaths.getPath(end);
 				this.endpoints.get(end).forEach(connectedSide -> {
-					this.paths.computeIfAbsent(start, k -> new HashSet<>()).add(this.createNetworkPath(start, end, connectedSide, shortestPath));
+					this.paths.computeIfAbsent(start, k -> new LinkedHashSet<>()).add(this.createNetworkPath(start, end, connectedSide, shortestPath));
 				});
 			}
 		}
