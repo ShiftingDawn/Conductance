@@ -45,30 +45,25 @@ public final class GridInteractionHandler {
 	private static InteractionResult handleGridInteraction(final UseOnContext ctx, final Direction side) {
 		final InteractType interactType = InteractType.findTypeForStack(ctx.getItemInHand());
 		final BlockEntity blockEntity = ctx.getLevel().getBlockEntity(ctx.getClickedPos());
-		if (interactType != null) {
-			final BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
-			if (blockState.getBlock() instanceof final IGridInteractable interactable) {
-				final InteractionResult res = interactable.onToolUsed(interactType, ctx, side);
-				if (res.consumesAction()) {
-					return res;
-				}
-			}
-			if (blockEntity instanceof final IGridInteractable interactable) {
-				final InteractionResult res = interactable.onToolUsed(interactType, ctx, side);
-				if (res.consumesAction()) {
-					return res;
-				}
+		final BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
+		if (blockState.getBlock() instanceof final IGridInteractable interactable) {
+			final InteractionResult res = interactable.onToolUsed(interactType, ctx, side);
+			if (res.consumesAction()) {
+				return res;
 			}
 		}
-		if (interactType != null) {
-			if (interactType == InteractType.WRENCH && GridInteractionHandler.tryWrench(ctx, side)) {
-				//TODO play wrench sound
-
-				// if (ctx.getLevel().isClientSide) {
-				// ConductanceSounds.TOOL_WRENCH.play(ctx.getLevel(), ctx.getPlayer());
-				//}
-				return InteractionResult.SUCCESS_SERVER;
+		if (blockEntity instanceof final IGridInteractable interactable) {
+			final InteractionResult res = interactable.onToolUsed(interactType, ctx, side);
+			if (res.consumesAction()) {
+				return res;
 			}
+		}
+		if (interactType == InteractType.WRENCH && GridInteractionHandler.tryWrench(ctx, side)) {
+			// TODO play wrench sound
+			// if (ctx.getLevel().isClientSide) {
+			// ConductanceSounds.TOOL_WRENCH.play(ctx.getLevel(), ctx.getPlayer());
+			//}
+			return InteractionResult.SUCCESS_SERVER;
 		}
 		return InteractionResult.PASS;
 	}

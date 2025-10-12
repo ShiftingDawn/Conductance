@@ -1,5 +1,6 @@
 package conductance.api.block;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -55,9 +56,9 @@ public final class GridInteractionHelper {
 	}
 
 	public static Direction getLogicalSideFromGrid(final BlockHitResult hit) {
-		final Vec3 position = hit.getLocation();
-		return GridInteractionHelper.getLogicalSideFromGrid(hit.getDirection(), (float) position.x - hit.getBlockPos().getX(), (float) position.y - hit.getBlockPos().getY(),
-			(float) position.z - hit.getBlockPos().getZ());
+		final Vec3 hitPos = hit.getLocation();
+		final BlockPos blockPos = hit.getBlockPos();
+		return GridInteractionHelper.getLogicalSideFromGrid(hit.getDirection(), (float) hitPos.x - blockPos.getX(), (float) hitPos.y - blockPos.getY(), (float) hitPos.z - blockPos.getZ());
 	}
 
 	public static boolean shouldInteractUsingGrid(final UseOnContext ctx) {
@@ -65,11 +66,12 @@ public final class GridInteractionHelper {
 			return false;
 		}
 		final BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
+		if (blockState.getBlock() instanceof IGridInteractable) {
+			return true;
+		}
 		final BlockEntity blockEntity = ctx.getLevel().getBlockEntity(ctx.getClickedPos());
-		if (blockEntity != null) {
-			if (ctx.getPlayer().isCrouching() && (blockState.getBlock() instanceof IGridInteractable || blockEntity instanceof IGridInteractable)) {
-				return true;
-			}
+		if (blockEntity instanceof IGridInteractable) {
+			return true;
 		}
 		//Fall back to rotatable blocks
 		if (InteractType.WRENCH.is(ctx.getItemInHand())) {

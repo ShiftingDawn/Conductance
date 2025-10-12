@@ -4,10 +4,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.block.IGridInteractable;
 import conductance.api.block.InteractType;
@@ -88,12 +90,27 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InteractionResult onToolUsed(@Nullable final InteractType interaction, final UseOnContext context, final Direction side) {
+	public InteractionResult onToolUsed(@Nullable final InteractType interaction, final UseOnContext ctx, final Direction side) {
 		if (interaction != this.getInteractType()) {
+			if (ctx.getItemInHand().getItem() instanceof final PipeBlockItem pipeBlockItem && pipeBlockItem.getBlock().getNetworkType().equals(this.getPipeBlock().getNetworkType())) {
+				final BlockState placeState = ctx.getLevel().getBlockState(ctx.getClickedPos().relative(side));
+				final BlockHitResult newHit = new BlockHitResult(ctx.getClickLocation().relative(side, 1), ctx.getClickedFace(), ctx.getClickedPos().relative(side), false);
+				final BlockPlaceContext placeContext = new BlockPlaceContext(ctx.getLevel(), ctx.getPlayer(), ctx.getHand(), ctx.getItemInHand(), newHit);
+				if (placeState.canBeReplaced(placeContext)) {
+					final InteractionResult placeResult = pipeBlockItem.place(placeContext);
+					if (placeResult instanceof InteractionResult.Success) {
+						final BlockState self = ctx.getLevel().getBlockState(ctx.getClickedPos());
+						ctx.getLevel().setBlockAndUpdate(ctx.getClickedPos(), self.setValue(PipeBlock.CONNECTION_PROPS.get(side), true));
+						final BlockState other = ctx.getLevel().getBlockState(ctx.getClickedPos().relative(side));
+						ctx.getLevel().setBlockAndUpdate(ctx.getClickedPos().relative(side), other.setValue(PipeBlock.CONNECTION_PROPS.get(side.getOpposite()), true));
+					}
+					return placeResult;
+				}
+			}
 			return InteractionResult.PASS;
 		}
-		if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof final PipeBlockEntity<?, ?, ?> pipeBlockEntity) {
-			final INetworkNode<?, ?> node = pipeBlockEntity.getPipeBlock().getPipeBlockEntity(context.getLevel(), context.getClickedPos().relative(side));
+		if (ctx.getLevel().getBlockEntity(ctx.getClickedPos()) instanceof final PipeBlockEntity<?, ?, ?> pipeBlockEntity) {
+			final INetworkNode<?, ?> node = pipeBlockEntity.getPipeBlock().getPipeBlockEntity(ctx.getLevel(), ctx.getClickedPos().relative(side));
 			if (node != null) {
 				if (this.getLevel() instanceof final ServerLevel serverLevel) {
 					final boolean connect = PipeNetHelper.isBlocked(this.getConnections(), side);
@@ -101,7 +118,7 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 				}
 				return InteractionResult.SUCCESS_SERVER;
 			}
-			if (this.canConnectTo(context.getLevel(), context.getClickedPos(), side)) {
+			if (this.canConnectTo(ctx.getLevel(), ctx.getClickedPos(), side)) {
 				if (this.getLevel() instanceof final ServerLevel serverLevel) {
 					final boolean connect = PipeNetHelper.isBlocked(this.getConnections(), side);
 					this.setConnections(PipeNetHelper.setConnection(this.getConnections(), side, connect));
