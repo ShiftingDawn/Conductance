@@ -5,29 +5,32 @@ import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import conductance.api.CAPI;
 import conductance.api.NCBlockStateProperties;
-import static conductance.api.block.BlockRotationHelper.getDirection;
+import static conductance.api.block.BlockRotationHelper.getExtendedDirection;
 
 public final class StructureHelper {
 
-	public static BlockPos getStructureCheckStartPos(final BlockPos controllerPos, final MultiBlockStructure structure, final Direction controllerFacing) {
+	public static BlockPos getStructureCheckStartPos(final BlockPos controllerPos, final MultiBlockStructure structure, final Direction controllerFacing, final Rotation controllerRotation) {
 		return controllerPos
-			.relative(getDirection(controllerFacing, Direction.NORTH), structure.zOffset())
-			.relative(getDirection(controllerFacing, Direction.DOWN), structure.yOffset())
-			.relative(getDirection(controllerFacing, Direction.EAST), structure.xOffset());
+			.relative(getExtendedDirection(controllerFacing, controllerRotation, Direction.NORTH), structure.zOffset())
+			.relative(getExtendedDirection(controllerFacing, controllerRotation, Direction.DOWN), structure.yOffset())
+			.relative(getExtendedDirection(controllerFacing, controllerRotation, Direction.EAST), structure.xOffset());
 	}
 
-	public static BlockPos getStructureCheckStartEndPos(final BlockPos structureCheckStartPos, final Direction controllerFacing, final int x, final int y, final int z) {
+	public static BlockPos getStructureCheckStartEndPos(final BlockPos structureCheckStartPos, final Direction controllerFacing, final Rotation controllerRotation, final int x, final int y, final int z) {
 		return structureCheckStartPos
-			.relative(getDirection(controllerFacing, Direction.SOUTH), z)
-			.relative(getDirection(controllerFacing, Direction.UP), y)
-			.relative(getDirection(controllerFacing, Direction.WEST), x);
+			.relative(getExtendedDirection(controllerFacing, controllerRotation, Direction.SOUTH), z)
+			.relative(getExtendedDirection(controllerFacing, controllerRotation, Direction.UP), y)
+			.relative(getExtendedDirection(controllerFacing, controllerRotation, Direction.WEST), x);
 	}
 
-	public static boolean checkStructure(final BlockAndTintGetter level, final BlockPos controllerPos, final Direction facing, final MultiBlockStructure structure, final StructureCheckContext ctx) {
-		final BlockPos startPos = StructureHelper.getStructureCheckStartPos(controllerPos, structure, facing);
+	public static boolean checkStructure(
+		final BlockAndTintGetter level, final BlockPos controllerPos, final Direction facing, final Rotation rotation, final MultiBlockStructure structure, final StructureCheckContext ctx
+	) {
+		final BlockPos startPos = StructureHelper.getStructureCheckStartPos(controllerPos, structure, facing, rotation);
 		for (int x = 0; x < structure.expectedStates().length; ++x) {
 			final StructurePredicate[][] slicePredicates = structure.expectedStates()[x];
 			for (int y = 0; y < slicePredicates.length; ++y) {
@@ -35,7 +38,7 @@ public final class StructureHelper {
 				for (int z = 0; z < layerPredicates.length; ++z) {
 					final StructurePredicate predicate = layerPredicates[z];
 					final StructureCheckCallback callback = structure.callbacks()[x][y][z];
-					final BlockPos currentPos = StructureHelper.getStructureCheckStartEndPos(startPos, facing, x, y, z);
+					final BlockPos currentPos = StructureHelper.getStructureCheckStartEndPos(startPos, facing, rotation, x, y, z);
 					final BlockState currentState = level.getBlockState(currentPos);
 					if (!predicate.test(level, currentPos, currentState, ctx)) {
 						return false;
@@ -61,7 +64,6 @@ public final class StructureHelper {
 			}
 		}
 		final Set<StructurePredicate> allPredicates = new HashSet<>();
-
 		for (final StructurePredicate predicate : structure.predicates()) {
 			StructureHelper.collectPredicates(allPredicates, predicate);
 		}

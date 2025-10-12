@@ -181,9 +181,11 @@ public abstract class StructurePredicate {
 
 	public static StructurePredicate autoCapabilities(final MachineRecipeType recipeType) {
 		final boolean inItems = recipeType.getLimit(IO.IN, NCRecipeElementTypes.ITEM) > 0;
-		final boolean inFluids = recipeType.getLimit(IO.IN, NCRecipeElementTypes.FLUID) > 0;
 		final boolean outItems = recipeType.getLimit(IO.OUT, NCRecipeElementTypes.ITEM) > 0;
+		final boolean inFluids = recipeType.getLimit(IO.IN, NCRecipeElementTypes.FLUID) > 0;
 		final boolean outFluids = recipeType.getLimit(IO.OUT, NCRecipeElementTypes.FLUID) > 0;
+		final boolean inEnergy = recipeType.getLimit(IO.IN, NCRecipeElementTypes.ENERGY) > 0;
+		final boolean outEnergy = recipeType.getLimit(IO.OUT, NCRecipeElementTypes.ENERGY) > 0;
 		StructurePredicate predicate = StructurePredicate.isNone();
 		if (inItems) {
 			predicate = predicate.or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ITEMS_IN));
@@ -196,6 +198,12 @@ public abstract class StructurePredicate {
 		}
 		if (outFluids) {
 			predicate = predicate.or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.FLUIDS_OUT));
+		}
+		if (inEnergy) {
+			predicate = predicate.or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ENERGY_IN).max(2));
+		}
+		if (outEnergy) {
+			predicate = predicate.or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ENERGY_OUT).max(1));
 		}
 		return predicate;
 	}

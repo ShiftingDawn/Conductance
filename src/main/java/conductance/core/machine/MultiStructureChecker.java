@@ -1,7 +1,6 @@
 package conductance.core.machine;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +8,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -23,7 +24,8 @@ final class MultiStructureChecker {
 
 	private static final Map<ServerLevel, MultiStructureChecker> INSTANCES = new IdentityHashMap<>();
 	private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat(Conductance.MODID + " multiblock checker thread (%d)").setDaemon(true).build();
-	private final List<IMultiBlockController<?>> controllers = Collections.synchronizedList(new ArrayList<>());
+	private final List<IMultiBlockController<?>> controllers = new ArrayList<>();
+	private final Lock lock = new ReentrantLock();
 	private final ServerLevel level;
 	private @Nullable ScheduledExecutorService executor;
 
@@ -36,6 +38,7 @@ final class MultiStructureChecker {
 	private void onLevelUnload(final LevelEvent.Unload event) {
 		if (event.getLevel() == this.level) {
 			MultiStructureChecker.INSTANCES.remove(this.level);
+			this.shutdown();
 			NeoForge.EVENT_BUS.unregister(this);
 		}
 	}
@@ -57,27 +60,47 @@ final class MultiStructureChecker {
 	}
 
 	public void addController(final IMultiBlockController<?> controller) {
-		if (!this.controllers.contains(controller)) {
+		this.lock.lock();
+		try {
+			if (this.controllers.contains(controller)) {
+				Conductance.LOGGER.error("Trying to add duplicate multiblock {} from structure checker thread", controller.getMultiBlockInfo().controllerPos());
+				return;
+			}
 			this.controllers.add(controller);
 			this.initialize();
+		} finally {
+			this.lock.unlock();
 		}
 	}
 
 	public void removeController(final IMultiBlockController<?> controller) {
-		if (this.controllers.contains(controller)) {
+		this.lock.lock();
+		try {
+			if (!this.controllers.contains(controller)) {
+				Conductance.LOGGER.error("Trying to remove unknown multiblock {} from structure checker thread", controller.getMultiBlockInfo().controllerPos());
+				return;
+			}
 			this.controllers.remove(controller);
 			if (this.controllers.isEmpty()) {
 				this.shutdown();
 			}
+		} finally {
+			this.lock.unlock();
 		}
 	}
 
 	private void tick() {
-		for (final IMultiBlockController<?> controller : this.controllers) {
+		if (this.lock.tryLock()) {
 			try {
-				MultiControllerMachineBlockEntity.checkStructure(controller, false);
-			} catch (final Throwable e) {
-				Conductance.LOGGER.error("Error while validating multiblock structure {}: {}", controller.getMultiBlockInfo().controllerPos(), e.getMessage());
+				for (final IMultiBlockController<?> controller : this.controllers) {
+					try {
+						MultiControllerMachineBlockEntity.checkStructure(controller, false);
+					} catch (final Throwable e) {
+						Conductance.LOGGER.error("Error while validating multiblock structure {}: {}", controller.getMultiBlockInfo().controllerPos(), e.getMessage());
+					}
+				}
+			} finally {
+				this.lock.unlock();
 			}
 		}
 	}

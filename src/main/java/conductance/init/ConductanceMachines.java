@@ -26,6 +26,8 @@ import conductance.core.machine.MachineCore;
 import conductance.init.machine.GenericGeneratorMachine;
 import conductance.init.machine.GenericRecipeMachine;
 import conductance.init.machine.GenericRecipeMachineGuiSetup;
+import conductance.init.machine.GenericRecipeMultiBlockMachine;
+import conductance.init.machine.MultiBlockEnergyHatchPartMachine;
 import conductance.init.machine.MultiBlockFluidHatchPartMachine;
 import conductance.init.machine.MultiBlockFluidHatchPartMachineGuiSetup;
 import conductance.init.machine.MultiBlockItemBusPartMachine;
@@ -36,6 +38,9 @@ import conductance.init.machine.boiler.SteamSolidFuelBoilerMachineGuiSetup;
 import static conductance.api.NCMachines.BENDING_MACHINE;
 import static conductance.api.NCMachines.COMPRESSOR;
 import static conductance.api.NCMachines.CUTTING_MACHINE;
+import static conductance.api.NCMachines.DYNAMO_HATCHES;
+import static conductance.api.NCMachines.ELECTRIC_BLAST_FURNACE;
+import static conductance.api.NCMachines.ENERGY_HATCHES;
 import static conductance.api.NCMachines.EXTRACTOR;
 import static conductance.api.NCMachines.EXTRUDER;
 import static conductance.api.NCMachines.INPUT_BUSES;
@@ -103,14 +108,26 @@ final class ConductanceMachines {
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("output_hatch")), tier.getName())
 			).rotationType(BlockRotationType.ALL).tieredModel("output_hatch", tier).guiSetup(new MultiBlockFluidHatchPartMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
 		));
+		ENERGY_HATCHES = CAPI.tiers().newMap(tier -> event.<MultiBlockEnergyHatchPartMachine>register(tier.getId().getPath() + "_energy_hatch",
+			(machineType, blockPos, blockState) -> new MultiBlockEnergyHatchPartMachine(machineType, blockPos, blockState, IO.IN, tier),
+			b -> b.customName(ignored ->
+				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("energy_hatch")), tier.getName())
+			).rotationType(BlockRotationType.ALL).tieredModel("energy_hatch", tier).guiSetup(null)
+		));
+		DYNAMO_HATCHES = CAPI.tiers().newMap(tier -> event.<MultiBlockEnergyHatchPartMachine>register(tier.getId().getPath() + "_dynamo_hatch",
+			(machineType, blockPos, blockState) -> new MultiBlockEnergyHatchPartMachine(machineType, blockPos, blockState, IO.OUT, tier),
+			b -> b.customName(ignored ->
+				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("dynamo_hatch")), tier.getName())
+			).rotationType(BlockRotationType.ALL).tieredModel("dynamo_hatch", tier).guiSetup(null)
+		));
 	}
 
 	private static void initMultiBlocks(final RegisterMachineEvent event) {
 		LARGE_BRONZE_BOILER = event.multi("large_bronze_boiler", LargeBoilerMachine::new, b -> b
 			.structure('x', c -> c
 				.slice("aaa", "aaa", "aaa")
-				.slice("axa", "a a", "aaa")
 				.slice("aaa", "a a", "aaa")
+				.slice("axa", "a a", "aaa")
 				.slice("bbb", "bbb", "bbb")
 				.key('a', StructurePredicate.isBlock(NCBlocks.CASING_BRONZE).or(
 					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.FLUIDS_IN).exact(1),
@@ -124,6 +141,21 @@ final class ConductanceMachines {
 			.simpleModel(Conductance.id("block/casing/bronze"))
 			.casingAppearance(() -> NCBlocks.CASING_BRONZE.value().defaultBlockState())
 			.blockFactory(MachineBlockWorkable::new)
+		);
+		ELECTRIC_BLAST_FURNACE = event.multi("electric_blast_furnace", GenericRecipeMultiBlockMachine::new, b -> b
+			.structure('x', c -> c
+				.slice("aaa", "aaa", "aaa")
+				.slice("bbb", "b b", "bbb")
+				.slice("bbb", "b b", "bbb")
+				.slice("axa", "aaa", "aaa")
+				.key('a', StructurePredicate.isBlock(NCBlocks.CASING_INVAR).or(StructurePredicate.autoCapabilities(NCRecipeTypes.ELECTRIC_BLAST_FURNACE)))
+				.key('b', StructurePredicate.isBlock(NCBlocks.CASING_BRONZE))
+			)
+			.recipeType(NCRecipeTypes.ELECTRIC_BLAST_FURNACE)
+			.simpleModel(Conductance.id("block/casing/invar"))
+			.casingAppearance(() -> NCBlocks.CASING_INVAR.value().defaultBlockState())
+			.blockFactory(MachineBlockWorkable::new)
+			.rotationType(BlockRotationType.EXTENDED)
 		);
 	}
 

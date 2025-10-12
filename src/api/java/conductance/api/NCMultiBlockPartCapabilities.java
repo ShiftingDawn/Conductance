@@ -9,6 +9,8 @@ public final class NCMultiBlockPartCapabilities {
 	public static MultiBlockPartCapability ITEMS_OUT;
 	public static MultiBlockPartCapability FLUIDS_IN;
 	public static MultiBlockPartCapability FLUIDS_OUT;
+	public static MultiBlockPartCapability ENERGY_IN;
+	public static MultiBlockPartCapability ENERGY_OUT;
 
 	private NCMultiBlockPartCapabilities() {
 	}

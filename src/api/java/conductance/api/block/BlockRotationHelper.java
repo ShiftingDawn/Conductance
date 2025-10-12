@@ -82,19 +82,23 @@ public final class BlockRotationHelper {
 	}
 
 	public static Direction getFacing(final BlockState state) {
+		return BlockRotationHelper.getExtendedRotation(state).getFacing();
+	}
+
+	public static FacingAndRotation getExtendedRotation(final BlockState state) {
 		if (state.hasProperty(NCBlockStateProperties.FACING_HORIZONTAL)) {
-			return state.getValue(NCBlockStateProperties.FACING_HORIZONTAL);
+			return FacingAndRotation.get(state.getValue(NCBlockStateProperties.FACING_HORIZONTAL), Rotation.NONE);
 		}
 		if (state.hasProperty(NCBlockStateProperties.FACING_VERTICAL)) {
-			return state.getValue(NCBlockStateProperties.FACING_VERTICAL);
+			return FacingAndRotation.get(state.getValue(NCBlockStateProperties.FACING_VERTICAL), Rotation.NONE);
 		}
 		if (state.hasProperty(NCBlockStateProperties.FACING_ALL)) {
-			return state.getValue(NCBlockStateProperties.FACING_ALL);
+			return FacingAndRotation.get(state.getValue(NCBlockStateProperties.FACING_ALL), Rotation.NONE);
 		}
 		if (state.hasProperty(NCBlockStateProperties.FACING_EXTENDED)) {
-			return state.getValue(NCBlockStateProperties.FACING_EXTENDED).getFacing();
+			return state.getValue(NCBlockStateProperties.FACING_EXTENDED);
 		}
-		return NORTH;
+		return FacingAndRotation.get(NORTH, Rotation.NONE);
 	}
 
 	public static BlockState applyRotation(final BlockState state, final Rotation rotation) {

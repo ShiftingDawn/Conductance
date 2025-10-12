@@ -31,8 +31,7 @@ public interface IMultiBlockController<T extends MultiMachineBlockEntity<T>> {
 	/**
 	 * Check the multiblock structure. This function can be called from an async thread and is unsafe to use.
 	 * <br>
-	 * Use {@link IMultiBlockController#checkStructureAsyncLocked(StructureCheckContext)} or
-	 * {@link IMultiBlockController#checkStructureAsyncLockedBlocking(StructureCheckContext)} instead
+	 * Use {@link IMultiBlockController#checkStructureAsyncLocked(StructureCheckContext)} or {@link IMultiBlockController#checkStructureAsyncLockedBlocking(StructureCheckContext)} instead
 	 *
 	 * @param ctx the shared context to store information in
 	 * @return <code>true if the structure is valid</code> or <code>false</code> if it's not
@@ -41,7 +40,7 @@ public interface IMultiBlockController<T extends MultiMachineBlockEntity<T>> {
 	default boolean checkStructure(final StructureCheckContext ctx) {
 		final MultiBlockStructure structure = this.getStructure();
 		final MultiBlockInfo info = this.getMultiBlockInfo();
-		return StructureHelper.checkStructure(info.level(), info.controllerPos(), info.facing(), structure, ctx);
+		return StructureHelper.checkStructure(info.level(), info.controllerPos(), info.facing(), info.rotation(), structure, ctx);
 	}
 
 	default boolean checkStructureAsyncLocked(final StructureCheckContext ctx) {

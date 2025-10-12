@@ -7,6 +7,9 @@ import net.minecraft.world.level.block.Block;
 public final class NCBlocks {
 
 	public static Holder<Block> CASING_BRONZE;
+	public static Holder<Block> CASING_INVAR;
+	public static Holder<Block> CASING_ALUMINIUM;
+
 	public static Holder<Block> CASING_BRONZE_FIREBOX;
 
 	private NCBlocks() {

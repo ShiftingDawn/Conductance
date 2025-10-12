@@ -25,8 +25,11 @@ public final class NCMachines {
 	public static Map<Tier, MachineType<?>> OUTPUT_BUSES;
 	public static Map<Tier, MachineType<?>> INPUT_HATCHES;
 	public static Map<Tier, MachineType<?>> OUTPUT_HATCHES;
+	public static Map<Tier, MachineType<?>> ENERGY_HATCHES;
+	public static Map<Tier, MachineType<?>> DYNAMO_HATCHES;
 
 	public static MultiMachineType<?> LARGE_BRONZE_BOILER;
+	public static MultiMachineType<?> ELECTRIC_BLAST_FURNACE;
 
 	private NCMachines() {
 	}

@@ -17,7 +17,6 @@ public class GenericGeneratorMachine extends GenericRecipeMachine {
 
 	public GenericGeneratorMachine(final MachineType<GenericRecipeMachine> type, final Tier tier, final BlockPos pos, final BlockState blockState) {
 		super(type, tier, pos, blockState);
-		this.getEnergy().setCapabilityValidator(side -> side == BlockRotationHelper.getFacing(this.getBlockState()));
 		this.getEnergy().setCapabilityValidator(side -> side == this.getFacing());
 		this.getEnergy().addChangedListener(this::revalidateTick);
 		if (this.getInputItems() != null) {

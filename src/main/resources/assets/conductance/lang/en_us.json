@@ -24,6 +24,8 @@
   "item.conductance.transistor": "Transistor",
 
   "block.conductance.bronze_casing": "Bronze Casing",
+  "block.conductance.invar_casing": "Invar Casing",
+  "block.conductance.aluminium_casing": "Aluminium Casing",
   "block.conductance.bronze_firebox_casing": "Bronze Firebox Casing",
 
   "tooltip.material_bucket.temperature": "§eTemperature: §r%sK",
@@ -91,11 +93,14 @@
   "machine.conductance.cutting_machine": "%s Cutting Machine",
 
   "machine.conductance.large_bronze_boiler": "Large Bronze Boiler",
+  "machine.conductance.electric_blast_furnace": "Electric Blast Furnace",
 
   "machine.conductance.input_bus": "%s Input Bus",
   "machine.conductance.output_bus": "%s Output Bus",
   "machine.conductance.input_hatch": "%s Input Hatch",
   "machine.conductance.output_hatch": "%s Output Hatch",
+  "machine.conductance.energy_hatch": "%s Energy Hatch",
+  "machine.conductance.dynamo_hatch": "%s Dynamo Hatch",
 
   "guiWidget.conductance.tank.empty": "Empty",
   "guiWidget.conductance.tank.capacity": "§9Capacity:§r %s",

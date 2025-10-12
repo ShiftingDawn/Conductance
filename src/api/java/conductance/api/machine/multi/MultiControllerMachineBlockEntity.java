@@ -14,6 +14,7 @@ import lombok.Getter;
 import conductance.api.CAPI;
 import conductance.api.NCBlockStateProperties;
 import conductance.api.block.BlockRotationHelper;
+import conductance.api.block.FacingAndRotation;
 import conductance.api.util.Internal;
 
 public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineBlockEntity<T>> extends MultiMachineBlockEntity<T> implements IMultiBlockController<T> {
@@ -133,7 +134,8 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 
 	@Override
 	public MultiBlockInfo getMultiBlockInfo() {
-		return new MultiBlockInfo(this.level, this.worldPosition, BlockRotationHelper.getFacing(this.getBlockState()));
+		final FacingAndRotation facingAndRotation = BlockRotationHelper.getExtendedRotation(this.getBlockState());
+		return new MultiBlockInfo(this.level, this.worldPosition, facingAndRotation.getFacing(), facingAndRotation.getRotation());
 	}
 
 	@Override
@@ -161,25 +163,36 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 				return;
 			}
 		}
-		if (controller.checkStructureAsyncLocked(new StructureCheckContext())) {
+		final StructureCheckContext ctx = new StructureCheckContext();
+		if (controller.checkStructureAsyncLocked(ctx)) {
 			if (controller.getLevel() instanceof final ServerLevel serverLevel) {
 				serverLevel.getServer().execute(() -> {
 					final Lock lock = controller.getStructureCheckLock();
 					lock.lock();
-					final StructureCheckContext ctx = new StructureCheckContext();
-					if (controller.checkStructureAsyncLockedBlocking(ctx)) {
-						controller.onStructureFormed(ctx);
-					} else {
-						controller.onStructureInvalid(ctx);
+					final StructureCheckContext ctx2 = new StructureCheckContext();
+					try {
+						if (controller.checkStructureAsyncLockedBlocking(ctx2)) {
+							controller.onStructureFormed(ctx2);
+						} else {
+							controller.onStructureInvalid(ctx2);
+						}
+					} finally {
+						lock.unlock();
 					}
-					lock.unlock();
 				});
 			}
 		} else {
-			final Lock lock = controller.getStructureCheckLock();
-			lock.lock();
-			controller.onStructureInvalid(new StructureCheckContext());
-			lock.unlock();
+			if (controller.getLevel() instanceof final ServerLevel serverLevel) {
+				serverLevel.getServer().execute(() -> {
+					final Lock lock = controller.getStructureCheckLock();
+					lock.lock();
+					try {
+						controller.onStructureInvalid(ctx);
+					} finally {
+						lock.unlock();
+					}
+				});
+			}
 		}
 	}
 }
