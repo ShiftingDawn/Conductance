@@ -23,6 +23,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.gui.GuiTheme;
 import conductance.api.machine.gui.IGuiWidget;
@@ -37,7 +38,7 @@ import conductance.init.machine.GenericRecipeMachineGuiSetup;
 
 final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecipe> {
 
-	private static final int LINE_COUNT = 1;
+	private static final int LINE_COUNT = 2;
 	static final Function<MachineRecipeType, IRecipeType<MachineRecipe>> RECIPE_TYPES = Util.memoize(machineRecipeType ->
 		new IRecipeType.JeiRecipeType<>(machineRecipeType.getId(), MachineRecipe.class)
 	);
@@ -143,11 +144,16 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 		guiGraphics.pose().popMatrix();
 	}
 
+	@SuppressWarnings("CheckStyle")
 	@Override
 	public void createRecipeExtras(final IRecipeExtrasBuilder builder, final MachineRecipe recipe, final IFocusGroup focuses) {
-		builder.addText(List.of(
-			Component.translatable("info.conductance.jei.duration", TextHelper.getFormattedRecipeDuration(recipe.getRecipeDuration()))
-		), this.getWidth(), this.getHeight() - this.rootGroup.getHeight()).setPosition(0, this.rootGroup.getHeight() + 3);
+		int y = this.rootGroup.getHeight() + 3;
+		builder.addText(Component.translatable("info.conductance.jei.duration", TextHelper.getFormattedRecipeDuration(recipe.getRecipeDuration())), this.getWidth(), 10).setPosition(0, y);
+		if (recipe.getPerTickInputs().containsKey(NCRecipeElementTypes.ENERGY)) {
+			final long energyPerTick = recipe.getPerTickInputs().get(NCRecipeElementTypes.ENERGY).stream().mapToLong(element -> (long) element.data()).sum();
+			builder.addText(Component.translatable("info.conductance.jei.energy", TextHelper.getFormattedEnergy(energyPerTick), CAPI.tiers().getByVoltage(energyPerTick).getName()), this.getWidth(), 10)
+				.setPosition(0, y += 10);
+		}
 	}
 
 	@Override

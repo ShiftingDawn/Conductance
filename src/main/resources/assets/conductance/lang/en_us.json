@@ -34,9 +34,9 @@
   "tag.item.conductance.tools.wire_cutter": "Wire Cutters",
 
   "info.conductance.generic.hold_shift": "Hold %s for more information",
-  "info.conductance.generic.duration.ticks": "%s ticks",
-  "info.conductance.generic.duration.seconds_small": "%s Seconds (%s ticks)",
-  "info.conductance.generic.duration.seconds": "%s seconds",
+  "info.conductance.generic.duration.ticks": "%st",
+  "info.conductance.generic.duration.seconds_small": "%ss (%st)",
+  "info.conductance.generic.duration.seconds": "%ss",
   "info.conductance.jei.open_recipe_viewer": "View recipes",
   "info.conductance.jei.requires_program_circuit": "Requires Recipe Program %s",
   "info.conductance.jei.in.chance": "§eConsumption chance: %s%",
@@ -47,7 +47,9 @@
   "info.conductance.jei.out.chance_0": "§cNever produced",
   "info.conductance.jei.out.chance_overlay": "§e~",
   "info.conductance.jei.out.chance_0_overlay": "§cNP",
+  "info.conductance.jei.per_tick": "/t",
   "info.conductance.jei.duration": "Duration: %s",
+  "info.conductance.jei.energy": "Energy: %s/t (%s)",
 
   "tieredItemType.conductance.circuit": "%s Circuit",
   "tieredItemType.conductance.advanced_circuit": "Advanced %s Circuit",

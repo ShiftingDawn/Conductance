@@ -13,6 +13,7 @@ import conductance.api.machine.MachineRecipeCapability;
 import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
+import conductance.api.tier.Tier;
 import conductance.api.util.IO;
 
 public final class RecipeHelper {
@@ -103,22 +104,30 @@ public final class RecipeHelper {
 		});
 	}
 
-	public static AutoRecipeData calc(final Material material, final MaterialGenerationHandler input, final MaterialGenerationHandler output, final int processTime) {
+	public static AutoRecipeData calc(final Material material, final MaterialGenerationHandler input, final MaterialGenerationHandler output, final int processTime, final long baseEnergy) {
 		final long inputValue = CAPI.materials().getUnitValue(material, input);
 		final long outputValue = CAPI.materials().getUnitValue(material, output);
 		if (inputValue == outputValue) {
-			return new AutoRecipeData(1, 1, processTime);
+			return new AutoRecipeData(1, 1, processTime, baseEnergy);
 		} else if (inputValue < outputValue) {
 			final int diffAmount = (int) (outputValue / inputValue);
-			return new AutoRecipeData(diffAmount, 1, processTime * diffAmount);
+			return new AutoRecipeData(diffAmount, 1, processTime * diffAmount, diffAmount * baseEnergy);
 		} else {
 			final int diffAmount = (int) (inputValue / outputValue);
-			return new AutoRecipeData(1, diffAmount, processTime * diffAmount);
+			return new AutoRecipeData(1, diffAmount, processTime * diffAmount, diffAmount * baseEnergy);
 		}
 	}
 
-	public static void calc(final Material material, final MaterialGenerationHandler input, final MaterialGenerationHandler output, final int processTime, final AutoRecipeDataCallback callback) {
-		final AutoRecipeData data = RecipeHelper.calc(material, input, output, processTime);
-		callback.accept(data.inAmount(), data.outAmount(), data.processTime());
+	public static AutoRecipeData calc(final Material material, final MaterialGenerationHandler input, final MaterialGenerationHandler output, final int processTime, final Tier energyTier) {
+		return RecipeHelper.calc(material, input, output, processTime, energyTier.getRecipeVoltage());
+	}
+
+	public static void calc(final Material material, final MaterialGenerationHandler input, final MaterialGenerationHandler output, final int processTime, final long baseEnergy, final AutoRecipeDataCallback callback) {
+		final AutoRecipeData data = RecipeHelper.calc(material, input, output, processTime, baseEnergy);
+		callback.accept(data.inAmount(), data.outAmount(), data.processTime(), data.totalEnergy());
+	}
+
+	public static void calc(final Material material, final MaterialGenerationHandler input, final MaterialGenerationHandler output, final int processTime, final Tier energyTier, final AutoRecipeDataCallback callback) {
+		RecipeHelper.calc(material, input, output, processTime, energyTier.getRecipeVoltage(), callback);
 	}
 }

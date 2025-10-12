@@ -7,7 +7,6 @@ import net.minecraft.network.chat.Component;
 import lombok.RequiredArgsConstructor;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix3x2fStack;
 
 @RequiredArgsConstructor
 final class SlotTextOverlay implements IDrawableStatic {
@@ -16,6 +15,7 @@ final class SlotTextOverlay implements IDrawableStatic {
 	public static final Component IN_CHANCE_0 = Component.translatable("info.conductance.jei.in.chance_0_overlay");
 	public static final Component OUT_CHANCE = Component.translatable("info.conductance.jei.out.chance_overlay");
 	public static final Component OUT_CHANCE_0 = Component.translatable("info.conductance.jei.out.chance_0_overlay");
+	public static final Component PER_TICK = Component.translatable("info.conductance.jei.per_tick");
 
 	private final @Nullable Component topText;
 	private final @Nullable Component bottomText;
