@@ -60,28 +60,23 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 		this.recipeHandler = new RecipeHandler(this, this);
 		final int inputItemLimit = this.getRecipeType().getLimit(IO.IN, NCRecipeElementTypes.ITEM);
 		this.inputItems = inputItemLimit > 0 ? CAPI.make(new MachineRecipeCapabilityItems(this, inputItemLimit, IO.IN, CapIO.IN, MachineInventory::new), inv -> {
-			inv.addChangedListener(this::setChanged);
 			inv.addChangedListener(this.recipeHandler::revalidateTick);
 		}) : null;
 		final int outputItemLimit = this.getRecipeType().getLimit(IO.OUT, NCRecipeElementTypes.ITEM);
 		this.outputItems = outputItemLimit > 0 ? CAPI.make(new MachineRecipeCapabilityItems(this, outputItemLimit, IO.OUT, CapIO.OUT, MachineInventory::new), inv -> {
-			inv.addChangedListener(this::setChanged);
 			inv.addChangedListener(this.recipeHandler::revalidateTick);
 		}) : null;
 		final int inputFluidLimit = this.getRecipeType().getLimit(IO.IN, NCRecipeElementTypes.FLUID);
 		this.inputFluids = inputFluidLimit > 0 ? CAPI.make(new MachineRecipeCapabilityFluids(this, inputFluidLimit, IO.IN, CapIO.IN, tankCount -> new MachineFluidHandler(tankCount, CAPI.BUCKET * 16)), handler -> {
-			handler.addChangedListener(this::setChanged);
 			handler.addChangedListener(this.recipeHandler::revalidateTick);
 		}) : null;
 		final int outputFluidLimit = this.getRecipeType().getLimit(IO.OUT, NCRecipeElementTypes.FLUID);
 		this.outputFluids = outputFluidLimit > 0 ? CAPI.make(new MachineRecipeCapabilityFluids(this, outputFluidLimit, IO.OUT, CapIO.OUT, tankCount -> new MachineFluidHandler(tankCount, CAPI.BUCKET * 16)), handler -> {
-			handler.addChangedListener(this::setChanged);
 			handler.addChangedListener(this.recipeHandler::revalidateTick);
 		}) : null;
 		this.energy = this.isEnergyGenerator()
 			? MachineRecipeCapabilityEnergy.createOutput(this, IO.OUT, tier.getVoltage() * 64, tier.getVoltage(), this.getMaxEnergyAmperage())
 			: MachineRecipeCapabilityEnergy.createInput(this, IO.IN, tier.getVoltage() * 64, tier.getVoltage(), this.getMaxEnergyAmperage());
-		this.energy.addChangedListener(this::setChanged);
 		this.energy.addChangedListener(this.recipeHandler::revalidateTick);
 		this.recipeCapabilities = Tables.unmodifiableTable(Util.make(HashBasedTable.create(), table -> {
 			table.put(NCRecipeElementTypes.ITEM, IO.IN, this.inputItems != null ? List.of(this.inputItems) : List.of());

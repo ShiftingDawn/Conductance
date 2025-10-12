@@ -30,11 +30,9 @@ public abstract class AbstractSteamBoilerMachine<T extends AbstractSteamBoilerMa
 		this.boilerHandler = new BoilerFakeRecipeHandler(this, this);
 		this.waterTank = new MachineRecipeCapabilityFluids(this, 1, IO.IN, CapIO.IN, tanks -> new MachineFluidHandler(tanks, CAPI.BUCKET * 4));
 		this.waterTank.getHandler().setFilter((tank, stack) -> stack.is(CAPI.materials().getFluidTag(NCMaterials.WATER, NCMaterialGenerationHandlers.LIQUID)));
-		this.waterTank.addChangedListener(this::setChanged);
 		this.waterTank.addChangedListener(this.getBoilerHandler()::revalidateTick);
 		this.steamTank = new MachineRecipeCapabilityFluids(this, 1, IO.OUT, CapIO.OUT, tanks -> new MachineFluidHandler(tanks, CAPI.BUCKET * 4));
 		this.steamTank.getHandler().setFilter((tank, stack) -> stack.is(CAPI.materials().getFluidTag(NCMaterials.STEAM, NCMaterialGenerationHandlers.GAS)));
-		this.steamTank.addChangedListener(this::setChanged);
 		this.steamTank.addChangedListener(this.getBoilerHandler()::revalidateTick);
 	}
 

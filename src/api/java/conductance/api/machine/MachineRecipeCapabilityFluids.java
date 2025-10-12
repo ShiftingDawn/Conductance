@@ -24,6 +24,7 @@ public final class MachineRecipeCapabilityFluids extends MachineRecipeCapability
 		super(machine, NCRecipeElementTypes.FLUID, recipeIoMode, capabilityIoMode);
 		this.handler = fluidHandlerFactory.apply(tankCount);
 		this.handler.setChangeListener(this::setChanged);
+		this.addChangedListener(machine::syncToClient);
 	}
 
 	@Override

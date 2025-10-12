@@ -34,6 +34,7 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 		this.inputAmperage = inputAmperage;
 		this.outputVoltage = outputVoltage;
 		this.outputAmperage = outputAmperage;
+		this.addChangedListener(machine::syncToClient);
 	}
 
 	public static MachineRecipeCapabilityEnergy createInput(final MachineBlockEntity<?> machine, final IO recipeIoMode, final long capacity, final long inputVoltage, final long inputAmperage) {

@@ -24,7 +24,6 @@ public class SteamSolidFuelBoilerMachine extends AbstractSteamBoilerMachine<Stea
 	public SteamSolidFuelBoilerMachine(final MachineType<SteamSolidFuelBoilerMachine> type, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
 		this.inputItems = new MachineRecipeCapabilityItems(this, 1, IO.IN, CapIO.IN, MachineInventory::new);
-		this.inputItems.addChangedListener(this::setChanged);
 		this.inputItems.addChangedListener(this.getBoilerHandler()::revalidateTick);
 	}
 

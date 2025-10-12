@@ -26,8 +26,6 @@ public final class MultiBlockItemBusPartMachine extends MultiPartMachineBlockEnt
 	public MultiBlockItemBusPartMachine(final MachineType<MultiBlockItemBusPartMachine> type, final BlockPos pos, final BlockState blockState, final IO io, final int slots) {
 		super(type, pos, blockState);
 		this.items = new MachineRecipeCapabilityItems(this, slots, io, CapIO.BOTH, MachineInventory::new);
-		this.items.addChangedListener(this::setChanged);
-		this.items.addChangedListener(this::syncToClient);
 		this.items.addChangedListener(this::revalidateTick);
 		this.io = io;
 	}

@@ -26,8 +26,6 @@ public final class MultiBlockFluidHatchPartMachine extends MultiPartMachineBlock
 	public MultiBlockFluidHatchPartMachine(final MachineType<MultiBlockFluidHatchPartMachine> type, final BlockPos pos, final BlockState blockState, final IO io, final int tanks, final int capacity) {
 		super(type, pos, blockState);
 		this.fluids = new MachineRecipeCapabilityFluids(this, tanks, io, CapIO.BOTH, t -> new MachineFluidHandler(t, capacity));
-		this.fluids.addChangedListener(this::setChanged);
-		this.fluids.addChangedListener(this::syncToClient);
 		this.fluids.addChangedListener(this::revalidateTick);
 		this.io = io;
 	}

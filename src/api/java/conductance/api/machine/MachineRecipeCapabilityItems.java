@@ -26,6 +26,7 @@ public final class MachineRecipeCapabilityItems extends MachineRecipeCapability<
 		super(machine, NCRecipeElementTypes.ITEM, recipeIoMode, capabilityIoMode);
 		this.inventory = inventoryFactory.apply(slots);
 		this.inventory.setChangeListener(this::setChanged);
+		this.addChangedListener(machine::syncToClient);
 	}
 
 	@Override
