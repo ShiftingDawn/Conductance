@@ -47,7 +47,10 @@
   "info.conductance.jei.out.chance_0": "§cNever produced",
   "info.conductance.jei.out.chance_overlay": "§e~",
   "info.conductance.jei.out.chance_0_overlay": "§cNP",
-  "info.conductance.jei.per_tick": "/t",
+  "info.conductance.jei.in.per_tick": "Consumed every tick",
+  "info.conductance.jei.in.per_tick_overlay": "/t",
+  "info.conductance.jei.out.per_tick": "Produced every tick",
+  "info.conductance.jei.out.per_tick_overlay": "/t",
   "info.conductance.jei.duration": "Duration: %s",
   "info.conductance.jei.energy": "Energy: %s/t (%s)",
 

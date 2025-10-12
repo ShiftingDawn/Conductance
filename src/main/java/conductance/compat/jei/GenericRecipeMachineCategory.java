@@ -82,7 +82,11 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 					continue;
 				}
 				final List<Tuple<List<ItemStack>, RecipeElement>> mapping = io == IO.IN ? holder.getInputItems() : holder.getOutputItems();
-				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset, 0, entry.getValue(), key, io, mapping,
+				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset, 0, entry.getValue(), key, io, mapping, false,
+					(slotBuilder, itemStacks) -> slotBuilder.addIngredients(VanillaTypes.ITEM_STACK, itemStacks),
+					null);
+				final List<Tuple<List<ItemStack>, RecipeElement>> perTickMapping = io == IO.IN ? holder.getPerTickInputItems() : holder.getPerTickOutputItems();
+				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset, mapping.size(), entry.getValue(), key, io, perTickMapping, true,
 					(slotBuilder, itemStacks) -> slotBuilder.addIngredients(VanillaTypes.ITEM_STACK, itemStacks),
 					null);
 			} else if (key.startsWith("fluids_")) {
@@ -91,7 +95,12 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 					continue;
 				}
 				final List<Tuple<List<FluidStack>, RecipeElement>> mapping = io == IO.IN ? holder.getInputFluids() : holder.getOutputFluids();
-				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset, 0, entry.getValue(), key, io, mapping,
+				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset, 0, entry.getValue(), key, io, mapping, false,
+					(slotBuilder, fluidStacks) -> slotBuilder.addIngredients(NeoForgeTypes.FLUID_STACK, fluidStacks).setFluidRenderer(1, false, 16, 16),
+					fluidStacks -> !fluidStacks.isEmpty() ? Component.literal(TextHelper.getFormattedFluidAmount(fluidStacks.getFirst().getAmount())) : null
+				);
+				final List<Tuple<List<FluidStack>, RecipeElement>> perTickMapping = io == IO.IN ? holder.getPerTickInputFluids() : holder.getPerTickOutputFluids();
+				GenericRecipeMachineCategory.makeRecipeSlotEntry(builder, xOffset, mapping.size(), entry.getValue(), key, io, perTickMapping, true,
 					(slotBuilder, fluidStacks) -> slotBuilder.addIngredients(NeoForgeTypes.FLUID_STACK, fluidStacks).setFluidRenderer(1, false, 16, 16),
 					fluidStacks -> !fluidStacks.isEmpty() ? Component.literal(TextHelper.getFormattedFluidAmount(fluidStacks.getFirst().getAmount())) : null
 				);
@@ -100,27 +109,33 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 	}
 
 	private static <T> void makeRecipeSlotEntry(
-		final IRecipeLayoutBuilder builder, final int xOffset, final int yOffset, final IGuiWidget widget, final String widgetKey, final IO io, final List<Tuple<List<T>, RecipeElement>> mapping,
-		final BiConsumer<IRecipeSlotBuilder, List<T>> ingredientSetter, @Nullable final Function<List<T>, @Nullable Component> bottomText
+		final IRecipeLayoutBuilder builder, final int xOffset, final int slotOffset, final IGuiWidget widget, final String widgetKey, final IO io, final List<Tuple<List<T>, RecipeElement>> mapping,
+		final boolean perTick, final BiConsumer<IRecipeSlotBuilder, List<T>> ingredientSetter, @Nullable final Function<List<T>, @Nullable Component> bottomText
 	) {
-		final int slotIndex = Integer.parseInt(widgetKey.substring(widgetKey.lastIndexOf('_') + 1));
+		final int slotIndex = Integer.parseInt(widgetKey.substring(widgetKey.lastIndexOf('_') + 1)) - slotOffset;
 		if (slotIndex < 0 || slotIndex >= mapping.size()) {
 			return;
 		}
 		final Tuple<List<T>, RecipeElement> data = mapping.get(slotIndex);
 		final IRecipeSlotBuilder slotBuilder = switch (io) {
-			case IN -> builder.addInputSlot(xOffset + widget.getX() + 1, yOffset + widget.getY() + 1);
-			case OUT -> builder.addOutputSlot(xOffset + widget.getX() + 1, yOffset + widget.getY() + 1);
+			case IN -> builder.addInputSlot(xOffset + widget.getX() + 1, widget.getY() + 1);
+			case OUT -> builder.addOutputSlot(xOffset + widget.getX() + 1, widget.getY() + 1);
 		};
 		ingredientSetter.accept(slotBuilder, data.getA());
 		slotBuilder.addRichTooltipCallback((recipeSlotView, tooltip) -> {
+			if (perTick) {
+				tooltip.add(Component.translatable("info.conductance.jei.%s.per_tick".formatted(io)));
+			}
 			if (data.getB().chance() == 0) {
 				tooltip.add(Component.translatable("info.conductance.jei.%s.chance_0".formatted(io)));
 			} else if (data.getB().chance() != 1.0) {
 				tooltip.add(Component.translatable("info.conductance.jei.%s.chance".formatted(io), data.getB().chance() * 100));
 			}
 		});
-		slotBuilder.setOverlay(new SlotTextOverlay(switch (io) {
+		slotBuilder.setOverlay(new SlotTextOverlay(perTick ? switch (io) {
+			case IN -> SlotTextOverlay.IN_PER_TICK;
+			case OUT -> SlotTextOverlay.OUT_PER_TICK;
+		} : null, switch (io) {
 			case IN -> data.getB().chance() == 0 ? SlotTextOverlay.IN_CHANCE_0 : data.getB().chance() < 1 ? SlotTextOverlay.IN_CHANCE : null;
 			case OUT -> data.getB().chance() == 0 ? SlotTextOverlay.OUT_CHANCE_0 : data.getB().chance() < 1 ? SlotTextOverlay.OUT_CHANCE : null;
 		}, bottomText != null ? bottomText.apply(data.getA()) : null), 0, 0);
@@ -149,11 +164,14 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 	public void createRecipeExtras(final IRecipeExtrasBuilder builder, final MachineRecipe recipe, final IFocusGroup focuses) {
 		int y = this.rootGroup.getHeight() + 3;
 		builder.addText(Component.translatable("info.conductance.jei.duration", TextHelper.getFormattedRecipeDuration(recipe.getRecipeDuration())), this.getWidth(), 10).setPosition(0, y);
-		if (recipe.getPerTickInputs().containsKey(NCRecipeElementTypes.ENERGY)) {
-			final long energyPerTick = recipe.getPerTickInputs().get(NCRecipeElementTypes.ENERGY).stream().mapToLong(element -> (long) element.data()).sum();
-			builder.addText(Component.translatable("info.conductance.jei.energy", TextHelper.getFormattedEnergy(energyPerTick), CAPI.tiers().getByVoltage(energyPerTick).getName()), this.getWidth(), 10)
-				.setPosition(0, y += 10);
+		final long energyPerTick;
+		if (!recipe.getPerTickInputs().containsKey(NCRecipeElementTypes.ENERGY)) {
+			energyPerTick = recipe.getPerTickInputs().get(NCRecipeElementTypes.ENERGY).stream().mapToLong(element -> (long) element.data()).sum();
+		} else {
+			energyPerTick = 0;
 		}
+		builder.addText(Component.translatable("info.conductance.jei.energy", TextHelper.getFormattedEnergy(energyPerTick), CAPI.tiers().getByVoltage(energyPerTick).getName()), this.getWidth(), 10)
+			.setPosition(0, y += 10);
 	}
 
 	@Override

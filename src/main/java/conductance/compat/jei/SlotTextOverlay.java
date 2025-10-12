@@ -15,20 +15,28 @@ final class SlotTextOverlay implements IDrawableStatic {
 	public static final Component IN_CHANCE_0 = Component.translatable("info.conductance.jei.in.chance_0_overlay");
 	public static final Component OUT_CHANCE = Component.translatable("info.conductance.jei.out.chance_overlay");
 	public static final Component OUT_CHANCE_0 = Component.translatable("info.conductance.jei.out.chance_0_overlay");
-	public static final Component PER_TICK = Component.translatable("info.conductance.jei.per_tick");
+	public static final Component IN_PER_TICK = Component.translatable("info.conductance.jei.in.per_tick_overlay");
+	public static final Component OUT_PER_TICK = Component.translatable("info.conductance.jei.out.per_tick_overlay");
 
-	private final @Nullable Component topText;
+	private final @Nullable Component topLeftText;
+	private final @Nullable Component topRightText;
 	private final @Nullable Component bottomText;
 
 	@Override
 	public void draw(final GuiGraphics guiGraphics, final int xOffset, final int yOffset) {
 		final Font font = Minecraft.getInstance().font;
-
-		if (this.topText != null) {
+		if (this.topLeftText != null) {
+			guiGraphics.pose().pushMatrix();
+			guiGraphics.pose().translate(xOffset, yOffset);
+			guiGraphics.pose().scale(0.65f, 0.65f);
+			guiGraphics.drawString(font, this.topLeftText, 0, 0, -1);
+			guiGraphics.pose().popMatrix();
+		}
+		if (this.topRightText != null) {
 			guiGraphics.pose().pushMatrix();
 			guiGraphics.pose().translate(xOffset + 16, yOffset);
 			guiGraphics.pose().scale(0.5f, 0.5f);
-			guiGraphics.drawString(font, this.topText, -font.width(this.topText), 0, -1);
+			guiGraphics.drawString(font, this.topRightText, -font.width(this.topRightText), 0, -1);
 			guiGraphics.pose().popMatrix();
 		}
 		if (this.bottomText != null) {
