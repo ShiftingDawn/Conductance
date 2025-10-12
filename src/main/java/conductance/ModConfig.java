@@ -6,6 +6,20 @@ public final class ModConfig {
 
 	private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
+	//region Difficulty
+	static {
+		ModConfig.BUILDER.push("difficulty");
+	}
+
+	public static ModConfigSpec.BooleanValue difficulty_enableOverVoltExplosions = ModConfig.BUILDER
+		.comment("Machines will explode if given more volts than they can handle. Disabling will replace them with fire instead.")
+		.define("enableOverVoltExplosions", true);
+
+	static {
+		ModConfig.BUILDER.pop();
+	}
+	//endregion
+
 	// region Debug
 	// @formatter:off
 	static { ModConfig.BUILDER.push("debug"); }

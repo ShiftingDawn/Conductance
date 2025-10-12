@@ -81,6 +81,8 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 		this.energy = this.isEnergyGenerator()
 			? MachineRecipeCapabilityEnergy.createOutput(this, IO.OUT, tier.getVoltage() * 64, tier.getVoltage(), this.getMaxEnergyAmperage())
 			: MachineRecipeCapabilityEnergy.createInput(this, IO.IN, tier.getVoltage() * 64, tier.getVoltage(), this.getMaxEnergyAmperage());
+		this.energy.addChangedListener(this::setChanged);
+		this.energy.addChangedListener(this.recipeHandler::revalidateTick);
 		this.recipeCapabilities = Tables.unmodifiableTable(Util.make(HashBasedTable.create(), table -> {
 			table.put(NCRecipeElementTypes.ITEM, IO.IN, this.inputItems != null ? List.of(this.inputItems) : List.of());
 			table.put(NCRecipeElementTypes.ITEM, IO.OUT, this.outputItems != null ? List.of(this.outputItems) : List.of());

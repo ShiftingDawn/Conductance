@@ -10,6 +10,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.NCCapabilities;
+import conductance.api.machine.energy.IEnergyHandler;
 
 public final class CapabilityHelper {
 
@@ -65,6 +67,24 @@ public final class CapabilityHelper {
 		if (accepted > 0) {
 			stack = source.drain(accepted, IFluidHandler.FluidAction.EXECUTE);
 			destination.fill(stack.copyWithAmount(accepted), IFluidHandler.FluidAction.EXECUTE);
+		}
+	}
+
+	public static void tryExportEnergy(final IEnergyHandler source, final Level level, final BlockPos destinationPos, final @Nullable Direction destinationSide) {
+		if (source.getOutputVoltage() <= 0 || source.getOutputAmperage() <= 0 || source.getEnergyStored() < source.getOutputVoltage()) {
+			return;
+		}
+		final IEnergyHandler destination = NCCapabilities.getEnergyHandler(level, destinationPos, destinationSide);
+		if (destination == null || !destination.canReceiveEnergy(destinationSide)) {
+			return;
+		}
+		final long maxAmps = Math.min(source.getOutputAmperage(), source.getEnergyStored() / source.getOutputVoltage());
+		if (maxAmps <= 0) {
+			return;
+		}
+		final long acceptedAmps = destination.receiveEnergy(destinationSide, source.getOutputVoltage(), source.getOutputAmperage());
+		if (acceptedAmps > 0) {
+			source.removeEnergy(acceptedAmps * source.getOutputVoltage());
 		}
 	}
 

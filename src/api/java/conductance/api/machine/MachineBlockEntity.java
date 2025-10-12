@@ -211,6 +211,9 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		this.currentlyWorking = newState.getValueOrElse(NCBlockStateProperties.WORKING, false);
 	}
 
+	public void onNeighborChanged(final BlockState neighborState, final BlockPos neighborPos, final Direction neighborSide) {
+	}
+
 	@Override
 	public void setRemoved() {
 		super.setRemoved();

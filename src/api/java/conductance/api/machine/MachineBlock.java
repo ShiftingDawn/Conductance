@@ -5,7 +5,6 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
@@ -33,6 +32,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCBlockStateProperties;
+import conductance.api.block.BlockHelper;
 import conductance.api.block.BlockRotationHelper;
 import conductance.api.block.BlockRotationType;
 import conductance.api.block.IGeneratedMiningTags;
@@ -136,8 +136,10 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	}
 
 	@Override
-	protected void spawnAfterBreak(final BlockState state, final ServerLevel level, final BlockPos pos, final ItemStack stack, final boolean dropExperience) {
-		super.spawnAfterBreak(state, level, pos, stack, dropExperience);
+	public void onNeighborChange(final BlockState state, final LevelReader level, final BlockPos pos, final BlockPos neighbor) {
+		if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
+			machine.onNeighborChanged(level.getBlockState(neighbor), neighbor, BlockHelper.findNeighborSide(pos, neighbor));
+		}
 	}
 
 	@Override

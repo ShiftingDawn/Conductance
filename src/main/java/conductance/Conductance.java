@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import conductance.api.CAPI;
 import conductance.api.plugin.IConductancePluginEvent;
 import conductance.api.resource.ResourceFinder;
+import conductance.api.util.Internal;
 import conductance.api.util.RegistryProvider;
 import conductance.core.machine.MachineCore;
 import conductance.core.material.MaterialCore;
@@ -61,6 +62,7 @@ public abstract class Conductance {
 		Conductance.MODBUS = modEventBus;
 		modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, ModConfig.SPEC);
 		modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+		Internal.IS_EXPLOSION_ENABLED = () -> ModConfig.difficulty_enableOverVoltExplosions.getAsBoolean();
 
 		PluginEventBus.initialize();
 

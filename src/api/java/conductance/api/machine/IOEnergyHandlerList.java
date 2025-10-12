@@ -64,12 +64,12 @@ public class IOEnergyHandlerList implements IEnergyHandler, ValueIOSerializable 
 
 	@Override
 	public boolean canReceiveEnergy(@Nullable final Direction receivingSide) {
-		return false;
+		return this.io.isInput();
 	}
 
 	@Override
 	public boolean canExtractEnergy(@Nullable final Direction extractingSide) {
-		return true;
+		return this.io.isOutput();
 	}
 
 	@SuppressWarnings("deprecation")

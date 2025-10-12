@@ -1,6 +1,7 @@
 package conductance.api.util;
 
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.server.level.ServerLevel;
@@ -26,6 +27,7 @@ public final class Internal {
 	public static Function<MachineBlockEntity<?>, Consumer<ValueInput>> MACHINE_RPC_PACKET_RECEIVER_CLIENT;
 	public static BiConsumer<ServerLevel, IMultiBlockController<?>> MULTIBLOCK_CONTROLLER_LOAD;
 	public static BiConsumer<ServerLevel, IMultiBlockController<?>> MULTIBLOCK_CONTROLLER_UNLOAD;
+	public static BooleanSupplier IS_EXPLOSION_ENABLED = () -> false; //Gets overridden by main mod to use config supplied value
 
 	private Internal() {
 	}

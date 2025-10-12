@@ -106,7 +106,7 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 		}
 		if (volts > 0L && (receivingSide == null || this.canReceiveEnergy(receivingSide))) {
 			if (volts > this.getInputVoltage()) {
-				BlockHelper.explode(this.getMachine(), volts);
+				BlockHelper.explodeOrReplaceWithFire(this.getMachine(), volts);
 				return Math.min(amps, this.getInputAmperage() - this.acceptedAmpsThisTick);
 			}
 			if (this.getEnergySpace() >= volts) {
