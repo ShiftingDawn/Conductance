@@ -35,6 +35,7 @@ import conductance.core.periodicelement.PeriodicElementCore;
 import conductance.core.recipe.RecipeCore;
 import conductance.core.tier.TierCore;
 import conductance.core.tier.TierRegistryImpl;
+import conductance.init.ConductanceBlockEntities;
 import conductance.init.ConductanceBlocks;
 import conductance.init.ConductanceCreativeTabs;
 import conductance.init.ConductanceDataComponents;
@@ -89,6 +90,7 @@ public abstract class Conductance {
 
 		ConductanceMenuTypes.initialize(Conductance.MODBUS);
 		ConductanceDataComponents.initialize(Conductance.MODBUS);
+		ConductanceBlockEntities.initialize(Conductance.MODBUS);
 		ConductanceBlocks.initialize(Conductance.MODBUS);
 		ConductanceItems.initialize(Conductance.MODBUS);
 		ConductanceFluids.initialize(Conductance.MODBUS);

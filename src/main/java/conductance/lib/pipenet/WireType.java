@@ -23,4 +23,8 @@ public enum WireType {
 		this.voxels = voxels;
 		this.amperage = amperage;
 	}
+
+	public WireData getPhysicalProperties(final WireData baseProps) {
+		return new WireData(baseProps.voltage(), baseProps.amperage() * this.amperage);
+	}
 }

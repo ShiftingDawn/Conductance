@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.NCBlockStateProperties;
 import conductance.api.NCBlocks;
+import conductance.api.NCCapabilities;
 import conductance.api.NCMaterialTraits;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreBearer;
@@ -39,6 +41,7 @@ import conductance.init.block.MaterialOreBlock;
 import conductance.init.block.MaterialOreBlockItem;
 import conductance.init.block.MaterialOreRotatedPillarBlock;
 import conductance.init.block.WireBlock;
+import conductance.init.block.WireBlockEntity;
 import conductance.init.block.WireBlockItem;
 import conductance.lib.pipenet.WireRegistry;
 import conductance.lib.pipenet.WireType;
@@ -54,6 +57,7 @@ public final class ConductanceBlocks {
 	public static void initialize(final IEventBus modEventBus) {
 		ConductanceBlocks.REGISTRY.register(modEventBus);
 		ConductanceBlocks.ITEMS.register(modEventBus);
+		modEventBus.addListener(RegisterCapabilitiesEvent.class, ConductanceBlocks::attachCapabilities);
 		CAPI.regs().materials().forEach(ConductanceBlocks::generateMaterial);
 		modEventBus.addListener(RegisterColorHandlersEvent.Block.class, ConductanceBlocks::handleMaterialBlockColors);
 		NCBlocks.CASING_BRONZE = ConductanceBlocks.makeSimpleBlock("bronze_casing", "casing/bronze");
@@ -264,6 +268,17 @@ public final class ConductanceBlocks {
 				return i == 0 ? block.getMaterial().getColor().getCurrentColor() : -1;
 			}, blocks);
 		});
+	}
+
+	private static void attachCapabilities(final RegisterCapabilitiesEvent event) {
+		for (final WireBlock wireBlock : WireRegistry.getAllBlocks()) {
+			event.registerBlock(NCCapabilities.ENERGY_HANDLER_BLOCK, (level, pos, state, blockEntity, side) -> {
+				if (blockEntity instanceof final WireBlockEntity wireBlockEntity) {
+					return wireBlockEntity.getEnergyHandler(side);
+				}
+				return null;
+			}, wireBlock);
+		}
 	}
 
 	private ConductanceBlocks() {

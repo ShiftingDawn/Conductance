@@ -4,12 +4,11 @@ import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 
-public final class WireBlockItem extends BlockItem {
+public final class WireBlockItem extends PipeBlockItem {
 
 	public WireBlockItem(final WireBlock block, final Properties properties) {
 		super(block, properties.component(DataComponents.ITEM_NAME, block.getName()));
