@@ -58,7 +58,7 @@ final class ModelElementBuilderImpl extends JsonResourceBuilderImpl<ModelElement
 
 	@Override
 	public ModelElementBuilder face(final Direction face, final Consumer<ModelElementFaceBuilder> builder) {
-		Util.make(this.faces.computeIfAbsent(face, k -> new ModelElementFaceBuilderImpl()), builder);
+		Util.make(this.faces.computeIfAbsent(face, k -> new ModelElementFaceBuilderImpl(this.from, this.to, face)), builder);
 		return this;
 	}
 

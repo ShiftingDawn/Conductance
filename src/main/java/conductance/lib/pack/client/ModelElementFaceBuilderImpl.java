@@ -6,12 +6,17 @@ import net.minecraft.core.Direction;
 import com.mojang.math.Quadrant;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.resource.ModelElementFaceBuilder;
 import conductance.api.resource.ModelNeoforgeDataBuilder;
 
+@RequiredArgsConstructor
 final class ModelElementFaceBuilderImpl extends JsonResourceBuilderImpl<ModelElementFaceBuilder> implements ModelElementFaceBuilder {
 
+	private final int[] fromPos;
+	private final int[] toPos;
+	private final Direction face;
 	private int[] uv = new int[0];
 	private @Nullable String texture;
 	private @Nullable Direction cullFace;
@@ -23,6 +28,18 @@ final class ModelElementFaceBuilderImpl extends JsonResourceBuilderImpl<ModelEle
 	public ModelElementFaceBuilder uv(final int x1, final int y1, final int x2, final int y2) {
 		this.uv = new int[] {x1, y1, x2, y2};
 		return this;
+	}
+
+	@Override
+	public ModelElementFaceBuilder uvAuto() {
+		return switch (this.face) {
+			case UP -> this.uv(this.fromPos[0], this.fromPos[2], this.toPos[0], this.toPos[2]);
+			case DOWN -> this.uv(this.fromPos[0], this.toPos[2], this.toPos[0], this.fromPos[2]);
+			case NORTH -> this.uv(this.toPos[0], this.toPos[1], this.fromPos[0], this.fromPos[1]);
+			case SOUTH -> this.uv(this.fromPos[0], this.toPos[1], this.toPos[0], this.fromPos[1]);
+			case WEST -> this.uv(this.fromPos[2], this.toPos[1], this.toPos[2], this.fromPos[1]);
+			case EAST -> this.uv(this.toPos[2], this.toPos[1], this.fromPos[2], this.fromPos[1]);
+		};
 	}
 
 	@Override

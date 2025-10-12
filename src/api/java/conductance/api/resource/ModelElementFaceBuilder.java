@@ -8,6 +8,8 @@ public interface ModelElementFaceBuilder extends JsonResourceBuilder<ModelElemen
 
 	ModelElementFaceBuilder uv(int x1, int y1, int x2, int y2);
 
+	ModelElementFaceBuilder uvAuto();
+
 	ModelElementFaceBuilder texture(String textureKey);
 
 	default ModelElementFaceBuilder particle() {

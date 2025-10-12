@@ -52,6 +52,7 @@ final class MaterialWireBlockModelHandler {
 						model -> model.model(blockExtensionId.withPrefix("block/"))
 							.x(ModelUtils.MODEL_ROTATION.get(direction).x())
 							.y(ModelUtils.MODEL_ROTATION.get(direction).y())
+							.uvLock(true)
 					));
 				}
 			));
