@@ -4,6 +4,7 @@ import java.util.Arrays;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import conductance.api.CAPI;
+import conductance.api.material.Material;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
@@ -75,7 +76,14 @@ final class MaterialWireBlockModelHandler {
 				.parent(Conductance.id("item/" + wireType.getHandler().getId().getPath()))
 				.particle(CAPI.resourceFinder().getMaterialTexture(block.getMaterial().getTextureSet(), wireType.getHandler().getTextureType(), null, null).value())
 			);
-			event.addItemsModel(block.asItem(), builder -> builder.simple(block.asItem()));
+			event.addItemsModel(block.asItem(), builder -> builder.model(block.asItem(), model -> model.tints(tints -> {
+				final Material material = block.getMaterial();
+				if (!material.getColor().hasMultipleColors()) {
+					tints.constant(material.getColor().getCurrentColor());
+				} else {
+					tints.custom(MaterialColorTintSource.ID, json -> json.addProperty("default", -1));
+				}
+			})));
 		});
 	}
 
