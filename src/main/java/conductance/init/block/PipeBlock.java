@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -33,7 +34,6 @@ import net.neoforged.neoforge.common.util.Lazy;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.block.BlockHelper;
 import conductance.lib.pipenet.INetworkNode;
 import conductance.lib.pipenet.LevelPipeNetwork;
 
@@ -89,10 +89,10 @@ public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEV
 	}
 
 	@Override
-	public void onNeighborChange(final BlockState state, final LevelReader level, final BlockPos pos, final BlockPos neighbor) {
-		super.onNeighborChange(state, level, pos, neighbor);
+	protected void neighborChanged(final BlockState state, final Level level, final BlockPos pos, final Block neighborBlock, @Nullable final Orientation orientation, final boolean movedByPiston) {
+		super.neighborChanged(state, level, pos, neighborBlock, orientation, movedByPiston);
 		if (level.getBlockEntity(pos) instanceof final PipeBlockEntity<?, ?, ?> pipe) {
-			pipe.onNeighborChanged(neighbor, level.getBlockState(neighbor), BlockHelper.findNeighborSide(pos, neighbor));
+			pipe.onNeighborChanged();
 		}
 	}
 

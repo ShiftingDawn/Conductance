@@ -2,15 +2,15 @@ package conductance.init.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
+import conductance.api.block.GridInteractionContext;
 import conductance.api.block.IGridInteractable;
 import conductance.api.block.InteractType;
 import conductance.lib.pipenet.INetworkNode;
@@ -33,10 +33,23 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 	}
 
 	@Override
+	public boolean isConnectedTo(final Direction side) {
+		return this.getBlockState().getValue(PipeBlock.CONNECTION_PROPS.get(side));
+	}
+
+	@Override
+	public boolean isEndpoint(final Direction side) {
+		if (this.level instanceof final ServerLevel serverLevel) {
+			return this.isConnectedTo(side) && this.getNetwork(serverLevel).isEndpoint(this.getBlockPos(), side);
+		}
+		return false;
+	}
+
+	@Override
 	public int getConnections() {
 		int connections = 0;
 		for (final Direction direction : Direction.values()) {
-			if (this.getBlockState().getValue(PipeBlock.CONNECTION_PROPS.get(direction))) {
+			if (this.isConnectedTo(direction)) {
 				connections = PipeNetHelper.setConnection(connections, direction, true);
 			}
 		}
@@ -68,16 +81,23 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 		super.setRemoved();
 	}
 
-	public void onNeighborChanged(final BlockPos neighborPos, final BlockState neighborState, final Direction neighborSide) {
+	@SuppressWarnings("unchecked")
+	public void onNeighborChanged() {
 		if (this.getLevel() instanceof final ServerLevel serverLevel) {
-			if (this.getPipeBlock().getPipeBlockEntity(serverLevel, neighborPos) == null) {
-				if (this.getNetwork(serverLevel).isEndpoint(this.getBlockPos(), neighborSide)) {
-					if (!this.canConnectTo(serverLevel, this.getBlockPos(), neighborSide)) {
-						this.getNetwork(serverLevel).addEndpoint(this.getBlockPos(), neighborSide, false);
-						this.setConnections(PipeNetHelper.setConnection(this.getConnections(), neighborSide, false));
+			final LEVELNET network = this.getNetwork(serverLevel);
+			for (final Direction side : Direction.values()) {
+				final BlockPos neighborPos = this.getBlockPos().relative(side);
+				final boolean isConnected = this.isConnectedTo(side);
+				final NODE neighborNode = this.getPipeBlock().getPipeBlockEntity(serverLevel, neighborPos);
+				if (neighborNode != null) {
+					if (isConnected != neighborNode.isConnectedTo(side.getOpposite())) {
+						network.setConnected((NODE) this, neighborNode, side, isConnected);
 					}
 				} else {
-					this.setConnections(PipeNetHelper.setConnection(this.getConnections(), neighborSide, false));
+					if (isConnected != this.canConnectTo(serverLevel, this.getBlockPos(), side)) {
+						this.getNetwork(serverLevel).addEndpoint(this.getBlockPos(), side, !isConnected);
+						this.setConnections(PipeNetHelper.setConnection(this.getConnections(), side, !isConnected));
+					}
 				}
 			}
 		}
@@ -88,26 +108,10 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 		return (PipeBlock<NODE, DATA, LEVELNET>) this.getBlockState().getBlock();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public InteractionResult onToolUsed(@Nullable final InteractType interaction, final UseOnContext ctx, final Direction side) {
-		if (interaction != this.getInteractType()) {
-			if (ctx.getItemInHand().getItem() instanceof final PipeBlockItem pipeBlockItem && pipeBlockItem.getBlock().getNetworkType().equals(this.getPipeBlock().getNetworkType())) {
-				final BlockState placeState = ctx.getLevel().getBlockState(ctx.getClickedPos().relative(side));
-				final BlockHitResult newHit = new BlockHitResult(ctx.getClickLocation().relative(side, 1), ctx.getClickedFace(), ctx.getClickedPos().relative(side), false);
-				final BlockPlaceContext placeContext = new BlockPlaceContext(ctx.getLevel(), ctx.getPlayer(), ctx.getHand(), ctx.getItemInHand(), newHit);
-				if (placeState.canBeReplaced(placeContext)) {
-					final InteractionResult placeResult = pipeBlockItem.place(placeContext);
-					if (placeResult instanceof InteractionResult.Success) {
-						final BlockState self = ctx.getLevel().getBlockState(ctx.getClickedPos());
-						ctx.getLevel().setBlockAndUpdate(ctx.getClickedPos(), self.setValue(PipeBlock.CONNECTION_PROPS.get(side), true));
-						final BlockState other = ctx.getLevel().getBlockState(ctx.getClickedPos().relative(side));
-						ctx.getLevel().setBlockAndUpdate(ctx.getClickedPos().relative(side), other.setValue(PipeBlock.CONNECTION_PROPS.get(side.getOpposite()), true));
-					}
-					return placeResult;
-				}
-			}
-			return InteractionResult.PASS;
+	public InteractionResult onGridInteraction(final GridInteractionContext ctx, final Direction side) {
+		if (this.getInteractType() != ctx.getInteractType()) {
+			return PipeBlockEntity.handleMaybePipePlacedAgainst(ctx, side, this.getPipeBlock().getNetworkType());
 		}
 		if (ctx.getLevel().getBlockEntity(ctx.getClickedPos()) instanceof final PipeBlockEntity<?, ?, ?> pipeBlockEntity) {
 			final INetworkNode<?, ?> node = pipeBlockEntity.getPipeBlock().getPipeBlockEntity(ctx.getLevel(), ctx.getClickedPos().relative(side));
@@ -128,5 +132,40 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 			}
 		}
 		return InteractionResult.PASS;
+	}
+
+	@Override
+	public boolean shouldRenderGrid(final GridInteractionContext ctx) {
+		if (this.getInteractType() == ctx.getInteractType()) {
+			return true;
+		}
+		if (ctx.getPlayer() == null || !ctx.getPlayer().isCrouching()) {
+			return false;
+		}
+		return ctx.getItemInHand().getItem() instanceof final PipeBlockItem pipeBlockItem && this.getPipeBlock().getNetworkType().equals(pipeBlockItem.getBlock().getNetworkType());
+	}
+
+	private static InteractionResult handleMaybePipePlacedAgainst(final GridInteractionContext ctx, final Direction side, final ResourceLocation selfNetworkType) {
+		if (ctx.getPlayer() == null || !ctx.getPlayer().isCrouching()) {
+			return InteractionResult.PASS;
+		}
+		if (!(ctx.getItemInHand().getItem() instanceof final PipeBlockItem pipeBlockItem) || !selfNetworkType.equals(pipeBlockItem.getBlock().getNetworkType())) {
+			return InteractionResult.PASS;
+		}
+		final BlockPos placePos = ctx.getClickedPos().relative(side);
+		final BlockState placeState = ctx.getLevel().getBlockState(placePos);
+		final BlockHitResult newHit = new BlockHitResult(ctx.getClickLocation().relative(side, 1), ctx.getClickedFace(), placePos, false);
+		final BlockPlaceContext placeContext = new BlockPlaceContext(ctx.getLevel(), ctx.getPlayer(), ctx.getHand(), ctx.getItemInHand(), newHit);
+		if (!placeState.canBeReplaced(placeContext)) {
+			return InteractionResult.SUCCESS_SERVER;
+		}
+		final InteractionResult placeResult = pipeBlockItem.place(placeContext);
+		if (placeResult instanceof InteractionResult.Success) {
+			final BlockState self = ctx.getLevel().getBlockState(ctx.getClickedPos());
+			ctx.getLevel().setBlockAndUpdate(ctx.getClickedPos(), self.setValue(PipeBlock.CONNECTION_PROPS.get(side), true));
+			final BlockState other = ctx.getLevel().getBlockState(placePos);
+			ctx.getLevel().setBlockAndUpdate(placePos, other.setValue(PipeBlock.CONNECTION_PROPS.get(side.getOpposite()), true));
+		}
+		return placeResult;
 	}
 }

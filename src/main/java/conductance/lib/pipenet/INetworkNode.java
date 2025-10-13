@@ -10,6 +10,10 @@ public interface INetworkNode<NODE extends INetworkNode<NODE, DATA>, DATA> {
 
 	void setConnections(int connections);
 
+	boolean isConnectedTo(Direction side);
+
+	boolean isEndpoint(Direction side);
+
 	int getConnections();
 
 	BlockPos getBlockPos();
