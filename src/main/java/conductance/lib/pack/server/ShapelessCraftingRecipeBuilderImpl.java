@@ -64,7 +64,7 @@ final class ShapelessCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<Sha
 
 	@Override
 	public ShapelessCraftingRecipeBuilder add(final MaterialGenerationHandler handler, final Material material, final int amount) {
-		return this.add(CAPI.materials().getItem(material, handler), amount);
+		return this.add(CAPI.materials().getItemTag(material, handler), amount);
 	}
 
 	@Override

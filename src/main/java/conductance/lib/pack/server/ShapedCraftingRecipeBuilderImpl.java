@@ -16,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-import org.apache.http.util.TextUtils;
 import conductance.api.CAPI;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
@@ -37,10 +36,10 @@ final class ShapedCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<Shaped
 	@Override
 	public ShapedCraftingRecipeBuilder pattern(final String row1, final String row2, final String row3) {
 		this.builder.pattern(row1);
-		if (!TextUtils.isBlank(row2)) {
+		if (!row2.isEmpty()) {
 			this.builder.pattern(row2);
 		}
-		if (!TextUtils.isBlank(row3)) {
+		if (!row3.isEmpty()) {
 			this.builder.pattern(row3);
 		}
 		if (Objects.requireNonNullElse(row1, "").contains("W") || Objects.requireNonNullElse(row2, "").contains("W") || Objects.requireNonNullElse(row3, "").contains("W")) {
@@ -86,7 +85,7 @@ final class ShapedCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<Shaped
 
 	@Override
 	public ShapedCraftingRecipeBuilder key(final char c, final MaterialGenerationHandler handler, final Material material) {
-		return this.key(c, CAPI.materials().getItem(material, handler));
+		return this.key(c, CAPI.materials().getItemTag(material, handler));
 	}
 
 	@Override
