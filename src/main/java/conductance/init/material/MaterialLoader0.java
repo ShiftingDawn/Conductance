@@ -301,6 +301,7 @@ final class MaterialLoader0 {
 			.metalAll().fineWire()
 			.liquid(1358)
 			.ore()
+			.wire(NCTiers.LV, 1) //TODO MV
 			.style(0xFF6400, SHINY)
 		);
 		ZINC = event.register("zinc", NCPeriodicElements.ZINC, b -> b
@@ -542,6 +543,7 @@ final class MaterialLoader0 {
 			.metalExtra().fineWire()
 			.liquid(1337)
 			.ore()
+			.wire(NCTiers.LV, 1) //TODO HV
 			.style(0xFFFF1E, SHINY)
 		);
 		MERCURY = event.register("mercury", NCPeriodicElements.MERCURY, b -> b

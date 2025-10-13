@@ -1,8 +1,7 @@
 package conductance.init.material;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.Tags;
 import conductance.api.CAPI;
 import conductance.api.NCMaterialGenerationHandlers;
 import conductance.api.NCMaterialProps;
@@ -48,6 +47,7 @@ public final class MaterialLoader5 {
 
 	@EventListener(priority = -100)
 	private static void addCustomTags(final RegisterTagEvent event) {
+		event.tag(CAPI.materials().getItemTag(WOOD, NCMaterialGenerationHandlers.ROD), Tags.Items.RODS_WOODEN.location());
 		event.item(CAPI.materials().getItemTag(NETHER_STAR, NCMaterialGenerationHandlers.GEM), Items.NETHER_STAR);
 	}
 
