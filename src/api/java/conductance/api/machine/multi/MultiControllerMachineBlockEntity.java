@@ -155,37 +155,12 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 		}
 	}
 
-	public static void checkStructure(final IMultiBlockController<?> controller) {
+	public static void checkStructure(final ServerLevel level, final IMultiBlockController<?> controller) {
 		final StructureCheckContext ctx = new StructureCheckContext();
 		if (controller.checkStructureAsyncLocked(ctx)) {
-			if (controller.getLevel() instanceof final ServerLevel serverLevel) {
-				serverLevel.getServer().execute(() -> {
-					final Lock lock = controller.getStructureCheckLock();
-					lock.lock();
-					final StructureCheckContext ctx2 = new StructureCheckContext();
-					try {
-						if (controller.checkStructureAsyncLockedBlocking(ctx2)) {
-							controller.onStructureFormed(ctx2);
-						} else {
-							controller.onStructureInvalid(ctx2);
-						}
-					} finally {
-						lock.unlock();
-					}
-				});
-			}
+			level.getServer().execute(() -> controller.onStructureFormed(ctx));
 		} else {
-			if (controller.getLevel() instanceof final ServerLevel serverLevel) {
-				serverLevel.getServer().execute(() -> {
-					final Lock lock = controller.getStructureCheckLock();
-					lock.lock();
-					try {
-						controller.onStructureInvalid(ctx);
-					} finally {
-						lock.unlock();
-					}
-				});
-			}
+			level.getServer().execute(() -> controller.onStructureInvalid(ctx));
 		}
 	}
 }

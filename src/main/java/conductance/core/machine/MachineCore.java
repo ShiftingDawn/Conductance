@@ -83,8 +83,8 @@ public final class MachineCore {
 			event.register(menuType.get(), MachineScreen::new);
 		});
 
-		Internal.MULTIBLOCK_CONTROLLER_LOAD = MultiStructureChecker::onMultiBlockControllerLoad;
-		Internal.MULTIBLOCK_CONTROLLER_UNLOAD = MultiStructureChecker::onMultiBlockControllerUnload;
+		Internal.MULTIBLOCK_CONTROLLER_LOAD = MultiBlockSavedData::onMultiBlockControllerLoad;
+		Internal.MULTIBLOCK_CONTROLLER_UNLOAD = MultiBlockSavedData::onMultiBlockControllerUnload;
 		Conductance.dispatch(RegisterMultiBlockPartCapabilityEvent.class, modid -> new RegisterMultiBlockPartCapabilityEventImpl(registryName -> {
 			final ResourceLocation registryKey = ResourceLocation.fromNamespaceAndPath(modid, registryName);
 			final MultiBlockPartCapability result = new MultiBlockPartCapabilityImpl();

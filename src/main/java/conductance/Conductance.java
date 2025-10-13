@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
@@ -150,6 +149,6 @@ public abstract class Conductance {
 		if (server == null) {
 			return false;
 		}
-		return !server.isStopped() && !server.isShutdown() && server.isRunning() && !server.isCurrentlySaving();
+		return !(server.isStopped() || server.isShutdown() || server.isCurrentlySaving()) && server.isRunning();
 	}
 }

@@ -115,6 +115,7 @@ public class RecipeHandler extends MachineCapability {
 	public void revalidateTick() {
 		if (this.getMachine().isServerSide()) {
 			this.tick = this.getMachine().addTick(this::tick, this.tick);
+			this.getMachine().setWorkingState(this.status == RecipeHandlerStatus.PROCESSING);
 		}
 	}
 
