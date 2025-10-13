@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import com.mojang.logging.LogUtils;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -145,8 +146,10 @@ public abstract class Conductance {
 		if (CAPI.isClient()) {
 			return Minecraft.getInstance().level != null;
 		}
-		return Optional.ofNullable(ServerLifecycleHooks.getCurrentServer())
-			.map(server -> !server.isStopped() && !server.isShutdown() && server.isRunning() && !server.isCurrentlySaving())
-			.orElse(false);
+		final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		if (server == null) {
+			return false;
+		}
+		return !server.isStopped() && !server.isShutdown() && server.isRunning() && !server.isCurrentlySaving();
 	}
 }
