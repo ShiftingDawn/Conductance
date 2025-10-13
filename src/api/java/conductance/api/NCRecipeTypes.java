@@ -15,6 +15,7 @@ public final class NCRecipeTypes {
 	public static MachineRecipeType EXTRACTOR;
 	public static MachineRecipeType COMPRESSOR;
 	public static MachineRecipeType CUTTING_MACHINE;
+	public static MachineRecipeType ASSEMBLING_MACHINE;
 
 	public static MachineRecipeType ELECTRIC_BLAST_FURNACE;
 

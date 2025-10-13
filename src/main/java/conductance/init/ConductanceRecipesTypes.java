@@ -9,6 +9,7 @@ import conductance.api.plugin.EventListener;
 import conductance.api.recipe.event.RecipeBuilderCallback;
 import conductance.api.recipe.event.RegisterRecipeTypeEvent;
 import conductance.Conductance;
+import static conductance.api.NCRecipeTypes.ASSEMBLING_MACHINE;
 import static conductance.api.NCRecipeTypes.BENDING_MACHINE;
 import static conductance.api.NCRecipeTypes.COMPRESSOR;
 import static conductance.api.NCRecipeTypes.CUTTING_MACHINE;
@@ -35,6 +36,7 @@ final class ConductanceRecipesTypes {
 		EXTRACTOR = event.register("extractor", b -> b.setIO(1, 0, 1, 1).setEnergyIO(CapIO.IN));
 		COMPRESSOR = event.register("compressor", b -> b.setIO(1, 0, 1, 0).setEnergyIO(CapIO.IN));
 		CUTTING_MACHINE = event.register("cutting_machine", b -> b.setIO(1, 1, 1, 0).setEnergyIO(CapIO.IN).recipeBuilderCallback(ConductanceRecipesTypes.CUTTING_MACHINE_CALLBACK));
+		ASSEMBLING_MACHINE = event.register("assembling_machine", b -> b.setIO(9, 1, 1, 0).setEnergyIO(CapIO.IN));
 
 		ELECTRIC_BLAST_FURNACE = event.register("electric_blast_furnace", b -> b.setIO(3, 3, 1, 1).setEnergyIO(CapIO.IN));
 	}

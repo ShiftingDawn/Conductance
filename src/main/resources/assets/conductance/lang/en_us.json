@@ -80,6 +80,7 @@
   "recipeType.conductance.extractor": "Extractor",
   "recipeType.conductance.compressor": "Compressor",
   "recipeType.conductance.cutting_machine": "Cutting Machine",
+  "recipeType.conductance.assembling_machine": "Assembling Machine",
 
   "machine.conductance.solid_fuel_steam_boiler": "Solid Fuel Steam Boiler",
 
@@ -94,6 +95,7 @@
   "machine.conductance.extractor": "%s Extractor",
   "machine.conductance.compressor": "%s Compressor",
   "machine.conductance.cutting_machine": "%s Cutting Machine",
+  "machine.conductance.assembling_machine": "%s Assembling Machine",
 
   "machine.conductance.large_bronze_boiler": "Large Bronze Boiler",
   "machine.conductance.electric_blast_furnace": "Electric Blast Furnace",

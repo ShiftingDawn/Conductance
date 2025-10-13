@@ -36,6 +36,7 @@ import conductance.init.machine.MultiBlockItemBusPartMachineGuiSetup;
 import conductance.init.machine.boiler.LargeBoilerMachine;
 import conductance.init.machine.boiler.SteamSolidFuelBoilerMachine;
 import conductance.init.machine.boiler.SteamSolidFuelBoilerMachineGuiSetup;
+import static conductance.api.NCMachines.ASSEMBLING_MACHINE;
 import static conductance.api.NCMachines.BENDING_MACHINE;
 import static conductance.api.NCMachines.COMPRESSOR;
 import static conductance.api.NCMachines.CUTTING_MACHINE;
@@ -89,6 +90,7 @@ final class ConductanceMachines {
 		EXTRACTOR = ConductanceMachines.makeTieredGenericRecipeMachine(event, "extractor", NCRecipeTypes.EXTRACTOR);
 		COMPRESSOR = ConductanceMachines.makeTieredGenericRecipeMachine(event, "compressor", NCRecipeTypes.COMPRESSOR);
 		CUTTING_MACHINE = ConductanceMachines.makeTieredGenericRecipeMachine(event, "cutting_machine", NCRecipeTypes.CUTTING_MACHINE);
+		ASSEMBLING_MACHINE = ConductanceMachines.makeTieredGenericRecipeMachine(event, "assembling_machine", NCRecipeTypes.ASSEMBLING_MACHINE);
 	}
 
 	private static void initMultiParts(final RegisterMachineEvent event) {
