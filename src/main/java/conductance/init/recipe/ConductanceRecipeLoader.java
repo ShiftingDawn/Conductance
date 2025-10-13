@@ -7,6 +7,7 @@ import conductance.api.NCMaterials;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.recipe.event.RegisterRecipeEvent;
+import conductance.api.util.ExtruderShape;
 import conductance.Conductance;
 
 @ConductancePluginListener(modid = Conductance.MODID)
@@ -30,6 +31,18 @@ final class ConductanceRecipeLoader {
 		MultiBlockRecipes.add(event);
 		CircuitRecipes.add(event);
 		FuelAndPowerRecipes.add(event);
+		ConductanceRecipeLoader.addExtruderShapes(event);
+	}
+
+	private static void addExtruderShapes(final RegisterRecipeEvent event) {
+		event.shaped(NCItems.EMPTY_EXTRUDER_SHAPE, b -> b.pattern("aa", "aa").key('a', NCMaterialGenerationHandlers.PLATE, NCMaterials.STEEL));
+		event.shaped(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.ROD), b -> b.pattern("a  ", " X ", "   ").key('a', NCItems.EMPTY_EXTRUDER_SHAPE));
+		event.shaped(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.BOLT), b -> b.pattern(" a ", " X ", "   ").key('a', NCItems.EMPTY_EXTRUDER_SHAPE));
+		event.shaped(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.GEAR), b -> b.pattern("  a", " X ", "   ").key('a', NCItems.EMPTY_EXTRUDER_SHAPE));
+		event.shaped(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.GEAR_SMALL), b -> b.pattern("   ", "aX ", "   ").key('a', NCItems.EMPTY_EXTRUDER_SHAPE));
+		event.shaped(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.RING), b -> b.pattern("   ", " Xa", "   ").key('a', NCItems.EMPTY_EXTRUDER_SHAPE));
+		event.shaped(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.ROTOR), b -> b.pattern("   ", " X ", "a  ").key('a', NCItems.EMPTY_EXTRUDER_SHAPE));
+		event.shaped(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.SCREW), b -> b.pattern("   ", " X ", " a ").key('a', NCItems.EMPTY_EXTRUDER_SHAPE));
 	}
 
 	private ConductanceRecipeLoader() {
