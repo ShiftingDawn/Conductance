@@ -38,7 +38,7 @@ import conductance.init.machine.GenericRecipeMachineGuiSetup;
 
 final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecipe> {
 
-	private static final int LINE_COUNT = 2;
+	private static final int BASE_LINE_COUNT = 2;
 	static final Function<MachineRecipeType, IRecipeType<MachineRecipe>> RECIPE_TYPES = Util.memoize(machineRecipeType ->
 		new IRecipeType.JeiRecipeType<>(machineRecipeType.getId(), MachineRecipe.class)
 	);
@@ -58,14 +58,18 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 			this.recipeType, new JeiProgressProvider()
 		);
 		this.width = Math.max(140, this.rootGroup.getWidth() + 40);
-		this.height = this.rootGroup.getHeight() + 3 + (GenericRecipeMachineCategory.LINE_COUNT * 10);
+		int lineCount = GenericRecipeMachineCategory.BASE_LINE_COUNT;
+		if (recipeType.getLimit(IO.IN, NCRecipeElementTypes.ITEM) > 0 || recipeType.getLimit(IO.OUT, NCRecipeElementTypes.ITEM) > 0) {
+			++lineCount;
+		}
+		this.height = this.rootGroup.getHeight() + 3 + (lineCount * 10);
 	}
 
 	@Override
 	public void setRecipe(final IRecipeLayoutBuilder builder, final MachineRecipe recipe, final IFocusGroup focuses) {
 		final int xOffset = (this.width - this.rootGroup.getWidth()) / 2;
 		if (recipe.getProgram() >= 0) {
-			builder.addSlot(RecipeIngredientRole.RENDER_ONLY, xOffset - 18, this.rootGroup.getHeight() / 2 - 8)
+			builder.addSlot(RecipeIngredientRole.RENDER_ONLY, xOffset - 18, 1)
 				.addItemStacks(List.of(ProgramCircuitItem.makeStack(recipe.getProgram())))
 				.addRichTooltipCallback((recipeSlotView, tooltip) -> {
 					tooltip.clear();
@@ -164,14 +168,15 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 	public void createRecipeExtras(final IRecipeExtrasBuilder builder, final MachineRecipe recipe, final IFocusGroup focuses) {
 		int y = this.rootGroup.getHeight() + 3;
 		builder.addText(Component.translatable("info.conductance.jei.duration", TextHelper.getFormattedRecipeDuration(recipe.getRecipeDuration())), this.getWidth(), 10).setPosition(0, y);
-		final long energyPerTick;
 		if (recipe.getPerTickInputs().containsKey(NCRecipeElementTypes.ENERGY)) {
-			energyPerTick = recipe.getPerTickInputs().get(NCRecipeElementTypes.ENERGY).stream().mapToLong(element -> (long) element.data()).sum();
-		} else {
-			energyPerTick = 0;
+			final long energyPerTick = recipe.getPerTickInputs().get(NCRecipeElementTypes.ENERGY).stream().mapToLong(element -> (long) element.data()).sum();
+			builder.addText(Component.translatable("info.conductance.jei.energy", TextHelper.getFormattedEnergy(energyPerTick), CAPI.tiers().getByVoltage(energyPerTick).getName()), this.getWidth(), 10)
+				.setPosition(0, y += 10);
+		} else if (recipe.getPerTickOutputs().containsKey(NCRecipeElementTypes.ENERGY)) {
+			final long energyPerTick = recipe.getPerTickOutputs().get(NCRecipeElementTypes.ENERGY).stream().mapToLong(element -> (long) element.data()).sum();
+			builder.addText(Component.translatable("info.conductance.jei.energy", TextHelper.getFormattedEnergy(energyPerTick), CAPI.tiers().getByVoltage(energyPerTick).getName()), this.getWidth(), 10)
+				.setPosition(0, y += 10);
 		}
-		builder.addText(Component.translatable("info.conductance.jei.energy", TextHelper.getFormattedEnergy(energyPerTick), CAPI.tiers().getByVoltage(energyPerTick).getName()), this.getWidth(), 10)
-			.setPosition(0, y += 10);
 	}
 
 	@Override
