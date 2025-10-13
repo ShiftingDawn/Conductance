@@ -286,6 +286,10 @@ public final class ConductanceBlocks {
 				return i == 0 ? block.getMaterial().getColor().getCurrentColor() : -1;
 			}, blocks);
 		});
+		event.register((blockState, blockAndTintGetter, blockPos, i) -> {
+			final WireBlock block = (WireBlock) blockState.getBlock();
+			return i == 0 ? block.getMaterial().getColor().getCurrentColor() : -1;
+		}, WireRegistry.getAllBlocks());
 	}
 
 	private static void attachCapabilities(final RegisterCapabilitiesEvent event) {
