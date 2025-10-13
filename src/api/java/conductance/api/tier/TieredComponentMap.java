@@ -208,8 +208,26 @@ public abstract class TieredComponentMap {
 	}
 	//endregion
 
+	//region Induction Coil
+	protected Material getInductionCoilMagneticRodMaterial() {
+		return this.getMagneticMaterial();
+	}
+
+	public TagKey<Item> getInductionCoilMagneticRodItem() {
+		return CAPI.materials().getItemTag(this.getInductionCoilMagneticRodMaterial(), ROD);
+	}
+
+	protected Material getInductionCoilFineWireMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getInductionCoilFineWireItem() {
+		return CAPI.materials().getItemTag(this.getInductionCoilFineWireMaterial(), FINE_WIRE);
+	}
+	//endregion
+
 	//region Machines
-	public Material getMachinePlateMaterial() {
+	protected Material getMachinePlateMaterial() {
 		return this.getPrimaryMaterial();
 	}
 
@@ -217,7 +235,7 @@ public abstract class TieredComponentMap {
 		return CAPI.materials().getItemTag(this.getMachinePlateMaterial(), PLATE);
 	}
 
-	public Material getMachineWireMaterial() {
+	protected Material getMachineWireMaterial() {
 		return this.getWireMaterial();
 	}
 
@@ -225,7 +243,7 @@ public abstract class TieredComponentMap {
 		return CAPI.materials().getItemTag(this.getMachineWireMaterial(), WIRE_1X);
 	}
 
-	public Material getMachineHeatingWireMaterial() {
+	protected Material getMachineHeatingWireMaterial() {
 		return this.getWireMaterial();
 	}
 
@@ -233,7 +251,7 @@ public abstract class TieredComponentMap {
 		return CAPI.materials().getItemTag(this.getMachineHeatingWireMaterial(), WIRE_4X);
 	}
 
-	public Material getMachineRotorMaterial() {
+	protected Material getMachineRotorMaterial() {
 		return this.getPrimaryMaterial();
 	}
 
@@ -241,7 +259,7 @@ public abstract class TieredComponentMap {
 		return CAPI.materials().getItemTag(this.getMachineRotorMaterial(), ROTOR);
 	}
 
-	public Material getMachineCuttingPartMaterial() {
+	protected Material getMachineCuttingPartMaterial() {
 		return NCMaterials.DIAMOND;
 	}
 

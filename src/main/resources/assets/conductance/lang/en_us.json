@@ -63,6 +63,7 @@
   "tieredItemType.conductance.conveyor_module": "%s Conveyor Module",
   "tieredItemType.conductance.electric_pump": "%s Electric Pump",
   "tieredItemType.conductance.robot_arm": "%s Robot Arm",
+  "tieredItemType.conductance.induction_coil": "%s Induction Coil",
   "tieredItemType.conductance.machine_casing": "%s Machine Casing",
 
   "tier.conductance.empty": "Empty",

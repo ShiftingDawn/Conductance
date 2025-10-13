@@ -17,6 +17,7 @@ public enum TieredItemType {
 	CONVEYOR_MODULE,
 	ELECTRIC_PUMP,
 	ROBOT_ARM,
+	INDUCTION_COIL,
 	MACHINE_CASING;
 
 	private final String name = super.toString().toLowerCase(Locale.ROOT);
