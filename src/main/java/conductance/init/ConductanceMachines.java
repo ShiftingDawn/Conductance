@@ -23,6 +23,7 @@ import conductance.api.tier.Tier;
 import conductance.api.util.IO;
 import conductance.Conductance;
 import conductance.core.machine.MachineCore;
+import conductance.core.machine.MachineHullMachine;
 import conductance.init.machine.GenericGeneratorMachine;
 import conductance.init.machine.GenericRecipeMachine;
 import conductance.init.machine.GenericRecipeMachineGuiSetup;
@@ -47,6 +48,7 @@ import static conductance.api.NCMachines.INPUT_BUSES;
 import static conductance.api.NCMachines.INPUT_HATCHES;
 import static conductance.api.NCMachines.LARGE_BRONZE_BOILER;
 import static conductance.api.NCMachines.LATHE;
+import static conductance.api.NCMachines.MACHINE_HULL;
 import static conductance.api.NCMachines.OUTPUT_BUSES;
 import static conductance.api.NCMachines.OUTPUT_HATCHES;
 import static conductance.api.NCMachines.PULVERIZER;
@@ -59,6 +61,12 @@ final class ConductanceMachines {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterMachineEvent event) {
+		MACHINE_HULL = CAPI.tiers().newMap(tier -> event.<MachineHullMachine>register(tier.getId().getPath() + "_machine_hull",
+			(machineType, blockPos, blockState) -> new MachineHullMachine(machineType, blockPos, blockState, tier),
+			b -> b.customName(ignored ->
+				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("machine_hull")), tier.getName())
+			).rotationType(BlockRotationType.ALL).tieredModel("machine_hull", tier).guiSetup(null)
+		));
 		ConductanceMachines.initGenerators(event);
 		ConductanceMachines.initRecipeMachines(event);
 		ConductanceMachines.initMultiBlocks(event);

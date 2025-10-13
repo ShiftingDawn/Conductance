@@ -63,6 +63,7 @@
   "tieredItemType.conductance.conveyor_module": "%s Conveyor Module",
   "tieredItemType.conductance.electric_pump": "%s Electric Pump",
   "tieredItemType.conductance.robot_arm": "%s Robot Arm",
+  "tieredItemType.conductance.machine_casing": "%s Machine Casing",
 
   "tier.conductance.empty": "Empty",
   "tier.conductance.max": "§lMAX",
@@ -83,6 +84,7 @@
 
   "machine.conductance.steam_turbine": "%s Steam Turbine",
 
+  "machine.conductance.machine_hull": "%s Machine Hull",
   "machine.conductance.bending_machine": "%s Bending Machine",
   "machine.conductance.pulverizer": "%s Pulverizer",
   "machine.conductance.extruder": "%s Extruder",

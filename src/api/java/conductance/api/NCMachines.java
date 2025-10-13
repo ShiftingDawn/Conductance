@@ -12,6 +12,7 @@ public final class NCMachines {
 
 	public static Map<Tier, MachineType<?>> STEAM_TURBINES;
 
+	public static Map<Tier, MachineType<?>> MACHINE_HULL;
 	public static Map<Tier, MachineType<?>> BENDING_MACHINE;
 	public static Map<Tier, MachineType<?>> PULVERIZER;
 	public static Map<Tier, MachineType<?>> EXTRUDER;

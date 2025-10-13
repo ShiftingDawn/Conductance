@@ -10,6 +10,7 @@ import static conductance.api.NCMaterialGenerationHandlers.PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.RING;
 import static conductance.api.NCMaterialGenerationHandlers.ROD;
 import static conductance.api.NCMaterialGenerationHandlers.ROTOR;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_1X;
 
 @SuppressWarnings("CheckStyle")
 public abstract class TieredComponentMap {
@@ -46,7 +47,7 @@ public abstract class TieredComponentMap {
 	}
 
 	public TagKey<Item> getMachineHullWireItem() {
-		return CAPI.materials().getItemTag(this.getMachineHullWireMaterial(), FINE_WIRE);
+		return CAPI.materials().getItemTag(this.getMachineHullWireMaterial(), WIRE_1X);
 	}
 	//endregion
 
@@ -67,12 +68,20 @@ public abstract class TieredComponentMap {
 		return CAPI.materials().getItemTag(this.getElectricMotorMagneticRodMaterial(), ROD);
 	}
 
+	protected Material getElectricMotorFineWireMaterial() {
+		return this.getWireMaterial();
+	}
+
+	public TagKey<Item> getElectricMotorFineWireItem() {
+		return CAPI.materials().getItemTag(this.getElectricMotorFineWireMaterial(), FINE_WIRE);
+	}
+
 	protected Material getElectricMotorWireMaterial() {
 		return this.getWireMaterial();
 	}
 
 	public TagKey<Item> getElectricMotorWireItem() {
-		return CAPI.materials().getItemTag(this.getElectricMotorWireMaterial(), FINE_WIRE);
+		return CAPI.materials().getItemTag(this.getElectricMotorWireMaterial(), WIRE_1X);
 	}
 	//endregion
 
@@ -98,7 +107,7 @@ public abstract class TieredComponentMap {
 	}
 
 	public TagKey<Item> getElectricPistonWireItem() {
-		return CAPI.materials().getItemTag(this.getElectricPistonWireMaterial(), FINE_WIRE);
+		return CAPI.materials().getItemTag(this.getElectricPistonWireMaterial(), WIRE_1X);
 	}
 
 	protected Material getElectricPistonSmallGearMaterial() {
@@ -124,7 +133,7 @@ public abstract class TieredComponentMap {
 	}
 
 	public TagKey<Item> getConveyorModuleWireItem() {
-		return CAPI.materials().getItemTag(this.getConveyorModuleWireMaterial(), FINE_WIRE);
+		return CAPI.materials().getItemTag(this.getConveyorModuleWireMaterial(), WIRE_1X);
 	}
 	//endregion
 
@@ -158,7 +167,7 @@ public abstract class TieredComponentMap {
 	}
 
 	public TagKey<Item> getElectricPumpWireItem() {
-		return CAPI.materials().getItemTag(this.getElectricPumpWireMaterial(), FINE_WIRE);
+		return CAPI.materials().getItemTag(this.getElectricPumpWireMaterial(), WIRE_1X);
 	}
 	//endregion
 
@@ -168,7 +177,7 @@ public abstract class TieredComponentMap {
 	}
 
 	public TagKey<Item> getRobotArmWireItem() {
-		return CAPI.materials().getItemTag(this.getRobotArmWireMaterial(), FINE_WIRE);
+		return CAPI.materials().getItemTag(this.getRobotArmWireMaterial(), WIRE_1X);
 	}
 
 	protected Material getRobotArmRodMaterial() {

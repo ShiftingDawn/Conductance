@@ -16,7 +16,8 @@ public enum TieredItemType {
 	ELECTRIC_PISTON,
 	CONVEYOR_MODULE,
 	ELECTRIC_PUMP,
-	ROBOT_ARM;
+	ROBOT_ARM,
+	MACHINE_CASING;
 
 	private final String name = super.toString().toLowerCase(Locale.ROOT);
 	private final String unlocalizedNameFactory;
@@ -29,6 +30,14 @@ public enum TieredItemType {
 
 	TieredItemType() {
 		this(null);
+	}
+
+	public boolean isItem() {
+		return this != TieredItemType.MACHINE_CASING;
+	}
+
+	public boolean isBlock() {
+		return this == TieredItemType.MACHINE_CASING;
 	}
 
 	public String getUnlocalizedName(final Tier tier) {

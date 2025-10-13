@@ -31,6 +31,7 @@ import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.resource.event.AddTranslationEvent;
+import conductance.api.tier.TieredItemType;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
 import conductance.core.material.MaterialColorTintSource;
@@ -40,6 +41,7 @@ import conductance.init.block.MaterialBlockItem;
 import conductance.init.block.MaterialOreBlock;
 import conductance.init.block.MaterialOreBlockItem;
 import conductance.init.block.MaterialOreRotatedPillarBlock;
+import conductance.init.block.TieredBlock;
 import conductance.init.block.WireBlock;
 import conductance.init.block.WireBlockEntity;
 import conductance.init.block.WireBlockItem;
@@ -59,6 +61,7 @@ public final class ConductanceBlocks {
 		ConductanceBlocks.ITEMS.register(modEventBus);
 		modEventBus.addListener(RegisterCapabilitiesEvent.class, ConductanceBlocks::attachCapabilities);
 		CAPI.regs().materials().forEach(ConductanceBlocks::generateMaterial);
+		ConductanceBlocks.generateTiered();
 		modEventBus.addListener(RegisterColorHandlersEvent.Block.class, ConductanceBlocks::handleMaterialBlockColors);
 		NCBlocks.CASING_BRONZE = ConductanceBlocks.makeSimpleBlock("bronze_casing", "casing/bronze");
 		NCBlocks.CASING_INVAR = ConductanceBlocks.makeSimpleBlock("invar_casing", "casing/invar");
@@ -163,6 +166,14 @@ public final class ConductanceBlocks {
 		}
 	}
 
+	private static void generateTiered() {
+		NCBlocks.MACHINE_CASING = CAPI.tiers().newMap(tier ->
+			ConductanceBlocks.REGISTRY.registerBlock(TieredItemType.MACHINE_CASING.getUnlocalizedName(tier), props -> CAPI.make(new TieredBlock(props, TieredItemType.MACHINE_CASING, tier), block -> {
+				CreativeTabHelper.addToTab(block, CreativeTabHelper.Tabs.GENERAL);
+			}))
+		);
+	}
+
 	@EventListener(priority = -100)
 	private static void addBlockTranslations(final AddTranslationEvent event) {
 		Conductance.MATERIALS.getBlockTable().rowMap().forEach((material, map) -> map.forEach((handler, block) -> {
@@ -260,6 +271,11 @@ public final class ConductanceBlocks {
 			event.addBlockModel(blockId, b -> b.parent(Conductance.id("block/cube_all")).particle(texture));
 			event.addBlockModel(blockId.withSuffix("_active"), b -> b.parent(Conductance.id("block/cube_all")).particle(texture.withSuffix("_active")));
 			event.addItemModelDelegate(blockHolder.value());
+		});
+		NCBlocks.MACHINE_CASING.forEach((tier, block) -> {
+			event.addBlockState(block.value(), b -> b.simple(b2 -> b2.model(block.value())));
+			event.addBlockModel(block.value(), b -> b.parent(Conductance.id("block/cube_all")).particle(Conductance.id("block/casing/machine_%s".formatted(tier.getId().getPath()))));
+			event.addItemModelDelegate(block.value());
 		});
 	}
 

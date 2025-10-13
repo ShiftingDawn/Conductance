@@ -1,7 +1,9 @@
 package conductance.init.recipe;
 
 import conductance.api.CAPI;
+import conductance.api.NCBlocks;
 import conductance.api.NCItems;
+import conductance.api.NCMachines;
 import conductance.api.recipe.event.RegisterRecipeEvent;
 import conductance.api.tier.Tier;
 import conductance.api.tier.TieredComponentMap;
@@ -14,8 +16,12 @@ final class TierRecipes {
 	}
 
 	private static void addTierRecipes(final RegisterRecipeEvent event, final Tier tier, final TieredComponentMap map) {
+		event.shaped(TieredItemType.MACHINE_CASING.getUnlocalizedName(tier), NCItems.tiered(TieredItemType.MACHINE_CASING, tier, 1), b -> b
+			.pattern("aaa", "aWa", "aaa").key('a', map.getMachineCasingPlateItem()));
+		event.shaped(tier.getId().getPath() + "_machine_hull", NCMachines.MACHINE_HULL.get(tier).getItem().get(), b -> b
+			.pattern("aHa", "bcb").key('a', map.getMachineHullPlateItem()).key('b', map.getMachineHullWireItem()).key('c', NCBlocks.MACHINE_CASING.get(tier).value()));
 		event.shaped(TieredItemType.ELECTRIC_MOTOR.getUnlocalizedName(tier), NCItems.tiered(TieredItemType.ELECTRIC_MOTOR, tier, 1), b -> b
-			.pattern(" ab", "aca", "ba ").key('a', map.getElectricMotorWireItem()).key('b', map.getElectricMotorRodItem()).key('c', map.getElectricMotorMagneticRodItem()));
+			.pattern("dab", "aca", "bad").key('a', map.getElectricMotorFineWireItem()).key('b', map.getElectricMotorRodItem()).key('c', map.getElectricMotorMagneticRodItem()).key('d', map.getElectricMotorWireItem()));
 		event.shaped(TieredItemType.ELECTRIC_PISTON.getUnlocalizedName(tier), NCItems.tiered(TieredItemType.ELECTRIC_PISTON, tier, 1), b -> b
 			.pattern("aaa", "bcc", "bde").key('a', map.getElectricPistonPlateItem()).key('b', map.getElectricPistonWireItem()).key('c', map.getElectricPistonRodItem())
 			.key('d', NCItems.tiered(TieredItemType.ELECTRIC_MOTOR, tier, 1)).key('e', map.getElectricPistonSmallGearItem()));

@@ -17,6 +17,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import com.google.common.collect.Tables;
 import conductance.api.CAPI;
+import conductance.api.NCBlocks;
 import conductance.api.NCDataComponents;
 import conductance.api.NCItems;
 import conductance.api.material.Material;
@@ -31,6 +32,8 @@ import conductance.api.util.ExtruderShape;
 import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
 import conductance.core.material.MaterialColorTintSource;
+import conductance.init.block.TieredBlock;
+import conductance.init.block.TieredBlockItem;
 import conductance.init.item.CraftingToolItem;
 import conductance.init.item.MaterialItem;
 import conductance.init.item.ProgramCircuitItem;
@@ -107,11 +110,18 @@ public final class ConductanceItems {
 		NCItems.TIERED = Tables.unmodifiableTable(Util.make(Tables.newCustomTable(new EnumMap<>(TieredItemType.class), HashMap::new), table -> {
 			for (final Tier tier : CAPI.tiers().getTiers()) {
 				for (final TieredItemType itemType : TieredItemType.values()) {
+					if (!itemType.isItem()) {
+						continue;
+					}
 					final Holder<Item> generatedItem = ConductanceItems.REGISTRY.registerItem(itemType.getUnlocalizedName(tier), props -> Util.make(new TieredItem(props, itemType, tier), item -> {
 						CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
 					}));
 					table.put(itemType, tier, generatedItem);
 				}
+				table.put(TieredItemType.MACHINE_CASING, tier, ConductanceItems.REGISTRY.registerItem(
+					TieredItemType.MACHINE_CASING.getUnlocalizedName(tier),
+					props -> new TieredBlockItem((TieredBlock) NCBlocks.MACHINE_CASING.get(tier).value(), props.useBlockDescriptionPrefix()))
+				);
 			}
 		}));
 	}
