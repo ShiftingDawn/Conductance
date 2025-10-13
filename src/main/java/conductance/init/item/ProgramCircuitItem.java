@@ -21,7 +21,7 @@ import conductance.api.NCItems;
 public final class ProgramCircuitItem extends Item {
 
 	private static final Function<Integer, Component> COMPONENT_FACTORY =
-		Util.memoize(program -> Component.translatable("item.conductance.program_circuit.with_program", Component.literal(String.valueOf(program)).withStyle(ChatFormatting.YELLOW)));
+		Util.memoize(program -> Component.translatable("item.conductance.program_circuit.with_program", Component.literal((program < 10 ? "0" : "") + program).withStyle(ChatFormatting.YELLOW)));
 
 	public ProgramCircuitItem(final Properties properties) {
 		super(properties.component(NCDataComponents.PROGRAM_CIRCUIT, 0));

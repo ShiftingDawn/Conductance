@@ -79,7 +79,7 @@ final class ConductanceMaterialGenerationHandlers {
 			.requiredFlag(NCMaterialFlags.DUST)
 			.unitValue(UNIT)
 		);
-		STORAGE_BLOCK = event.register("storage_block", b -> b
+		STORAGE_BLOCK = event.register("storage_block", "%s_block", b -> b
 			.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
 			.entryTag("c:storage_blocks/%s", "%s Storage Blocks")
 			.setHasBlock(true, true, true, BlockTags.MINEABLE_WITH_PICKAXE)
@@ -427,6 +427,12 @@ final class ConductanceMaterialGenerationHandlers {
 		event.add(PLATE_DENSE.getDescriptionId() + ".factory", "Dense %s Plate");
 		event.add(GEAR_SMALL.getDescriptionId() + ".factory", "Small %s Gear");
 		event.add(FINE_WIRE.getDescriptionId() + ".factory", "Fine %s Wire");
+		event.add(WIRE_1X.getDescriptionId() + ".factory", "1x %s Wire");
+		event.add(WIRE_2X.getDescriptionId() + ".factory", "2x %s Wire");
+		event.add(WIRE_4X.getDescriptionId() + ".factory", "4x %s Wire");
+		event.add(WIRE_8X.getDescriptionId() + ".factory", "8x %s Wire");
+		event.add(WIRE_12X.getDescriptionId() + ".factory", "12x %s Wire");
+		event.add(WIRE_16X.getDescriptionId() + ".factory", "16x %s Wire");
 		event.add(LIQUID.getDescriptionId() + ".factory", "%s");
 		event.add(LIQUID.getDescriptionId() + ".molten", "Molten %s");
 		event.add(LIQUID.getDescriptionId() + ".liquid", "Liquid %s");
