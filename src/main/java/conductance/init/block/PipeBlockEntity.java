@@ -94,9 +94,9 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 						network.setConnected((NODE) this, neighborNode, side, isConnected);
 					}
 				} else {
-					if (isConnected != this.canConnectTo(serverLevel, this.getBlockPos(), side)) {
-						this.getNetwork(serverLevel).addEndpoint(this.getBlockPos(), side, !isConnected);
-						this.setConnections(PipeNetHelper.setConnection(this.getConnections(), side, !isConnected));
+					if (isConnected && !this.canConnectTo(serverLevel, this.getBlockPos(), side)) {
+						this.getNetwork(serverLevel).addEndpoint(this.getBlockPos(), side, false);
+						this.setConnections(PipeNetHelper.setConnection(this.getConnections(), side, false));
 					}
 				}
 			}
