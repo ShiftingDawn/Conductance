@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import lombok.Getter;
-import conductance.api.CAPI;
 import conductance.api.NCBlockStateProperties;
 import conductance.api.block.BlockRotationHelper;
 import conductance.api.block.FacingAndRotation;
@@ -21,7 +20,6 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 
 	public static final int REQUEST_STRUCTURE_FORMED = 1;
 	public static final int REQUEST_STRUCTURE_INVALID = 2;
-	private final int structureCheckTimerOffset = CAPI.RANDOM.nextInt(60);
 	private final @Getter Set<IMultiBlockPart> parts = new HashSet<>();
 	private final Set<BlockPos> activeBlocks = new HashSet<>();
 	private final @Getter Lock structureCheckLock = new ReentrantLock();
@@ -157,12 +155,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 		}
 	}
 
-	public static void checkStructure(final IMultiBlockController<?> controller, final boolean forceCheck) {
-		if (!forceCheck && controller instanceof final MultiControllerMachineBlockEntity<?> blockEntity) {
-			if (blockEntity.level != null && blockEntity.level.getGameTime() % blockEntity.structureCheckTimerOffset != 0) {
-				return;
-			}
-		}
+	public static void checkStructure(final IMultiBlockController<?> controller) {
 		final StructureCheckContext ctx = new StructureCheckContext();
 		if (controller.checkStructureAsyncLocked(ctx)) {
 			if (controller.getLevel() instanceof final ServerLevel serverLevel) {

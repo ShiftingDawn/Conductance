@@ -45,7 +45,7 @@ final class MultiStructureChecker {
 			return;
 		}
 		this.executor = Executors.newSingleThreadScheduledExecutor(MultiStructureChecker.THREAD_FACTORY);
-		this.executor.scheduleAtFixedRate(this::tick, 0, 50, TimeUnit.MILLISECONDS);
+		this.executor.scheduleAtFixedRate(this::tick, 0, 2, TimeUnit.SECONDS);
 	}
 
 	private void shutdown() {
@@ -90,7 +90,7 @@ final class MultiStructureChecker {
 		}
 		for (final IMultiBlockController<?> controller : listCopy) {
 			try {
-				MultiControllerMachineBlockEntity.checkStructure(controller, false);
+				MultiControllerMachineBlockEntity.checkStructure(controller);
 			} catch (final Throwable e) {
 				Conductance.LOGGER.error("Error while validating multiblock structure {}: {}", controller.getMultiBlockInfo().controllerPos(), e);
 			}
