@@ -3,10 +3,12 @@ package conductance.init.recipe;
 import conductance.api.CAPI;
 import conductance.api.NCItems;
 import conductance.api.NCMaterialFlags;
+import conductance.api.NCMaterialTraits;
 import conductance.api.NCRecipeTypes;
 import conductance.api.material.Material;
 import conductance.api.recipe.event.RegisterRecipeEvent;
 import conductance.api.util.ExtruderShape;
+import conductance.lib.pipenet.WireType;
 import static conductance.api.CAPI.TAG_HAMMERS;
 import static conductance.api.CAPI.TAG_WIRE_CUTTERS;
 import static conductance.api.CAPI.materials;
@@ -30,6 +32,12 @@ import static conductance.api.NCMaterialGenerationHandlers.ROD;
 import static conductance.api.NCMaterialGenerationHandlers.ROTOR;
 import static conductance.api.NCMaterialGenerationHandlers.SCREW;
 import static conductance.api.NCMaterialGenerationHandlers.STORAGE_BLOCK;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_12X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_16X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_1X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_2X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_4X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_8X;
 import static conductance.api.NCTiers.LV;
 import static conductance.api.recipe.RecipeHelper.calc;
 
@@ -38,6 +46,9 @@ final class MaterialRecipes {
 	public static void add(final RegisterRecipeEvent event) {
 		for (final Material material : CAPI.regs().materials()) {
 			MaterialRecipes.addAllRecipes(event, material);
+			if (material.hasTrait(NCMaterialTraits.WIRE)) {
+				MaterialRecipes.addWireRecipes(event, material);
+			}
 		}
 	}
 
@@ -260,6 +271,77 @@ final class MaterialRecipes {
 				event.shaped("%s_frame_box".formatted(material.getName()), materials().getItem(material, FRAME_BOX, 2),
 					b -> b.pattern("aaa", "aWa", "aaa").key('a', ROD, material));
 			}
+		}
+	}
+
+	private static void addWireRecipes(final RegisterRecipeEvent event, final Material material) {
+		for (final WireType wireType : WireType.values()) {
+			if (!wireType.getHandler().test(material)) {
+				continue;
+			}
+			if (INGOT.test(material)) {
+				calc(material, INGOT, wireType.getHandler(), (int) material.getMass(), LV, (inAmount, outAmount, time, energy) -> {
+					event.create(wireType.getHandler().getUnlocalizedName(material), NCRecipeTypes.WIREMILL, b -> {
+						b.in(material, INGOT, inAmount).out(material, wireType.getHandler(), outAmount).program(wireType.getAmperage()).energyIn(LV);
+						if (wireType.ordinal() == 0) {
+							b.duration(time / 4 - 10);
+						} else {
+							b.duration(time / 2 - (wireType.ordinal() * 10));
+						}
+					});
+				});
+			}
+			if (wireType != WireType.WIRE_1X && WIRE_1X.test(material)) {
+				event.shapeless("1x_%s_wire_from_%s_wire".formatted(material.getName(), wireType.getAmperage()), WIRE_1X, material, wireType.getAmperage(), b -> b.add(wireType.getHandler(), material));
+			}
+		}
+		if (WIRE_1X.test(material)) {
+			if (WIRE_2X.test(material)) {
+				event.shapeless("2x_%s_wire_from_1x_wire".formatted(material.getName()), WIRE_2X, material, b -> b.add(WIRE_1X, material, 2));
+			}
+			if (WIRE_4X.test(material)) {
+				event.shapeless("4x_%s_wire_from_1x_wire".formatted(material.getName()), WIRE_4X, material, b -> b.add(WIRE_1X, material, 4));
+			}
+			if (WIRE_8X.test(material)) {
+				event.shapeless("8x_%s_wire_from_1x_wire".formatted(material.getName()), WIRE_8X, material, b -> b.add(WIRE_1X, material, 8));
+			}
+		}
+		if (WIRE_2X.test(material)) {
+			if (WIRE_4X.test(material)) {
+				event.shapeless("4x_%s_wire_from_2x_wire".formatted(material.getName()), WIRE_4X, material, b -> b.add(WIRE_2X, material, 2));
+			}
+			if (WIRE_8X.test(material)) {
+				event.shapeless("8x_%s_wire_from_2x_wire".formatted(material.getName()), WIRE_8X, material, b -> b.add(WIRE_2X, material, 4));
+			}
+			if (WIRE_12X.test(material)) {
+				event.shapeless("12x_%s_wire_from_2x_wire".formatted(material.getName()), WIRE_12X, material, b -> b.add(WIRE_2X, material, 6));
+			}
+			if (WIRE_16X.test(material)) {
+				event.shapeless("16x_%s_wire_from_2x_wire".formatted(material.getName()), WIRE_16X, material, b -> b.add(WIRE_2X, material, 8));
+			}
+		}
+		if (WIRE_4X.test(material)) {
+			if (WIRE_8X.test(material)) {
+				event.shapeless("8x_%s_wire_from_4x_wire".formatted(material.getName()), WIRE_8X, material, b -> b.add(WIRE_4X, material, 2));
+			}
+			if (WIRE_12X.test(material)) {
+				event.shapeless("12x_%s_wire_from_4x_wire".formatted(material.getName()), WIRE_12X, material, b -> b.add(WIRE_4X, material, 3));
+			}
+			if (WIRE_16X.test(material)) {
+				event.shapeless("16x_%s_wire_from_4x_wire".formatted(material.getName()), WIRE_16X, material, b -> b.add(WIRE_4X, material, 4));
+			}
+		}
+		if (WIRE_8X.test(material)) {
+			if (WIRE_16X.test(material)) {
+				event.shapeless("16x_%s_wire_from_8x_wire".formatted(material.getName()), WIRE_16X, material, b -> b.add(WIRE_8X, material, 2));
+			}
+		}
+		if (WIRE_4X.test(material) && WIRE_8X.test(material) && WIRE_12X.test(material)) {
+			event.shapeless("12x_%s_wire_from_4x_wire_and_8x_wire".formatted(material.getName()), WIRE_12X, material, b -> b.add(WIRE_4X, material).add(WIRE_8X, material));
+
+		}
+		if (WIRE_4X.test(material) && WIRE_12X.test(material) && WIRE_16X.test(material)) {
+			event.shapeless("16x_%s_wire_from_4x_wire_and_12x_wire".formatted(material.getName()), WIRE_16X, material, b -> b.add(WIRE_4X, material).add(WIRE_12X, material));
 		}
 	}
 
