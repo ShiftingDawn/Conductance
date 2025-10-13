@@ -1,6 +1,8 @@
 package conductance.api.recipe.event;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +29,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 
 	void shaped(ResourceLocation recipeId, ItemLike result, Consumer<ShapedCraftingRecipeBuilder> builder);
 
+	default void shaped(final ResourceLocation recipeId, final Holder<? extends ItemLike> result, final Consumer<ShapedCraftingRecipeBuilder> builder) {
+		this.shaped(recipeId, result.value(), builder);
+	}
+
+	default void shaped(final ResourceLocation recipeId, final Supplier<? extends ItemLike> result, final Consumer<ShapedCraftingRecipeBuilder> builder) {
+		this.shaped(recipeId, result.get(), builder);
+	}
+
 	default void shaped(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<ShapedCraftingRecipeBuilder> builder) {
 		this.shaped(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
 	}
@@ -41,6 +51,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 
 	default void shaped(final String recipeId, final ItemLike result, final Consumer<ShapedCraftingRecipeBuilder> builder) {
 		this.shaped(this.id("crafting_shaped", recipeId), result, builder);
+	}
+
+	default void shaped(final String recipeId, final Holder<? extends ItemLike> result, final Consumer<ShapedCraftingRecipeBuilder> builder) {
+		this.shaped(recipeId, result.value(), builder);
+	}
+
+	default void shaped(final String recipeId, final Supplier<? extends ItemLike> result, final Consumer<ShapedCraftingRecipeBuilder> builder) {
+		this.shaped(recipeId, result.get(), builder);
 	}
 
 	default void shaped(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<ShapedCraftingRecipeBuilder> builder) {
@@ -59,6 +77,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 		this.shaped(BuiltInRegistries.ITEM.getKey(result.asItem()).getPath(), result, builder);
 	}
 
+	default void shaped(final Holder<? extends ItemLike> result, final Consumer<ShapedCraftingRecipeBuilder> builder) {
+		this.shaped(result.value(), builder);
+	}
+
+	default void shaped(final Supplier<? extends ItemLike> result, final Consumer<ShapedCraftingRecipeBuilder> builder) {
+		this.shaped(result.get(), builder);
+	}
+
 	default void shaped(final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<ShapedCraftingRecipeBuilder> builder) {
 		this.shaped(CAPI.materials().getItem(resultMaterial, resultHandler), builder);
 	}
@@ -70,6 +96,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 	void shapeless(ResourceLocation recipeId, ItemStack result, Consumer<ShapelessCraftingRecipeBuilder> builder);
 
 	void shapeless(ResourceLocation recipeId, ItemLike result, Consumer<ShapelessCraftingRecipeBuilder> builder);
+
+	default void shapeless(final ResourceLocation recipeId, final Holder<? extends ItemLike> result, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
+		this.shapeless(recipeId, result.value(), builder);
+	}
+
+	default void shapeless(final ResourceLocation recipeId, final Supplier<? extends ItemLike> result, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
+		this.shapeless(recipeId, result.get(), builder);
+	}
 
 	default void shapeless(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
 		this.shapeless(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
@@ -87,6 +121,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 		this.shapeless(this.id("crafting_shapeless", recipeId), result, builder);
 	}
 
+	default void shapeless(final String recipeId, final Holder<? extends ItemLike> result, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
+		this.shapeless(recipeId, result.value(), builder);
+	}
+
+	default void shapeless(final String recipeId, final Supplier<? extends ItemLike> result, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
+		this.shapeless(recipeId, result.get(), builder);
+	}
+
 	default void shapeless(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
 		this.shapeless(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
 	}
@@ -101,6 +143,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 
 	default void shapeless(final ItemLike result, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
 		this.shapeless(BuiltInRegistries.ITEM.getKey(result.asItem()).getPath(), result, builder);
+	}
+
+	default void shapeless(final Holder<? extends ItemLike> result, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
+		this.shapeless(result.value(), builder);
+	}
+
+	default void shapeless(final Supplier<? extends ItemLike> result, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
+		this.shapeless(result.get(), builder);
 	}
 
 	default void shapeless(final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<ShapelessCraftingRecipeBuilder> builder) {
@@ -127,6 +177,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 
 	void smelting(ResourceLocation recipeId, ItemLike result, Consumer<CookingRecipeBuilder> builder);
 
+	default void smelting(final ResourceLocation recipeId, final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smelting(recipeId, result.value(), builder);
+	}
+
+	default void smelting(final ResourceLocation recipeId, final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smelting(recipeId, result.get(), builder);
+	}
+
 	default void smelting(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
 		this.smelting(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
 	}
@@ -141,6 +199,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 
 	default void smelting(final String recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
 		this.smelting(this.id("smelting", recipeId), result, builder);
+	}
+
+	default void smelting(final String recipeId, final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smelting(recipeId, result.value(), builder);
+	}
+
+	default void smelting(final String recipeId, final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smelting(recipeId, result.get(), builder);
 	}
 
 	default void smelting(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
@@ -159,6 +225,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 		this.smelting(BuiltInRegistries.ITEM.getKey(result.asItem()), result, builder);
 	}
 
+	default void smelting(final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smelting(result.value(), builder);
+	}
+
+	default void smelting(final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smelting(result.get(), builder);
+	}
+
 	default void smelting(final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
 		this.smelting(CAPI.materials().getItem(resultMaterial, resultHandler), builder);
 	}
@@ -170,6 +244,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 	void blasting(ResourceLocation recipeId, ItemStack result, Consumer<CookingRecipeBuilder> builder);
 
 	void blasting(ResourceLocation recipeId, ItemLike result, Consumer<CookingRecipeBuilder> builder);
+
+	default void blasting(final ResourceLocation recipeId, final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.blasting(recipeId, result.value(), builder);
+	}
+
+	default void blasting(final ResourceLocation recipeId, final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.blasting(recipeId, result.get(), builder);
+	}
 
 	default void blasting(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
 		this.blasting(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
@@ -185,6 +267,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 
 	default void blasting(final String recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
 		this.blasting(this.id("blasting", recipeId), result, builder);
+	}
+
+	default void blasting(final String recipeId, final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.blasting(recipeId, result.value(), builder);
+	}
+
+	default void blasting(final String recipeId, final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.blasting(recipeId, result.get(), builder);
 	}
 
 	default void blasting(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
@@ -203,6 +293,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 		this.blasting(BuiltInRegistries.ITEM.getKey(result.asItem()), result, builder);
 	}
 
+	default void blasting(final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.blasting(result.value(), builder);
+	}
+
+	default void blasting(final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.blasting(result.get(), builder);
+	}
+
 	default void blasting(final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
 		this.blasting(CAPI.materials().getItem(resultMaterial, resultHandler), builder);
 	}
@@ -214,6 +312,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 	void smoking(ResourceLocation recipeId, ItemStack result, Consumer<CookingRecipeBuilder> builder);
 
 	void smoking(ResourceLocation recipeId, ItemLike result, Consumer<CookingRecipeBuilder> builder);
+
+	default void smoking(final ResourceLocation recipeId, final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smoking(recipeId, result.value(), builder);
+	}
+
+	default void smoking(final ResourceLocation recipeId, final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smoking(recipeId, result.get(), builder);
+	}
 
 	default void smoking(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
 		this.smoking(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
@@ -229,6 +335,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 
 	default void smoking(final String recipeId, final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
 		this.smoking(this.id("smoking", recipeId), result, builder);
+	}
+
+	default void smoking(final String recipeId, final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smoking(recipeId, result.value(), builder);
+	}
+
+	default void smoking(final String recipeId, final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smoking(recipeId, result.get(), builder);
 	}
 
 	default void smoking(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
@@ -247,6 +361,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 		this.smoking(BuiltInRegistries.ITEM.getKey(result.asItem()), result, builder);
 	}
 
+	default void smoking(final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smoking(result.value(), builder);
+	}
+
+	default void smoking(final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.smoking(result.get(), builder);
+	}
+
 	default void smoking(final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
 		this.smoking(CAPI.materials().getItem(resultMaterial, resultHandler), builder);
 	}
@@ -258,6 +380,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 	void campfire(ResourceLocation recipeId, ItemStack result, Consumer<CookingRecipeBuilder> builder);
 
 	void campfire(ResourceLocation recipeId, ItemLike result, Consumer<CookingRecipeBuilder> builder);
+
+	default void campfire(final ResourceLocation recipeId, final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.campfire(recipeId, result.value(), builder);
+	}
+
+	default void campfire(final ResourceLocation recipeId, final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.campfire(recipeId, result.get(), builder);
+	}
 
 	default void campfire(final ResourceLocation recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
 		this.campfire(recipeId, CAPI.materials().getItem(resultMaterial, resultHandler), builder);
@@ -275,6 +405,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 		this.campfire(this.id("campfire_cooking", recipeId), result, builder);
 	}
 
+	default void campfire(final String recipeId, final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.campfire(recipeId, result.value(), builder);
+	}
+
+	default void campfire(final String recipeId, final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.campfire(recipeId, result.get(), builder);
+	}
+
 	default void campfire(final String recipeId, final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {
 		this.campfire(this.id("campfire_cooking", recipeId), resultHandler, resultMaterial, builder);
 	}
@@ -289,6 +427,14 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 
 	default void campfire(final ItemLike result, final Consumer<CookingRecipeBuilder> builder) {
 		this.campfire(BuiltInRegistries.ITEM.getKey(result.asItem()), result, builder);
+	}
+
+	default void campfire(final Holder<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.campfire(result.value(), builder);
+	}
+
+	default void campfire(final Supplier<? extends ItemLike> result, final Consumer<CookingRecipeBuilder> builder) {
+		this.campfire(result.get(), builder);
 	}
 
 	default void campfire(final MaterialGenerationHandler resultHandler, final Material resultMaterial, final Consumer<CookingRecipeBuilder> builder) {

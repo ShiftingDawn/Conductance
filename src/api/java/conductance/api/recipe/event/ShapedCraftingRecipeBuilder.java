@@ -1,5 +1,7 @@
 package conductance.api.recipe.event;
 
+import java.util.function.Supplier;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -26,6 +28,14 @@ public interface ShapedCraftingRecipeBuilder extends RecipeBuilder<ShapedCraftin
 	ShapedCraftingRecipeBuilder key(char c, ItemStack stack);
 
 	ShapedCraftingRecipeBuilder key(char c, ItemLike item);
+
+	default ShapedCraftingRecipeBuilder key(final char c, final Holder<? extends ItemLike> itemHolder) {
+		return this.key(c, itemHolder.value());
+	}
+
+	default ShapedCraftingRecipeBuilder key(final char c, final Supplier<? extends ItemLike> itemSupplier) {
+		return this.key(c, itemSupplier.get());
+	}
 
 	ShapedCraftingRecipeBuilder key(char c, TagKey<Item> tag);
 

@@ -3,6 +3,7 @@ package conductance.init;
 import conductance.api.NCMaterialGenerationHandlers;
 import conductance.api.NCMaterials;
 import conductance.api.NCRecipeElementTypes;
+import conductance.api.machine.CapIO;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.recipe.event.RecipeBuilderCallback;
@@ -24,18 +25,18 @@ final class ConductanceRecipesTypes {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterRecipeTypeEvent event) {
-		STEAM_TURBINE = event.register("steam_turbine", b -> b.setIO(0, 1, 0, 0));
+		STEAM_TURBINE = event.register("steam_turbine", b -> b.setIO(0, 1, 0, 0).setEnergyIO(CapIO.OUT));
 
-		BENDING_MACHINE = event.register("bending_machine", b -> b.setIO(2, 0, 2, 0));
-		PULVERIZER = event.register("pulverizer", b -> b.setIO(1, 0, 1, 0));
-		EXTRUDER = event.register("extruder", b -> b.setIO(2, 0, 1, 0));
-		WIREMILL = event.register("wiremill", b -> b.setIO(2, 0, 2, 0));
-		LATHE = event.register("lathe", b -> b.setIO(1, 0, 2, 0));
-		EXTRACTOR = event.register("extractor", b -> b.setIO(1, 0, 1, 1));
-		COMPRESSOR = event.register("compressor", b -> b.setIO(1, 0, 1, 0));
-		CUTTING_MACHINE = event.register("cutting_machine", b -> b.setIO(1, 1, 1, 0).recipeBuilderCallback(ConductanceRecipesTypes.CUTTING_MACHINE_CALLBACK));
+		BENDING_MACHINE = event.register("bending_machine", b -> b.setIO(2, 0, 2, 0).setEnergyIO(CapIO.IN));
+		PULVERIZER = event.register("pulverizer", b -> b.setIO(1, 0, 1, 0).setEnergyIO(CapIO.IN));
+		EXTRUDER = event.register("extruder", b -> b.setIO(2, 0, 1, 0).setEnergyIO(CapIO.IN));
+		WIREMILL = event.register("wiremill", b -> b.setIO(2, 0, 2, 0).setEnergyIO(CapIO.IN));
+		LATHE = event.register("lathe", b -> b.setIO(1, 0, 2, 0).setEnergyIO(CapIO.IN));
+		EXTRACTOR = event.register("extractor", b -> b.setIO(1, 0, 1, 1).setEnergyIO(CapIO.IN));
+		COMPRESSOR = event.register("compressor", b -> b.setIO(1, 0, 1, 0).setEnergyIO(CapIO.IN));
+		CUTTING_MACHINE = event.register("cutting_machine", b -> b.setIO(1, 1, 1, 0).setEnergyIO(CapIO.IN).recipeBuilderCallback(ConductanceRecipesTypes.CUTTING_MACHINE_CALLBACK));
 
-		ELECTRIC_BLAST_FURNACE = event.register("electric_blast_furnace", b -> b.setIO(3, 3, 1, 1));
+		ELECTRIC_BLAST_FURNACE = event.register("electric_blast_furnace", b -> b.setIO(3, 3, 1, 1).setEnergyIO(CapIO.IN));
 	}
 
 	private static final RecipeBuilderCallback CUTTING_MACHINE_CALLBACK = (recipeId, builder, recipeBuilderFactory) -> {

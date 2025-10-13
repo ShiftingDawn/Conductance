@@ -3,14 +3,17 @@ package conductance.api.tier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import conductance.api.CAPI;
+import conductance.api.NCMaterials;
 import conductance.api.material.Material;
 import static conductance.api.NCMaterialGenerationHandlers.FINE_WIRE;
 import static conductance.api.NCMaterialGenerationHandlers.GEAR_SMALL;
+import static conductance.api.NCMaterialGenerationHandlers.GEM;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.RING;
 import static conductance.api.NCMaterialGenerationHandlers.ROD;
 import static conductance.api.NCMaterialGenerationHandlers.ROTOR;
 import static conductance.api.NCMaterialGenerationHandlers.WIRE_1X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_4X;
 
 @SuppressWarnings("CheckStyle")
 public abstract class TieredComponentMap {
@@ -202,6 +205,48 @@ public abstract class TieredComponentMap {
 
 	public TagKey<Item> getRobotArmGearItem() {
 		return CAPI.materials().getItemTag(this.getRobotArmGearMaterial(), GEAR_SMALL);
+	}
+	//endregion
+
+	//region Machines
+	public Material getMachinePlateMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getMachinePlateItem() {
+		return CAPI.materials().getItemTag(this.getMachinePlateMaterial(), PLATE);
+	}
+
+	public Material getMachineWireMaterial() {
+		return this.getWireMaterial();
+	}
+
+	public TagKey<Item> getMachineWireItem() {
+		return CAPI.materials().getItemTag(this.getMachineWireMaterial(), WIRE_1X);
+	}
+
+	public Material getMachineHeatingWireMaterial() {
+		return this.getWireMaterial();
+	}
+
+	public TagKey<Item> getMachineHeatingWireItem() {
+		return CAPI.materials().getItemTag(this.getMachineHeatingWireMaterial(), WIRE_4X);
+	}
+
+	public Material getMachineRotorMaterial() {
+		return this.getPrimaryMaterial();
+	}
+
+	public TagKey<Item> getMachineRotorItem() {
+		return CAPI.materials().getItemTag(this.getMachineRotorMaterial(), ROTOR);
+	}
+
+	public Material getMachineCuttingPartMaterial() {
+		return NCMaterials.DIAMOND;
+	}
+
+	public TagKey<Item> getMachineCuttingPartItem() {
+		return CAPI.materials().getItemTag(this.getMachineCuttingPartMaterial(), GEM);
 	}
 	//endregion
 }

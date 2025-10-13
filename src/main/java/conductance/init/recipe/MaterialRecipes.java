@@ -129,7 +129,7 @@ final class MaterialRecipes {
 			if (INGOT.test(material)) {
 				calc(material, INGOT, GEAR, (int) material.getMass(), LV, (inAmount, outAmount, time, energy) -> {
 					event.create("%s_gear".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
-						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.GEAR).value()).out(material, GEAR, outAmount).duration(time).energyIn(LV));
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.GEAR)).out(material, GEAR, outAmount).duration(time).energyIn(LV));
 				});
 			}
 			if (PLATE.test(material) && ROD.test(material)) {
@@ -141,7 +141,7 @@ final class MaterialRecipes {
 			if (INGOT.test(material)) {
 				calc(material, INGOT, GEAR_SMALL, (int) material.getMass(), LV, (inAmount, outAmount, time, energy) -> {
 					event.create("small_%s_gear".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
-						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.GEAR_SMALL).value()).out(material, GEAR_SMALL, outAmount).duration(time).energyIn(LV));
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.GEAR_SMALL)).out(material, GEAR_SMALL, outAmount).duration(time).energyIn(LV));
 				});
 			}
 			if (PLATE.test(material) && ROD.test(material)) {
@@ -153,7 +153,7 @@ final class MaterialRecipes {
 			if (INGOT.test(material)) {
 				calc(material, INGOT, ROD, (int) material.getMass(), LV, (inAmount, outAmount, time, energy) -> {
 					event.create("%s_rod".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
-						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.ROD).value()).out(material, ROD, outAmount).duration(time).energyIn(LV));
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.ROD)).out(material, ROD, outAmount).duration(time).energyIn(LV));
 				});
 				calc(material, INGOT, ROD, (int) material.getMass(), LV, (inAmount, outAmount, time, energy) -> {
 					event.create("%s_rod".formatted(material.getName()), NCRecipeTypes.LATHE,
@@ -171,7 +171,7 @@ final class MaterialRecipes {
 			if (INGOT.test(material)) {
 				calc(material, INGOT, BOLT, (int) material.getMass(), LV, (inAmount, outAmount, time, energy) -> {
 					event.create("%s_bolt".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
-						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.BOLT).value()).out(material, BOLT, outAmount).duration(time).energyIn(LV));
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.BOLT)).out(material, BOLT, outAmount).duration(time).energyIn(LV));
 				});
 			}
 			if (ROD.test(material)) {
@@ -183,7 +183,7 @@ final class MaterialRecipes {
 			if (INGOT.test(material)) {
 				calc(material, INGOT, SCREW, (int) material.getMass(), LV, (inAmount, outAmount, time, energy) -> {
 					event.create("%s_screw".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
-						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.SCREW).value()).out(material, SCREW, outAmount).duration(time).energyIn(LV));
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.SCREW)).out(material, SCREW, outAmount).duration(time).energyIn(LV));
 				});
 			}
 			if (BOLT.test(material)) {
@@ -211,7 +211,7 @@ final class MaterialRecipes {
 			if (INGOT.test(material)) {
 				calc(material, INGOT, RING, (int) material.getMass(), LV, (inAmount, outAmount, time, energy) -> {
 					event.create("%s_ring".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
-						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.RING).value()).out(material, RING, outAmount).duration(time).energyIn(LV));
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.RING)).out(material, RING, outAmount).duration(time).energyIn(LV));
 				});
 			}
 			if (ROD.test(material)) {
@@ -227,7 +227,7 @@ final class MaterialRecipes {
 			if (INGOT.test(material)) {
 				calc(material, INGOT, ROTOR, (int) material.getMass(), LV, (inAmount, outAmount, time, energy) -> {
 					event.create("%s_rotor".formatted(material.getName()), NCRecipeTypes.EXTRUDER,
-						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.ROTOR).value()).out(material, ROTOR, outAmount).duration(time).energyIn(LV));
+						b -> b.in(material, INGOT, inAmount).nc(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.ROTOR)).out(material, ROTOR, outAmount).duration(time).energyIn(LV));
 				});
 			}
 			if (PLATE.test(material) && RING.test(material) && SCREW.test(material)) {

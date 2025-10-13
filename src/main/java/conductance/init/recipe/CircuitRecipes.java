@@ -23,18 +23,18 @@ final class CircuitRecipes {
 	}
 
 	private static void addTier1(final RegisterRecipeEvent event) {
-		event.shaped(NCItems.WOOD_CIRCUIT_BOARD.value(), b -> b.pattern("aaa", "bbb")
+		event.shaped(NCItems.WOOD_CIRCUIT_BOARD, b -> b.pattern("aaa", "bbb")
 			.key('a', DUST, REDSTONE).key('b', ItemTags.WOODEN_SLABS));
-		event.shaped(NCItems.WOOD_CIRCUIT_SUBSTRATE.value(), b -> b.pattern("aaa", "bcb", "aaa")
-			.key('a', FINE_WIRE, TIN).key('b', ROD, COPPER).key('c', NCItems.WOOD_CIRCUIT_BOARD.value()));
-		event.shaped(NCItems.DIODE.value(), b -> b.pattern("aba", "cdc", "aea")
-			.key('a', Items.PAPER).key('b', DUST, REDSTONE).key('c', FOIL, STEEL).key('d', NCItems.WOOD_CIRCUIT_BOARD.value()).key('e', ROD, STEEL));
-		event.shaped(NCItems.RESISTOR.value(), b -> b.pattern("aba", "cdc", "aea")
-			.key('a', Items.PAPER).key('b', DUST, REDSTONE).key('c', FOIL, COPPER).key('d', NCItems.WOOD_CIRCUIT_BOARD.value()).key('e', ROD, COPPER));
-		event.shaped(NCItems.TRANSISTOR.value(), b -> b.pattern("aba", "cdc", "aea")
-			.key('a', Items.PAPER).key('b', DUST, REDSTONE).key('c', FOIL, TIN).key('d', NCItems.WOOD_CIRCUIT_BOARD.value()).key('e', ROD, TIN));
+		event.shaped(NCItems.WOOD_CIRCUIT_SUBSTRATE, b -> b.pattern("aaa", "bcb", "aaa")
+			.key('a', FINE_WIRE, TIN).key('b', ROD, COPPER).key('c', NCItems.WOOD_CIRCUIT_BOARD));
+		event.shaped(NCItems.DIODE, b -> b.pattern("aba", "cdc", "aea")
+			.key('a', Items.PAPER).key('b', DUST, REDSTONE).key('c', FOIL, STEEL).key('d', NCItems.WOOD_CIRCUIT_BOARD).key('e', ROD, STEEL));
+		event.shaped(NCItems.RESISTOR, b -> b.pattern("aba", "cdc", "aea")
+			.key('a', Items.PAPER).key('b', DUST, REDSTONE).key('c', FOIL, COPPER).key('d', NCItems.WOOD_CIRCUIT_BOARD).key('e', ROD, COPPER));
+		event.shaped(NCItems.TRANSISTOR, b -> b.pattern("aba", "cdc", "aea")
+			.key('a', Items.PAPER).key('b', DUST, REDSTONE).key('c', FOIL, TIN).key('d', NCItems.WOOD_CIRCUIT_BOARD).key('e', ROD, TIN));
 		event.shaped(NCItems.tiered(TieredItemType.CIRCUIT, NCTiers.LV, 1), b -> b.pattern("aba", "cdc", "efe")
-			.key('a', NCItems.TRANSISTOR.value()).key('b', PLATE, STEEL).key('c', NCItems.RESISTOR.value()).key('d', NCItems.WOOD_CIRCUIT_SUBSTRATE.value()).key('e', NCItems.DIODE.value()).key('f', FINE_WIRE, COPPER));
+			.key('a', NCItems.TRANSISTOR).key('b', PLATE, STEEL).key('c', NCItems.RESISTOR).key('d', NCItems.WOOD_CIRCUIT_SUBSTRATE).key('e', NCItems.DIODE).key('f', FINE_WIRE, COPPER));
 	}
 
 	private CircuitRecipes() {

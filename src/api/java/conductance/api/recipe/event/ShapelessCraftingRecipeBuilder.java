@@ -1,5 +1,7 @@
 package conductance.api.recipe.event;
 
+import java.util.function.Supplier;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -17,6 +19,14 @@ public interface ShapelessCraftingRecipeBuilder extends RecipeBuilder<ShapelessC
 
 	ShapelessCraftingRecipeBuilder add(ItemLike item, int amount);
 
+	default ShapelessCraftingRecipeBuilder add(final Holder<? extends ItemLike> itemHolder, final int amount) {
+		return this.add(itemHolder.value(), amount);
+	}
+
+	default ShapelessCraftingRecipeBuilder add(final Supplier<? extends ItemLike> itemSupplier, final int amount) {
+		return this.add(itemSupplier.get(), amount);
+	}
+
 	ShapelessCraftingRecipeBuilder add(TagKey<Item> tag, int amount);
 
 	ShapelessCraftingRecipeBuilder add(ResourceLocation tag, int amount);
@@ -33,6 +43,14 @@ public interface ShapelessCraftingRecipeBuilder extends RecipeBuilder<ShapelessC
 
 	default ShapelessCraftingRecipeBuilder add(final ItemLike item) {
 		return this.add(item, 1);
+	}
+
+	default ShapelessCraftingRecipeBuilder add(final Holder<? extends ItemLike> itemHolder) {
+		return this.add(itemHolder, 1);
+	}
+
+	default ShapelessCraftingRecipeBuilder add(final Supplier<? extends ItemLike> itemSupplier) {
+		return this.add(itemSupplier, 1);
 	}
 
 	default ShapelessCraftingRecipeBuilder add(final TagKey<Item> tag) {

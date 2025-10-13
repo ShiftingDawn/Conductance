@@ -165,7 +165,7 @@ final class GenericRecipeMachineCategory implements IRecipeCategory<MachineRecip
 		int y = this.rootGroup.getHeight() + 3;
 		builder.addText(Component.translatable("info.conductance.jei.duration", TextHelper.getFormattedRecipeDuration(recipe.getRecipeDuration())), this.getWidth(), 10).setPosition(0, y);
 		final long energyPerTick;
-		if (!recipe.getPerTickInputs().containsKey(NCRecipeElementTypes.ENERGY)) {
+		if (recipe.getPerTickInputs().containsKey(NCRecipeElementTypes.ENERGY)) {
 			energyPerTick = recipe.getPerTickInputs().get(NCRecipeElementTypes.ENERGY).stream().mapToLong(element -> (long) element.data()).sum();
 		} else {
 			energyPerTick = 0;

@@ -2,7 +2,10 @@ package conductance.api.recipe.event;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -54,6 +57,22 @@ public interface MachineRecipeBuilder {
 	}
 
 	default MachineRecipeBuilder in(final ItemLike ingredient) {
+		return this.in(ingredient, 1);
+	}
+
+	default MachineRecipeBuilder in(final Holder<Item> ingredient, final int count) {
+		return this.in(ingredient.value(), count);
+	}
+
+	default MachineRecipeBuilder in(final Holder<Item> ingredient) {
+		return this.in(ingredient, 1);
+	}
+
+	default MachineRecipeBuilder in(final Supplier<Item> ingredient, final int count) {
+		return this.in(ingredient.get(), count);
+	}
+
+	default MachineRecipeBuilder in(final Supplier<Item> ingredient) {
 		return this.in(ingredient, 1);
 	}
 
@@ -123,6 +142,22 @@ public interface MachineRecipeBuilder {
 		return this.nc(ingredient, 1);
 	}
 
+	default MachineRecipeBuilder nc(final Holder<Item> ingredient, final int count) {
+		return this.nc(ingredient.value(), count);
+	}
+
+	default MachineRecipeBuilder nc(final Holder<Item> ingredient) {
+		return this.nc(ingredient, 1);
+	}
+
+	default MachineRecipeBuilder nc(final Supplier<Item> ingredient, final int count) {
+		return this.nc(ingredient.get(), count);
+	}
+
+	default MachineRecipeBuilder nc(final Supplier<Item> ingredient) {
+		return this.nc(ingredient, 1);
+	}
+
 	default MachineRecipeBuilder nc(final SizedFluidIngredient ingredient) {
 		return this.nc(NCRecipeElementTypes.FLUID, ingredient);
 	}
@@ -183,6 +218,22 @@ public interface MachineRecipeBuilder {
 	}
 
 	default MachineRecipeBuilder out(final ItemLike ingredient) {
+		return this.out(ingredient, 1);
+	}
+
+	default MachineRecipeBuilder out(final Holder<Item> ingredient, final int count) {
+		return this.out(ingredient.value(), count);
+	}
+
+	default MachineRecipeBuilder out(final Holder<Item> ingredient) {
+		return this.out(ingredient, 1);
+	}
+
+	default MachineRecipeBuilder out(final Supplier<Item> ingredient, final int count) {
+		return this.out(ingredient.get(), count);
+	}
+
+	default MachineRecipeBuilder out(final Supplier<Item> ingredient) {
 		return this.out(ingredient, 1);
 	}
 
