@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.block.BlockRotationHelper;
@@ -58,7 +59,7 @@ final class MachineModelHandler {
 					break;
 				}
 			}
-			event.addItemModelDelegate(block);
+			MachineModelHandler.createItemModel(event, block, canBeLit);
 		});
 		MachineModelHandler.SIMPLE_MODELS.forEach((machineType, casingTexture) -> {
 			final MachineBlock<?> block = machineType.getBlock().get();
@@ -70,7 +71,7 @@ final class MachineModelHandler {
 					break;
 				}
 			}
-			event.addItemModelDelegate(block);
+			MachineModelHandler.createItemModel(event, block, canBeLit);
 		});
 		MachineModelHandler.TIERED_MODELS.forEach((machineType, modelData) -> {
 			final MachineBlock<?> block = machineType.getBlock().get();
@@ -84,7 +85,7 @@ final class MachineModelHandler {
 					break;
 				}
 			}
-			event.addItemModelDelegate(block);
+			MachineModelHandler.createItemModel(event, block, canBeLit);
 		});
 		MachineModelHandler.SIDED_MODELS.forEach((machineType, textureBaseLocation) -> {
 			final MachineBlock<?> block = machineType.getBlock().get();
@@ -102,7 +103,7 @@ final class MachineModelHandler {
 					break;
 				}
 			}
-			event.addItemModelDelegate(block);
+			MachineModelHandler.createItemModel(event, block, canBeLit);
 		});
 	}
 
@@ -175,6 +176,14 @@ final class MachineModelHandler {
 				}
 			}
 		});
+	}
+
+	private static void createItemModel(final AddRuntimeModelEvent event, final Block block, final boolean canBeLit) {
+		if (!canBeLit) {
+			event.addItemModelDelegate(block);
+		} else {
+			event.addItemsModel(block.asItem(), b2 -> b2.simple(BuiltInRegistries.BLOCK.getKey(block).withPath(current -> "block/" + current + "_working")));
+		}
 	}
 
 	private MachineModelHandler() {
