@@ -32,10 +32,17 @@ final class MaterialWireBlockModelHandler {
 					.faces((side, face) -> face.particle().tintIndex(0), false)
 				)
 			);
-			event.addBlockModel(MaterialWireBlockModelHandler.getExtensionLocation(wireType), builder ->
-				builder.element(element -> element
+			event.addBlockModel(MaterialWireBlockModelHandler.getExtensionLocation(wireType), builder -> builder
+				.element(element -> element
 					.from(start, start, 0).to(end, end, start)
 					.faces((side, face) -> face.particle().tintIndex(0), false, UP, DOWN, NORTH, EAST, WEST)
+				)
+			);
+			event.addItemModel(Conductance.id(wireType.getHandler().getId().getPath()), builder -> builder
+				.parent(ResourceLocation.withDefaultNamespace("block/cube"))
+				.element(element -> element
+					.from(start, start, 0).to(end, end, 16)
+					.faces((side, face) -> face.particle().tintIndex(0), true)
 				)
 			);
 		}
@@ -64,7 +71,11 @@ final class MaterialWireBlockModelHandler {
 				.parent(MaterialWireBlockModelHandler.getExtensionLocation(wireType).withPrefix("block/"))
 				.particle(CAPI.resourceFinder().getMaterialTexture(block.getMaterial().getTextureSet(), wireType.getHandler().getTextureType(), null, null).value())
 			);
-			event.addItemsModel(block.asItem(), builder -> builder.simple(blockBaseId.withPrefix("block/")));
+			event.addItemModel(block.asItem(), builder -> builder
+				.parent(Conductance.id("item/" + wireType.getHandler().getId().getPath()))
+				.particle(CAPI.resourceFinder().getMaterialTexture(block.getMaterial().getTextureSet(), wireType.getHandler().getTextureType(), null, null).value())
+			);
+			event.addItemsModel(block.asItem(), builder -> builder.simple(block.asItem()));
 		});
 	}
 
