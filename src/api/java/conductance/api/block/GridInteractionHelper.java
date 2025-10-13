@@ -2,8 +2,6 @@ package conductance.api.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -61,21 +59,19 @@ public final class GridInteractionHelper {
 		return GridInteractionHelper.getLogicalSideFromGrid(hit.getDirection(), (float) hitPos.x - blockPos.getX(), (float) hitPos.y - blockPos.getY(), (float) hitPos.z - blockPos.getZ());
 	}
 
-	public static boolean shouldInteractUsingGrid(final UseOnContext ctx) {
+	public static boolean shouldInteractUsingGrid(final GridInteractionContext ctx) {
 		if (ctx.getPlayer() == null) {
 			return false;
 		}
-		final BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
-		if (blockState.getBlock() instanceof IGridInteractable) {
+		if (ctx.getBlockState().getBlock() instanceof IGridInteractable) {
 			return true;
 		}
-		final BlockEntity blockEntity = ctx.getLevel().getBlockEntity(ctx.getClickedPos());
-		if (blockEntity instanceof IGridInteractable) {
+		if (ctx.getBlockEntity() instanceof IGridInteractable) {
 			return true;
 		}
 		//Fall back to rotatable blocks
-		if (InteractType.WRENCH.is(ctx.getItemInHand())) {
-			final BlockState state = ctx.getLevel().getBlockState(ctx.getClickedPos());
+		if (InteractType.WRENCH == ctx.getInteractType()) {
+			final BlockState state = ctx.getBlockState();
 			return state.hasProperty(FACING_ALL) || state.hasProperty(FACING_HORIZONTAL) || state.hasProperty(FACING_VERTICAL) || state.hasProperty(FACING_EXTENDED);
 		}
 		return false;

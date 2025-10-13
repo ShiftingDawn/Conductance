@@ -4,14 +4,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import conductance.api.block.FacingAndRotation;
+import conductance.api.block.GridInteractionContext;
 import conductance.api.block.GridInteractionHelper;
 import conductance.api.block.IGridInteractable;
 import conductance.api.block.InteractType;
@@ -31,7 +30,7 @@ public final class GridInteractionHandler {
 	}
 
 	private static void onRightClickBlock(final PlayerInteractEvent.RightClickBlock event) {
-		final UseOnContext ctx = new UseOnContext(event.getLevel(), event.getEntity(), event.getHand(), event.getItemStack(), event.getHitVec());
+		final GridInteractionContext ctx = new GridInteractionContext(event.getEntity(), event.getHand(), event.getHitVec());
 		final Direction side = GridInteractionHelper.getLogicalSideFromGrid(event.getHitVec());
 		if (GridInteractionHelper.shouldInteractUsingGrid(ctx)) {
 			final InteractionResult result = GridInteractionHandler.handleGridInteraction(ctx, side);
@@ -42,23 +41,20 @@ public final class GridInteractionHandler {
 		}
 	}
 
-	private static InteractionResult handleGridInteraction(final UseOnContext ctx, final Direction side) {
-		final InteractType interactType = InteractType.findTypeForStack(ctx.getItemInHand());
-		final BlockEntity blockEntity = ctx.getLevel().getBlockEntity(ctx.getClickedPos());
-		final BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
-		if (blockState.getBlock() instanceof final IGridInteractable interactable) {
-			final InteractionResult res = interactable.onToolUsed(interactType, ctx, side);
+	private static InteractionResult handleGridInteraction(final GridInteractionContext ctx, final Direction side) {
+		if (ctx.getBlockState().getBlock() instanceof final IGridInteractable interactable) {
+			final InteractionResult res = interactable.onGridInteraction(ctx, side);
 			if (res.consumesAction()) {
 				return res;
 			}
 		}
-		if (blockEntity instanceof final IGridInteractable interactable) {
-			final InteractionResult res = interactable.onToolUsed(interactType, ctx, side);
+		if (ctx.getBlockEntity() instanceof final IGridInteractable interactable) {
+			final InteractionResult res = interactable.onGridInteraction(ctx, side);
 			if (res.consumesAction()) {
 				return res;
 			}
 		}
-		if (interactType == InteractType.WRENCH && GridInteractionHandler.tryWrench(ctx, side)) {
+		if (InteractType.WRENCH == ctx.getInteractType() && GridInteractionHandler.tryWrench(ctx, side)) {
 			// TODO play wrench sound
 			// if (ctx.getLevel().isClientSide) {
 			// ConductanceSounds.TOOL_WRENCH.play(ctx.getLevel(), ctx.getPlayer());
@@ -68,11 +64,11 @@ public final class GridInteractionHandler {
 		return InteractionResult.PASS;
 	}
 
-	private static boolean tryWrench(final UseOnContext ctx, final Direction side) {
+	private static boolean tryWrench(final GridInteractionContext ctx, final Direction side) {
 		final Player player = ctx.getPlayer();
 		final BlockPos pos = ctx.getClickedPos();
 		final Level level = ctx.getLevel();
-		final BlockState state = level.getBlockState(pos);
+		final BlockState state = ctx.getBlockState();
 		if (player == null) {
 			return false;
 		}

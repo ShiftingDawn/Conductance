@@ -11,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,7 +25,9 @@ import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import conductance.api.block.GridInteractionContext;
 import conductance.api.block.GridInteractionHelper;
+import conductance.api.block.IGridInteractable;
 import static conductance.api.block.GridInteractionHelper.QUADRANT_SIZE;
 
 final class GridInteractionRenderer {
@@ -46,9 +47,16 @@ final class GridInteractionRenderer {
 		assert player != null;
 		final Level level = player.level();
 		final ItemStack stack = player.getMainHandItem();
+		final GridInteractionContext ctx = new GridInteractionContext(player, player.getUsedItemHand(), target);
 
-		if (!GridInteractionHelper.shouldInteractUsingGrid(new UseOnContext(level, player, player.getUsedItemHand(), stack, target))) {
+		if (!GridInteractionHelper.shouldInteractUsingGrid(ctx)) {
 			return;
+		}
+		if (ctx.getInteractType() == null) {
+			if (!((ctx.getBlockState().getBlock() instanceof final IGridInteractable i1 && i1.shouldRenderGrid(ctx)))
+				&& !((ctx.getBlockEntity() instanceof final IGridInteractable i2 && i2.shouldRenderGrid(ctx)))) {
+				return;
+			}
 		}
 
 		final BlockPos blockPos = target.getBlockPos();
