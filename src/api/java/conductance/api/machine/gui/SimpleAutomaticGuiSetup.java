@@ -187,13 +187,20 @@ public abstract class SimpleAutomaticGuiSetup extends GuiSetup {
 			energyBar.setPosition(Point.of(rootBounds.x(), rootBounds.maxY() - 6));
 		}
 		final IGuiWidget root = screen.getMenu().getWidgetById("root");
+		final int maxContentHeight = Math.max(screen.getMenu().getWidgetById("in").getHeight(), screen.getMenu().getWidgetById("out").getHeight());
 		if (energyBar == null) {
-			root.setBounds(rootBounds);
+			root.setBounds(MutableRectangle.of(rootBounds.position(), MutableSize.of(
+				new ManagedInt(null, rootBounds::width),
+				new ManagedInt(null, () -> Math.max(rootBounds.height(), maxContentHeight))
+			)));
 		} else {
 			root.setBounds(MutableRectangle.of(rootBounds.position(), MutableSize.of(
 				new ManagedInt(null, rootBounds::width),
-				new ManagedInt(null, () -> rootBounds.height() - 8)
+				new ManagedInt(null, () -> Math.max(rootBounds.height() - 8, maxContentHeight + 8))
 			)));
+		}
+		if (root.getBounds().height() > rootBounds.height()) {
+			screen.setImageHeight(screen.getYSize() + (root.getBounds().height() - rootBounds.height()));
 		}
 	}
 }
