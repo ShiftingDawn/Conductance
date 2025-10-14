@@ -1,10 +1,18 @@
 package conductance.api.machine;
 
+import java.util.function.BiConsumer;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import lombok.Getter;
 import lombok.Setter;
+import conductance.api.CAPI;
+import conductance.api.machine.gui.GuiTextures;
+import conductance.api.machine.gui.IGuiWidget;
+import conductance.api.machine.gui.MachineMenu;
+import conductance.api.machine.gui.ManagedBoolean;
+import conductance.api.machine.gui.ToggleButtonWidget;
+import conductance.api.util.GuiUtils;
 
 public class MachineCapabilityFluidHandler extends MachineCapability implements IBlockCapabilityHandler, IDelegatedFluidHandler {
 
@@ -75,5 +83,20 @@ public class MachineCapabilityFluidHandler extends MachineCapability implements 
 
 	public FluidStack drainInternal(final int maxDrain, final FluidAction action) {
 		return this.handler.drain(maxDrain, action);
+	}
+
+	@Override
+	public void addGuiControls(final MachineMenu menu, final BiConsumer<String, IGuiWidget> adder) {
+		if (this.canCapabilityInput()) {
+			adder.accept("fluid_allow_overflow", CAPI.make(new ToggleButtonWidget(
+				0, 0, 0, 0,
+				new ManagedBoolean(this.handler::setAllowOverflow, this.handler::isAllowOverflow),
+				toggled -> toggled ? GuiTextures.TEXTURE_FLUID_OVERFLOW_ON.get() : GuiTextures.TEXTURE_FLUID_OVERFLOW_OFF.get(),
+				null
+			), button -> button.addTooltipCallback((widget, tooltip) -> {
+				final ToggleButtonWidget btn = (ToggleButtonWidget) widget;
+				GuiUtils.tooltipTranslatable(tooltip, btn.isToggled() ? "guiWidget.conductance.allow_overflow.fluid.disable" : "guiWidget.conductance.allow_overflow.fluid.enable");
+			})));
+		}
 	}
 }

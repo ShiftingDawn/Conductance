@@ -15,6 +15,11 @@ public final class GuiTextures {
 	public static final Lazy<GuiDrawableTexture> TEXTURE_AUTO_FLUID_INPUT_OFF = GuiTextures.make("fluid_auto_input_off");
 	public static final Lazy<GuiDrawableTexture> TEXTURE_AUTO_FLUID_INPUT_ON = GuiTextures.make("fluid_auto_input_on");
 
+	public static final Lazy<GuiDrawableTexture> TEXTURE_ITEM_OVERFLOW_OFF = GuiTextures.make("item_allow_overflow_off");
+	public static final Lazy<GuiDrawableTexture> TEXTURE_ITEM_OVERFLOW_ON = GuiTextures.make("item_allow_overflow_on");
+	public static final Lazy<GuiDrawableTexture> TEXTURE_FLUID_OVERFLOW_OFF = GuiTextures.make("fluid_allow_overflow_off");
+	public static final Lazy<GuiDrawableTexture> TEXTURE_FLUID_OVERFLOW_ON = GuiTextures.make("fluid_allow_overflow_on");
+
 	private static Lazy<GuiDrawableTexture> make(final String name) {
 		return Lazy.of(() -> new GuiDrawableTexture(ResourceLocation.fromNamespaceAndPath(CAPI.MOD_ID, CAPI.MOD_ID + "/" + name)));
 	}

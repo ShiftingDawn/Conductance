@@ -1,6 +1,7 @@
 package conductance.api.machine;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.IntUnaryOperator;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.level.storage.ValueInput;
@@ -12,6 +13,13 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
+import conductance.api.machine.gui.GuiTextures;
+import conductance.api.machine.gui.IGuiWidget;
+import conductance.api.machine.gui.MachineMenu;
+import conductance.api.machine.gui.ManagedBoolean;
+import conductance.api.machine.gui.ToggleButtonWidget;
+import conductance.api.util.GuiUtils;
 
 public class MachineFluidHandler implements IFluidHandlerModifiable, IChangeAware, ValueIOSerializable {
 
@@ -25,7 +33,6 @@ public class MachineFluidHandler implements IFluidHandlerModifiable, IChangeAwar
 	@Setter
 	private FluidHandlerPredicate filter = (tank, stack) -> true;
 	@Getter
-	@Setter
 	private boolean allowOverflow = false;
 	@Nullable
 	private Boolean isEmpty;
@@ -52,6 +59,13 @@ public class MachineFluidHandler implements IFluidHandlerModifiable, IChangeAwar
 	protected void validateTankIndex(final int tank) {
 		if (tank < 0 || tank >= this.stacks.size()) {
 			throw new RuntimeException("Tank " + tank + " not in valid range - [0," + this.stacks.size() + ")");
+		}
+	}
+
+	public void setAllowOverflow(final boolean allowOverflow) {
+		this.allowOverflow = allowOverflow;
+		if (this.changeListener != null) {
+			this.changeListener.run();
 		}
 	}
 
@@ -284,7 +298,7 @@ public class MachineFluidHandler implements IFluidHandlerModifiable, IChangeAwar
 			}
 		}
 		output.putInt("tanks", this.stacks.size());
-		output.putBoolean("allow_overflow", this.allowOverflow);
+		output.putBoolean("overflow", this.allowOverflow);
 	}
 
 	@Override
@@ -295,7 +309,7 @@ public class MachineFluidHandler implements IFluidHandlerModifiable, IChangeAwar
 				this.stacks.set(fluid.tank(), fluid.stack());
 			}
 		});
-		this.allowOverflow = input.getBooleanOr("allow_overflow", this.allowOverflow);
+		this.allowOverflow = input.getBooleanOr("overflow", this.allowOverflow);
 	}
 
 	protected void onContentsChanged(final int tank) {
@@ -319,7 +333,7 @@ public class MachineFluidHandler implements IFluidHandlerModifiable, IChangeAwar
 	}
 
 	/**
-	 * Creates a deep copy of this fluid handler and filter. Change listeners are NOT copied.
+	 * Creates a deep copy of this fluid handler and filter. Change listeners and overflow state are NOT copied.
 	 *
 	 * @return an identical copy
 	 */

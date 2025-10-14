@@ -122,6 +122,10 @@
   "guiWidget.conductance.auto_output.fluid.disable": "Disable automatic fluid export (currently enabled)",
   "guiWidget.conductance.auto_input.fluid.enable": "Enable automatic fluid import (currently disabled)",
   "guiWidget.conductance.auto_input.fluid.disable": "Disable automatic fluid import (currently enabled)",
+  "guiWidget.conductance.allow_overflow.item.enable": "Allow inserted items to overflow into other slots (currently disallowed)",
+  "guiWidget.conductance.allow_overflow.item.disable": "Disallow inserted items to overflow into other slots (currently allowed)",
+  "guiWidget.conductance.allow_overflow.fluid.enable": "Allow inserted fluids to overflow into other tanks (currently disallowed)",
+  "guiWidget.conductance.allow_overflow.fluid.disable": "Disallow inserted fluids to overflow into other tanks (currently allowed)",
 
   "guiWidget.conductance.multiblock.structure.formed": "§aStructure formed",
   "guiWidget.conductance.multiblock.structure.invalid": "§cInvalid structure",
