@@ -68,7 +68,7 @@ public final class MachineCore {
 		});
 		modEventBus.addListener(AddClientReloadListenersEvent.class, event -> {
 			event.addListener(Conductance.id("machine"), MachineUnbakedModel.RELOAD_LISTENER);
-			event.addDependency(Conductance.id("machine"), VanillaClientListeners.MODELS);
+			event.addDependency(Conductance.id("machine"), VanillaClientListeners.TEXTURES);
 		});
 		modEventBus.addListener(RegisterCapabilitiesEvent.class, MachineCore::attachCapabilities);
 
