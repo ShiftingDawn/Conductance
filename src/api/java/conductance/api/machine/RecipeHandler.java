@@ -1,8 +1,7 @@
 package conductance.api.machine;
 
-import java.util.List;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import lombok.Getter;
@@ -127,13 +126,8 @@ public class RecipeHandler extends MachineCapability {
 	}
 
 	protected @Nullable RecipePair findRecipe() {
-		//TODO cache recipes for the machine's recipetype
-		final ServerLevel level = (ServerLevel) this.getMachine().getLevel();
-		assert level != null;
-		final List<MachineRecipe> allRecipes = level.recipeAccess().getRecipes().stream()
-			.filter(recipeHolder -> recipeHolder.value().getType() == this.holder.getRecipeType())
-			.map(recipeHolder -> (MachineRecipe) recipeHolder.value()).toList();
-		for (final MachineRecipe candidate : allRecipes) {
+		for (final RecipeHolder<MachineRecipe> candidateHolder : this.holder.getRecipeType().getRecipes()) {
+			final MachineRecipe candidate = candidateHolder.value();
 			final MachineRecipe recipe = this.holder.getRecipeModifier() == null ? candidate : this.holder.getRecipeModifier().modifyRecipe(candidate);
 			if (this.testRecipe(recipe)) {
 				return new RecipePair(candidate, recipe);
