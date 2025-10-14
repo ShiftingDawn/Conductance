@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -23,6 +24,8 @@ public interface MachineRecipeType extends RecipeType<MachineRecipe> {
 	ProgressProvider.Direction getGuiArrowDirection();
 
 	RecipeSerializer<MachineRecipe> getRecipeSerializer();
+
+	RecipeBookCategory getRecipeBookCategory();
 
 	List<RecipeHolder<MachineRecipe>> getRecipes();
 

@@ -7,6 +7,7 @@ import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -20,6 +21,7 @@ import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.event.RecipeBuilderCallback;
 import conductance.api.util.IO;
 import conductance.api.util.Lazy;
+import conductance.init.ConductanceRecipeBookCategories;
 
 final class MachineRecipeTypeImpl implements MachineRecipeType {
 
@@ -48,6 +50,11 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 	@Override
 	public RecipeSerializer<MachineRecipe> getRecipeSerializer() {
 		return (RecipeSerializer<MachineRecipe>) BuiltInRegistries.RECIPE_SERIALIZER.getValue(this.getId());
+	}
+
+	@Override
+	public RecipeBookCategory getRecipeBookCategory() {
+		return ConductanceRecipeBookCategories.ALL.get();
 	}
 
 	@Override

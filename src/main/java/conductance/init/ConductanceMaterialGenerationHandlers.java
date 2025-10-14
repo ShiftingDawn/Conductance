@@ -67,7 +67,6 @@ import static conductance.api.NCMaterialGenerationHandlers.WIRE_4X;
 import static conductance.api.NCMaterialGenerationHandlers.WIRE_8X;
 
 @ConductancePluginListener(modid = Conductance.MODID)
-//TODO add correct unit values
 final class ConductanceMaterialGenerationHandlers {
 
 	@EventListener(priority = -100)

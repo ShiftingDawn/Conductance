@@ -42,6 +42,7 @@ import conductance.init.ConductanceDataComponents;
 import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
 import conductance.init.ConductanceMenuTypes;
+import conductance.init.ConductanceRecipeBookCategories;
 import conductance.lib.GridInteractionHandler;
 import conductance.lib.RegistryProviderImpl;
 import conductance.lib.ResourceFinderImpl;
@@ -75,6 +76,7 @@ public abstract class Conductance {
 		GridInteractionHandler.init(NeoForge.EVENT_BUS);
 
 		ConductanceCreativeTabs.initialize(modEventBus);
+		ConductanceRecipeBookCategories.initialize(modEventBus);
 	}
 
 	private void onRegister(final RegisterEvent event) {
