@@ -166,6 +166,10 @@ public class RecipeHandler extends MachineCapability {
 				}
 				case REGRESS -> {
 					this.progressCurrent = Math.max(0, this.progressCurrent - 2);
+					if (this.progressCurrent == 0 && this.tick != null) {
+						this.tick.invalidate();
+						this.getMachine().setWorkingState(false);
+					}
 					this.setChanged();
 				}
 				case VOID -> {
