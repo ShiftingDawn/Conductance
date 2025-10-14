@@ -22,6 +22,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.UnknownNullability;
 import conductance.api.CAPI;
 import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.MachineCapability;
 import conductance.api.util.Internal;
 import conductance.api.util.Lazy;
 
@@ -52,6 +53,9 @@ public class MachineMenu extends AbstractContainerMenu implements WidgetHolder {
 		CAPI.make(new WidgetGroup(3, 3, 0, 0), controlGroup -> {
 			controlGroup.setLayout(new WidgetLayouts.VerticalList(16, 16, 2, true));
 			this.guiSetup.addControlWidgets(this, controlGroup::addWidget);
+			for (final MachineCapability capability : this.getMachine().getCapabilities().values()) {
+				capability.addGuiControls(this, controlGroup::addWidget);
+			}
 			if (!controlGroup.getWidgets().isEmpty()) {
 				this.addWidget("control_container", CAPI.make(new WidgetGroup(-20, 0, 20, controlGroup.getHeight() + 4), group -> {
 					group.setBackground(this.guiSetup.getTheme().getSidePanel());

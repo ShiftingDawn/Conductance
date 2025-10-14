@@ -2,12 +2,15 @@ package conductance.api.machine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.gui.IGuiWidget;
+import conductance.api.machine.gui.MachineMenu;
 
 public abstract class MachineCapability implements ValueIOSerializable {
 
@@ -53,5 +56,8 @@ public abstract class MachineCapability implements ValueIOSerializable {
 	}
 
 	public void onUnload() {
+	}
+
+	public void addGuiControls(final MachineMenu menu, final BiConsumer<String, IGuiWidget> adder) {
 	}
 }

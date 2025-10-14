@@ -2,10 +2,10 @@ package conductance.api.machine;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -41,7 +41,7 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 
 	public static final Logger LOGGER = LogUtils.getLogger();
 	private final int timerOffset = CAPI.RANDOM.nextInt(20);
-	private final @Getter Map<String, MachineCapability> capabilities = new ConcurrentHashMap<>();
+	private final @Getter Map<String, MachineCapability> capabilities = new LinkedHashMap<>();
 	private final @Getter MachineType<T> machineType;
 	private final List<MachineTick> ticksActive = new ArrayList<>();
 	private final List<MachineTick> ticksPending = new ArrayList<>();
