@@ -1,7 +1,5 @@
 package conductance.lib.pack.server;
 
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -26,9 +24,7 @@ final class ShapelessCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<Sha
 
 	ShapelessCraftingRecipeBuilderImpl(final HolderLookup.Provider registries, final ItemStack result) {
 		super(registries);
-		this.builder = ShapelessRecipeBuilder.shapeless(this.getHolderGetter(), RecipeCategory.MISC, result)
-			//TODO implement this properly
-			.unlockedBy("dummy", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()));
+		this.builder = ShapelessRecipeBuilder.shapeless(this.getHolderGetter(), RecipeCategory.MISC, result).unlockedBy(AbstractRecipeBuilder.ADV_NAME, AbstractRecipeBuilder.ADV);
 	}
 
 	@Override

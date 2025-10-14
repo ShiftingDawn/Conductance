@@ -114,9 +114,7 @@ final class SmithingRecipeBuilderImpl extends AbstractRecipeBuilder<SmithingReci
 		Objects.requireNonNull(this.base, "Base has not been set.");
 		Objects.requireNonNull(this.template, "Template has not been set.");
 		Objects.requireNonNull(this.addition, "Addition has not been set.");
-		SmithingTransformRecipeBuilder.smithing(this.template, this.base, this.addition, RecipeCategory.MISC, this.result.getItem())
-			//TODO implement this properly
-			.unlocks("dummy", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
+		SmithingTransformRecipeBuilder.smithing(this.template, this.base, this.addition, RecipeCategory.MISC, this.result.getItem()).unlocks(AbstractRecipeBuilder.ADV_NAME, AbstractRecipeBuilder.ADV)
 			.save(output, recipeId);
 	}
 }

@@ -1,8 +1,6 @@
 package conductance.lib.pack.server;
 
 import java.util.Objects;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -27,9 +25,7 @@ final class ShapedCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<Shaped
 
 	ShapedCraftingRecipeBuilderImpl(final HolderLookup.Provider registries, final ItemStack result) {
 		super(registries);
-		this.builder = ShapedRecipeBuilder.shaped(this.getHolderGetter(), RecipeCategory.MISC, result).showNotification(false)
-			//TODO implement this properly
-			.unlockedBy("dummy", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()));
+		this.builder = ShapedRecipeBuilder.shaped(this.getHolderGetter(), RecipeCategory.MISC, result).showNotification(false).unlockedBy(AbstractRecipeBuilder.ADV_NAME, AbstractRecipeBuilder.ADV);
 	}
 
 	@SuppressWarnings("DataFlowIssue")

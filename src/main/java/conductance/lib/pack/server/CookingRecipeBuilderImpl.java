@@ -1,8 +1,6 @@
 package conductance.lib.pack.server;
 
 import java.util.Objects;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -78,9 +76,7 @@ final class CookingRecipeBuilderImpl<T extends AbstractCookingRecipe> extends Ab
 	@Override
 	protected void build(final ResourceKey<Recipe<?>> recipeId, final RecipeOutput output) {
 		Objects.requireNonNull(this.ingredient, "Ingredient has not been set");
-		SimpleCookingRecipeBuilder.generic(this.ingredient, RecipeCategory.MISC, this.result, this.experience, this.cookingTime, this.serializer, this.recipeFactory)
-			//TODO implement this properly
-			.unlockedBy("dummy", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
-			.save(output, recipeId);
+		SimpleCookingRecipeBuilder.generic(this.ingredient, RecipeCategory.MISC, this.result, this.experience, this.cookingTime, this.serializer, this.recipeFactory).unlockedBy(AbstractRecipeBuilder.ADV_NAME,
+			AbstractRecipeBuilder.ADV).save(output, recipeId);
 	}
 }

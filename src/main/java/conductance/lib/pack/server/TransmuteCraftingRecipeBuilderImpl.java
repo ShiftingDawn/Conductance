@@ -1,8 +1,6 @@
 package conductance.lib.pack.server;
 
 import java.util.Objects;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -86,9 +84,6 @@ final class TransmuteCraftingRecipeBuilderImpl extends AbstractRecipeBuilder<Tra
 	protected void build(final ResourceKey<Recipe<?>> recipeId, final RecipeOutput output) {
 		Objects.requireNonNull(this.input, "Input has not been set.");
 		Objects.requireNonNull(this.material, "'Material' has not been set.");
-		TransmuteRecipeBuilder.transmute(RecipeCategory.MISC, this.input, this.material, this.result.getItem())
-			//TODO implement this properly
-			.unlockedBy("dummy", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
-			.save(output, recipeId);
+		TransmuteRecipeBuilder.transmute(RecipeCategory.MISC, this.input, this.material, this.result.getItem()).unlockedBy(AbstractRecipeBuilder.ADV_NAME, AbstractRecipeBuilder.ADV).save(output, recipeId);
 	}
 }

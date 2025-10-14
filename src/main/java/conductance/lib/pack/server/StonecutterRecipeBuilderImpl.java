@@ -58,9 +58,7 @@ final class StonecutterRecipeBuilderImpl extends AbstractRecipeBuilder<Stonecutt
 	@Override
 	protected void build(final ResourceKey<Recipe<?>> recipeId, final RecipeOutput output) {
 		Objects.requireNonNull(this.ingredient, "Ingredient has not been set.");
-		SingleItemRecipeBuilder.stonecutting(this.ingredient, RecipeCategory.MISC, this.result.getItem(), this.result.getCount())
-			//TODO implement this properly
-			.unlockedBy("dummy", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
+		SingleItemRecipeBuilder.stonecutting(this.ingredient, RecipeCategory.MISC, this.result.getItem(), this.result.getCount()).unlockedBy(AbstractRecipeBuilder.ADV_NAME, AbstractRecipeBuilder.ADV)
 			.save(output, recipeId);
 	}
 }
