@@ -172,6 +172,11 @@ final class MaterialImpl implements Material {
 				errors.addAll(f.validate(this));
 			}
 		}
+		for (final Map.Entry<MaterialTraitKey<?>, MaterialTrait<?>> traitEntry : this.traits.entrySet()) {
+			for (final String error : traitEntry.getValue().validate(this)) {
+				errors.add("Trait %s: %s".formatted(traitEntry.getKey().getId(), error));
+			}
+		}
 		return errors;
 	}
 }

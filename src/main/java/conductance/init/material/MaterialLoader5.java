@@ -25,7 +25,7 @@ public final class MaterialLoader5 {
 	@EventListener(priority = -90)
 	private static void initialize(final RegisterMaterialEvent event) {
 		WOOD = event.register("wood", b -> b
-			// .wood() TODO implement wood types
+			.wood()
 			.dust().plate().rod().boltAndScrew().gear()
 			.style(0x643200, NCMaterialTextureSets.WOOD)
 		);

@@ -2,7 +2,6 @@ package conductance.api.material.event;
 
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTraits;
@@ -98,6 +97,14 @@ public interface MaterialBuilder {
 
 	default MaterialBuilder frameBox() {
 		return this.flag(NCMaterialFlags.FRAME_BOX);
+	}
+
+	default MaterialBuilder wood() {
+		return this.flag(NCMaterialFlags.WOOD);
+	}
+
+	default MaterialBuilder synthetic() {
+		return this.flag(NCMaterialFlags.SYNTHETIC);
 	}
 
 	default MaterialBuilder metalDefault() {

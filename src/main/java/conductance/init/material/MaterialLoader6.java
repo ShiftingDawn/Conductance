@@ -21,6 +21,7 @@ public final class MaterialLoader6 {
 			.dust().ingot().plate().foil().rod().ring()
 			.liquid()
 			.color(0x54503D)
+			.synthetic()
 			.components(CARBON, 5, HYDROGEN, 8));
 		GLUE = event.register("glue", b -> b
 			.liquid()

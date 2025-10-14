@@ -26,6 +26,8 @@ import static conductance.api.NCMaterialFlags.PLATE;
 import static conductance.api.NCMaterialFlags.RING;
 import static conductance.api.NCMaterialFlags.ROD;
 import static conductance.api.NCMaterialFlags.ROTOR;
+import static conductance.api.NCMaterialFlags.SYNTHETIC;
+import static conductance.api.NCMaterialFlags.WOOD;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 final class ConductanceMaterialFlags {
@@ -53,6 +55,9 @@ final class ConductanceMaterialFlags {
 		ROTOR = event.register("rotor", Set.of(INGOT));
 		FINE_WIRE = event.register("fine_wire", Set.of(DUST));
 		FRAME_BOX = event.register("frame_box", Set.of(ROD));
+
+		WOOD = event.register("wood", Set.of(DUST));
+		SYNTHETIC = event.register("synthetic");
 	}
 
 	@Nullable

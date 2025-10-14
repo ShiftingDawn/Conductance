@@ -1,5 +1,6 @@
 package conductance.api.material;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,11 @@ public abstract class MaterialTraitFluid<T extends MaterialTraitFluid<T>> implem
 	private final int viscosity;
 	private final int temperature;
 	private final int density;
+
+	@Override
+	public List<String> validate(final Material material) {
+		return List.of();
+	}
 
 	public static class Liquid extends MaterialTraitFluid<Liquid> {
 

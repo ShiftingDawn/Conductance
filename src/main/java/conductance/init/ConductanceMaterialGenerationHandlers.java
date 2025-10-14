@@ -71,12 +71,13 @@ final class ConductanceMaterialGenerationHandlers {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterMaterialGenerationHandlerEvent event) {
-		DUST = event.register("dust", b -> b
+		DUST = event.register("dust", ConductanceMaterialGenerationHandlers::dustUnlocalizedNameFactory, b -> b
 			.groupTag("c:dusts", (String) null) //translation handled by NeoForge
 			.entryTag("c:dusts/%s", "%s Dusts")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.DUST)
 			.unitValue(UNIT)
+			.setDescriptionIdSuffixFactory(ConductanceMaterialGenerationHandlers::dustDescriptionIdSuffixFactory)
 		);
 		STORAGE_BLOCK = event.register("storage_block", "%s_block", b -> b
 			.groupTag("c:storage_blocks", (String) null) //translation handled by NeoForge
@@ -86,12 +87,13 @@ final class ConductanceMaterialGenerationHandlers {
 			.unitValue(UNIT * 9)
 		);
 
-		INGOT = event.register("ingot", b -> b
+		INGOT = event.register("ingot", ConductanceMaterialGenerationHandlers::ingotUnlocalizedNameFactory, b -> b
 			.groupTag("c:ingots", (String) null) //translation handled by NeoForge
 			.entryTag("c:ingots/%s", "%s Ingots")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.INGOT)
 			.unitValue(UNIT)
+			.setDescriptionIdSuffixFactory(ConductanceMaterialGenerationHandlers::ingotDescriptionIdSuffixFactory)
 		);
 		NUGGET = event.register("nugget", b -> b
 			.groupTag("c:nuggets", (String) null) //translation handled by NeoForge
@@ -234,25 +236,26 @@ final class ConductanceMaterialGenerationHandlers {
 			.requiredTrait(NCMaterialTraits.ORE)
 		);
 
-		PLATE = event.register("plate", b -> b
+		PLATE = event.register("plate", ConductanceMaterialGenerationHandlers::plateUnlocalizedNameFactory, b -> b
 			.groupTag("c:plates", "Plates")
 			.entryTag("c:plates/%s", "%s Plates")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.PLATE)
 			.unitValue(UNIT)
+			.setDescriptionIdSuffixFactory(ConductanceMaterialGenerationHandlers::plateDescriptionIdSuffixFactory)
 		);
-		PLATE_DOUBLE = event.register("double_plate", "double_%s_plate", b -> b
+		PLATE_DOUBLE = event.register("double_plate", b -> b
 			.groupTag("c:double_plates", "Double Plates")
 			.entryTag("c:double_plates/%s", "Double %s Plates")
 			.setHasItem(true, true)
-			.requiredFlag(NCMaterialFlags.PLATE)
+			.predicate(mat -> mat.hasFlag(NCMaterialFlags.PLATE) && !mat.hasFlag(NCMaterialFlags.WOOD) && !mat.hasFlag(NCMaterialFlags.SYNTHETIC))
 			.unitValue(UNIT * 2)
 		);
-		PLATE_DENSE = event.register("dense_plate", "dense_%s_plate", b -> b
+		PLATE_DENSE = event.register("dense_plate", b -> b
 			.groupTag("c:dense_plates", "Dense Plates")
 			.entryTag("c:dense_plates/%s", "Dense %s Plates")
 			.setHasItem(true, true)
-			.requiredFlag(NCMaterialFlags.PLATE)
+			.predicate(mat -> mat.hasFlag(NCMaterialFlags.PLATE) && !mat.hasFlag(NCMaterialFlags.WOOD) && !mat.hasFlag(NCMaterialFlags.SYNTHETIC))
 			.unitValue(UNIT * 9)
 		);
 		ROD = event.register("rod", b -> b
@@ -276,12 +279,13 @@ final class ConductanceMaterialGenerationHandlers {
 			.requiredFlag(NCMaterialFlags.GEAR_SMALL)
 			.unitValue(UNIT)
 		);
-		FOIL = event.register("foil", b -> b
+		FOIL = event.register("foil", ConductanceMaterialGenerationHandlers::foilUnlocalizedNameFactory, b -> b
 			.groupTag("c:foils", "Foils")
 			.entryTag("c:foils/%s", "%s Foil")
 			.setHasItem(true, true)
 			.requiredFlag(NCMaterialFlags.FOIL)
 			.unitValue(UNIT / 4)
+			.setDescriptionIdSuffixFactory(ConductanceMaterialGenerationHandlers::foilDescriptionIdSuffixFactory)
 		);
 		BOLT = event.register("bolt", b -> b
 			.groupTag("c:bolts", "Bolts")
@@ -402,6 +406,10 @@ final class ConductanceMaterialGenerationHandlers {
 				event.add(handler.getDescriptionId() + ".factory", "%s " + TextHelper.lowerUnderscoreToEnglish(handler.getId().getPath()));
 			}
 		}
+		event.add(DUST.getDescriptionId() + ".factory", "%s Dust");
+		event.add(DUST.getDescriptionId() + ".pulp", "%s Pulp");
+		event.add(INGOT.getDescriptionId() + ".factory", "%s Ingot");
+		event.add(INGOT.getDescriptionId() + ".bar", "%s Bar");
 		event.add(GEM.getDescriptionId() + ".factory", "%s");
 		event.add(GEM_FLAWED.getDescriptionId() + ".factory", "Flawed %s");
 		event.add(GEM_FLAWLESS.getDescriptionId() + ".factory", "Flawless %s");
@@ -422,9 +430,12 @@ final class ConductanceMaterialGenerationHandlers {
 		event.add(ORE_RED_SAND.getDescriptionId() + ".factory", "Red Sand %s Ore");
 		event.add(RAW_ORE.getDescriptionId() + ".factory", "Raw %s");
 		event.add(RAW_ORE_BLOCK.getDescriptionId() + ".factory", "Block of Raw %s");
-		event.add(PLATE_DOUBLE.getDescriptionId() + ".factory", "Double %s Plate");
-		event.add(PLATE_DENSE.getDescriptionId() + ".factory", "Dense %s Plate");
+		event.add(PLATE.getDescriptionId() + ".factory", "%s Plate");
+		event.add(PLATE.getDescriptionId() + ".plank", "%s Plank");
+		event.add(PLATE.getDescriptionId() + ".sheet", "%s Sheet");
 		event.add(GEAR_SMALL.getDescriptionId() + ".factory", "Small %s Gear");
+		event.add(FOIL.getDescriptionId() + ".factory", "%s Foil");
+		event.add(FOIL.getDescriptionId() + ".thin_sheet", "Thin %s Sheet");
 		event.add(FINE_WIRE.getDescriptionId() + ".factory", "Fine %s Wire");
 		event.add(WIRE_1X.getDescriptionId() + ".factory", "1x %s Wire");
 		event.add(WIRE_2X.getDescriptionId() + ".factory", "2x %s Wire");
@@ -448,6 +459,68 @@ final class ConductanceMaterialGenerationHandlers {
 			assert trait != null;
 			return props.temperature(trait.getTemperature()).viscosity(trait.getViscosity()).density(trait.getDensity());
 		};
+	}
+
+	private static String dustUnlocalizedNameFactory(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.WOOD) || material.hasFlag(NCMaterialFlags.SYNTHETIC)) {
+			return "%s_pulp";
+		}
+		return "%s_dust";
+	}
+
+	private static String dustDescriptionIdSuffixFactory(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.WOOD) || material.hasFlag(NCMaterialFlags.SYNTHETIC)) {
+			return "pulp";
+		}
+		return "factory";
+	}
+
+	private static String ingotUnlocalizedNameFactory(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.WOOD) || material.hasFlag(NCMaterialFlags.SYNTHETIC)) {
+			return "%s_bar";
+		}
+		return "%s_ingot";
+	}
+
+	private static String ingotDescriptionIdSuffixFactory(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.SYNTHETIC)) {
+			return "bar";
+		}
+		return "factory";
+	}
+
+	private static String plateUnlocalizedNameFactory(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.WOOD)) {
+			return "%s_plank";
+		}
+		if (material.hasFlag(NCMaterialFlags.SYNTHETIC)) {
+			return "%s_sheet";
+		}
+		return "%s_plate";
+	}
+
+	private static String plateDescriptionIdSuffixFactory(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.WOOD)) {
+			return "plank";
+		}
+		if (material.hasFlag(NCMaterialFlags.SYNTHETIC)) {
+			return "sheet";
+		}
+		return "factory";
+	}
+
+	private static String foilUnlocalizedNameFactory(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.SYNTHETIC)) {
+			return "thin_%s_sheet";
+		}
+		return "%s_foil";
+	}
+
+	private static String foilDescriptionIdSuffixFactory(final Material material) {
+		if (material.hasFlag(NCMaterialFlags.SYNTHETIC)) {
+			return "thin_sheet";
+		}
+		return "factory";
 	}
 
 	private static String liquidUnlocalizedNameFactory(final Material material) {
