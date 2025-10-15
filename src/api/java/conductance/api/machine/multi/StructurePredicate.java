@@ -215,11 +215,17 @@ public abstract class StructurePredicate {
 			@Override
 			protected boolean testInternal(final BlockAndTintGetter level, final BlockPos pos, final BlockState state, final StructureCheckContext ctx) {
 				final CoilBlockType coilBlockType = CAPI.coils().getByBlock(state.getBlock());
-				if (coilBlockType != null) {
-					ctx.get(StructureCheckContext.COIL_BLOCKS).put(pos, coilBlockType);
-					return true;
+				if (coilBlockType == null) {
+					return false;
 				}
-				return false;
+				final CoilBlockType existingType = ctx.getNotSet(StructureCheckContext.COIL_TYPE);
+				if (existingType == null) {
+					ctx.set(StructureCheckContext.COIL_TYPE, coilBlockType);
+				} else if (coilBlockType != existingType) {
+					return false;
+				}
+				ctx.get(StructureCheckContext.COIL_BLOCKS).add(pos);
+				return true;
 			}
 		};
 	}

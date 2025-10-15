@@ -67,4 +67,9 @@ final class CoilBlockTypeImpl implements CoilBlockType {
 	public Component getName() {
 		return this.description.get();
 	}
+
+	@Override
+	public String toString() {
+		return "Coil[" + this.getId() + "]";
+	}
 }
