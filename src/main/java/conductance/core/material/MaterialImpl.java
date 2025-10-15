@@ -21,6 +21,7 @@ import conductance.api.material.MaterialTraitKey;
 import conductance.api.periodicelement.PeriodicElement;
 import conductance.api.util.Lazy;
 import conductance.api.util.LazyLong;
+import conductance.api.util.TextHelper;
 
 final class MaterialImpl implements Material {
 
@@ -165,7 +166,30 @@ final class MaterialImpl implements Material {
 		if (this.periodicElement != null) {
 			return this.periodicElement.symbol();
 		}
-		return "?";
+		if (this.getComponents().isEmpty()) {
+			return "?";
+		}
+		final StringBuilder builder = new StringBuilder();
+		for (final MaterialStack stack : this.components) {
+			if (stack.material().getComponents().isEmpty()) {
+				builder.append(stack.material().getChemicalFormula());
+				if (stack.count() > 1) {
+					builder.append(TextHelper.getNumberAsSubscript(stack.count()));
+				}
+			} else {
+				if (this.getComponents().size() > 1) {
+					builder.append('(');
+				}
+				builder.append(stack.material().getChemicalFormula());
+				if (this.getComponents().size() > 1) {
+					builder.append(')');
+				}
+				if (stack.count() > 1) {
+					builder.append(TextHelper.getNumberAsSubscript(stack.count()));
+				}
+			}
+		}
+		return builder.toString();
 	}
 
 	List<String> validate() {

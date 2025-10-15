@@ -42,6 +42,7 @@ public final class MaterialCore {
 		MaterialCore.initOverrides();
 		MaterialCore.initUnitOverrides();
 		modEventBus.addListener(FMLLoadCompleteEvent.class, ignored -> MaterialCore.validateMaterials());
+		MaterialTooltipHandler.initialize();
 
 		modEventBus.addListener(EventPriority.HIGHEST, BuildCreativeModeTabContentsEvent.class, event -> {
 			if (event.getTabKey().location().equals(Conductance.id(CreativeTabHelper.Tabs.MATERIAL.getName()))) {

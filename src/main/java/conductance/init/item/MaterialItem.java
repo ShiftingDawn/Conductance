@@ -1,13 +1,9 @@
 package conductance.init.item;
 
-import java.util.function.Consumer;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.FuelValues;
 import lombok.Getter;
@@ -41,11 +37,5 @@ public final class MaterialItem extends Item {
 	@Override
 	public int getBurnTime(final ItemStack itemStack, @Nullable final RecipeType<?> recipeType, final FuelValues fuelValues) {
 		return this.burnValue.getAsInt();
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public void appendHoverText(final ItemStack stack, final TooltipContext context, final TooltipDisplay tooltipDisplay, final Consumer<Component> tooltipAdder, final TooltipFlag flag) {
-		tooltipAdder.accept(Component.literal(this.material.getChemicalFormula()).withStyle(ChatFormatting.AQUA));
 	}
 }

@@ -13,6 +13,7 @@ public final class TextHelper {
 	public static final Component ENERGY_FORMAT_PER_TICK = Component.literal(TextHelper.ENERGY_FORMAT + "/t");
 	private static final DecimalFormat BUCKET_FORMAT = new DecimalFormat("0.##");
 	private static final DecimalFormat TIME_FORMAT = new DecimalFormat("0.00");
+	private static final char[] SUBSCRIPTS = {'₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'};
 
 	public static String toLowerCaseUnderscore(final String string) {
 		final StringBuilder result = new StringBuilder();
@@ -37,6 +38,15 @@ public final class TextHelper {
 			}
 		}
 		return result.toString();
+	}
+
+	public static String getNumberAsSubscript(int number) {
+		final StringBuilder builder = new StringBuilder();
+		while (number > 0) {
+			builder.append(TextHelper.SUBSCRIPTS[number % 10]);
+			number /= 10;
+		}
+		return builder.toString();
 	}
 
 	public static String getFormattedFluidAmount(final int amount) {
