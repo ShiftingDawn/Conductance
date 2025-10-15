@@ -1,4 +1,4 @@
-package conductance.core.machine;
+package conductance.init.machine;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
