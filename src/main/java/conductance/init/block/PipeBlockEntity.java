@@ -120,6 +120,7 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 					final boolean connect = PipeNetHelper.isBlocked(this.getConnections(), side);
 					this.getNetwork(serverLevel).setConnected((NODE) this, (NODE) node, side, connect);
 				}
+				this.getInteractType().playSound(ctx);
 				return InteractionResult.SUCCESS_SERVER;
 			}
 			if (this.canConnectTo(ctx.getLevel(), ctx.getClickedPos(), side)) {
@@ -128,6 +129,7 @@ public abstract class PipeBlockEntity<NODE extends INetworkNode<NODE, DATA>, DAT
 					this.setConnections(PipeNetHelper.setConnection(this.getConnections(), side, connect));
 					this.getNetwork(serverLevel).addEndpoint(this.getBlockPos(), side, connect);
 				}
+				this.getInteractType().playSound(ctx);
 				return InteractionResult.SUCCESS_SERVER;
 			}
 		}

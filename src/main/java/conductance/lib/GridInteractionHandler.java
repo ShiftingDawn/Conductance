@@ -55,10 +55,7 @@ public final class GridInteractionHandler {
 			}
 		}
 		if (InteractType.WRENCH == ctx.getInteractType() && GridInteractionHandler.tryWrench(ctx, side)) {
-			// TODO play wrench sound
-			// if (ctx.getLevel().isClientSide) {
-			// ConductanceSounds.TOOL_WRENCH.play(ctx.getLevel(), ctx.getPlayer());
-			//}
+			InteractType.WRENCH.playSound(ctx);
 			return InteractionResult.SUCCESS_SERVER;
 		}
 		return InteractionResult.PASS;

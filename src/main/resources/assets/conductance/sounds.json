@@ -1,0 +1,11 @@
+{
+  "tool_wrench": {
+    "sounds": ["conductance:tool_wrench"]
+  },
+  "tool_wire_cutters": {
+    "sounds": ["conductance:tool_wire_cutters"]
+  },
+  "tool_crowbar": {
+    "sounds": ["conductance:tool_crowbar"]
+  }
+}

@@ -31,8 +31,9 @@ public final class CAPI {
 	public static final RandomSource RANDOM = RandomSource.createNewThreadLocalInstance();
 	public static final Gson GSON;
 	public static final TagKey<Item> TAG_WRENCHES = Tags.Items.TOOLS_WRENCH;
-	public static final TagKey<Item> TAG_HAMMERS = ItemTags.create(ResourceLocation.fromNamespaceAndPath(CAPI.MOD_ID, "tools/hammer"));
 	public static final TagKey<Item> TAG_WIRE_CUTTERS = ItemTags.create(ResourceLocation.fromNamespaceAndPath(CAPI.MOD_ID, "tools/wire_cutter"));
+	public static final TagKey<Item> TAG_HAMMERS = ItemTags.create(ResourceLocation.fromNamespaceAndPath(CAPI.MOD_ID, "tools/hammer"));
+	public static final TagKey<Item> TAG_CROWBARS = ItemTags.create(ResourceLocation.fromNamespaceAndPath(CAPI.MOD_ID, "tools/crowbar"));
 
 	private static RegistryProvider registryProvider;
 	private static MaterialRegistry materialRegistry;

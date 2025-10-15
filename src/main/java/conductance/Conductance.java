@@ -43,6 +43,7 @@ import conductance.init.ConductanceFluids;
 import conductance.init.ConductanceItems;
 import conductance.init.ConductanceMenuTypes;
 import conductance.init.ConductanceRecipeBookCategories;
+import conductance.init.ConductanceSoundEvents;
 import conductance.lib.GridInteractionHandler;
 import conductance.lib.RegistryProviderImpl;
 import conductance.lib.ResourceFinderImpl;
@@ -77,6 +78,7 @@ public abstract class Conductance {
 
 		ConductanceCreativeTabs.initialize(modEventBus);
 		ConductanceRecipeBookCategories.initialize(modEventBus);
+		ConductanceSoundEvents.initialize(modEventBus);
 	}
 
 	private void onRegister(final RegisterEvent event) {
