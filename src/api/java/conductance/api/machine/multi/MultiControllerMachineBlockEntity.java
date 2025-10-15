@@ -24,6 +24,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 	private final Set<BlockPos> activeBlocks = new HashSet<>();
 	private final @Getter Lock structureCheckLock = new ReentrantLock();
 	private @Getter boolean structureFormed = false;
+	private @Getter StructureCheckContext lastContext;
 
 	public MultiControllerMachineBlockEntity(final MultiMachineType<T> type, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
@@ -34,6 +35,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 		super.onLoad();
 		if (this.level instanceof final ServerLevel serverLevel) {
 			Internal.MULTIBLOCK_CONTROLLER_LOAD.accept(serverLevel, this);
+			MultiControllerMachineBlockEntity.checkStructure(serverLevel, this);
 		}
 	}
 
@@ -48,6 +50,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 	@Override
 	public void onStructureFormed(final StructureCheckContext ctx) {
 		this.structureFormed = true;
+		this.lastContext = ctx;
 		this.parts.clear();
 		ctx.get(StructureCheckContext.PARTS).forEach(this::addPart);
 		this.activeBlocks.addAll(ctx.get(StructureCheckContext.ACTIVE_BLOCKS));
@@ -65,6 +68,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 	@Override
 	public void onStructureInvalid(final StructureCheckContext ctx) {
 		this.structureFormed = false;
+		this.lastContext = ctx;
 		this.invalidateController(false);
 		this.sendToClient(MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_INVALID, null);
 	}
