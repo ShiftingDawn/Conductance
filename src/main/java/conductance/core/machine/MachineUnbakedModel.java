@@ -47,9 +47,14 @@ import conductance.client.model.ExtendedRotationVariant;
 public record MachineUnbakedModel(ExtendedRotationVariant variant) implements CustomUnbakedBlockStateModel {
 
 	public static final ResourceLocation TEXTURE_IO_PORT = Conductance.id("block/machine/io_port");
-	public static final ResourceLocation TEXTURE_IO_PORT_ITEM = Conductance.id("block/machine/io_port_item");
-	public static final ResourceLocation TEXTURE_IO_PORT_FLUID = Conductance.id("block/machine/io_port_fluid");
-	public static final ResourceLocation TEXTURE_IO_PORT_BOTH = Conductance.id("block/machine/io_port_both");
+	public static final ResourceLocation TEXTURE_IO_PORT_ITEM_OFF = Conductance.id("block/machine/io_port_item_off");
+	public static final ResourceLocation TEXTURE_IO_PORT_ITEM_ON = Conductance.id("block/machine/io_port_item_on");
+	public static final ResourceLocation TEXTURE_IO_PORT_FLUID_OFF = Conductance.id("block/machine/io_port_fluid_off");
+	public static final ResourceLocation TEXTURE_IO_PORT_FLUID_ON = Conductance.id("block/machine/io_port_fluid_on");
+	public static final ResourceLocation TEXTURE_IO_PORT_BOTH_ITEM_OFF = Conductance.id("block/machine/io_port_both_item_off");
+	public static final ResourceLocation TEXTURE_IO_PORT_BOTH_ITEM_ON = Conductance.id("block/machine/io_port_both_item_on");
+	public static final ResourceLocation TEXTURE_IO_PORT_BOTH_FLUID_OFF = Conductance.id("block/machine/io_port_both_fluid_off");
+	public static final ResourceLocation TEXTURE_IO_PORT_BOTH_FLUID_ON = Conductance.id("block/machine/io_port_both_fluid_on");
 
 	public static final MapCodec<MachineUnbakedModel> MAP_CODEC = ExtendedRotationVariant.MAP_CODEC.xmap(MachineUnbakedModel::new, MachineUnbakedModel::variant);
 	static final SimplePreparableReloadListener<Void> RELOAD_LISTENER;
@@ -111,34 +116,77 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 				if (parts.getFirst() instanceof final SimpleModelWrapper modelWrapper) {
 					if (MachineUnbakedModel.TEXTURE_CACHE.isEmpty()) {
 						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT, true);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_ITEM, false);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_FLUID, false);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_BOTH, false);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_OFF, true);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_ON, false);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_OFF, true);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_ON, false);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_OFF, true);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_ON, false);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_OFF, true);
+						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_ON, false);
 					}
 					Direction itemSide = null;
+					boolean itemEnabled = false;
 					Direction fluidSide = null;
+					boolean fluidEnabled = false;
 					for (final MachineCapability capability : machine.getCapabilities().values()) {
 						if (capability instanceof final IItemAutoOutput itemAutoOutput) {
 							itemSide = itemAutoOutput.getItemAutoOutputSide();
+							itemEnabled = itemAutoOutput.isItemAutoOutputEnabled();
 						}
 						if (capability instanceof final IFluidAutoOutput fluidAutoOutput) {
 							fluidSide = fluidAutoOutput.getFluidAutoOutputSide();
+							fluidEnabled = fluidAutoOutput.isFluidAutoOutputEnabled();
 						}
 					}
 					if (itemSide != null || fluidSide != null) {
 						final Map<Direction, List<BakedQuad>> quads = new EnumMap<>(Direction.class);
-						if (itemSide == fluidSide || itemSide != null) {
+						if (itemSide == fluidSide) {
+							final List<BakedQuad> list = new ArrayList<>();
 							final BakedQuad portQuad = MachineUnbakedModel.TEXTURE_CACHE.get(MachineUnbakedModel.TEXTURE_IO_PORT, itemSide);
-							final BakedQuad overlayQuad = MachineUnbakedModel.TEXTURE_CACHE.get(itemSide == fluidSide ? MachineUnbakedModel.TEXTURE_IO_PORT_BOTH : MachineUnbakedModel.TEXTURE_IO_PORT_ITEM, itemSide);
-							if (portQuad != null && overlayQuad != null) {
-								quads.put(itemSide, List.of(portQuad, overlayQuad));
+							if (portQuad != null) {
+								list.add(portQuad);
 							}
-						}
-						if (itemSide != fluidSide) {
-							final BakedQuad portQuad = MachineUnbakedModel.TEXTURE_CACHE.get(MachineUnbakedModel.TEXTURE_IO_PORT, fluidSide);
-							final BakedQuad overlayQuad = MachineUnbakedModel.TEXTURE_CACHE.get(MachineUnbakedModel.TEXTURE_IO_PORT_FLUID, fluidSide);
-							if (portQuad != null && overlayQuad != null) {
-								quads.put(fluidSide, List.of(portQuad, overlayQuad));
+							final BakedQuad itemQuad = MachineUnbakedModel.TEXTURE_CACHE.get(itemEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_ON : MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_OFF, itemSide);
+							if (itemQuad != null) {
+								list.add(itemQuad);
+							}
+							final BakedQuad fluidQuad =
+								MachineUnbakedModel.TEXTURE_CACHE.get(fluidEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_ON : MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_OFF, itemSide);
+							if (fluidQuad != null) {
+								list.add(fluidQuad);
+							}
+							if (!list.isEmpty()) {
+								quads.put(itemSide, list);
+							}
+						} else {
+							if (itemSide != null) {
+								final List<BakedQuad> list = new ArrayList<>();
+								final BakedQuad portQuad = MachineUnbakedModel.TEXTURE_CACHE.get(MachineUnbakedModel.TEXTURE_IO_PORT, itemSide);
+								if (portQuad != null) {
+									list.add(portQuad);
+								}
+								final BakedQuad itemQuad = MachineUnbakedModel.TEXTURE_CACHE.get(itemEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_ON : MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_OFF, itemSide);
+								if (itemQuad != null) {
+									list.add(itemQuad);
+								}
+								if (!list.isEmpty()) {
+									quads.put(itemSide, list);
+								}
+							}
+							if (fluidSide != null) {
+								final List<BakedQuad> list = new ArrayList<>();
+								final BakedQuad portQuad = MachineUnbakedModel.TEXTURE_CACHE.get(MachineUnbakedModel.TEXTURE_IO_PORT, fluidSide);
+								if (portQuad != null) {
+									list.add(portQuad);
+								}
+								final BakedQuad fluidQuad = MachineUnbakedModel.TEXTURE_CACHE.get(fluidEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_ON : MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_OFF, fluidSide);
+								if (fluidQuad != null) {
+									list.add(fluidQuad);
+								}
+								if (!list.isEmpty()) {
+									quads.put(fluidSide, list);
+								}
 							}
 						}
 						if (!quads.isEmpty()) {
