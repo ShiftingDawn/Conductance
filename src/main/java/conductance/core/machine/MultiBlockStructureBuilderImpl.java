@@ -27,7 +27,7 @@ public final class MultiBlockStructureBuilderImpl implements MultiBlockStructure
 	private int lineLengthX = -1;
 
 	public MultiBlockStructureBuilderImpl(final char controllerKey, final Supplier<Block> controller) {
-		this.mapping.put(' ', StructurePredicate.isAir());
+		this.mapping.put(' ', StructurePredicate.isAny());
 		this.mapping.put(controllerKey, StructurePredicate.isBlock(controller));
 		this.controller = controllerKey;
 	}
