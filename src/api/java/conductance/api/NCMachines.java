@@ -22,6 +22,8 @@ public final class NCMachines {
 	public static Map<Tier, MachineType<?>> COMPRESSOR;
 	public static Map<Tier, MachineType<?>> CUTTING_MACHINE;
 	public static Map<Tier, MachineType<?>> ASSEMBLING_MACHINE;
+	public static Map<Tier, MachineType<?>> CENTRIFUGE;
+	public static Map<Tier, MachineType<?>> ELECTROLYZER;
 
 	public static Map<Tier, MachineType<?>> INPUT_BUSES;
 	public static Map<Tier, MachineType<?>> OUTPUT_BUSES;

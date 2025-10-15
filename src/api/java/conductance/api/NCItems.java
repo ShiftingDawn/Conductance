@@ -19,6 +19,8 @@ public final class NCItems {
 	public static Holder<Item> PROGRAM_CIRCUIT;
 	public static Holder<Item> EMPTY_EXTRUDER_SHAPE;
 	public static Map<ExtruderShape, Holder<Item>> EXTRUDER_SHAPES;
+	public static Holder<Item> RESIN;
+	public static Holder<Item> RESIN_PULP;
 	public static Holder<Item> WOOD_CIRCUIT_BOARD;
 	public static Holder<Item> WOOD_CIRCUIT_SUBSTRATE;
 	public static Holder<Item> DIODE;

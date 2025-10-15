@@ -60,19 +60,19 @@ public interface MachineRecipeBuilder {
 		return this.in(ingredient, 1);
 	}
 
-	default MachineRecipeBuilder in(final Holder<Item> ingredient, final int count) {
+	default MachineRecipeBuilder in(final Holder<? extends Item> ingredient, final int count) {
 		return this.in(ingredient.value(), count);
 	}
 
-	default MachineRecipeBuilder in(final Holder<Item> ingredient) {
+	default MachineRecipeBuilder in(final Holder<? extends Item> ingredient) {
 		return this.in(ingredient, 1);
 	}
 
-	default MachineRecipeBuilder in(final Supplier<Item> ingredient, final int count) {
+	default MachineRecipeBuilder in(final Supplier<? extends Item> ingredient, final int count) {
 		return this.in(ingredient.get(), count);
 	}
 
-	default MachineRecipeBuilder in(final Supplier<Item> ingredient) {
+	default MachineRecipeBuilder in(final Supplier<? extends Item> ingredient) {
 		return this.in(ingredient, 1);
 	}
 
@@ -142,19 +142,19 @@ public interface MachineRecipeBuilder {
 		return this.nc(ingredient, 1);
 	}
 
-	default MachineRecipeBuilder nc(final Holder<Item> ingredient, final int count) {
+	default MachineRecipeBuilder nc(final Holder<? extends Item> ingredient, final int count) {
 		return this.nc(ingredient.value(), count);
 	}
 
-	default MachineRecipeBuilder nc(final Holder<Item> ingredient) {
+	default MachineRecipeBuilder nc(final Holder<? extends Item> ingredient) {
 		return this.nc(ingredient, 1);
 	}
 
-	default MachineRecipeBuilder nc(final Supplier<Item> ingredient, final int count) {
+	default MachineRecipeBuilder nc(final Supplier<? extends Item> ingredient, final int count) {
 		return this.nc(ingredient.get(), count);
 	}
 
-	default MachineRecipeBuilder nc(final Supplier<Item> ingredient) {
+	default MachineRecipeBuilder nc(final Supplier<? extends Item> ingredient) {
 		return this.nc(ingredient, 1);
 	}
 
@@ -221,19 +221,19 @@ public interface MachineRecipeBuilder {
 		return this.out(ingredient, 1);
 	}
 
-	default MachineRecipeBuilder out(final Holder<Item> ingredient, final int count) {
+	default MachineRecipeBuilder out(final Holder<? extends Item> ingredient, final int count) {
 		return this.out(ingredient.value(), count);
 	}
 
-	default MachineRecipeBuilder out(final Holder<Item> ingredient) {
+	default MachineRecipeBuilder out(final Holder<? extends Item> ingredient) {
 		return this.out(ingredient, 1);
 	}
 
-	default MachineRecipeBuilder out(final Supplier<Item> ingredient, final int count) {
+	default MachineRecipeBuilder out(final Supplier<? extends Item> ingredient, final int count) {
 		return this.out(ingredient.get(), count);
 	}
 
-	default MachineRecipeBuilder out(final Supplier<Item> ingredient) {
+	default MachineRecipeBuilder out(final Supplier<? extends Item> ingredient) {
 		return this.out(ingredient, 1);
 	}
 

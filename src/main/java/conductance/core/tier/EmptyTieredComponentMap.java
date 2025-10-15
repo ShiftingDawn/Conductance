@@ -30,4 +30,9 @@ final class EmptyTieredComponentMap extends TieredComponentMap {
 	public Material getRubberMaterial() {
 		return NCMaterials.AIR;
 	}
+
+	@Override
+	public Material getPlasticMaterial() {
+		return NCMaterials.AIR;
+	}
 }

@@ -9,6 +9,7 @@ import conductance.api.CAPI;
 import conductance.api.NCItems;
 import conductance.api.NCMachines;
 import conductance.api.NCMaterials;
+import conductance.api.NCRecipeTypes;
 import conductance.api.recipe.event.RegisterRecipeEvent;
 import conductance.api.tier.Tier;
 import conductance.api.tier.TieredComponentMap;
@@ -56,14 +57,24 @@ final class MachineRecipes {
 			event.shaped(NCMachines.CUTTING_MACHINE.get(tier).getItem(), b -> b
 				.pattern("abc", "def", "bag").key('a', map.getMachineWireItem()).key('b', circuit).key('c', Tags.Items.GLASS_BLOCKS_COLORLESS).key('d', conveyor).key('e', hull)
 				.key('f', map.getMachineCuttingPartItem()).key('g', motor));
+			event.shaped(NCMachines.ASSEMBLING_MACHINE.get(tier).getItem(), b -> b
+				.pattern("aba", "cdc", "ebe").key('a', arm).key('b', circuit).key('c', conveyor).key('d', hull).key('e', map.getMachineWireItem()));
+			event.shaped(NCMachines.CENTRIFUGE.get(tier).getItem(), b -> b
+				.pattern("aba", "cdc", "aba").key('a', circuit).key('b', map.getMachineWireItem()).key('c', motor).key('d', hull));
+			event.shaped(NCMachines.ELECTROLYZER.get(tier).getItem(), b -> b
+				.pattern("aba", "aca", "ded").key('a', map.getElectricMotorWireItem()).key('b', Tags.Items.GLASS_BLOCKS_COLORLESS).key('c', hull).key('d', circuit).key('e', map.getMachineWireItem()));
 
-			event.shaped(NCMachines.INPUT_BUSES.get(tier).getItem(), b -> b.pattern("a", "b").key('a', Tags.Items.CHESTS_WOODEN).key('b', hull));
+			event.create(tier.getId().getPath() + "_input_bus", NCRecipeTypes.ASSEMBLING_MACHINE, b -> b
+				.in(hull).in(Tags.Items.CHESTS_WOODEN).in(map.getPlasticFluid(), 100).out(NCMachines.INPUT_BUSES.get(tier).getItem()).program(1).energyIn(tier).duration(200));
+			event.create(tier.getId().getPath() + "_output_bus", NCRecipeTypes.ASSEMBLING_MACHINE, b -> b
+				.in(hull).in(Tags.Items.CHESTS_WOODEN).in(map.getPlasticFluid(), 100).out(NCMachines.OUTPUT_BUSES.get(tier).getItem()).program(2).energyIn(tier).duration(200));
 			event.shapeless(tier.getId().getPath() + "_input_bus_from_output_bus", NCMachines.INPUT_BUSES.get(tier).getItem(), b -> b.add(NCMachines.OUTPUT_BUSES.get(tier).getItem()));
-			event.shaped(NCMachines.OUTPUT_BUSES.get(tier).getItem(), b -> b.pattern("a", "b").key('a', hull).key('b', Tags.Items.CHESTS_WOODEN));
 			event.shapeless(tier.getId().getPath() + "_output_bus_from_input_bus", NCMachines.OUTPUT_BUSES.get(tier).getItem(), b -> b.add(NCMachines.INPUT_BUSES.get(tier).getItem()));
-			event.shaped(NCMachines.INPUT_HATCHES.get(tier).getItem(), b -> b.pattern("a", "b").key('a', Tags.Items.GLASS_BLOCKS_COLORLESS).key('b', hull));
+			event.create(tier.getId().getPath() + "_input_hatch", NCRecipeTypes.ASSEMBLING_MACHINE, b -> b
+				.in(hull).in(Tags.Items.GLASS_BLOCKS_COLORLESS).in(map.getPlasticFluid(), 100).out(NCMachines.INPUT_HATCHES.get(tier).getItem()).program(1).energyIn(tier).duration(200));
+			event.create(tier.getId().getPath() + "_output_hatch", NCRecipeTypes.ASSEMBLING_MACHINE, b -> b
+				.in(hull).in(Tags.Items.GLASS_BLOCKS_COLORLESS).in(map.getPlasticFluid(), 100).out(NCMachines.OUTPUT_HATCHES.get(tier).getItem()).program(2).energyIn(tier).duration(200));
 			event.shapeless(tier.getId().getPath() + "_input_hatch_from_output_hatch", NCMachines.INPUT_HATCHES.get(tier).getItem(), b -> b.add(NCMachines.OUTPUT_HATCHES.get(tier).getItem()));
-			event.shaped(NCMachines.OUTPUT_HATCHES.get(tier).getItem(), b -> b.pattern("a", "b").key('a', hull).key('b', Tags.Items.GLASS_BLOCKS_COLORLESS));
 			event.shapeless(tier.getId().getPath() + "_output_hatch_from_input_hatch", NCMachines.OUTPUT_HATCHES.get(tier).getItem(), b -> b.add(NCMachines.INPUT_HATCHES.get(tier).getItem()));
 		}
 	}

@@ -76,6 +76,8 @@ public final class ConductanceItems {
 				})));
 			}
 		}));
+		NCItems.RESIN = ConductanceItems.makeSimpleItem("resin");
+		NCItems.RESIN_PULP = ConductanceItems.makeSimpleItem("resin_pulp");
 		NCItems.WOOD_CIRCUIT_BOARD = ConductanceItems.makeSimpleItem("wood_circuit_board");
 		NCItems.WOOD_CIRCUIT_SUBSTRATE = ConductanceItems.makeSimpleItem("wood_circuit_substrate");
 		NCItems.DIODE = ConductanceItems.makeSimpleItem("diode");

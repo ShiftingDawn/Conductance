@@ -38,10 +38,12 @@ import conductance.init.machine.boiler.SteamSolidFuelBoilerMachine;
 import conductance.init.machine.boiler.SteamSolidFuelBoilerMachineGuiSetup;
 import static conductance.api.NCMachines.ASSEMBLING_MACHINE;
 import static conductance.api.NCMachines.BENDING_MACHINE;
+import static conductance.api.NCMachines.CENTRIFUGE;
 import static conductance.api.NCMachines.COMPRESSOR;
 import static conductance.api.NCMachines.CUTTING_MACHINE;
 import static conductance.api.NCMachines.DYNAMO_HATCHES;
 import static conductance.api.NCMachines.ELECTRIC_BLAST_FURNACE;
+import static conductance.api.NCMachines.ELECTROLYZER;
 import static conductance.api.NCMachines.ENERGY_HATCHES;
 import static conductance.api.NCMachines.EXTRACTOR;
 import static conductance.api.NCMachines.EXTRUDER;
@@ -91,6 +93,8 @@ final class ConductanceMachines {
 		COMPRESSOR = ConductanceMachines.makeTieredGenericRecipeMachine(event, "compressor", NCRecipeTypes.COMPRESSOR);
 		CUTTING_MACHINE = ConductanceMachines.makeTieredGenericRecipeMachine(event, "cutting_machine", NCRecipeTypes.CUTTING_MACHINE);
 		ASSEMBLING_MACHINE = ConductanceMachines.makeTieredGenericRecipeMachine(event, "assembling_machine", NCRecipeTypes.ASSEMBLING_MACHINE);
+		CENTRIFUGE = ConductanceMachines.makeTieredGenericRecipeMachine(event, "centrifuge", NCRecipeTypes.CENTRIFUGE);
+		ELECTROLYZER = ConductanceMachines.makeTieredGenericRecipeMachine(event, "electrolyzer", NCRecipeTypes.ELECTROLYZER);
 	}
 
 	private static void initMultiParts(final RegisterMachineEvent event) {

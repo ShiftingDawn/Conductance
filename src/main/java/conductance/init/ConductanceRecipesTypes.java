@@ -11,9 +11,11 @@ import conductance.api.recipe.event.RegisterRecipeTypeEvent;
 import conductance.Conductance;
 import static conductance.api.NCRecipeTypes.ASSEMBLING_MACHINE;
 import static conductance.api.NCRecipeTypes.BENDING_MACHINE;
+import static conductance.api.NCRecipeTypes.CENTRIFUGE;
 import static conductance.api.NCRecipeTypes.COMPRESSOR;
 import static conductance.api.NCRecipeTypes.CUTTING_MACHINE;
 import static conductance.api.NCRecipeTypes.ELECTRIC_BLAST_FURNACE;
+import static conductance.api.NCRecipeTypes.ELECTROLYZER;
 import static conductance.api.NCRecipeTypes.EXTRACTOR;
 import static conductance.api.NCRecipeTypes.EXTRUDER;
 import static conductance.api.NCRecipeTypes.LATHE;
@@ -37,6 +39,8 @@ final class ConductanceRecipesTypes {
 		COMPRESSOR = event.register("compressor", b -> b.setIO(1, 0, 1, 0).setEnergyIO(CapIO.IN));
 		CUTTING_MACHINE = event.register("cutting_machine", b -> b.setIO(1, 1, 1, 0).setEnergyIO(CapIO.IN).recipeBuilderCallback(ConductanceRecipesTypes.CUTTING_MACHINE_CALLBACK));
 		ASSEMBLING_MACHINE = event.register("assembling_machine", b -> b.setIO(9, 1, 1, 0).setEnergyIO(CapIO.IN));
+		CENTRIFUGE = event.register("centrifuge", b -> b.setIO(2, 1, 6, 3).setEnergyIO(CapIO.IN));
+		ELECTROLYZER = event.register("electrolyzer", b -> b.setIO(2, 1, 6, 3).setEnergyIO(CapIO.IN));
 
 		ELECTRIC_BLAST_FURNACE = event.register("electric_blast_furnace", b -> b.setIO(3, 3, 1, 1).setEnergyIO(CapIO.IN));
 	}

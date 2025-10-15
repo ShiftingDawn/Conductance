@@ -36,6 +36,8 @@ final class ConductanceRecipeLoader {
 		CircuitRecipes.add(event);
 		FuelAndPowerRecipes.add(event);
 		ConductanceRecipeLoader.addExtruderShapes(event);
+		ChemicalRecipes.add(event);
+		ConductanceRecipeLoader.addMisc(event);
 	}
 
 	private static void addExtruderShapes(final RegisterRecipeEvent event) {
@@ -47,6 +49,10 @@ final class ConductanceRecipeLoader {
 		event.shaped(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.RING), b -> b.pattern("   ", " Xa", "   ").key('a', NCItems.EMPTY_EXTRUDER_SHAPE));
 		event.shaped(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.ROTOR), b -> b.pattern("   ", " X ", "a  ").key('a', NCItems.EMPTY_EXTRUDER_SHAPE));
 		event.shaped(NCItems.EXTRUDER_SHAPES.get(ExtruderShape.SCREW), b -> b.pattern("   ", " X ", " a ").key('a', NCItems.EMPTY_EXTRUDER_SHAPE));
+	}
+
+	private static void addMisc(final RegisterRecipeEvent event) {
+		//TODO resin
 	}
 
 	private ConductanceRecipeLoader() {

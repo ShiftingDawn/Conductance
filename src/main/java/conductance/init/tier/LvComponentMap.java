@@ -27,6 +27,11 @@ class LvComponentMap extends TieredComponentMap {
 	}
 
 	@Override
+	public Material getPlasticMaterial() {
+		return NCMaterials.GLUE;
+	}
+
+	@Override
 	protected Material getElectricMotorFineWireMaterial() {
 		return NCMaterials.COPPER;
 	}
@@ -39,5 +44,10 @@ class LvComponentMap extends TieredComponentMap {
 	@Override
 	public Material getMachineRotorMaterial() {
 		return NCMaterials.TIN;
+	}
+
+	@Override
+	protected Material getMachineElectroWireMaterial() {
+		return NCMaterials.COPPER;
 	}
 }

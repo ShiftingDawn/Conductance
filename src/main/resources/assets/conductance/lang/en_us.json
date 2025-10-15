@@ -17,6 +17,8 @@
   "item.conductance.ring_extruder_shape": "Ring Extruder Shape",
   "item.conductance.rotor_extruder_shape": "Rotor Extruder Shape",
   "item.conductance.screw_extruder_shape": "Screw Extruder Shape",
+  "item.conductance.resin": "Resin",
+  "item.conductance.resin_pulp": "Resin Pulp",
   "item.conductance.wood_circuit_board": "Wood Circuit Board",
   "item.conductance.wood_circuit_substrate": "Wood Circuit Substrate",
   "item.conductance.diode": "Diode",
@@ -81,6 +83,8 @@
   "recipeType.conductance.compressor": "Compressor",
   "recipeType.conductance.cutting_machine": "Cutting Machine",
   "recipeType.conductance.assembling_machine": "Assembling Machine",
+  "recipeType.conductance.centrifuge": "Centrifuge",
+  "recipeType.conductance.electrolyzer": "Electrolyzer",
 
   "machine.conductance.solid_fuel_steam_boiler": "Solid Fuel Steam Boiler",
 
@@ -96,6 +100,8 @@
   "machine.conductance.compressor": "%s Compressor",
   "machine.conductance.cutting_machine": "%s Cutting Machine",
   "machine.conductance.assembling_machine": "%s Assembling Machine",
+  "machine.conductance.centrifuge": "%s Centrifuge",
+  "machine.conductance.electrolyzer": "%s Electrolyzer",
 
   "machine.conductance.large_bronze_boiler": "Large Bronze Boiler",
   "machine.conductance.electric_blast_furnace": "Electric Blast Furnace",

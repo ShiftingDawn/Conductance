@@ -2,17 +2,20 @@ package conductance.api.tier;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import conductance.api.CAPI;
 import conductance.api.NCMaterials;
 import conductance.api.material.Material;
 import static conductance.api.NCMaterialGenerationHandlers.FINE_WIRE;
 import static conductance.api.NCMaterialGenerationHandlers.GEAR_SMALL;
 import static conductance.api.NCMaterialGenerationHandlers.GEM;
+import static conductance.api.NCMaterialGenerationHandlers.LIQUID;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.RING;
 import static conductance.api.NCMaterialGenerationHandlers.ROD;
 import static conductance.api.NCMaterialGenerationHandlers.ROTOR;
 import static conductance.api.NCMaterialGenerationHandlers.WIRE_1X;
+import static conductance.api.NCMaterialGenerationHandlers.WIRE_2X;
 import static conductance.api.NCMaterialGenerationHandlers.WIRE_4X;
 
 @SuppressWarnings("CheckStyle")
@@ -25,6 +28,8 @@ public abstract class TieredComponentMap {
 	public abstract Material getWireMaterial();
 
 	public abstract Material getRubberMaterial();
+
+	public abstract Material getPlasticMaterial();
 
 	//region Casing
 	protected Material getMachineCasingPlateMaterial() {
@@ -251,6 +256,14 @@ public abstract class TieredComponentMap {
 		return CAPI.materials().getItemTag(this.getMachineHeatingWireMaterial(), WIRE_4X);
 	}
 
+	protected Material getMachineElectroWireMaterial() {
+		return this.getWireMaterial();
+	}
+
+	public TagKey<Item> getMachineElectroWireItem() {
+		return CAPI.materials().getItemTag(this.getMachineElectroWireMaterial(), WIRE_2X);
+	}
+
 	protected Material getMachineRotorMaterial() {
 		return this.getPrimaryMaterial();
 	}
@@ -265,6 +278,14 @@ public abstract class TieredComponentMap {
 
 	public TagKey<Item> getMachineCuttingPartItem() {
 		return CAPI.materials().getItemTag(this.getMachineCuttingPartMaterial(), GEM);
+	}
+
+	protected Material getPlasticFluidMaterial() {
+		return this.getPlasticMaterial();
+	}
+
+	public TagKey<Fluid> getPlasticFluid() {
+		return CAPI.materials().getFluidTag(this.getPlasticFluidMaterial(), LIQUID);
 	}
 	//endregion
 }
