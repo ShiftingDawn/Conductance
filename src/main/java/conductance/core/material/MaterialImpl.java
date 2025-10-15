@@ -31,17 +31,17 @@ final class MaterialImpl implements Material {
 	private final @Getter ResourceLocation textureSet;
 	private final Lazy<MaterialColor> color;
 	private final List<MaterialStack> components;
-	private final LazyLong protons = LazyLong.of(() -> this.calc(PeriodicElement::protons, Material::getProtons, 43));
-	private final LazyLong neutrons = LazyLong.of(() -> this.calc(PeriodicElement::neutrons, Material::getNeutrons, 55));
-	private final LazyLong mass = LazyLong.of(() -> this.calc(PeriodicElement::mass, Material::getMass, 43));
 	private final Lazy<String> chemicalFormula;
+	private final LazyLong protons;
+	private final LazyLong neutrons;
+	private final LazyLong mass;
 	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("material", this.getId()));
 
 	MaterialImpl(
 		@Nullable final PeriodicElement periodicElement,
 		final Set<MaterialFlag> flags, final Map<MaterialTraitKey<?>, MaterialTrait<?>> traits, final Map<MaterialProp<?>, Object> props,
 		@Nullable final MaterialColor color, final ResourceLocation textureSet,
-		final List<MaterialStack> components, @Nullable final String chemicalFormula
+		final List<MaterialStack> components, @Nullable final String chemicalFormula, @Nullable final Long protons, @Nullable final Long neutrons, @Nullable final Long mass
 	) {
 		this.periodicElement = periodicElement;
 		this.flags = Collections.unmodifiableSet(flags);
@@ -51,6 +51,9 @@ final class MaterialImpl implements Material {
 		this.color = color != null ? Lazy.of(color) : Lazy.of(this::calcColor);
 		this.components = Collections.unmodifiableList(components);
 		this.chemicalFormula = chemicalFormula != null ? Lazy.of(chemicalFormula) : Lazy.of(this::calcChemicalFormula);
+		this.protons = protons != null ? LazyLong.of(protons) : LazyLong.of(() -> this.calc(PeriodicElement::protons, Material::getProtons, 43));
+		this.neutrons = neutrons != null ? LazyLong.of(neutrons) : LazyLong.of(() -> this.calc(PeriodicElement::neutrons, Material::getNeutrons, 55));
+		this.mass = mass != null ? LazyLong.of(mass) : LazyLong.of(() -> this.calc(PeriodicElement::mass, Material::getMass, 43));
 	}
 
 	@Override

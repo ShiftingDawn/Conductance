@@ -48,6 +48,9 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 	private ResourceLocation textureSet = NCMaterialTextureSets.DULL;
 	private @Nullable MaterialColor color;
 	private @Nullable String chemicalFormula;
+	private @Nullable Long protons;
+	private @Nullable Long neutrons;
+	private @Nullable Long mass;
 
 	@Override
 	public MaterialBuilder flag(final MaterialFlag flag) {
@@ -148,9 +151,27 @@ final class MaterialBuilderImpl implements MaterialBuilder {
 		return this;
 	}
 
+	@Override
+	public MaterialBuilder protons(final long protons) {
+		this.protons = protons;
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder neutrons(final long neutrons) {
+		this.neutrons = neutrons;
+		return this;
+	}
+
+	@Override
+	public MaterialBuilder mass(final long mass) {
+		this.mass = mass;
+		return this;
+	}
+
 	public Material build(final ResourceLocation registryKey) {
 		Conductance.dispatchAll(ModifyMaterialEventImpl.class, new ModifyMaterialEventImpl(registryKey, this));
 		final List<MaterialStack> componentList = Util.make(new ArrayList<>(), list -> this.components.forEach((mat, count) -> list.add(new MaterialStack(mat, count))));
-		return new MaterialImpl(this.periodicElement, this.flags, this.traits, this.props, this.color, this.textureSet, componentList, this.chemicalFormula);
+		return new MaterialImpl(this.periodicElement, this.flags, this.traits, this.props, this.color, this.textureSet, componentList, this.chemicalFormula, this.protons, this.neutrons, this.mass);
 	}
 }

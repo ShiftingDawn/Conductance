@@ -229,5 +229,11 @@ public interface MaterialBuilder {
 
 	MaterialBuilder chemicalFormula(String formula);
 
+	MaterialBuilder protons(long protons);
+
+	MaterialBuilder neutrons(long neutrons);
+
+	MaterialBuilder mass(long mass);
+
 	MaterialBuilder components(Object... components);
 }
