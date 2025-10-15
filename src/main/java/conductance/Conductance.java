@@ -28,6 +28,8 @@ import conductance.api.plugin.IConductancePluginEvent;
 import conductance.api.resource.ResourceFinder;
 import conductance.api.util.Internal;
 import conductance.api.util.RegistryProvider;
+import conductance.core.coil.CoilBlockRegistryImpl;
+import conductance.core.coil.CoilCore;
 import conductance.core.machine.MachineCore;
 import conductance.core.material.MaterialCore;
 import conductance.core.material.MaterialRegistryImpl;
@@ -57,6 +59,7 @@ public abstract class Conductance {
 	public static RegistryProviderImpl REGISTRIES;
 	public static MaterialRegistryImpl MATERIALS;
 	public static TierRegistryImpl TIERS;
+	public static CoilBlockRegistryImpl COILS;
 	private static final AtomicBoolean HAS_REGISTERED = new AtomicBoolean(false);
 	private static IEventBus MODBUS;
 
@@ -89,6 +92,7 @@ public abstract class Conductance {
 
 		PeriodicElementCore.initialize();
 		MaterialCore.initialize(Conductance.MODBUS);
+		CoilCore.initialize(Conductance.MODBUS);
 
 		RecipeCore.initialize();
 

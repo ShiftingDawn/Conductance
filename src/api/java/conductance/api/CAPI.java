@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.coil.CoilBlockRegistry;
 import conductance.api.material.MaterialRegistry;
 import conductance.api.recipe.RecipeHelper;
 import conductance.api.resource.ResourceFinder;
@@ -38,6 +39,7 @@ public final class CAPI {
 	private static RegistryProvider registryProvider;
 	private static MaterialRegistry materialRegistry;
 	private static TierRegistry tierRegistry;
+	private static CoilBlockRegistry coilBlockRegistry;
 	private static ResourceFinder resourceFinder;
 	private static RecipeHelper recipeHelper;
 
@@ -51,6 +53,10 @@ public final class CAPI {
 
 	public static TierRegistry tiers() {
 		return Objects.requireNonNull(CAPI.tierRegistry, "CAPI::tiers called too early!");
+	}
+
+	public static CoilBlockRegistry coils() {
+		return Objects.requireNonNull(CAPI.coilBlockRegistry, "CAPI::coils called too early!");
 	}
 
 	public static ResourceFinder resourceFinder() {

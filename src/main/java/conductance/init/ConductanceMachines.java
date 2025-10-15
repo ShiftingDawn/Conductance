@@ -163,7 +163,7 @@ final class ConductanceMachines {
 				.slice("bbb", "b b", "bbb")
 				.slice("axa", "aaa", "aaa")
 				.key('a', StructurePredicate.isBlock(NCBlocks.CASING_INVAR).or(StructurePredicate.autoCapabilities(NCRecipeTypes.ELECTRIC_BLAST_FURNACE)))
-				.key('b', StructurePredicate.isBlock(NCBlocks.CASING_BRONZE))
+				.key('b', StructurePredicate.isCoil())
 			)
 			.recipeType(NCRecipeTypes.ELECTRIC_BLAST_FURNACE)
 			.simpleModel(Conductance.id("block/casing/invar"))

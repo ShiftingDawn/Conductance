@@ -29,10 +29,13 @@
   "block.conductance.invar_casing": "Invar Casing",
   "block.conductance.aluminium_casing": "Aluminium Casing",
   "block.conductance.bronze_firebox_casing": "Bronze Firebox Casing",
+  "block.conductance.coil_block": "%s Coil Block",
 
   "tooltip.material_bucket.temperature": "§eTemperature: §r%sK",
   "tooltip.material_bucket.density": "§eDensity: §r%s",
   "tooltip.material_bucket.viscosity": "§eViscosity: §r%s",
+  "tooltip.coil_block.level": "§eCoil level: %s",
+  "tooltip.coil_block.temperature": "§eMax temperature: %s",
 
   "tag.item.conductance.tools.hammer": "Hammers",
   "tag.item.conductance.tools.wire_cutter": "Wire Cutters",
@@ -71,6 +74,9 @@
   "tier.conductance.empty": "Empty",
   "tier.conductance.max": "§lMAX",
   "tier.conductance.lv": "§9LV",
+
+  "coilBlockType.conductance.cupronickel": "Cupronickel",
+  "coilBlockType.conductance.kanthal": "Kanthal",
 
   "recipeType.conductance.steam_turbine": "Steam Turbine",
 

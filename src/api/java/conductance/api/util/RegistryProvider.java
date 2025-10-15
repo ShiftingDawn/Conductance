@@ -2,6 +2,7 @@ package conductance.api.util;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import conductance.api.coil.CoilBlockType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.multi.MultiBlockPartCapability;
 import conductance.api.material.Material;
@@ -36,6 +37,8 @@ public interface RegistryProvider {
 
 	ResourceKey<Registry<MultiBlockPartCapability>> multiBlockPartCapabilityRegistry();
 
+	ResourceKey<Registry<CoilBlockType>> coilBlockTypeRegistry();
+
 	ResourceKey<Registry<MachineType<?>>> machineRegistry();
 
 	Registry<PeriodicElement> periodicElements();
@@ -57,6 +60,8 @@ public interface RegistryProvider {
 	Registry<MachineRecipeType> recipeTypes();
 
 	Registry<MultiBlockPartCapability> multiBlockPartCapabilities();
+
+	Registry<CoilBlockType> coilBlockTypes();
 
 	Registry<MachineType<?>> machines();
 }

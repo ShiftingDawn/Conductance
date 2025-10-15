@@ -3,6 +3,7 @@ package conductance.api;
 import java.util.Map;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
+import conductance.api.coil.CoilBlockType;
 import conductance.api.tier.Tier;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
@@ -15,6 +16,8 @@ public final class NCBlocks {
 	public static Holder<Block> CASING_ALUMINIUM;
 
 	public static Holder<Block> CASING_BRONZE_FIREBOX;
+
+	public static Map<CoilBlockType, Holder<Block>> COILS;
 
 	private NCBlocks() {
 	}

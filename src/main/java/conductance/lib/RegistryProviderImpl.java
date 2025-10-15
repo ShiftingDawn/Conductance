@@ -17,6 +17,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import conductance.api.coil.CoilBlockType;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.multi.MultiBlockPartCapability;
 import conductance.api.material.Material;
@@ -48,6 +49,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final @Getter ResourceKey<Registry<RecipeElementType<?>>> recipeElementTypeRegistry = this.makeKey("recipe_element_type");
 	private final @Getter ResourceKey<Registry<MachineRecipeType>> recipeTypeRegistry = this.makeKey("recipe_type");
 	private final @Getter ResourceKey<Registry<MultiBlockPartCapability>> multiBlockPartCapabilityRegistry = this.makeKey("multiblock_part_capability");
+	private final @Getter ResourceKey<Registry<CoilBlockType>> coilBlockTypeRegistry = this.makeKey("coil_block_type");
 	private final @Getter ResourceKey<Registry<MachineType<?>>> machineRegistry = this.makeKey("machine");
 
 	private final @Getter Registry<PeriodicElement> periodicElements = this.makeRegistry(this.periodicElementRegistry);
@@ -60,6 +62,7 @@ public final class RegistryProviderImpl implements RegistryProvider {
 	private final @Getter Registry<RecipeElementType<?>> recipeElementTypes = this.makeRegistry(this.recipeElementTypeRegistry);
 	private final @Getter Registry<MachineRecipeType> recipeTypes = this.makeRegistry(this.recipeTypeRegistry);
 	private final @Getter Registry<MultiBlockPartCapability> multiBlockPartCapabilities = this.makeRegistry(this.multiBlockPartCapabilityRegistry);
+	private final @Getter Registry<CoilBlockType> coilBlockTypes = this.makeRegistry(this.coilBlockTypeRegistry);
 	private final @Getter Registry<MachineType<?>> machines = this.makeRegistry(this.machineRegistry);
 
 	public RegistryProviderImpl(final IEventBus modEventBus) {

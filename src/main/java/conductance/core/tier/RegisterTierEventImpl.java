@@ -18,6 +18,9 @@ final class RegisterTierEventImpl implements RegisterTierEvent {
 
 	@Override
 	public Tier register(final String registryName, final int tierColor, final Supplier<TieredComponentMap> componentMapFactory, final Tier previousTier) {
+		if (!(previousTier instanceof TierImpl)) {
+			throw new IllegalArgumentException("Invalid previousTier supplied. All tiers types MUST be created using %s".formatted(RegisterTierEvent.class.getSimpleName()));
+		}
 		return this.delegate.apply(registryName, tierColor, componentMapFactory, previousTier);
 	}
 

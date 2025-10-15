@@ -13,8 +13,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import lombok.Getter;
+import conductance.api.CAPI;
 import conductance.api.NCMultiBlockPartCapabilities;
 import conductance.api.NCRecipeElementTypes;
+import conductance.api.coil.CoilBlockType;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.util.IO;
 
@@ -206,5 +208,19 @@ public abstract class StructurePredicate {
 			predicate = predicate.or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ENERGY_OUT).max(1));
 		}
 		return predicate;
+	}
+
+	public static StructurePredicate isCoil() {
+		return new StructurePredicate() {
+			@Override
+			protected boolean testInternal(final BlockAndTintGetter level, final BlockPos pos, final BlockState state, final StructureCheckContext ctx) {
+				final CoilBlockType coilBlockType = CAPI.coils().getByBlock(state.getBlock());
+				if (coilBlockType != null) {
+					ctx.get(StructureCheckContext.COIL_BLOCKS).put(pos, coilBlockType);
+					return true;
+				}
+				return false;
+			}
+		};
 	}
 }

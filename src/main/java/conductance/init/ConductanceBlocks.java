@@ -1,5 +1,6 @@
 package conductance.init;
 
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,6 +26,7 @@ import conductance.api.NCBlockStateProperties;
 import conductance.api.NCBlocks;
 import conductance.api.NCCapabilities;
 import conductance.api.NCMaterialTraits;
+import conductance.api.coil.CoilBlockType;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialOreBearer;
 import conductance.api.plugin.ConductancePluginListener;
@@ -36,6 +38,8 @@ import conductance.Conductance;
 import conductance.core.CreativeTabHelper;
 import conductance.core.material.MaterialColorTintSource;
 import conductance.init.block.ActiveBlock;
+import conductance.init.block.CoilBlock;
+import conductance.init.block.CoilBlockItem;
 import conductance.init.block.MaterialBlock;
 import conductance.init.block.MaterialBlockItem;
 import conductance.init.block.MaterialOreBlock;
@@ -63,10 +67,12 @@ public final class ConductanceBlocks {
 		CAPI.regs().materials().forEach(ConductanceBlocks::generateMaterial);
 		ConductanceBlocks.generateTiered();
 		modEventBus.addListener(RegisterColorHandlersEvent.Block.class, ConductanceBlocks::handleMaterialBlockColors);
+		modEventBus.addListener(RegisterColorHandlersEvent.Block.class, ConductanceBlocks::handleCoilColors);
 		NCBlocks.CASING_BRONZE = ConductanceBlocks.makeSimpleBlock("bronze_casing", "casing/bronze");
 		NCBlocks.CASING_INVAR = ConductanceBlocks.makeSimpleBlock("invar_casing", "casing/invar");
 		NCBlocks.CASING_ALUMINIUM = ConductanceBlocks.makeSimpleBlock("aluminium_casing", "casing/aluminium");
 		NCBlocks.CASING_BRONZE_FIREBOX = ConductanceBlocks.makeActiveBlock("bronze_firebox_casing", "casing/bronze_firebox");
+		ConductanceBlocks.generateCoils();
 	}
 
 	private static Holder<Block> makeBlock(final String blockName, @Nullable final String texture, final Function<BlockBehaviour.Properties, Block> factory) {
@@ -174,6 +180,18 @@ public final class ConductanceBlocks {
 		);
 	}
 
+	private static void generateCoils() {
+		NCBlocks.COILS = Collections.unmodifiableMap(CAPI.make(new IdentityHashMap<>(), map -> {
+			for (final CoilBlockType coilBlockType : CAPI.regs().coilBlockTypes()) {
+				final String name = coilBlockType.getId().getPath() + "_coil_block";
+				map.put(coilBlockType, CAPI.make(ConductanceBlocks.REGISTRY.registerBlock(name, props -> new CoilBlock(props, coilBlockType)), block -> {
+					ConductanceBlocks.ITEMS.registerItem(name, props -> new CoilBlockItem(block.value(), props));
+					CreativeTabHelper.addToTab(block, CreativeTabHelper.Tabs.GENERAL);
+				}));
+			}
+		}));
+	}
+
 	@EventListener(priority = -100)
 	private static void addBlockTranslations(final AddTranslationEvent event) {
 		Conductance.MATERIALS.getBlockTable().rowMap().forEach((material, map) -> map.forEach((handler, block) -> {
@@ -277,6 +295,14 @@ public final class ConductanceBlocks {
 			event.addBlockModel(block.value(), b -> b.parent(Conductance.id("block/cube_all")).particle(Conductance.id("block/casing/machine_%s".formatted(tier.getId().getPath()))));
 			event.addItemModelDelegate(block.value());
 		});
+		NCBlocks.COILS.forEach((coil, block) -> {
+			event.addBlockState(block.value(), b -> b.simple(b2 -> b2.model(block.value())));
+			event.addBlockModel(block.value(), b -> b.renderType("cutout_mipped").particle(Conductance.id("block/coil_block")).texture("overlay", Conductance.id("block/coil_block_overlay"))
+				.element(b2 -> b2.faces((side, face) -> face.particle().neoforgeData(neo -> neo.color(coil.getColor())), true))
+				.element(b2 -> b2.faces((side, face) -> face.texture("overlay"), true))
+			);
+			event.addItemModelDelegate(block.value());
+		});
 	}
 
 	private static void handleMaterialBlockColors(final RegisterColorHandlersEvent.Block event) {
@@ -290,6 +316,13 @@ public final class ConductanceBlocks {
 			final WireBlock block = (WireBlock) blockState.getBlock();
 			return i == 0 ? block.getMaterial().getColor().getCurrentColor() : -1;
 		}, WireRegistry.getAllBlocks());
+	}
+
+	private static void handleCoilColors(final RegisterColorHandlersEvent.Block event) {
+		event.register((blockState, blockAndTintGetter, blockPos, i) -> {
+			final CoilBlock block = (CoilBlock) blockState.getBlock();
+			return i == 0 ? block.getType().getColor() : -1;
+		}, NCBlocks.COILS.values().stream().map(Holder::value).toArray(Block[]::new));
 	}
 
 	private static void attachCapabilities(final RegisterCapabilitiesEvent event) {
