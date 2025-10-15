@@ -68,9 +68,45 @@ public class MachineMenu extends AbstractContainerMenu implements WidgetHolder {
 	}
 
 	@Override
-	public ItemStack quickMoveStack(final Player player, final int i) {
-		//TODO implement
-		return ItemStack.EMPTY;
+	public ItemStack quickMoveStack(final Player player, final int fromSlot) {
+		ItemStack quickMovedStack = ItemStack.EMPTY;
+		final Slot slot = this.slots.get(fromSlot);
+		if (slot.hasItem()) {
+			final int playerStart = this.slots.size() - 36;
+			final int hotbarStart = this.slots.size() - 9;
+			final ItemStack rawStack = slot.getItem();
+			quickMovedStack = rawStack.copy();
+			if (fromSlot >= playerStart && fromSlot < this.slots.size()) {
+				if (!this.moveItemStackTo(rawStack, 0, playerStart, false)) {
+					if (fromSlot < hotbarStart) {
+						if (!this.moveItemStackTo(rawStack, hotbarStart, this.slots.size(), false)) {
+							return ItemStack.EMPTY;
+						}
+					} else if (!this.moveItemStackTo(rawStack, playerStart, hotbarStart, false)) {
+						return ItemStack.EMPTY;
+					}
+				}
+			} else {
+				if (!this.moveItemStackTo(rawStack, playerStart, this.slots.size(), true)) {
+					return ItemStack.EMPTY;
+				}
+				if (slot instanceof final RepositionableSlotItemHandler repositionableSlotItemHandler && !repositionableSlotItemHandler.getIo().isInput()) {
+					slot.onQuickCraft(rawStack, quickMovedStack);
+				} else if (slot instanceof final RepositionableSlot repositionableSlot && !repositionableSlot.getIo().isInput()) {
+					slot.onQuickCraft(rawStack, quickMovedStack);
+				}
+			}
+			if (rawStack.isEmpty()) {
+				slot.setByPlayer(ItemStack.EMPTY);
+			} else {
+				slot.setChanged();
+			}
+			if (rawStack.getCount() == quickMovedStack.getCount()) {
+				return ItemStack.EMPTY;
+			}
+			slot.onTake(player, rawStack);
+		}
+		return quickMovedStack;
 	}
 
 	@Override
