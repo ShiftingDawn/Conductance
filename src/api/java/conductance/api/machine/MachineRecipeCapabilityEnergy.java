@@ -16,6 +16,7 @@ import conductance.api.util.IO;
 @SuppressWarnings("deprecation")
 public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability<Long> implements IBlockCapabilityHandler, IEnergyHandler {
 
+	private final boolean canOverclock;
 	private @Getter long capacity;
 	private long energy;
 	private @Getter long inputVoltage;
@@ -26,9 +27,10 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 	private long acceptedAmpsThisTick;
 
 	public MachineRecipeCapabilityEnergy(
-		final MachineBlockEntity<?> machine, final IO recipeIoMode, final long capacity, final long inputVoltage, final long inputAmperage, final long outputVoltage, final long outputAmperage
+		final MachineBlockEntity<?> machine, final IO recipeIoMode, final long capacity, final long inputVoltage, final long inputAmperage, final long outputVoltage, final long outputAmperage, final boolean canOverclock
 	) {
 		super(machine, NCRecipeElementTypes.ENERGY, recipeIoMode, MachineRecipeCapabilityEnergy.getIO(inputVoltage, inputAmperage, outputVoltage, outputAmperage));
+		this.canOverclock = canOverclock;
 		this.capacity = capacity;
 		this.inputVoltage = inputVoltage;
 		this.inputAmperage = inputAmperage;
@@ -37,12 +39,16 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 		this.addChangedListener(machine::syncToClient);
 	}
 
-	public static MachineRecipeCapabilityEnergy createInput(final MachineBlockEntity<?> machine, final IO recipeIoMode, final long capacity, final long inputVoltage, final long inputAmperage) {
-		return new MachineRecipeCapabilityEnergy(machine, recipeIoMode, capacity, inputVoltage, inputAmperage, 0, 0);
+	public static MachineRecipeCapabilityEnergy createInput(
+		final MachineBlockEntity<?> machine, final IO recipeIoMode, final long capacity, final long inputVoltage, final long inputAmperage, final boolean canOverclock
+	) {
+		return new MachineRecipeCapabilityEnergy(machine, recipeIoMode, capacity, inputVoltage, inputAmperage, 0, 0, canOverclock);
 	}
 
-	public static MachineRecipeCapabilityEnergy createOutput(final MachineBlockEntity<?> machine, final IO recipeIoMode, final long capacity, final long outputVoltage, final long outputAmperage) {
-		return new MachineRecipeCapabilityEnergy(machine, recipeIoMode, capacity, 0, 0, outputVoltage, outputAmperage);
+	public static MachineRecipeCapabilityEnergy createOutput(
+		final MachineBlockEntity<?> machine, final IO recipeIoMode, final long capacity, final long outputVoltage, final long outputAmperage, final boolean canOverclock
+	) {
+		return new MachineRecipeCapabilityEnergy(machine, recipeIoMode, capacity, 0, 0, outputVoltage, outputAmperage, canOverclock);
 	}
 
 	@Override
@@ -62,12 +68,18 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 		}
 		long left = inputs.stream().mapToLong(Long::longValue).sum();
 		if (io == IO.IN) {
+			if (left > this.getOverclockedInputVoltage() * this.getOverclockedInputAmperage()) {
+				return inputs;
+			}
 			final long extracted = Math.min(left, this.getEnergyStored());
 			if (!simulate) {
 				this.removeEnergy(extracted);
 			}
 			left -= extracted;
 		} else {
+			if (left > this.getOverclockedOutputAmperage() * this.getOverclockedOutputAmperage()) {
+				return inputs;
+			}
 			final long accepted = Math.min(left, this.getEnergySpace());
 			if (!simulate) {
 				this.addEnergy(accepted);
@@ -151,6 +163,38 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 	@Override
 	public long getEnergyCapacity() {
 		return this.capacity;
+	}
+
+	@Override
+	public long getOverclockedInputVoltage() {
+		if (this.canOverclock && this.getInputAmperage() >= 4) {
+			return this.getInputVoltage() / 4;
+		}
+		return IEnergyHandler.super.getOverclockedInputVoltage();
+	}
+
+	@Override
+	public long getOverclockedInputAmperage() {
+		if (this.canOverclock && this.getInputAmperage() >= 4) {
+			return this.getInputAmperage() / 4;
+		}
+		return IEnergyHandler.super.getOverclockedInputAmperage();
+	}
+
+	@Override
+	public long getOverclockedOutputVoltage() {
+		if (this.canOverclock && this.getOutputAmperage() > 4) {
+			return this.getOutputVoltage() / 4;
+		}
+		return IEnergyHandler.super.getOverclockedOutputVoltage();
+	}
+
+	@Override
+	public long getOverclockedOutputAmperage() {
+		if (this.canOverclock && this.getOutputAmperage() > 4) {
+			return this.getOutputAmperage() / 4;
+		}
+		return IEnergyHandler.super.getOverclockedOutputAmperage();
 	}
 
 	private static CapIO getIO(final long inputVoltage, final long inputAmperage, final long outputVoltage, final long outputAmperage) {

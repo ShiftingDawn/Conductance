@@ -90,6 +90,12 @@ public final class TierRegistryImpl implements TierRegistry {
 		}
 	}
 
+	@Override
+	public Tier getByVoltageFloored(final long voltage) {
+		final Tier tier = this.getByVoltage(voltage);
+		return voltage < tier.getVoltage() ? tier.getPreviousTier() : tier;
+	}
+
 	public Tier getLastTier() {
 		return !this.tiers.isEmpty() ? this.tiers.getLast() : this.empty();
 	}

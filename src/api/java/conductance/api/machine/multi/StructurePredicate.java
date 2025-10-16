@@ -181,7 +181,7 @@ public abstract class StructurePredicate {
 		};
 	}
 
-	public static StructurePredicate autoCapabilities(final MachineRecipeType recipeType) {
+	public static StructurePredicate autoCapabilities(final MachineRecipeType recipeType, final boolean allowOverclock) {
 		final boolean inItems = recipeType.getLimit(IO.IN, NCRecipeElementTypes.ITEM) > 0;
 		final boolean outItems = recipeType.getLimit(IO.OUT, NCRecipeElementTypes.ITEM) > 0;
 		final boolean inFluids = recipeType.getLimit(IO.IN, NCRecipeElementTypes.FLUID) > 0;
@@ -202,10 +202,24 @@ public abstract class StructurePredicate {
 			predicate = predicate.or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.FLUIDS_OUT));
 		}
 		if (inEnergy) {
-			predicate = predicate.or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ENERGY_IN).max(2));
+			if (allowOverclock) {
+				predicate = predicate.or(
+					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ENERGY_IN).max(1),
+					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ENERGY_IN_OVERCLOCKED).max(1)
+				);
+			} else {
+				predicate = predicate.or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ENERGY_IN).max(1));
+			}
 		}
 		if (outEnergy) {
-			predicate = predicate.or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ENERGY_OUT).max(1));
+			if (allowOverclock) {
+				predicate = predicate.or(
+					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ENERGY_OUT).max(1),
+					StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ENERGY_OUT_OVERCLOCKED).max(1)
+				);
+			} else {
+				predicate = predicate.or(StructurePredicate.isCapability(NCMultiBlockPartCapabilities.ENERGY_OUT).max(1));
+			}
 		}
 		return predicate;
 	}

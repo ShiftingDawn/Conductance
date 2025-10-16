@@ -37,6 +37,7 @@ import conductance.api.util.IO;
 
 public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachine> implements RecipeCapabilityHolder {
 
+	private final @Getter Tier tier;
 	private final @Getter RecipeHandler recipeHandler;
 	@Getter
 	private final @Nullable MachineRecipeCapabilityItems inputItems;
@@ -57,6 +58,7 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 
 	public GenericRecipeMachine(final MachineType<GenericRecipeMachine> type, final Tier tier, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
+		this.tier = tier;
 		this.recipeHandler = new RecipeHandler(this, this);
 		final int inputItemLimit = this.getRecipeType().getLimit(IO.IN, NCRecipeElementTypes.ITEM);
 		this.inputItems = inputItemLimit > 0 ? CAPI.make(new MachineRecipeCapabilityItems(this, inputItemLimit, IO.IN, CapIO.IN, MachineInventory::new), inv -> {
@@ -75,8 +77,8 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 			handler.addChangedListener(this.recipeHandler::revalidateTick);
 		}) : null;
 		this.energy = this.isEnergyGenerator()
-			? MachineRecipeCapabilityEnergy.createOutput(this, IO.OUT, tier.getVoltage() * 64, tier.getVoltage(), this.getMaxEnergyAmperage())
-			: MachineRecipeCapabilityEnergy.createInput(this, IO.IN, tier.getVoltage() * 64, tier.getVoltage(), this.getMaxEnergyAmperage());
+			? MachineRecipeCapabilityEnergy.createOutput(this, IO.OUT, tier.getVoltage() * 64, tier.getVoltage(), this.getMaxEnergyAmperage(), false)
+			: MachineRecipeCapabilityEnergy.createInput(this, IO.IN, tier.getVoltage() * 64, tier.getVoltage(), this.getMaxEnergyAmperage(), false);
 		this.energy.addChangedListener(this.recipeHandler::revalidateTick);
 		this.recipeCapabilities = Tables.unmodifiableTable(Util.make(HashBasedTable.create(), table -> {
 			table.put(NCRecipeElementTypes.ITEM, IO.IN, this.inputItems != null ? List.of(this.inputItems) : List.of());
@@ -119,6 +121,11 @@ public class GenericRecipeMachine extends MachineBlockEntity<GenericRecipeMachin
 	@Override
 	public MachineRecipeType getRecipeType() {
 		return this.getMachineType().getRecipeTypes()[0];
+	}
+
+	@Override
+	public Tier getMaxRecipeTier() {
+		return this.tier;
 	}
 
 	@Override

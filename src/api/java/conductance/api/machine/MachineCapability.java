@@ -27,7 +27,7 @@ public abstract class MachineCapability implements ValueIOSerializable {
 	}
 
 	public final boolean isValid(@Nullable final Direction side) {
-		return this.capabilityValidator.test(side);
+		return side == null || this.capabilityValidator.test(side);
 	}
 
 	public final ISubscription addChangedListener(final Runnable listener) {

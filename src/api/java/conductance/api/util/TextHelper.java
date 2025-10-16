@@ -10,7 +10,7 @@ public final class TextHelper {
 
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getIntegerInstance();
 	public static final Component ENERGY_FORMAT = Component.literal(ChatFormatting.YELLOW + "" + ChatFormatting.BOLD + "⚡" + ChatFormatting.RESET);
-	public static final Component ENERGY_FORMAT_PER_TICK = Component.literal(TextHelper.ENERGY_FORMAT + "/t");
+	public static final Component ENERGY_FORMAT_PER_TICK = Component.literal(ChatFormatting.YELLOW + "" + ChatFormatting.BOLD + "⚡" + ChatFormatting.RESET + "/t");
 	private static final DecimalFormat BUCKET_FORMAT = new DecimalFormat("0.##");
 	private static final DecimalFormat TIME_FORMAT = new DecimalFormat("0.00");
 	private static final char[] SUBSCRIPTS = {'₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'};

@@ -10,6 +10,7 @@ import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.machine.RecipePerTickFailureAction;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
+import conductance.api.tier.Tier;
 
 interface BoilerFakeRecipeCapabilityHolder extends RecipeCapabilityHolder {
 
@@ -23,6 +24,12 @@ interface BoilerFakeRecipeCapabilityHolder extends RecipeCapabilityHolder {
 
 	@Override
 	default MachineRecipeType getRecipeType() {
+		return null;
+	}
+
+	@Override
+	@Nullable
+	default Tier getMaxRecipeTier() {
 		return null;
 	}
 

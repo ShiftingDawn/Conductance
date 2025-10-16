@@ -12,6 +12,8 @@ public interface TierRegistry {
 
 	Tier getByVoltage(long voltage);
 
+	Tier getByVoltageFloored(long voltage);
+
 	/**
 	 * @return all registered tiers, sorted from lowest to highest
 	 */

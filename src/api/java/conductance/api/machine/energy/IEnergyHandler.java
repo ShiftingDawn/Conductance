@@ -59,12 +59,40 @@ public interface IEnergyHandler {
 
 	long getInputAmperage();
 
+	default long getOverclockedInputVoltage() {
+		if (this.getInputVoltage() >= 4 && this.getInputAmperage() >= 4) {
+			return this.getInputVoltage() * 4;
+		}
+		return this.getInputVoltage();
+	}
+
+	default long getOverclockedInputAmperage() {
+		if (this.getInputVoltage() >= 4 && this.getInputAmperage() >= 4) {
+			return this.getInputAmperage() / 4;
+		}
+		return this.getInputAmperage();
+	}
+
 	default long getOutputVoltage() {
 		return 0L;
 	}
 
 	default long getOutputAmperage() {
 		return 0L;
+	}
+
+	default long getOverclockedOutputVoltage() {
+		if (this.getOutputVoltage() >= 4 && this.getOutputAmperage() >= 4) {
+			return this.getOutputVoltage() / 4;
+		}
+		return this.getOutputVoltage();
+	}
+
+	default long getOverclockedOutputAmperage() {
+		if (this.getOutputVoltage() >= 4 && this.getOutputAmperage() >= 4) {
+			return this.getOutputAmperage() / 4;
+		}
+		return this.getOutputAmperage();
 	}
 
 	IEnergyHandler DEFAULT = new IEnergyHandler() {

@@ -5,15 +5,20 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import conductance.api.CAPI;
 import conductance.api.NCBlockStateProperties;
 import conductance.api.block.BlockRotationHelper;
 import conductance.api.block.FacingAndRotation;
+import conductance.api.coil.CoilBlockType;
 import conductance.api.util.Internal;
 
 public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineBlockEntity<T>> extends MultiMachineBlockEntity<T> implements IMultiBlockController<T> {
@@ -24,6 +29,9 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 	private final Set<BlockPos> activeBlocks = new HashSet<>();
 	private final @Getter Lock structureCheckLock = new ReentrantLock();
 	private @Getter boolean structureFormed = false;
+	@Nullable
+	private @Getter CoilBlockType coilType;
+	@UnknownNullability
 	private @Getter StructureCheckContext lastContext;
 
 	public MultiControllerMachineBlockEntity(final MultiMachineType<T> type, final BlockPos pos, final BlockState blockState) {
@@ -51,6 +59,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 	public void onStructureFormed(final StructureCheckContext ctx) {
 		this.structureFormed = true;
 		this.lastContext = ctx;
+		this.coilType = ctx.getNotSet(StructureCheckContext.COIL_TYPE);
 		this.parts.clear();
 		ctx.get(StructureCheckContext.PARTS).forEach(this::addPart);
 		this.activeBlocks.addAll(ctx.get(StructureCheckContext.ACTIVE_BLOCKS));
@@ -62,12 +71,16 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 					list.add(blockEntity.getBlockPos());
 				}
 			}
+			if (this.coilType != null) {
+				output.store("coils", ResourceLocation.CODEC, this.coilType.getId());
+			}
 		});
 	}
 
 	@Override
 	public void onStructureInvalid(final StructureCheckContext ctx) {
 		this.structureFormed = false;
+		this.coilType = null;
 		this.lastContext = ctx;
 		this.invalidateController(false);
 		this.sendToClient(MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_INVALID, null);
@@ -99,6 +112,10 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 		this.setActiveBlocks(working);
 	}
 
+	public int getCoilTemperature() {
+		return this.coilType != null ? this.coilType.getTemperature() : 0;
+	}
+
 	private void setActiveBlocks(final boolean active) {
 		for (final BlockPos activeBlockPos : this.activeBlocks) {
 			final BlockState state = this.level.getBlockState(activeBlockPos);
@@ -120,9 +137,11 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 						}
 					}
 				}));
+				this.coilType = input.read("coils", ResourceLocation.CODEC).map(CAPI.regs().coilBlockTypes()::getValue).orElse(null);
 			}
 			case MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_INVALID -> {
 				this.structureFormed = false;
+				this.coilType = null;
 				this.removeAllParts();
 				this.syncToClient();
 			}

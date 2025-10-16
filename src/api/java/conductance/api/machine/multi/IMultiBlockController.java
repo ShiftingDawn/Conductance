@@ -1,13 +1,20 @@
 package conductance.api.machine.multi;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
+import conductance.api.CAPI;
+import conductance.api.NCCapabilities;
+import conductance.api.machine.CapIO;
+import conductance.api.machine.IOEnergyHandlerList;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.RecipeHandler;
 import conductance.api.machine.RecipeHandlerStatus;
+import conductance.api.machine.energy.IEnergyHandler;
+import conductance.api.tier.Tier;
 import conductance.api.util.TextHelper;
 
 public interface IMultiBlockController<T extends MultiMachineBlockEntity<T>> {
@@ -79,16 +86,33 @@ public interface IMultiBlockController<T extends MultiMachineBlockEntity<T>> {
 			? Component.translatable("guiWidget.conductance.multiblock.structure.formed")
 			: Component.translatable("guiWidget.conductance.multiblock.structure.invalid")
 		);
+		if (this instanceof final MultiControllerMachineBlockEntity<?> controller && controller.getCoilType() != null) {
+			list.add(Component.translatable("guiWidget.conductance.multiblock.coil.level", controller.getCoilType().getIndex() + 1));
+			list.add(Component.translatable("guiWidget.conductance.multiblock.coil.temperature", controller.getCoilType().getTemperature()));
+		}
 		if (this instanceof final MachineBlockEntity<?> machine) {
-			machine.getCapability(RecipeHandler.class).ifPresent(handler -> {
-				list.add(switch (handler.getStatus()) {
+			final List<IEnergyHandler> handlers = machine.getLevel() == null ? List.of() : this.getParts().stream()
+				.map(part -> NCCapabilities.getEnergyHandler(machine.getLevel(), part.getBlockPos(), null))
+				.filter(Objects::nonNull).toList();
+			if (!handlers.isEmpty()) {
+				final IEnergyHandler wrappedHandler = new IOEnergyHandlerList(handlers, CapIO.IN);
+				if (wrappedHandler.getInputVoltage() > 0) {
+					final Tier tier = CAPI.tiers().getByVoltage(wrappedHandler.getInputVoltage());
+					list.add(Component.translatable("guiWidget.conductance.multiblock.energy.max_tier", TextHelper.ENERGY_FORMAT_PER_TICK, tier.getName(), wrappedHandler.getInputAmperage()));
+				}
+			}
+			machine.getCapability(RecipeHandler.class).ifPresent(recipeHandler -> {
+				if (recipeHandler.getHolder().getMaxRecipeTier() != null) {
+					list.add(Component.translatable("guiWidget.conductance.multiblock.recipe.max_tier", recipeHandler.getHolder().getMaxRecipeTier().getName()));
+				}
+				list.add(switch (recipeHandler.getStatus()) {
 					case IDLE -> Component.translatable("guiWidget.conductance.multiblock.recipe.idle");
 					case PAUSED -> Component.translatable("guiWidget.conductance.multiblock.recipe.paused");
 					case PROCESSING -> Component.translatable("guiWidget.conductance.multiblock.recipe.processing");
 				});
-				if (handler.getStatus() == RecipeHandlerStatus.PROCESSING) {
+				if (recipeHandler.getStatus() == RecipeHandlerStatus.PROCESSING) {
 					list.add(Component.translatable("guiWidget.conductance.multiblock.recipe.progress",
-						TextHelper.getFormattedTicks(handler.getProgressCurrent()), TextHelper.getFormattedTicks(handler.getProgressMax())
+						TextHelper.getFormattedTicks(recipeHandler.getProgressCurrent()), TextHelper.getFormattedTicks(recipeHandler.getProgressMax())
 					));
 				}
 			});

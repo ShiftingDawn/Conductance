@@ -5,6 +5,7 @@ import conductance.api.plugin.EventListener;
 import conductance.api.tier.event.RegisterTierEvent;
 import conductance.Conductance;
 import static conductance.api.NCTiers.LV;
+import static conductance.api.NCTiers.MV;
 
 @ConductancePluginListener(modid = Conductance.MODID)
 final class ConductanceTiers {
@@ -12,6 +13,7 @@ final class ConductanceTiers {
 	@EventListener
 	private static void init(final RegisterTierEvent event) {
 		LV = event.register("lv", 0x649BFF, LvComponentMap::new);
+		MV = event.register("mv", 0xBF6A40, MvComponentMap::new);
 	}
 
 	private ConductanceTiers() {

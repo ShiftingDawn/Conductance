@@ -10,7 +10,9 @@ public final class NCMultiBlockPartCapabilities {
 	public static MultiBlockPartCapability FLUIDS_IN;
 	public static MultiBlockPartCapability FLUIDS_OUT;
 	public static MultiBlockPartCapability ENERGY_IN;
+	public static MultiBlockPartCapability ENERGY_IN_OVERCLOCKED;
 	public static MultiBlockPartCapability ENERGY_OUT;
+	public static MultiBlockPartCapability ENERGY_OUT_OVERCLOCKED;
 
 	private NCMultiBlockPartCapabilities() {
 	}

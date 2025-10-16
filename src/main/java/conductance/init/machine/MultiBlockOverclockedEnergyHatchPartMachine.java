@@ -16,18 +16,18 @@ import conductance.api.machine.multi.MultiPartMachineBlockEntity;
 import conductance.api.tier.Tier;
 import conductance.api.util.IO;
 
-public final class MultiBlockEnergyHatchPartMachine extends MultiPartMachineBlockEntity<MultiBlockEnergyHatchPartMachine> {
+public final class MultiBlockOverclockedEnergyHatchPartMachine extends MultiPartMachineBlockEntity<MultiBlockOverclockedEnergyHatchPartMachine> {
 
 	private final @Getter MachineRecipeCapabilityEnergy energy;
 	private final @Getter IO io;
 	private @Nullable MachineTick tick = null;
 
-	public MultiBlockEnergyHatchPartMachine(final MachineType<MultiBlockEnergyHatchPartMachine> type, final BlockPos pos, final BlockState blockState, final IO io, final Tier tier) {
+	public MultiBlockOverclockedEnergyHatchPartMachine(final MachineType<MultiBlockOverclockedEnergyHatchPartMachine> type, final BlockPos pos, final BlockState blockState, final IO io, final Tier tier) {
 		super(type, pos, blockState);
-		final long capacity = tier.getVoltage() * 64;
+		final long capacity = (tier.getVoltage() * 4) * 64;
 		this.energy = switch (io) {
-			case IN -> MachineRecipeCapabilityEnergy.createInput(this, IO.IN, capacity, tier.getVoltage(), 2, false);
-			case OUT -> MachineRecipeCapabilityEnergy.createOutput(this, IO.OUT, capacity, tier.getVoltage(), 2, false);
+			case IN -> MachineRecipeCapabilityEnergy.createInput(this, IO.IN, capacity, tier.getVoltage(), 4, true);
+			case OUT -> MachineRecipeCapabilityEnergy.createOutput(this, IO.OUT, capacity, tier.getVoltage(), 4, true);
 		};
 		this.energy.setCapabilityValidator(side -> side == this.getFacing());
 		this.energy.addChangedListener(this::revalidateTick);
@@ -54,8 +54,8 @@ public final class MultiBlockEnergyHatchPartMachine extends MultiPartMachineBloc
 	@Override
 	public MultiBlockPartCapability getPartCapability() {
 		return switch (this.io) {
-			case IN -> NCMultiBlockPartCapabilities.ENERGY_IN;
-			case OUT -> NCMultiBlockPartCapabilities.ENERGY_OUT;
+			case IN -> NCMultiBlockPartCapabilities.ENERGY_IN_OVERCLOCKED;
+			case OUT -> NCMultiBlockPartCapabilities.ENERGY_OUT_OVERCLOCKED;
 		};
 	}
 

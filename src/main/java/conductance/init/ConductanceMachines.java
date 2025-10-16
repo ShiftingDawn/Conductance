@@ -33,6 +33,7 @@ import conductance.init.machine.MultiBlockFluidHatchPartMachine;
 import conductance.init.machine.MultiBlockFluidHatchPartMachineGuiSetup;
 import conductance.init.machine.MultiBlockItemBusPartMachine;
 import conductance.init.machine.MultiBlockItemBusPartMachineGuiSetup;
+import conductance.init.machine.MultiBlockOverclockedEnergyHatchPartMachine;
 import conductance.init.machine.boiler.LargeBoilerMachine;
 import conductance.init.machine.boiler.SteamSolidFuelBoilerMachine;
 import conductance.init.machine.boiler.SteamSolidFuelBoilerMachineGuiSetup;
@@ -54,6 +55,8 @@ import static conductance.api.NCMachines.LATHE;
 import static conductance.api.NCMachines.MACHINE_HULL;
 import static conductance.api.NCMachines.OUTPUT_BUSES;
 import static conductance.api.NCMachines.OUTPUT_HATCHES;
+import static conductance.api.NCMachines.OVERCLOCKED_DYNAMO_HATCHES;
+import static conductance.api.NCMachines.OVERLOCKED_ENERGY_HATCHES;
 import static conductance.api.NCMachines.PULVERIZER;
 import static conductance.api.NCMachines.STEAM_SOLID_FUEL_BOILER;
 import static conductance.api.NCMachines.STEAM_TURBINES;
@@ -134,6 +137,18 @@ final class ConductanceMachines {
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("dynamo_hatch")), tier.getName())
 			).rotationType(BlockRotationType.ALL).tieredModel("dynamo_hatch", tier).guiSetup(null)
 		));
+		OVERLOCKED_ENERGY_HATCHES = CAPI.tiers().newMap(tier -> event.<MultiBlockOverclockedEnergyHatchPartMachine>register(tier.getId().getPath() + "_overclocked_energy_hatch",
+			(machineType, blockPos, blockState) -> new MultiBlockOverclockedEnergyHatchPartMachine(machineType, blockPos, blockState, IO.IN, tier),
+			b -> b.customName(ignored ->
+				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("overclocked_energy_hatch")), tier.getName())
+			).rotationType(BlockRotationType.ALL).tieredModel("overclocked_energy_hatch", tier).guiSetup(null)
+		));
+		OVERCLOCKED_DYNAMO_HATCHES = CAPI.tiers().newMap(tier -> event.<MultiBlockOverclockedEnergyHatchPartMachine>register(tier.getId().getPath() + "_overclocked_dynamo_hatch",
+			(machineType, blockPos, blockState) -> new MultiBlockOverclockedEnergyHatchPartMachine(machineType, blockPos, blockState, IO.OUT, tier),
+			b -> b.customName(ignored ->
+				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("overclocked_dynamo_hatch")), tier.getName())
+			).rotationType(BlockRotationType.ALL).tieredModel("overclocked_dynamo_hatch", tier).guiSetup(null)
+		));
 	}
 
 	private static void initMultiBlocks(final RegisterMachineEvent event) {
@@ -162,7 +177,7 @@ final class ConductanceMachines {
 				.slice("bbb", "b b", "bbb")
 				.slice("bbb", "b b", "bbb")
 				.slice("axa", "aaa", "aaa")
-				.key('a', StructurePredicate.isBlock(NCBlocks.CASING_INVAR).or(StructurePredicate.autoCapabilities(NCRecipeTypes.ELECTRIC_BLAST_FURNACE)))
+				.key('a', StructurePredicate.isBlock(NCBlocks.CASING_INVAR).or(StructurePredicate.autoCapabilities(NCRecipeTypes.ELECTRIC_BLAST_FURNACE, true)))
 				.key('b', StructurePredicate.isCoil())
 			)
 			.recipeType(NCRecipeTypes.ELECTRIC_BLAST_FURNACE)

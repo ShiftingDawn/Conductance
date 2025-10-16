@@ -83,6 +83,6 @@ final class TierImpl implements Tier {
 
 	@Override
 	public String toString() {
-		return "Tier %s[index=%s, prev=%s, next=%s]".formatted(this.getId(), this.getIndex(), this.getPreviousTier().getId(), this.getNextTier().getNextTier());
+		return "Tier %s[index=%s, prev=%s, next=%s]".formatted(this.getId(), this.getIndex(), this.getPreviousTier().getId(), this.getNextTier().getId());
 	}
 }

@@ -12,9 +12,14 @@ import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
+import conductance.api.NCCapabilities;
+import conductance.api.machine.CapIO;
+import conductance.api.machine.IOEnergyHandlerList;
 import conductance.api.machine.MachineRecipeCapability;
 import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.machine.RecipeHandler;
+import conductance.api.machine.energy.IEnergyHandler;
 import conductance.api.machine.event.MachineRecipeModifier;
 import conductance.api.machine.multi.IMultiBlockPart;
 import conductance.api.machine.multi.MultiControllerMachineBlockEntity;
@@ -22,6 +27,7 @@ import conductance.api.machine.multi.MultiMachineType;
 import conductance.api.machine.multi.StructureCheckContext;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
+import conductance.api.tier.Tier;
 import conductance.api.util.IO;
 
 public class GenericRecipeMultiBlockMachine extends MultiControllerMachineBlockEntity<GenericRecipeMultiBlockMachine> implements RecipeCapabilityHolder {
@@ -29,6 +35,7 @@ public class GenericRecipeMultiBlockMachine extends MultiControllerMachineBlockE
 	private final Table<RecipeElementType<?>, IO, List<MachineRecipeCapability<?>>> recipeCapabilities = HashBasedTable.create();
 	private final @Getter RecipeHandler recipeHandler;
 	private final Lazy<IntSortedSet> recipePrograms = Lazy.of(this::reloadRecipePrograms);
+	private @Nullable Tier maxRecipeTier = null;
 
 	public GenericRecipeMultiBlockMachine(final MultiMachineType<GenericRecipeMultiBlockMachine> type, final BlockPos pos, final BlockState blockState) {
 		super(type, pos, blockState);
@@ -48,6 +55,7 @@ public class GenericRecipeMultiBlockMachine extends MultiControllerMachineBlockE
 			});
 		}
 		this.recipePrograms.invalidate();
+		this.maxRecipeTier = null;
 	}
 
 	private IntSortedSet reloadRecipePrograms() {
@@ -64,6 +72,22 @@ public class GenericRecipeMultiBlockMachine extends MultiControllerMachineBlockE
 	@Override
 	public MachineRecipeType getRecipeType() {
 		return this.getMachineType().getRecipeTypes()[0];
+	}
+
+	@Override
+	public @Nullable Tier getMaxRecipeTier() {
+//		if (this.maxRecipeTier != null) {
+//			return this.maxRecipeTier;
+//		}
+		final List<IEnergyHandler> handlers = this.getLevel() == null ? List.of() : this.getParts().stream()
+			.map(part -> NCCapabilities.getEnergyHandler(this.getLevel(), part.getBlockPos(), null))
+			.filter(Objects::nonNull).toList();
+		if (handlers.isEmpty()) {
+			return null;
+		}
+		final IEnergyHandler wrappedHandler = new IOEnergyHandlerList(handlers, CapIO.IN);
+		this.maxRecipeTier = CAPI.tiers().getByVoltageFloored(wrappedHandler.getOverclockedInputVoltage());
+		return this.maxRecipeTier;
 	}
 
 	@Override

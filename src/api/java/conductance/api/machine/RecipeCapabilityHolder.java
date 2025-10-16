@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.event.MachineRecipeModifier;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
+import conductance.api.tier.Tier;
 import conductance.api.util.IO;
 
 public interface RecipeCapabilityHolder {
@@ -17,6 +18,8 @@ public interface RecipeCapabilityHolder {
 	List<MachineRecipeCapability<?>> getRecipeCapabilities(RecipeElementType<?> elementType, IO io);
 
 	IntSortedSet getRecipePrograms();
+
+	@Nullable Tier getMaxRecipeTier();
 
 	default RecipePerTickFailureAction getPerTickFailureAction() {
 		return RecipePerTickFailureAction.REGRESS;

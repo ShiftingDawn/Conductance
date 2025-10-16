@@ -74,6 +74,7 @@
   "tier.conductance.empty": "Empty",
   "tier.conductance.max": "§lMAX",
   "tier.conductance.lv": "§9LV",
+  "tier.conductance.mv": "§6MV",
 
   "coilBlockType.conductance.cupronickel": "Cupronickel",
   "coilBlockType.conductance.kanthal": "Kanthal",
@@ -118,6 +119,8 @@
   "machine.conductance.output_hatch": "%s Output Hatch",
   "machine.conductance.energy_hatch": "%s Energy Hatch",
   "machine.conductance.dynamo_hatch": "%s Dynamo Hatch",
+  "machine.conductance.overclocked_energy_hatch": "%s Overclocked Energy Hatch",
+  "machine.conductance.overclocked_dynamo_hatch": "%s Overclocked Dynamo Hatch",
 
   "guiWidget.conductance.tank.empty": "Empty",
   "guiWidget.conductance.tank.capacity": "§9Capacity:§r %s",
@@ -144,5 +147,9 @@
   "guiWidget.conductance.multiblock.recipe.idle": "§eReady for work...",
   "guiWidget.conductance.multiblock.recipe.paused": "§6Paused...",
   "guiWidget.conductance.multiblock.recipe.processing": "Processing recipe",
-  "guiWidget.conductance.multiblock.recipe.progress": "%ss / %ss"
+  "guiWidget.conductance.multiblock.recipe.progress": "%ss / %ss",
+  "guiWidget.conductance.multiblock.recipe.max_tier": "Max recipe tier: %s",
+  "guiWidget.conductance.multiblock.energy.max_tier": "Max %s: %s (%sA)",
+  "guiWidget.conductance.multiblock.coil.level": "Coil level: %s",
+  "guiWidget.conductance.multiblock.coil.temperature": "Coil temperature: %sK"
 }

@@ -13,10 +13,32 @@ public class IOEnergyHandlerList implements IEnergyHandler, ValueIOSerializable 
 
 	private final IEnergyHandler[] handlers;
 	private final @Getter CapIO io;
+	private final long inputVoltage;
+	private final long inputAmperage;
+	private final long outputVoltage;
+	private final long outputAmperage;
 
 	public IOEnergyHandlerList(final IEnergyHandler[] handlers, final CapIO io) {
 		this.handlers = handlers;
 		this.io = io;
+		long totalInputVoltage = 0;
+		long highestInputVoltage = 0;
+		long totalOutputVoltage = 0;
+		long highestOutputVoltage = 0;
+		for (final IEnergyHandler handler : handlers) {
+			totalInputVoltage += (handler.getInputVoltage() * handler.getInputAmperage());
+			if (handler.getInputVoltage() > highestInputVoltage) {
+				highestInputVoltage = handler.getInputVoltage();
+			}
+			totalOutputVoltage += (handler.getOutputVoltage() + handler.getOutputAmperage());
+			if (handler.getOutputVoltage() > highestOutputVoltage) {
+				highestOutputVoltage = handler.getOutputVoltage();
+			}
+		}
+		this.inputVoltage = highestInputVoltage;
+		this.inputAmperage = highestInputVoltage > 0 ? totalInputVoltage / highestInputVoltage : 0;
+		this.outputVoltage = highestOutputVoltage;
+		this.outputAmperage = highestOutputVoltage > 0 ? totalOutputVoltage / highestOutputVoltage : 0;
 	}
 
 	public IOEnergyHandlerList(final List<IEnergyHandler> handlers, final CapIO io) {
@@ -87,47 +109,39 @@ public class IOEnergyHandlerList implements IEnergyHandler, ValueIOSerializable 
 
 	@Override
 	public long getEnergyStored() {
-		long energyStored = 0L;
-		for (final IEnergyHandler iEnergyHandler : this.handlers) {
-			energyStored += iEnergyHandler.getEnergyStored();
+		long result = 0L;
+		for (final IEnergyHandler handler : this.handlers) {
+			result += handler.getEnergyStored();
 		}
-		return energyStored;
+		return result;
 	}
 
 	@Override
 	public long getEnergyCapacity() {
-		long energyCapacity = 0L;
-		for (final IEnergyHandler iEnergyHandler : this.handlers) {
-			energyCapacity += iEnergyHandler.getEnergyCapacity();
+		long result = 0L;
+		for (final IEnergyHandler handler : this.handlers) {
+			result += handler.getEnergyCapacity();
 		}
-		return energyCapacity;
-	}
-
-	@Override
-	public long getInputAmperage() {
-		return 1L;
-	}
-
-	@Override
-	public long getOutputAmperage() {
-		return 1L;
+		return result;
 	}
 
 	@Override
 	public long getInputVoltage() {
-		long inputVoltage = 0L;
-		for (final IEnergyHandler container : this.handlers) {
-			inputVoltage += container.getInputVoltage() * container.getInputAmperage();
-		}
-		return inputVoltage;
+		return this.inputVoltage;
+	}
+
+	@Override
+	public long getInputAmperage() {
+		return this.inputAmperage;
 	}
 
 	@Override
 	public long getOutputVoltage() {
-		long outputVoltage = 0L;
-		for (final IEnergyHandler container : this.handlers) {
-			outputVoltage += container.getOutputVoltage() * container.getOutputAmperage();
-		}
-		return outputVoltage;
+		return this.outputVoltage;
+	}
+
+	@Override
+	public long getOutputAmperage() {
+		return this.outputAmperage;
 	}
 }

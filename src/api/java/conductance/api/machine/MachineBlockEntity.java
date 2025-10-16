@@ -86,6 +86,8 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		}
 		if (itemHandlers.isEmpty()) {
 			return Optional.empty();
+		} else if (itemHandlers.size() == 1) {
+			return Optional.of(itemHandlers.getFirst());
 		}
 		final CapIO io = CapIO.BOTH;
 		final IOItemHandlerList handlerList = new IOItemHandlerList(itemHandlers, io);
@@ -101,6 +103,8 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		}
 		if (fluidHandlers.isEmpty()) {
 			return Optional.empty();
+		} else if (fluidHandlers.size() == 1) {
+			return Optional.of(fluidHandlers.getFirst());
 		}
 		final CapIO io = CapIO.BOTH;
 		final IOFluidHandlerList handlerList = new IOFluidHandlerList(fluidHandlers, io);
@@ -116,6 +120,8 @@ public class MachineBlockEntity<T extends MachineBlockEntity<T>> extends BlockEn
 		}
 		if (energyHandlers.isEmpty()) {
 			return Optional.empty();
+		} else if (energyHandlers.size() == 1) {
+			return Optional.of(energyHandlers.getFirst());
 		}
 		final CapIO io = CapIO.BOTH;
 		final IOEnergyHandlerList handlerList = new IOEnergyHandlerList(energyHandlers, io);

@@ -10,6 +10,8 @@ import conductance.api.util.IO;
 
 public interface IMultiBlockPart {
 
+	BlockPos getBlockPos();
+
 	MultiBlockPartCapability getPartCapability();
 
 	SortedSet<BlockPos> getControllers();
