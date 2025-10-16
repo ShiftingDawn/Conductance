@@ -34,5 +34,7 @@ public interface RecipeTypeBuilder {
 		return this.guiArrow(arrowTexture, ProgressProvider.Direction.LEFT_TO_RIGHT);
 	}
 
+	RecipeTypeBuilder hidden();
+
 	RecipeTypeBuilder recipeBuilderCallback(RecipeBuilderCallback callback);
 }

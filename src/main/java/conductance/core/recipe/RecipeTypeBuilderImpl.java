@@ -17,6 +17,7 @@ final class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 	private final Object2IntMap<RecipeElementType<?>> outputLimits = new Object2IntArrayMap<>();
 	private ResourceLocation guiArrow = Conductance.id("conductance/progress_bars/generic_arrow");
 	private ProgressProvider.Direction guiArrowDirection = ProgressProvider.Direction.LEFT_TO_RIGHT;
+	private boolean hidden = false;
 	private @Nullable RecipeBuilderCallback recipeBuilderCallback = null;
 
 	@Override
@@ -36,12 +37,18 @@ final class RecipeTypeBuilderImpl implements RecipeTypeBuilder {
 	}
 
 	@Override
+	public RecipeTypeBuilder hidden() {
+		this.hidden = true;
+		return this;
+	}
+
+	@Override
 	public RecipeTypeBuilder recipeBuilderCallback(final RecipeBuilderCallback callback) {
 		this.recipeBuilderCallback = callback;
 		return this;
 	}
 
 	public MachineRecipeTypeImpl build() {
-		return new MachineRecipeTypeImpl(this.inputLimits, this.outputLimits, this.guiArrow, this.guiArrowDirection, this.recipeBuilderCallback);
+		return new MachineRecipeTypeImpl(this.inputLimits, this.outputLimits, this.guiArrow, this.guiArrowDirection, this.hidden, this.recipeBuilderCallback);
 	}
 }

@@ -40,6 +40,9 @@ public final class ConductanceJeiPlugin implements IModPlugin {
 		for (final MachineType<?> machineType : CAPI.regs().machines()) {
 			final GuiTheme theme = machineType.getGuiSetup() != null ? machineType.getGuiSetup().getTheme() : GuiTheme.THEME_DEFAULT;
 			for (final MachineRecipeType recipeType : machineType.getRecipeTypes()) {
+				if (recipeType.isHidden()) {
+					continue;
+				}
 				categories.add(new GenericRecipeMachineCategory(recipeType, GenericRecipeMachineCategory.RECIPE_TYPES.apply(machineType.getRecipeTypes()[0]), theme));
 			}
 		}
@@ -49,6 +52,9 @@ public final class ConductanceJeiPlugin implements IModPlugin {
 	@Override
 	public void registerRecipes(final IRecipeRegistration registration) {
 		for (final MachineRecipeType recipeType : CAPI.regs().recipeTypes()) {
+			if (recipeType.isHidden()) {
+				continue;
+			}
 			registration.addRecipes(GenericRecipeMachineCategory.RECIPE_TYPES.apply(recipeType), recipeType.getRecipes().stream().map(RecipeHolder::value).toList());
 		}
 	}

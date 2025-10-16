@@ -30,19 +30,21 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 	private final Object2IntMap<RecipeElementType<?>> outputLimits;
 	private final @Getter ResourceLocation guiArrow;
 	private final @Getter ProgressProvider.Direction guiArrowDirection;
+	private final @Getter boolean hidden;
 	private final @Nullable RecipeBuilderCallback recipeBuilderCallback;
 	private final Lazy<String> descriptionId = Lazy.of(() -> Util.makeDescriptionId("recipeType", this.getId()));
 	private final Lazy<Component> name = Lazy.of(() -> Component.translatable(this.getDescriptionId()));
 
 	MachineRecipeTypeImpl(
 		final Object2IntMap<RecipeElementType<?>> inputLimits, final Object2IntMap<RecipeElementType<?>> outputLimits,
-		final ResourceLocation guiArrow, final ProgressProvider.Direction guiArrowDirection,
+		final ResourceLocation guiArrow, final ProgressProvider.Direction guiArrowDirection, final boolean hidden,
 		@Nullable final RecipeBuilderCallback recipeBuilderCallback
 	) {
 		this.inputLimits = Object2IntMaps.unmodifiable(inputLimits);
 		this.outputLimits = Object2IntMaps.unmodifiable(outputLimits);
 		this.guiArrow = guiArrow;
 		this.guiArrowDirection = guiArrowDirection;
+		this.hidden = hidden;
 		this.recipeBuilderCallback = recipeBuilderCallback;
 	}
 

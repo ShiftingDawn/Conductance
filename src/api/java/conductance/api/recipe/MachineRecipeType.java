@@ -27,6 +27,8 @@ public interface MachineRecipeType extends RecipeType<MachineRecipe> {
 
 	RecipeBookCategory getRecipeBookCategory();
 
+	boolean isHidden();
+
 	List<RecipeHolder<MachineRecipe>> getRecipes();
 
 	String getDescriptionId();
