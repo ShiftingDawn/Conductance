@@ -1,5 +1,6 @@
 package conductance.init.machine;
 
+import java.util.Arrays;
 import java.util.function.BiConsumer;
 import net.minecraft.Util;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -64,13 +65,16 @@ public class GenericRecipeMachineGuiSetup extends SimpleAutomaticGuiSetup {
 	public void addWidgets(final MachineMenu menu, final BiConsumer<String, IGuiWidget> adder) {
 		super.addWidgets(menu, adder);
 		if (menu.getWidgetById("root") instanceof final IWidgetContainer root) {
-			Util.make(new ShowRecipeViewerHandlers(menu.getMachine()), handler -> {
-				final IGuiWidget widget = root.getWidgetById("progress");
-				if (widget != null) {
-					widget.addTooltipCallback(handler);
-					widget.addMouseListener(handler);
-				}
-			});
+			final boolean hasNonHiddenRecipeTypes = Arrays.stream(menu.getMachine().getMachineType().getRecipeTypes()).anyMatch(type -> !type.isHidden());
+			if (hasNonHiddenRecipeTypes) {
+				Util.make(new ShowRecipeViewerHandlers(menu.getMachine()), handler -> {
+					final IGuiWidget widget = root.getWidgetById("progress");
+					if (widget != null) {
+						widget.addTooltipCallback(handler);
+						widget.addMouseListener(handler);
+					}
+				});
+			}
 		}
 	}
 

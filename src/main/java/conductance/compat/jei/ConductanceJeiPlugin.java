@@ -1,7 +1,8 @@
 package conductance.compat.jei;
 
-import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import mezz.jei.api.IModPlugin;
@@ -36,17 +37,17 @@ public final class ConductanceJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerCategories(final IRecipeCategoryRegistration registration) {
-		final List<IRecipeCategory<?>> categories = new ArrayList<>();
+		final Map<MachineRecipeType, GenericRecipeMachineCategory> categories = new IdentityHashMap<>();
 		for (final MachineType<?> machineType : CAPI.regs().machines()) {
 			final GuiTheme theme = machineType.getGuiSetup() != null ? machineType.getGuiSetup().getTheme() : GuiTheme.THEME_DEFAULT;
 			for (final MachineRecipeType recipeType : machineType.getRecipeTypes()) {
-				if (recipeType.isHidden()) {
+				if (recipeType.isHidden() || categories.containsKey(recipeType)) {
 					continue;
 				}
-				categories.add(new GenericRecipeMachineCategory(recipeType, GenericRecipeMachineCategory.RECIPE_TYPES.apply(machineType.getRecipeTypes()[0]), theme));
+				categories.put(recipeType, new GenericRecipeMachineCategory(recipeType, GenericRecipeMachineCategory.RECIPE_TYPES.apply(machineType.getRecipeTypes()[0]), theme));
 			}
 		}
-		registration.addRecipeCategories(categories.toArray(IRecipeCategory[]::new));
+		registration.addRecipeCategories(categories.values().toArray(IRecipeCategory[]::new));
 	}
 
 	@Override
