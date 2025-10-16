@@ -16,9 +16,9 @@ public final class DummyMachineRecipe extends MachineRecipe {
 		final MachineRecipeType recipeType,
 		final Map<RecipeElementType<?>, List<RecipeElement>> inputs, final Map<RecipeElementType<?>, List<RecipeElement>> outputs,
 		final Map<RecipeElementType<?>, List<RecipeElement>> perTickInputs, final Map<RecipeElementType<?>, List<RecipeElement>> perTickOutputs,
-		final int recipeDuration, final int program
+		final int recipeDuration, final int program, final RecipeDataMap recipeDataMap
 	) {
-		super(recipeType, inputs, outputs, perTickInputs, perTickOutputs, recipeDuration, program);
+		super(recipeType, inputs, outputs, perTickInputs, perTickOutputs, recipeDuration, program, recipeDataMap);
 	}
 
 	@Override

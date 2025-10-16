@@ -25,12 +25,13 @@ public class MachineRecipe implements Recipe<RecipeInput> {
 	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> perTickOutputs;
 	private final @Getter int recipeDuration;
 	private final @Getter int program;
+	private final @Getter RecipeDataMap recipeDataMap;
 
 	public MachineRecipe(
 		final MachineRecipeType recipeType,
 		final Map<RecipeElementType<?>, List<RecipeElement>> inputs, final Map<RecipeElementType<?>, List<RecipeElement>> outputs,
 		final Map<RecipeElementType<?>, List<RecipeElement>> perTickInputs, final Map<RecipeElementType<?>, List<RecipeElement>> perTickOutputs,
-		final int recipeDuration, final int program
+		final int recipeDuration, final int program, final RecipeDataMap recipeDataMap
 	) {
 		this.recipeType = recipeType;
 		this.inputs = MachineRecipe.toImmutableMap(inputs);
@@ -39,6 +40,11 @@ public class MachineRecipe implements Recipe<RecipeInput> {
 		this.perTickOutputs = MachineRecipe.toImmutableMap(perTickOutputs);
 		this.recipeDuration = recipeDuration;
 		this.program = program;
+		this.recipeDataMap = recipeDataMap;
+	}
+
+	public final <T> T getData(final RecipeDataToken<T> token) {
+		return this.recipeDataMap.get(token);
 	}
 
 	@Override

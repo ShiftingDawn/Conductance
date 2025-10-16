@@ -16,6 +16,7 @@ import conductance.api.CAPI;
 import conductance.api.NCCapabilities;
 import conductance.api.machine.CapIO;
 import conductance.api.machine.IOEnergyHandlerList;
+import conductance.api.machine.ISubscription;
 import conductance.api.machine.MachineRecipeCapability;
 import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.machine.RecipeHandler;
@@ -33,6 +34,7 @@ import conductance.api.util.IO;
 public class GenericRecipeMultiBlockMachine extends MultiControllerMachineBlockEntity<GenericRecipeMultiBlockMachine> implements RecipeCapabilityHolder {
 
 	private final Table<RecipeElementType<?>, IO, List<MachineRecipeCapability<?>>> recipeCapabilities = HashBasedTable.create();
+	private final List<ISubscription> recipeCapabilityListeners = new ArrayList<>();
 	private final @Getter RecipeHandler recipeHandler;
 	private final Lazy<IntSortedSet> recipePrograms = Lazy.of(this::reloadRecipePrograms);
 	private @Nullable Tier maxRecipeTier = null;
@@ -43,6 +45,8 @@ public class GenericRecipeMultiBlockMachine extends MultiControllerMachineBlockE
 	}
 
 	private void reloadRecipeCapabilities() {
+		this.recipeCapabilityListeners.forEach(ISubscription::unsubscribe);
+		this.recipeCapabilityListeners.clear();
 		this.recipeCapabilities.clear();
 		for (final IMultiBlockPart part : this.getParts()) {
 			part.attachCapabilities((io, capability) -> {
@@ -50,6 +54,7 @@ public class GenericRecipeMultiBlockMachine extends MultiControllerMachineBlockE
 				if (list == null) {
 					list = new ArrayList<>();
 					this.recipeCapabilities.put(capability.getElementType(), io, list);
+					this.recipeCapabilityListeners.add(capability.addChangedListener(this.recipeHandler::revalidateTick));
 				}
 				list.add(capability);
 			});
@@ -76,9 +81,9 @@ public class GenericRecipeMultiBlockMachine extends MultiControllerMachineBlockE
 
 	@Override
 	public @Nullable Tier getMaxRecipeTier() {
-//		if (this.maxRecipeTier != null) {
-//			return this.maxRecipeTier;
-//		}
+		if (this.maxRecipeTier != null) {
+			return this.maxRecipeTier;
+		}
 		final List<IEnergyHandler> handlers = this.getLevel() == null ? List.of() : this.getParts().stream()
 			.map(part -> NCCapabilities.getEnergyHandler(this.getLevel(), part.getBlockPos(), null))
 			.filter(Objects::nonNull).toList();

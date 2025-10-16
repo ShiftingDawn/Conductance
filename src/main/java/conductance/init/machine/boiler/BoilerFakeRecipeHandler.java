@@ -2,6 +2,7 @@ package conductance.init.machine.boiler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
@@ -18,6 +19,7 @@ import conductance.api.machine.RecipeHandler;
 import conductance.api.machine.RecipePair;
 import conductance.api.recipe.DummyMachineRecipe;
 import conductance.api.recipe.MachineRecipe;
+import conductance.api.recipe.RecipeDataMap;
 import conductance.api.recipe.RecipeElement;
 
 final class BoilerFakeRecipeHandler extends RecipeHandler {
@@ -53,7 +55,8 @@ final class BoilerFakeRecipeHandler extends RecipeHandler {
 				list.add(new RecipeElement(BoilerFakeRecipeHandler.makeSteamIngredient(10), 1));
 			})),
 			fuel,
-			0
+			0,
+			new RecipeDataMap(List.of())
 		);
 		if (this.getHolder().getRecipeModifier() != null) {
 			return new RecipePair(recipe, this.getHolder().getRecipeModifier().modifyRecipe(recipe));

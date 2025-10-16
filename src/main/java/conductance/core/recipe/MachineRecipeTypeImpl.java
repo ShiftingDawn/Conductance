@@ -1,5 +1,6 @@
 package conductance.core.recipe;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.machine.gui.ProgressProvider;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
+import conductance.api.recipe.RecipeDataToken;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.event.RecipeBuilderCallback;
 import conductance.api.util.IO;
@@ -28,6 +30,7 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 	static final Map<MachineRecipeType, List<RecipeHolder<MachineRecipe>>> ALL_RECIPES = new ConcurrentHashMap<>();
 	private final Object2IntMap<RecipeElementType<?>> inputLimits;
 	private final Object2IntMap<RecipeElementType<?>> outputLimits;
+	private final @Getter Map<String, RecipeDataToken<?>> additionalDataTokens;
 	private final @Getter ResourceLocation guiArrow;
 	private final @Getter ProgressProvider.Direction guiArrowDirection;
 	private final @Getter boolean hidden;
@@ -37,11 +40,13 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 
 	MachineRecipeTypeImpl(
 		final Object2IntMap<RecipeElementType<?>> inputLimits, final Object2IntMap<RecipeElementType<?>> outputLimits,
+		final Map<String, RecipeDataToken<?>> additionalDataTokens,
 		final ResourceLocation guiArrow, final ProgressProvider.Direction guiArrowDirection, final boolean hidden,
 		@Nullable final RecipeBuilderCallback recipeBuilderCallback
 	) {
 		this.inputLimits = Object2IntMaps.unmodifiable(inputLimits);
 		this.outputLimits = Object2IntMaps.unmodifiable(outputLimits);
+		this.additionalDataTokens = Collections.unmodifiableMap(additionalDataTokens);
 		this.guiArrow = guiArrow;
 		this.guiArrowDirection = guiArrowDirection;
 		this.hidden = hidden;

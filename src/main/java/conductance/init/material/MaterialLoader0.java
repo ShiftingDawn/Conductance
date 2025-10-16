@@ -221,12 +221,13 @@ final class MaterialLoader0 {
 			.liquid(933)
 			.ore()
 			.color(0x80C8F0)
-			.blast(NCCoilBlockTypes.CUPRONICKEL)
+			.blast(NCCoilBlockTypes.CUPRONICKEL, NCTiers.MV)
 		);
 		SILICON = event.register("silicon", NCPeriodicElements.SILICON, b -> b
 			.metalDefault()
 			.liquid().plasma()
 			.style(0x3C3C50, METALLIC)
+			.blast(NCCoilBlockTypes.KANTHAL, NCTiers.MV)
 		);
 		PHOSPHORUS = event.register("phosphorus", NCPeriodicElements.PHOSPHORUS, b -> b
 			.dust()

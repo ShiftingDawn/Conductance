@@ -6,6 +6,8 @@ import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCRecipeTypes;
 import conductance.api.material.Material;
+import conductance.api.material.MaterialTraitBlast;
+import conductance.api.recipe.RecipeDataTokens;
 import conductance.api.recipe.event.RegisterRecipeEvent;
 import conductance.api.util.ExtruderShape;
 import conductance.lib.pipenet.WireType;
@@ -48,6 +50,9 @@ final class MaterialRecipes {
 			MaterialRecipes.addAllRecipes(event, material);
 			if (material.hasTrait(NCMaterialTraits.WIRE)) {
 				MaterialRecipes.addWireRecipes(event, material);
+			}
+			if (material.hasTrait(NCMaterialTraits.BLAST)) {
+				MaterialRecipes.addBlastRecipes(event, material, material.getTrait(NCMaterialTraits.BLAST));
 			}
 		}
 	}
@@ -346,6 +351,15 @@ final class MaterialRecipes {
 		}
 		if (WIRE_4X.test(material) && WIRE_12X.test(material) && WIRE_16X.test(material)) {
 			event.shapeless("16x_%s_wire_from_4x_wire_and_12x_wire".formatted(material.getName()), WIRE_16X, material, b -> b.add(WIRE_4X, material).add(WIRE_12X, material));
+		}
+	}
+
+	private static void addBlastRecipes(final RegisterRecipeEvent event, final Material material, final MaterialTraitBlast trait) {
+		if (DUST.test(material) && INGOT.test(material)) {
+			calc(material, DUST, INGOT, (int) material.getMass(), trait.getRecipeTier(), (inAmount, outAmount, time, energy) -> {
+				event.create("%s_ingot".formatted(material.getName()), NCRecipeTypes.ELECTRIC_BLAST_FURNACE, b -> b
+					.in(material, DUST).out(material, INGOT).duration(time).energyIn(trait.getRecipeTier()).data(RecipeDataTokens.BLAST_TEMP, trait.getTemperature()));
+			});
 		}
 	}
 

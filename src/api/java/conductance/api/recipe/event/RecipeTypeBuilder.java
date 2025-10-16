@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.CapIO;
 import conductance.api.machine.gui.ProgressProvider;
+import conductance.api.recipe.RecipeDataToken;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.util.IO;
 
@@ -27,6 +28,8 @@ public interface RecipeTypeBuilder {
 		}
 		return this;
 	}
+
+	RecipeTypeBuilder data(RecipeDataToken<?> token);
 
 	RecipeTypeBuilder guiArrow(ResourceLocation arrowTexture, ProgressProvider.Direction direction);
 

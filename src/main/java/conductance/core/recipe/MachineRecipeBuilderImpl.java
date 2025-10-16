@@ -20,6 +20,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
+import conductance.api.recipe.RecipeDataMap;
+import conductance.api.recipe.RecipeDataToken;
 import conductance.api.recipe.RecipeElement;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.event.MachineRecipeBuilder;
@@ -33,6 +35,7 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> outputs = new HashMap<>();
 	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> perTickInputs = new HashMap<>();
 	private final @Getter Map<RecipeElementType<?>, List<RecipeElement>> perTickOutputs = new HashMap<>();
+	private final List<RecipeDataToken.Pair<?>> additionalData = new ArrayList<>();
 	private final MachineRecipeType recipeType;
 	private final HolderLookup.Provider registries;
 	private boolean buildingPerTick = false;
@@ -111,6 +114,15 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 		return this;
 	}
 
+	@Override
+	public <T> MachineRecipeBuilder data(final RecipeDataToken<T> token, final T value) {
+		if (!this.recipeType.getAdditionalDataTokens().containsKey(token.name())) {
+			throw new IllegalArgumentException("Recipe type %s does not support token '%s'".formatted(this.recipeType.getId(), token.name()));
+		}
+		this.additionalData.add(new RecipeDataToken.Pair<>(token, value));
+		return this;
+	}
+
 	public void save(final ResourceLocation recipeId, final RecipeOutput output) {
 		final RecipeBuilderCallback callback = RecipeCore.getRecipeBuilderCallback(this.recipeType);
 		if (callback != null) {
@@ -119,7 +131,10 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 				copy.save(newRecipeId, output);
 			});
 		}
-		final MachineRecipe recipe = new MachineRecipe(this.recipeType, this.inputs, this.outputs, this.perTickInputs, this.perTickOutputs, this.duration, this.program);
+		final MachineRecipe recipe = new MachineRecipe(this.recipeType,
+			this.inputs, this.outputs, this.perTickInputs, this.perTickOutputs,
+			this.duration, this.program, new RecipeDataMap(this.additionalData)
+		);
 		output.accept(ResourceKey.create(Registries.RECIPE, recipeId), recipe, null);
 	}
 
@@ -130,6 +145,7 @@ public final class MachineRecipeBuilderImpl implements MachineRecipeBuilder {
 			this.outputs.forEach((elementType, elements) -> builder.outputs.put(elementType, this.copyContentList(elementType, elements)));
 			this.perTickInputs.forEach((elementType, elements) -> builder.perTickInputs.put(elementType, this.copyContentList(elementType, elements)));
 			this.perTickOutputs.forEach((elementType, elements) -> builder.perTickOutputs.put(elementType, this.copyContentList(elementType, elements)));
+			builder.additionalData.addAll(this.additionalData);
 			builder.duration = this.duration;
 			builder.program = this.program;
 			builder.currentChance = this.currentChance;

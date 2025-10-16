@@ -155,7 +155,8 @@ public class LargeBoilerMachine extends MultiControllerMachineBlockEntity<LargeB
 				map.put(key, list2);
 			})),
 			original.getRecipeDuration(),
-			original.getProgram()
+			original.getProgram(),
+			original.getRecipeDataMap().copy()
 		);
 	}
 }

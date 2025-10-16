@@ -15,23 +15,39 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import conductance.api.CAPI;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
+import conductance.api.recipe.RecipeDataMap;
+import conductance.api.recipe.RecipeDataToken;
 import conductance.api.recipe.RecipeElement;
 import conductance.api.recipe.RecipeElementType;
 
 final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 
-	private static final MapCodec<MachineRecipe> MAP_CODEC;
-	private static final StreamCodec<RegistryFriendlyByteBuf, MachineRecipe> STREAM_CODEC;
+	private final MapCodec<MachineRecipe> mapCodec;
+	private final StreamCodec<RegistryFriendlyByteBuf, MachineRecipe> streamCodec;
+
+	MachineRecipeSerializer(final MachineRecipeType recipeType) {
+		this.mapCodec = RecordCodecBuilder.mapCodec(instance -> instance.group(
+			MachineRecipeType.CODEC.fieldOf("type").forGetter(MachineRecipe::getType),
+			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("inputs").forGetter(MachineRecipe::getInputs),
+			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("outputs").forGetter(MachineRecipe::getOutputs),
+			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("per_tick_inputs").forGetter(MachineRecipe::getPerTickInputs),
+			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("per_tick_outputs").forGetter(MachineRecipe::getPerTickOutputs),
+			Codec.INT.fieldOf("duration").forGetter(MachineRecipe::getRecipeDuration),
+			Codec.INT.fieldOf("program").forGetter(MachineRecipe::getProgram),
+			RecipeDataToken.makeMapCodec(recipeType).optionalFieldOf("data", new RecipeDataMap(List.of())).forGetter(MachineRecipe::getRecipeDataMap)
+		).apply(instance, MachineRecipe::new));
+		this.streamCodec = StreamCodec.of(MachineRecipeSerializer::toNetwork, MachineRecipeSerializer::fromNetwork);
+	}
 
 	@Override
 	public MapCodec<MachineRecipe> codec() {
-		return MachineRecipeSerializer.MAP_CODEC;
+		return this.mapCodec;
 	}
 
 	@Override
 	@Deprecated
 	public StreamCodec<RegistryFriendlyByteBuf, MachineRecipe> streamCodec() {
-		return MachineRecipeSerializer.STREAM_CODEC;
+		return this.streamCodec;
 	}
 
 	private static void toNetwork(final RegistryFriendlyByteBuf buf, final MachineRecipe recipe) {
@@ -42,18 +58,21 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 		MachineRecipeSerializer.writeRecipeMap(buf, recipe.getPerTickOutputs());
 		buf.writeVarInt(recipe.getRecipeDuration());
 		buf.writeVarInt(recipe.getProgram());
+		MachineRecipeSerializer.writeDataMap(buf, recipe.getRecipeDataMap());
 	}
 
 	private static MachineRecipe fromNetwork(final RegistryFriendlyByteBuf buf) {
-		final ResourceLocation recipeType = buf.readResourceLocation();
+		final ResourceLocation recipeTypeId = buf.readResourceLocation();
+		final MachineRecipeType recipeType = Objects.requireNonNull(CAPI.regs().recipeTypes().getValue(recipeTypeId), () -> "Cannot load unknown recipe type " + recipeTypeId);
 		return new MachineRecipe(
-			Objects.requireNonNull(CAPI.regs().recipeTypes().getValue(recipeType), () -> "Cannot load unknown recipe type " + recipeType),
+			recipeType,
 			MachineRecipeSerializer.loadRecipeMap(buf),
 			MachineRecipeSerializer.loadRecipeMap(buf),
 			MachineRecipeSerializer.loadRecipeMap(buf),
 			MachineRecipeSerializer.loadRecipeMap(buf),
 			buf.readVarInt(),
-			buf.readVarInt()
+			buf.readVarInt(),
+			MachineRecipeSerializer.readDataMap(buf, recipeType)
 		);
 	}
 
@@ -64,6 +83,25 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 			buf.writeVarInt(list.size());
 			list.forEach(element -> key.toNetwork(buf, element));
 		});
+	}
+
+	private static void writeDataMap(final RegistryFriendlyByteBuf buf, final RecipeDataMap dataMap) {
+		buf.writeVarInt(dataMap.getData().size());
+		dataMap.getData().values().forEach(pair -> {
+			buf.writeUtf(pair.token().name());
+			pair.toNetwork(buf);
+		});
+	}
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private static RecipeDataMap readDataMap(final RegistryFriendlyByteBuf buf, final MachineRecipeType recipeType) {
+		final List<RecipeDataToken.Pair<?>> dataList = new ArrayList<>();
+		for (int i = 0; i < buf.readVarInt(); ++i) {
+			final String name = buf.readUtf();
+			final RecipeDataToken<?> token = recipeType.getAdditionalDataTokens().get(name);
+			dataList.add(new RecipeDataToken.Pair(token, token.streamCodec().decode(buf)));
+		}
+		return new RecipeDataMap(dataList);
 	}
 
 	private static Map<RecipeElementType<?>, List<RecipeElement>> loadRecipeMap(final RegistryFriendlyByteBuf buf) {
@@ -78,18 +116,5 @@ final class MachineRecipeSerializer implements RecipeSerializer<MachineRecipe> {
 			}
 		}
 		return result;
-	}
-
-	static {
-		MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			MachineRecipeType.CODEC.fieldOf("type").forGetter(MachineRecipe::getType),
-			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("inputs").forGetter(MachineRecipe::getInputs),
-			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("outputs").forGetter(MachineRecipe::getOutputs),
-			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("per_tick_inputs").forGetter(MachineRecipe::getPerTickInputs),
-			MachineRecipe.CONTENT_MAP_CODEC.fieldOf("per_tick_outputs").forGetter(MachineRecipe::getPerTickOutputs),
-			Codec.INT.fieldOf("duration").forGetter(MachineRecipe::getRecipeDuration),
-			Codec.INT.fieldOf("program").forGetter(MachineRecipe::getProgram)
-		).apply(instance, MachineRecipe::new));
-		STREAM_CODEC = StreamCodec.of(MachineRecipeSerializer::toNetwork, MachineRecipeSerializer::fromNetwork);
 	}
 }

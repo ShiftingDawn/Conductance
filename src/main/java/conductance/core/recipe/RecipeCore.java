@@ -47,7 +47,7 @@ public final class RecipeCore {
 			final MachineRecipeTypeImpl result = Util.make(new RecipeTypeBuilderImpl(), builder).build();
 			Conductance.REGISTRIES.register(CAPI.regs().recipeTypes(), registryKey, result);
 			Registry.register(BuiltInRegistries.RECIPE_TYPE, registryKey, result);
-			Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, registryKey, new MachineRecipeSerializer());
+			Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, registryKey, new MachineRecipeSerializer(result));
 			return result;
 		}));
 	}

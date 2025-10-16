@@ -6,6 +6,7 @@ import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.CapIO;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
+import conductance.api.recipe.RecipeDataTokens;
 import conductance.api.recipe.event.RecipeBuilderCallback;
 import conductance.api.recipe.event.RegisterRecipeTypeEvent;
 import conductance.Conductance;
@@ -42,7 +43,8 @@ final class ConductanceRecipesTypes {
 		CENTRIFUGE = event.register("centrifuge", b -> b.setIO(2, 1, 6, 3).setEnergyIO(CapIO.IN));
 		ELECTROLYZER = event.register("electrolyzer", b -> b.setIO(2, 1, 6, 3).setEnergyIO(CapIO.IN));
 
-		ELECTRIC_BLAST_FURNACE = event.register("electric_blast_furnace", b -> b.setIO(3, 3, 1, 1).setEnergyIO(CapIO.IN));
+		ELECTRIC_BLAST_FURNACE = event.register("electric_blast_furnace", b -> b.setIO(3, 3, 1, 1).setEnergyIO(CapIO.IN)
+			.data(RecipeDataTokens.BLAST_TEMP));
 	}
 
 	private static final RecipeBuilderCallback CUTTING_MACHINE_CALLBACK = (recipeId, builder, recipeBuilderFactory) -> {

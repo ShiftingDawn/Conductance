@@ -213,12 +213,12 @@ public interface MaterialBuilder {
 		return this.trait(NCMaterialTraits.WIRE, new MaterialTraitWire(tier, amperage));
 	}
 
-	default MaterialBuilder blast(final int temperature) {
-		return this.trait(NCMaterialTraits.BLAST, new MaterialTraitBlast(temperature));
+	default MaterialBuilder blast(final int temperature, final Tier recipeTier) {
+		return this.trait(NCMaterialTraits.BLAST, new MaterialTraitBlast(temperature, recipeTier));
 	}
 
-	default MaterialBuilder blast(final CoilBlockType requiredCoilBlockType) {
-		return this.trait(NCMaterialTraits.BLAST, new MaterialTraitBlast(requiredCoilBlockType));
+	default MaterialBuilder blast(final CoilBlockType requiredCoilBlockType, final Tier recipeTier) {
+		return this.trait(NCMaterialTraits.BLAST, new MaterialTraitBlast(requiredCoilBlockType, recipeTier));
 	}
 
 	<T> MaterialBuilder prop(MaterialProp<T> property, T value);

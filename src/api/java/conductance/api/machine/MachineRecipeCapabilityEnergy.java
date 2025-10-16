@@ -77,7 +77,7 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 			}
 			left -= extracted;
 		} else {
-			if (left > this.getOverclockedOutputAmperage() * this.getOverclockedOutputAmperage()) {
+			if (left > this.getOverclockedOutputVoltage() * this.getOverclockedOutputAmperage()) {
 				return inputs;
 			}
 			final long accepted = Math.min(left, this.getEnergySpace());
@@ -168,9 +168,9 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 	@Override
 	public long getOverclockedInputVoltage() {
 		if (this.canOverclock && this.getInputAmperage() >= 4) {
-			return this.getInputVoltage() / 4;
+			return this.getInputVoltage() * 4;
 		}
-		return IEnergyHandler.super.getOverclockedInputVoltage();
+		return this.getInputVoltage();
 	}
 
 	@Override
@@ -178,15 +178,15 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 		if (this.canOverclock && this.getInputAmperage() >= 4) {
 			return this.getInputAmperage() / 4;
 		}
-		return IEnergyHandler.super.getOverclockedInputAmperage();
+		return this.getInputAmperage();
 	}
 
 	@Override
 	public long getOverclockedOutputVoltage() {
 		if (this.canOverclock && this.getOutputAmperage() > 4) {
-			return this.getOutputVoltage() / 4;
+			return this.getOutputVoltage() * 4;
 		}
-		return IEnergyHandler.super.getOverclockedOutputVoltage();
+		return this.getOutputVoltage();
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 		if (this.canOverclock && this.getOutputAmperage() > 4) {
 			return this.getOutputAmperage() / 4;
 		}
-		return IEnergyHandler.super.getOverclockedOutputAmperage();
+		return this.getOutputAmperage();
 	}
 
 	private static CapIO getIO(final long inputVoltage, final long inputAmperage, final long outputVoltage, final long outputAmperage) {

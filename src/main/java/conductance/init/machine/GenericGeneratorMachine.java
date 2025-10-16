@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.block.BlockRotationHelper;
 import conductance.api.machine.CapabilityHelper;
 import conductance.api.machine.MachineTick;
 import conductance.api.machine.MachineType;

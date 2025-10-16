@@ -1,6 +1,7 @@
 package conductance.api.recipe;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +19,8 @@ public interface MachineRecipeType extends RecipeType<MachineRecipe> {
 	Codec<MachineRecipeType> CODEC = ResourceLocation.CODEC.xmap(CAPI.regs().recipeTypes()::getValue, MachineRecipeType::getId);
 
 	int getLimit(IO io, RecipeElementType<?> elementType);
+
+	Map<String, RecipeDataToken<?>> getAdditionalDataTokens();
 
 	ResourceLocation getGuiArrow();
 
