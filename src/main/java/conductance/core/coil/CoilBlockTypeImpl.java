@@ -4,6 +4,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,7 @@ final class CoilBlockTypeImpl implements CoilBlockType {
 	private @Getter int temperature;
 
 	CoilBlockTypeImpl(final int color) {
-		this.color = color;
+		this.color = ARGB.opaque(color);
 	}
 
 	void recalculate() {
