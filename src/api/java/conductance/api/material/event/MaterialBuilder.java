@@ -5,10 +5,12 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCMaterialFlags;
 import conductance.api.NCMaterialTraits;
+import conductance.api.coil.CoilBlockType;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialFlag;
 import conductance.api.material.MaterialProp;
 import conductance.api.material.MaterialTrait;
+import conductance.api.material.MaterialTraitBlast;
 import conductance.api.material.MaterialTraitFluid;
 import conductance.api.material.MaterialTraitKey;
 import conductance.api.material.MaterialTraitOre;
@@ -209,6 +211,14 @@ public interface MaterialBuilder {
 
 	default MaterialBuilder wire(final Tier tier, final int amperage) {
 		return this.trait(NCMaterialTraits.WIRE, new MaterialTraitWire(tier, amperage));
+	}
+
+	default MaterialBuilder blast(final int temperature) {
+		return this.trait(NCMaterialTraits.BLAST, new MaterialTraitBlast(temperature));
+	}
+
+	default MaterialBuilder blast(final CoilBlockType requiredCoilBlockType) {
+		return this.trait(NCMaterialTraits.BLAST, new MaterialTraitBlast(requiredCoilBlockType));
 	}
 
 	<T> MaterialBuilder prop(MaterialProp<T> property, T value);

@@ -1,6 +1,7 @@
 package conductance.init.material;
 
 import net.minecraft.tags.BlockTags;
+import conductance.api.NCCoilBlockTypes;
 import conductance.api.NCMaterialProps;
 import conductance.api.NCMaterialTraits;
 import conductance.api.NCPeriodicElements;
@@ -220,6 +221,7 @@ final class MaterialLoader0 {
 			.liquid(933)
 			.ore()
 			.color(0x80C8F0)
+			.blast(NCCoilBlockTypes.CUPRONICKEL)
 		);
 		SILICON = event.register("silicon", NCPeriodicElements.SILICON, b -> b
 			.metalDefault()
