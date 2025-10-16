@@ -89,10 +89,10 @@ public abstract class Conductance {
 			return;
 		}
 		TierCore.initialize();
+		CoilCore.initialize(Conductance.MODBUS);
 
 		PeriodicElementCore.initialize();
 		MaterialCore.initialize(Conductance.MODBUS);
-		CoilCore.initialize(Conductance.MODBUS);
 
 		RecipeCore.initialize();
 

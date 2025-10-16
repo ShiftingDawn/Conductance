@@ -1,6 +1,5 @@
 package conductance.init;
 
-import conductance.api.NCMaterials;
 import conductance.api.coil.event.RegisterCoilBlockTypeEvent;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
@@ -13,8 +12,8 @@ final class ConductanceCoilBlockTypes {
 
 	@EventListener(priority = -100)
 	private static void init(final RegisterCoilBlockTypeEvent event) {
-		CUPRONICKEL = event.register("cupronickel", NCMaterials.CUPRONICKEL.getColor().getCurrentColor());
-		KANTHAL = event.register("kanthal", NCMaterials.KANTHAL.getColor().getCurrentColor());
+		CUPRONICKEL = event.register("cupronickel", 0xE39680);
+		KANTHAL = event.register("kanthal", 0xC2D2DF);
 	}
 
 	private ConductanceCoilBlockTypes() {
