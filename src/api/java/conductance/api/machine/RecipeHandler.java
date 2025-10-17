@@ -51,7 +51,7 @@ public class RecipeHandler extends MachineCapability {
 	public void deserialize(final ValueInput input) {
 		input.getString("type").ifPresent(typeString -> {
 			final MachineRecipeType recipeType = CAPI.regs().recipeTypes().getValue(ResourceLocation.parse(typeString));
-			if (recipeType == this.holder.getRecipeType()) {
+			if (recipeType == this.holder.getRecipeType() && recipeType != null) {
 				input.read("data", recipeType.getRecipeSerializer().codec().codec()).ifPresent(recipe -> {
 					this.lastRecipe = recipe;
 				});
@@ -59,7 +59,7 @@ public class RecipeHandler extends MachineCapability {
 		});
 		input.getString("realtype").ifPresent(typeString -> {
 			final MachineRecipeType recipeType = CAPI.regs().recipeTypes().getValue(ResourceLocation.parse(typeString));
-			if (recipeType == this.holder.getRecipeType()) {
+			if (recipeType == this.holder.getRecipeType() && recipeType != null) {
 				input.read("realdata", recipeType.getRecipeSerializer().codec().codec()).ifPresent(recipe -> {
 					this.lastRecipeReal = recipe;
 				});
@@ -126,6 +126,9 @@ public class RecipeHandler extends MachineCapability {
 	}
 
 	protected @Nullable RecipePair findRecipe() {
+		if (this.holder.getRecipeType() == null) {
+			return null;
+		}
 		for (final RecipeHolder<MachineRecipe> candidateHolder : this.holder.getRecipeType().getRecipes()) {
 			final MachineRecipe candidate = candidateHolder.value();
 			final MachineRecipe recipe = this.holder.getRecipeModifier() == null ? candidate : this.holder.getRecipeModifier().modifyRecipe(candidate);

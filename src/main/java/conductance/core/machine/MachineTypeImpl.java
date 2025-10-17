@@ -13,8 +13,8 @@ import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineBlockItem;
 import conductance.api.machine.MachineType;
-import conductance.api.machine.event.MachineRecipeModifier;
 import conductance.api.machine.gui.GuiSetup;
+import conductance.api.recipe.MachineRecipeModifier;
 import conductance.api.recipe.MachineRecipeType;
 
 @RequiredArgsConstructor

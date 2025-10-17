@@ -1,7 +1,5 @@
 package conductance.init.machine.boiler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
 import net.minecraft.core.BlockPos;
@@ -13,21 +11,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.CAPI;
-import conductance.api.NCMaterialGenerationHandlers;
-import conductance.api.NCMaterials;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.MachineRecipeCapability;
-import conductance.api.machine.event.MachineRecipeModifier;
 import conductance.api.machine.multi.IMultiBlockPart;
 import conductance.api.machine.multi.MultiControllerMachineBlockEntity;
 import conductance.api.machine.multi.MultiMachineType;
 import conductance.api.machine.multi.StructureCheckContext;
-import conductance.api.recipe.DummyMachineRecipe;
-import conductance.api.recipe.MachineRecipe;
-import conductance.api.recipe.RecipeElement;
+import conductance.api.recipe.MachineRecipeModifier;
 import conductance.api.recipe.RecipeElementType;
-import conductance.api.recipe.RecipeModifier;
 import conductance.api.util.IO;
 
 public class LargeBoilerMachine extends MultiControllerMachineBlockEntity<LargeBoilerMachine> implements BoilerFakeRecipeCapabilityHolder {
@@ -115,48 +106,5 @@ public class LargeBoilerMachine extends MultiControllerMachineBlockEntity<LargeB
 			};
 		}
 		return List.of();
-	}
-
-	public static MachineRecipe recipeModifier(final MachineRecipe original) {
-		return new DummyMachineRecipe(
-			original.getType(),
-			original.getInputs(),
-			original.getOutputs(),
-			CAPI.make(new HashMap<>(), map -> original.getPerTickInputs().forEach((key, list) -> {
-				final List<RecipeElement> list2 = new ArrayList<>();
-				if (key == NCRecipeElementTypes.FLUID) {
-					for (final RecipeElement element : list) {
-						final SizedFluidIngredient ingredient = (SizedFluidIngredient) element.data();
-						if (ingredient.ingredient().test(CAPI.materials().getFluid(NCMaterials.WATER, NCMaterialGenerationHandlers.LIQUID, 1))) {
-							list2.add(element.copy(NCRecipeElementTypes.FLUID, RecipeModifier.multiply(4)));
-						} else {
-							list2.add(element);
-						}
-					}
-				} else {
-					list2.addAll(list);
-				}
-				map.put(key, list2);
-			})),
-			CAPI.make(new HashMap<>(), map -> original.getPerTickOutputs().forEach((key, list) -> {
-				final List<RecipeElement> list2 = new ArrayList<>();
-				if (key == NCRecipeElementTypes.FLUID) {
-					for (final RecipeElement element : list) {
-						final SizedFluidIngredient ingredient = (SizedFluidIngredient) element.data();
-						if (ingredient.ingredient().test(CAPI.materials().getFluid(NCMaterials.STEAM, NCMaterialGenerationHandlers.GAS, 1))) {
-							list2.add(element.copy(NCRecipeElementTypes.FLUID, RecipeModifier.multiply(8)));
-						} else {
-							list2.add(element);
-						}
-					}
-				} else {
-					list2.addAll(list);
-				}
-				map.put(key, list2);
-			})),
-			original.getRecipeDuration(),
-			original.getProgram(),
-			original.getRecipeDataMap().copy()
-		);
 	}
 }

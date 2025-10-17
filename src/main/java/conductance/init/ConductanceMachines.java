@@ -7,6 +7,7 @@ import net.minecraft.util.Mth;
 import conductance.api.CAPI;
 import conductance.api.NCBlocks;
 import conductance.api.NCMultiBlockPartCapabilities;
+import conductance.api.NCRecipeModifiers;
 import conductance.api.NCRecipeTypes;
 import conductance.api.block.BlockRotationType;
 import conductance.api.machine.MachineBlockWorkable;
@@ -165,7 +166,7 @@ final class ConductanceMachines {
 				))
 				.key('b', StructurePredicate.isBlock(NCBlocks.CASING_BRONZE_FIREBOX))
 			)
-			.recipeModifier(LargeBoilerMachine::recipeModifier)
+			.recipeModifier(NCRecipeModifiers.LARGE_BOILER)
 			.guiSetup(new MultiBlockControllerGuiSetup(GuiTheme.THEME_BRONZE))
 			.simpleModel(Conductance.id("block/casing/bronze"))
 			.casingAppearance(() -> NCBlocks.CASING_BRONZE.value().defaultBlockState())

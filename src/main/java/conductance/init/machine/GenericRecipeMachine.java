@@ -28,7 +28,7 @@ import conductance.api.machine.MachineRecipeCapabilityItems;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.machine.RecipeHandler;
-import conductance.api.machine.event.MachineRecipeModifier;
+import conductance.api.recipe.MachineRecipeModifier;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.RecipeHelper;

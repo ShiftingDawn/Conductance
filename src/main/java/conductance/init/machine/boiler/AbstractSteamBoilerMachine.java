@@ -15,7 +15,7 @@ import conductance.api.machine.MachineFluidHandler;
 import conductance.api.machine.MachineRecipeCapability;
 import conductance.api.machine.MachineRecipeCapabilityFluids;
 import conductance.api.machine.MachineType;
-import conductance.api.machine.event.MachineRecipeModifier;
+import conductance.api.recipe.MachineRecipeModifier;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.util.IO;
 

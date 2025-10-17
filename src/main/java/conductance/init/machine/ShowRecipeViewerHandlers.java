@@ -28,7 +28,7 @@ final class ShowRecipeViewerHandlers implements TooltipCallback, MouseEventListe
 	public boolean onMouseEvent(final IGuiWidget widget, final Event event, final int button, final int mouseX, final int mouseY) {
 		if (event == MouseEventListener.Event.PRESS && button == 0) {
 			if (this.machine instanceof final RecipeCapabilityHolder recipeCapabilityHolder) {
-				if (!recipeCapabilityHolder.getRecipeType().isHidden()) {
+				if (recipeCapabilityHolder.getRecipeType() != null && !recipeCapabilityHolder.getRecipeType().isHidden()) {
 					CompatHelper.showRecipes(recipeCapabilityHolder.getRecipeType());
 				}
 				return true;

@@ -52,7 +52,7 @@ final class BoilerFakeRecipeHandler extends RecipeHandler {
 				list.add(new RecipeElement(BoilerFakeRecipeHandler.makeWaterIngredient(1), 1));
 			})),
 			Map.of(NCRecipeElementTypes.FLUID, CAPI.make(new ArrayList<>(), list -> {
-				list.add(new RecipeElement(BoilerFakeRecipeHandler.makeSteamIngredient(10), 1));
+				list.add(new RecipeElement(BoilerFakeRecipeHandler.makeSteamIngredient(64), 1));
 			})),
 			fuel,
 			0,

@@ -21,11 +21,11 @@ import conductance.api.machine.MachineRecipeCapability;
 import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.machine.RecipeHandler;
 import conductance.api.machine.energy.IEnergyHandler;
-import conductance.api.machine.event.MachineRecipeModifier;
 import conductance.api.machine.multi.IMultiBlockPart;
 import conductance.api.machine.multi.MultiControllerMachineBlockEntity;
 import conductance.api.machine.multi.MultiMachineType;
 import conductance.api.machine.multi.StructureCheckContext;
+import conductance.api.recipe.MachineRecipeModifier;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.tier.Tier;
@@ -72,6 +72,7 @@ public class GenericRecipeMultiBlockMachine extends MultiControllerMachineBlockE
 	public void onStructureFormed(final StructureCheckContext ctx) {
 		super.onStructureFormed(ctx);
 		this.reloadRecipeCapabilities();
+		this.recipeHandler.revalidateTick();
 	}
 
 	@Override

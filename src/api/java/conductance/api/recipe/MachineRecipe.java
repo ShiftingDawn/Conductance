@@ -1,9 +1,11 @@
 package conductance.api.recipe;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.PlacementInfo;
@@ -45,6 +47,23 @@ public class MachineRecipe implements Recipe<RecipeInput> {
 
 	public final <T> T getData(final RecipeDataToken<T> token) {
 		return this.recipeDataMap.get(token);
+	}
+
+	public MachineRecipe applyModifier(final @Nullable RecipeModifier inputMod, final @Nullable RecipeModifier outputMod, final @Nullable RecipeModifier perTickInputMod, final @Nullable RecipeModifier perTickOutputMod) {
+		return new MachineRecipe(
+			this.recipeType,
+			MachineRecipe.applyModifierToContentMap(Objects.requireNonNullElseGet(inputMod, RecipeModifier::copy), this.inputs),
+			MachineRecipe.applyModifierToContentMap(Objects.requireNonNullElseGet(outputMod, RecipeModifier::copy), this.outputs),
+			MachineRecipe.applyModifierToContentMap(Objects.requireNonNullElseGet(perTickInputMod, RecipeModifier::copy), this.perTickInputs),
+			MachineRecipe.applyModifierToContentMap(Objects.requireNonNullElseGet(perTickOutputMod, RecipeModifier::copy), this.perTickOutputs),
+			this.recipeDuration,
+			this.program,
+			this.recipeDataMap.copy()
+		);
+	}
+
+	public MachineRecipe applyModifier(final RecipeModifier modifier, final boolean toInputs, final boolean toOutputs, final boolean toPerTickInputs, final boolean toPerTickOutputs) {
+		return this.applyModifier(toInputs ? modifier : null, toOutputs ? modifier : null, toPerTickInputs ? modifier : null, toPerTickOutputs ? modifier : null);
 	}
 
 	@Override
@@ -90,5 +109,13 @@ public class MachineRecipe implements Recipe<RecipeInput> {
 			map.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
 		}
 		return Collections.unmodifiableMap(map);
+	}
+
+	public static Map<RecipeElementType<?>, List<RecipeElement>> applyModifierToContentMap(final RecipeModifier modifier, final Map<RecipeElementType<?>, List<RecipeElement>> original) {
+		final Map<RecipeElementType<?>, List<RecipeElement>> result = new HashMap<>(original.size());
+		original.forEach((type, elems) -> result.put(type, elems.stream()
+			.map(elem -> elem.copy(type, modifier)).toList()
+		));
+		return result;
 	}
 }

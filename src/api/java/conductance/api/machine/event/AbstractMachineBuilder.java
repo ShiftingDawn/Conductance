@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.block.BlockRotationType;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.gui.GuiSetup;
+import conductance.api.recipe.MachineRecipeModifier;
 import conductance.api.recipe.MachineRecipeType;
 
 public interface AbstractMachineBuilder<T extends MachineBlockEntity<T>, BUILDER extends AbstractMachineBuilder<T, BUILDER>> {
@@ -17,7 +18,7 @@ public interface AbstractMachineBuilder<T extends MachineBlockEntity<T>, BUILDER
 
 	BUILDER recipeType(MachineRecipeType recipeType, MachineRecipeType... additionalRecipeTypes);
 
-	BUILDER recipeModifier(MachineRecipeModifier modifier);
+	BUILDER recipeModifier(@Nullable MachineRecipeModifier modifier);
 
 	BUILDER guiSetup(@Nullable GuiSetup guiSetup);
 

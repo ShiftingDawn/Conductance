@@ -17,8 +17,8 @@ import conductance.api.machine.event.AbstractMachineBuilder;
 import conductance.api.machine.event.MachineBlockEntityFactory;
 import conductance.api.machine.event.MachineBlockFactory;
 import conductance.api.machine.event.MachineBlockItemFactory;
-import conductance.api.machine.event.MachineRecipeModifier;
 import conductance.api.machine.gui.GuiSetup;
+import conductance.api.recipe.MachineRecipeModifier;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.tier.Tier;
 
@@ -63,7 +63,7 @@ abstract class AbstractMachineBuilderImpl<T extends MachineBlockEntity<T>, BUILD
 	}
 
 	@Override
-	public BUILDER recipeModifier(final MachineRecipeModifier modifier) {
+	public BUILDER recipeModifier(final @Nullable MachineRecipeModifier modifier) {
 		this.recipeModifier = modifier;
 		return this.self();
 	}

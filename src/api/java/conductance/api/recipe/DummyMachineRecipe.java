@@ -1,14 +1,13 @@
 package conductance.api.recipe;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import conductance.api.CAPI;
+import org.jetbrains.annotations.Nullable;
 
 public final class DummyMachineRecipe extends MachineRecipe {
 
@@ -19,6 +18,22 @@ public final class DummyMachineRecipe extends MachineRecipe {
 		final int recipeDuration, final int program, final RecipeDataMap recipeDataMap
 	) {
 		super(recipeType, inputs, outputs, perTickInputs, perTickOutputs, recipeDuration, program, recipeDataMap);
+	}
+
+	@Override
+	public DummyMachineRecipe applyModifier(
+		@Nullable final RecipeModifier inputMod, @Nullable final RecipeModifier outputMod, @Nullable final RecipeModifier perTickInputMod, @Nullable final RecipeModifier perTickOutputMod
+	) {
+		return new DummyMachineRecipe(
+			this.getType(),
+			MachineRecipe.applyModifierToContentMap(Objects.requireNonNullElseGet(inputMod, RecipeModifier::copy), this.getInputs()),
+			MachineRecipe.applyModifierToContentMap(Objects.requireNonNullElseGet(outputMod, RecipeModifier::copy), this.getOutputs()),
+			MachineRecipe.applyModifierToContentMap(Objects.requireNonNullElseGet(perTickInputMod, RecipeModifier::copy), this.getPerTickInputs()),
+			MachineRecipe.applyModifierToContentMap(Objects.requireNonNullElseGet(perTickOutputMod, RecipeModifier::copy), this.getPerTickOutputs()),
+			this.getRecipeDuration(),
+			this.getProgram(),
+			this.getRecipeDataMap().copy()
+		);
 	}
 
 	@Override
@@ -34,11 +49,5 @@ public final class DummyMachineRecipe extends MachineRecipe {
 	@Override
 	public PlacementInfo placementInfo() {
 		return PlacementInfo.NOT_PLACEABLE;
-	}
-
-	private static Map<RecipeElementType<?>, List<RecipeElement>> makeImmutable(final Map<RecipeElementType<?>, List<RecipeElement>> input) {
-		return Collections.unmodifiableMap(CAPI.make(new HashMap<>(), map -> {
-			input.forEach((key, value) -> map.put(key, Collections.unmodifiableList(value)));
-		}));
 	}
 }

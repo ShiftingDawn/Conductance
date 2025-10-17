@@ -1,6 +1,4 @@
-package conductance.api.machine.event;
-
-import conductance.api.recipe.MachineRecipe;
+package conductance.api.recipe;
 
 public interface MachineRecipeModifier {
 

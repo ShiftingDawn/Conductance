@@ -3,7 +3,7 @@ package conductance.api.machine;
 import java.util.List;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.event.MachineRecipeModifier;
+import conductance.api.recipe.MachineRecipeModifier;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.tier.Tier;
