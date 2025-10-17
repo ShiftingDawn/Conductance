@@ -18,6 +18,7 @@ public final class NCRecipeTypes {
 	public static MachineRecipeType ASSEMBLING_MACHINE;
 	public static MachineRecipeType CENTRIFUGE;
 	public static MachineRecipeType ELECTROLYZER;
+	public static MachineRecipeType CIRCUIT_ASSEMBLER;
 
 	public static MachineRecipeType ELECTRIC_BLAST_FURNACE;
 

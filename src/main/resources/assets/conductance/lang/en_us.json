@@ -99,6 +99,7 @@
   "recipeType.conductance.assembling_machine": "Assembling Machine",
   "recipeType.conductance.centrifuge": "Centrifuge",
   "recipeType.conductance.electrolyzer": "Electrolyzer",
+  "recipeType.conductance.circuit_assembler": "Circuit Assembler",
 
   "machine.conductance.solid_fuel_steam_boiler": "Solid Fuel Steam Boiler",
 
@@ -116,6 +117,7 @@
   "machine.conductance.assembling_machine": "%s Assembling Machine",
   "machine.conductance.centrifuge": "%s Centrifuge",
   "machine.conductance.electrolyzer": "%s Electrolyzer",
+  "machine.conductance.circuit_assembler": "%s Circuit Assembler",
 
   "machine.conductance.large_bronze_boiler": "Large Bronze Boiler",
   "machine.conductance.electric_blast_furnace": "Electric Blast Furnace",

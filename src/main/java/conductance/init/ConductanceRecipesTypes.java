@@ -15,6 +15,7 @@ import conductance.Conductance;
 import static conductance.api.NCRecipeTypes.ASSEMBLING_MACHINE;
 import static conductance.api.NCRecipeTypes.BENDING_MACHINE;
 import static conductance.api.NCRecipeTypes.CENTRIFUGE;
+import static conductance.api.NCRecipeTypes.CIRCUIT_ASSEMBLER;
 import static conductance.api.NCRecipeTypes.COMPRESSOR;
 import static conductance.api.NCRecipeTypes.CUTTING_MACHINE;
 import static conductance.api.NCRecipeTypes.ELECTRIC_BLAST_FURNACE;
@@ -44,6 +45,7 @@ final class ConductanceRecipesTypes {
 		ASSEMBLING_MACHINE = event.register("assembling_machine", b -> b.setIO(9, 1, 1, 0).setEnergyIO(CapIO.IN));
 		CENTRIFUGE = event.register("centrifuge", b -> b.setIO(2, 1, 6, 3).setEnergyIO(CapIO.IN));
 		ELECTROLYZER = event.register("electrolyzer", b -> b.setIO(2, 1, 6, 3).setEnergyIO(CapIO.IN));
+		CIRCUIT_ASSEMBLER = event.register("circuit_assembler", b -> b.setIO(6, 1, 1, 0).setEnergyIO(CapIO.IN));
 
 		ELECTRIC_BLAST_FURNACE = event.register("electric_blast_furnace", b -> b.setIO(3, 3, 1, 1).setEnergyIO(CapIO.IN)
 			.data(RecipeDataTokens.BLAST_TEMP).recipeTestCallback(RecipeTestCallback.When.BEFORE, ConductanceRecipesTypes.ELECTRIC_BLAST_FURNACE_COIL_TEST));
