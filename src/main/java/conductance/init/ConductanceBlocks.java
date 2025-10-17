@@ -5,7 +5,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,6 +14,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -40,6 +40,9 @@ import conductance.core.material.MaterialColorTintSource;
 import conductance.init.block.ActiveBlock;
 import conductance.init.block.CoilBlock;
 import conductance.init.block.CoilBlockItem;
+import conductance.init.block.CreativeTankBlock;
+import conductance.init.block.CreativeTankBlockEntity;
+import conductance.init.block.CreativeTankBlockItem;
 import conductance.init.block.MaterialBlock;
 import conductance.init.block.MaterialBlockItem;
 import conductance.init.block.MaterialOreBlock;
@@ -73,10 +76,14 @@ public final class ConductanceBlocks {
 		NCBlocks.CASING_ALUMINIUM = ConductanceBlocks.makeSimpleBlock("aluminium_casing", "casing/aluminium");
 		NCBlocks.CASING_BRONZE_FIREBOX = ConductanceBlocks.makeActiveBlock("bronze_firebox_casing", "casing/bronze_firebox");
 		ConductanceBlocks.generateCoils();
+		NCBlocks.CREATIVE_TANK = ConductanceBlocks.REGISTRY.registerBlock("creative_tank", props -> CAPI.make(new CreativeTankBlock(props), block -> {
+			ConductanceBlocks.ITEMS.registerItem("creative_tank", itemProps -> new CreativeTankBlockItem(block, itemProps));
+			CreativeTabHelper.addToTab(block, CreativeTabHelper.Tabs.GENERAL);
+		}));
 	}
 
-	private static Holder<Block> makeBlock(final String blockName, @Nullable final String texture, final Function<BlockBehaviour.Properties, Block> factory) {
-		final Holder<Block> result = ConductanceBlocks.REGISTRY.registerBlock(blockName, props -> Util.make(factory.apply(props), block -> {
+	private static Holder<Block> makeBlock(final String blockName, final Function<BlockBehaviour.Properties, Block> factory) {
+		final Holder<Block> result = ConductanceBlocks.REGISTRY.registerBlock(blockName, props -> CAPI.make(factory.apply(props), block -> {
 			CreativeTabHelper.addToTab(block, CreativeTabHelper.Tabs.GENERAL);
 		}));
 		ConductanceBlocks.ITEMS.registerSimpleBlockItem(result);
@@ -84,13 +91,13 @@ public final class ConductanceBlocks {
 	}
 
 	private static Holder<Block> makeSimpleBlock(final String blockName, @Nullable final String texture) {
-		return CAPI.make(ConductanceBlocks.makeBlock(blockName, texture, Block::new), result -> {
+		return CAPI.make(ConductanceBlocks.makeBlock(blockName, Block::new), result -> {
 			ConductanceBlocks.SIMPLE_BLOCKS.put(result, Conductance.id("block/" + Objects.requireNonNullElseGet(texture, () -> result.getKey().location().getPath())));
 		});
 	}
 
 	private static Holder<Block> makeActiveBlock(final String blockName, @Nullable final String texture) {
-		return CAPI.make(ConductanceBlocks.makeBlock(blockName, texture, ActiveBlock::new), result -> {
+		return CAPI.make(ConductanceBlocks.makeBlock(blockName, ActiveBlock::new), result -> {
 			ConductanceBlocks.ACTIVE_BLOCKS.put(result, Conductance.id("block/" + Objects.requireNonNullElseGet(texture, () -> result.getKey().location().getPath())));
 		});
 	}
@@ -107,7 +114,7 @@ public final class ConductanceBlocks {
 					if (handler.getBlockBuilderCallback() != null) {
 						props = handler.getBlockBuilderCallback().apply(material, props);
 					}
-					return Util.make(new MaterialBlock(props, material, handler), block -> {
+					return CAPI.make(new MaterialBlock(props, material, handler), block -> {
 						Conductance.MATERIALS.register(material, handler, block);
 					});
 				}, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
@@ -115,7 +122,7 @@ public final class ConductanceBlocks {
 					if (handler.getBlockItemBuilderCallback() != null) {
 						props = handler.getBlockItemBuilderCallback().apply(material, props);
 					}
-					return Util.make(new MaterialBlockItem(holder.value(), props.useBlockDescriptionPrefix()), item -> {
+					return CAPI.make(new MaterialBlockItem(holder.value(), props.useBlockDescriptionPrefix()), item -> {
 						Conductance.MATERIALS.register(material, handler, item);
 					});
 				});
@@ -132,7 +139,7 @@ public final class ConductanceBlocks {
 					if (handler.getBlockBuilderCallback() != null) {
 						props = handler.getBlockBuilderCallback().apply(material, props);
 					}
-					return Util.make(switch (bearer.getBlockType()) {
+					return CAPI.make(switch (bearer.getBlockType()) {
 						case DEFAULT -> new MaterialOreBlock(props, material, handler);
 						case PILLAR -> new MaterialOreRotatedPillarBlock(props, material, handler);
 					}, block -> {
@@ -143,7 +150,7 @@ public final class ConductanceBlocks {
 					if (handler.getBlockItemBuilderCallback() != null) {
 						props = handler.getBlockItemBuilderCallback().apply(material, props);
 					}
-					return Util.make(new MaterialOreBlockItem(holder.value(), props.useBlockDescriptionPrefix()), item -> {
+					return CAPI.make(new MaterialOreBlockItem(holder.value(), props.useBlockDescriptionPrefix()), item -> {
 						Conductance.MATERIALS.register(material, handler, item);
 					});
 				});
@@ -155,7 +162,7 @@ public final class ConductanceBlocks {
 					if (wireType.getHandler().getBlockBuilderCallback() != null) {
 						props = wireType.getHandler().getBlockBuilderCallback().apply(material, props);
 					}
-					return Util.make(new WireBlock(props, material, wireType), block -> {
+					return CAPI.make(new WireBlock(props, material, wireType), block -> {
 						Conductance.MATERIALS.register(material, wireType.getHandler(), block);
 						WireRegistry.register(wireType, material, block);
 					});
@@ -164,7 +171,7 @@ public final class ConductanceBlocks {
 					if (wireType.getHandler().getBlockItemBuilderCallback() != null) {
 						props = wireType.getHandler().getBlockItemBuilderCallback().apply(material, props);
 					}
-					return Util.make(new WireBlockItem(holder.value(), props.useBlockDescriptionPrefix()), item -> {
+					return CAPI.make(new WireBlockItem(holder.value(), props.useBlockDescriptionPrefix()), item -> {
 						Conductance.MATERIALS.register(material, wireType.getHandler(), item);
 					});
 				});
@@ -306,7 +313,7 @@ public final class ConductanceBlocks {
 	}
 
 	private static void handleMaterialBlockColors(final RegisterColorHandlersEvent.Block event) {
-		Util.make(ConductanceBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof MaterialBlock).toArray(Block[]::new), blocks -> {
+		CAPI.make(ConductanceBlocks.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof MaterialBlock).toArray(Block[]::new), blocks -> {
 			event.register((blockState, blockAndTintGetter, blockPos, i) -> {
 				final MaterialBlock block = (MaterialBlock) blockState.getBlock();
 				return i == 0 ? block.getMaterial().getColor().getCurrentColor() : -1;
@@ -334,6 +341,12 @@ public final class ConductanceBlocks {
 				return null;
 			}, wireBlock);
 		}
+		event.registerBlock(Capabilities.FluidHandler.BLOCK, (level, pos, state, blockEntity, context) -> {
+			if (blockEntity instanceof final CreativeTankBlockEntity creativeTankBlockEntity) {
+				return creativeTankBlockEntity.getFluidHandler();
+			}
+			return null;
+		}, NCBlocks.CREATIVE_TANK.value());
 	}
 
 	private ConductanceBlocks() {

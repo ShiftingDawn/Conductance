@@ -19,6 +19,8 @@ public final class NCBlocks {
 
 	public static Map<CoilBlockType, Holder<Block>> COILS;
 
+	public static Holder<Block> CREATIVE_TANK;
+
 	private NCBlocks() {
 	}
 }

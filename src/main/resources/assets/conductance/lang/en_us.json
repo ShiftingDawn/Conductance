@@ -30,6 +30,7 @@
   "block.conductance.aluminium_casing": "Aluminium Casing",
   "block.conductance.bronze_firebox_casing": "Bronze Firebox Casing",
   "block.conductance.coil_block": "%s Coil Block",
+  "block.conductance.creative_tank": "Creative Tank",
 
   "tooltip.material_bucket.temperature": "§eTemperature: §r%sK",
   "tooltip.material_bucket.density": "§eDensity: §r%s",
@@ -37,6 +38,11 @@
   "tooltip.wire.transfer": "Max transfer: %sA at %s%s (%s)",
   "tooltip.coil_block.level": "§eCoil level: %s",
   "tooltip.coil_block.temperature": "§eMax temperature: %s",
+  "tooltip.creative_tank.description.1": "Right-click with any fluid container to set fluid",
+  "tooltip.creative_tank.description.2": "Sneak right-click to lock fluid",
+  "tooltip.creative_tank.locking.failure": "Cannot lock while empty",
+  "tooltip.creative_tank.locking.locked": "Locked to %s",
+  "tooltip.creative_tank.locking.unlocked": "Unlocked",
 
   "tag.item.conductance.tools.hammer": "Hammers",
   "tag.item.conductance.tools.wire_cutter": "Wire Cutters",

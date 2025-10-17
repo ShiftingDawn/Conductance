@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "locked=false": {"model": "conductance:block/creative_tank"},
+    "locked=true": {"model": "conductance:block/creative_tank_locked"}
+  }
+}
