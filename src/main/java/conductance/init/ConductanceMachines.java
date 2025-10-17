@@ -203,7 +203,8 @@ final class ConductanceMachines {
 			(machineType, blockPos, blockState) -> new GenericGeneratorMachine(machineType, tier, blockPos, blockState),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id(name)), tier.getName())
-			).recipeType(recipeType).rotationType(BlockRotationType.ALL).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
+				).recipeType(recipeType).recipeModifier(NCRecipeModifiers.steamTurbine(tier))
+				.rotationType(BlockRotationType.ALL).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
 		));
 	}
 
