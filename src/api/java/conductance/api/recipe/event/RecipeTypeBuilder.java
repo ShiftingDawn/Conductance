@@ -31,6 +31,10 @@ public interface RecipeTypeBuilder {
 
 	RecipeTypeBuilder data(RecipeDataToken<?> token);
 
+	RecipeTypeBuilder recipeTestCallback(RecipeTestCallback.When when, RecipeTestCallback callback);
+
+	RecipeTypeBuilder recipePerTickTestCallback(RecipeTestCallback.When when, RecipeTestCallback callback);
+
 	RecipeTypeBuilder guiArrow(ResourceLocation arrowTexture, ProgressProvider.Direction direction);
 
 	default RecipeTypeBuilder guiArrow(final ResourceLocation arrowTexture) {

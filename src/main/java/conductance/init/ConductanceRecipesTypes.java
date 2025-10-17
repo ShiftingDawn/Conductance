@@ -4,10 +4,12 @@ import conductance.api.NCMaterialGenerationHandlers;
 import conductance.api.NCMaterials;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.machine.CapIO;
+import conductance.api.machine.multi.MultiControllerMachineBlockEntity;
 import conductance.api.plugin.ConductancePluginListener;
 import conductance.api.plugin.EventListener;
 import conductance.api.recipe.RecipeDataTokens;
 import conductance.api.recipe.event.RecipeBuilderCallback;
+import conductance.api.recipe.event.RecipeTestCallback;
 import conductance.api.recipe.event.RegisterRecipeTypeEvent;
 import conductance.Conductance;
 import static conductance.api.NCRecipeTypes.ASSEMBLING_MACHINE;
@@ -44,7 +46,7 @@ final class ConductanceRecipesTypes {
 		ELECTROLYZER = event.register("electrolyzer", b -> b.setIO(2, 1, 6, 3).setEnergyIO(CapIO.IN));
 
 		ELECTRIC_BLAST_FURNACE = event.register("electric_blast_furnace", b -> b.setIO(3, 3, 1, 1).setEnergyIO(CapIO.IN)
-			.data(RecipeDataTokens.BLAST_TEMP));
+			.data(RecipeDataTokens.BLAST_TEMP).recipeTestCallback(RecipeTestCallback.When.BEFORE, ConductanceRecipesTypes.ELECTRIC_BLAST_FURNACE_COIL_TEST));
 	}
 
 	private static final RecipeBuilderCallback CUTTING_MACHINE_CALLBACK = (recipeId, builder, recipeBuilderFactory) -> {
@@ -57,6 +59,17 @@ final class ConductanceRecipesTypes {
 		recipeBuilderFactory.register(recipeId.withSuffix("_using_water"), copy ->
 			copy.in(NCMaterials.WATER, NCMaterialGenerationHandlers.LIQUID, time * 8).duration(time * 4));
 		builder.in(NCMaterials.LUBRICANT, NCMaterialGenerationHandlers.LIQUID, time);
+	};
+
+	private static final RecipeTestCallback ELECTRIC_BLAST_FURNACE_COIL_TEST = (machine, recipe) -> {
+		Integer minTemp = recipe.getData(RecipeDataTokens.BLAST_TEMP);
+		if (minTemp == null) {
+			return true;
+		}
+		if (machine instanceof MultiControllerMachineBlockEntity<?> controller && controller.getCoilType() != null) {
+			return controller.getCoilType().getTemperature() >= minTemp;
+		}
+		return false;
 	};
 
 	private ConductanceRecipesTypes() {

@@ -1,6 +1,7 @@
 package conductance.core.recipe;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,12 +16,15 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.CAPI;
+import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.gui.ProgressProvider;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
 import conductance.api.recipe.RecipeDataToken;
 import conductance.api.recipe.RecipeElementType;
 import conductance.api.recipe.event.RecipeBuilderCallback;
+import conductance.api.recipe.event.RecipeTestCallback;
 import conductance.api.util.IO;
 import conductance.api.util.Lazy;
 import conductance.init.ConductanceRecipeBookCategories;
@@ -31,6 +35,8 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 	private final Object2IntMap<RecipeElementType<?>> inputLimits;
 	private final Object2IntMap<RecipeElementType<?>> outputLimits;
 	private final @Getter Map<String, RecipeDataToken<?>> additionalDataTokens;
+	private final Map<RecipeTestCallback.When, List<RecipeTestCallback>> testCallbacks;
+	private final Map<RecipeTestCallback.When, List<RecipeTestCallback>> perTickTestCallbacks;
 	private final @Getter ResourceLocation guiArrow;
 	private final @Getter ProgressProvider.Direction guiArrowDirection;
 	private final @Getter boolean hidden;
@@ -41,12 +47,15 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 	MachineRecipeTypeImpl(
 		final Object2IntMap<RecipeElementType<?>> inputLimits, final Object2IntMap<RecipeElementType<?>> outputLimits,
 		final Map<String, RecipeDataToken<?>> additionalDataTokens,
+		final Map<RecipeTestCallback.When, List<RecipeTestCallback>> testCallbacks, final Map<RecipeTestCallback.When, List<RecipeTestCallback>> perTickTestCallbacks,
 		final ResourceLocation guiArrow, final ProgressProvider.Direction guiArrowDirection, final boolean hidden,
 		@Nullable final RecipeBuilderCallback recipeBuilderCallback
 	) {
 		this.inputLimits = Object2IntMaps.unmodifiable(inputLimits);
 		this.outputLimits = Object2IntMaps.unmodifiable(outputLimits);
 		this.additionalDataTokens = Collections.unmodifiableMap(additionalDataTokens);
+		this.testCallbacks = Collections.unmodifiableMap(CAPI.make(new HashMap<>(), map -> testCallbacks.forEach((when, callbacks) -> map.put(when, Collections.unmodifiableList(callbacks)))));
+		this.perTickTestCallbacks = Collections.unmodifiableMap(CAPI.make(new HashMap<>(), map -> perTickTestCallbacks.forEach((when, callbacks) -> map.put(when, Collections.unmodifiableList(callbacks)))));
 		this.guiArrow = guiArrow;
 		this.guiArrowDirection = guiArrowDirection;
 		this.hidden = hidden;
@@ -75,6 +84,17 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 			case IN -> this.inputLimits.getInt(elementType);
 			case OUT -> this.outputLimits.getInt(elementType);
 		};
+	}
+
+	@Override
+	public boolean testRecipe(final boolean perTick, final RecipeTestCallback.When when, final MachineBlockEntity<?> machine, final MachineRecipe recipe) {
+		final List<RecipeTestCallback> callbacks = (perTick ? this.perTickTestCallbacks : this.testCallbacks).get(when);
+		for (final RecipeTestCallback callback : callbacks) {
+			if (!callback.test(machine, recipe)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public @Nullable RecipeBuilderCallback getRecipeBuilderCallback() {

@@ -140,7 +140,7 @@ public class RecipeHandler extends MachineCapability {
 	}
 
 	protected boolean testRecipe(final MachineRecipe recipe) {
-		return CAPI.recipeHelper().test(recipe, this.holder) && CAPI.recipeHelper().testPerTick(recipe, this.holder);
+		return CAPI.recipeHelper().test(recipe, this.getMachine(), this.holder) && CAPI.recipeHelper().testPerTick(recipe, this.getMachine(), this.holder);
 	}
 
 	protected void setupRecipe(final RecipePair recipe) {
@@ -154,7 +154,7 @@ public class RecipeHandler extends MachineCapability {
 	}
 
 	protected void progressRecipe(final MachineRecipe recipe) {
-		if (!CAPI.recipeHelper().testPerTick(recipe, this.holder)) {
+		if (!CAPI.recipeHelper().testPerTick(recipe, this.getMachine(), this.holder)) {
 			switch (this.holder.getPerTickFailureAction()) {
 				case NOTHING -> {
 					if (this.tick != null) {

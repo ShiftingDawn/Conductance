@@ -16,6 +16,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import com.mojang.serialization.Codec;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class MachineRecipe implements Recipe<RecipeInput> {
 
@@ -45,7 +47,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
 		this.recipeDataMap = recipeDataMap;
 	}
 
-	public final <T> T getData(final RecipeDataToken<T> token) {
+	public final @UnknownNullability <T> T getData(final RecipeDataToken<T> token) {
 		return this.recipeDataMap.get(token);
 	}
 

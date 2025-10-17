@@ -11,7 +11,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import com.mojang.serialization.Codec;
 import conductance.api.CAPI;
+import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.gui.ProgressProvider;
+import conductance.api.recipe.event.RecipeTestCallback;
 import conductance.api.util.IO;
 
 public interface MachineRecipeType extends RecipeType<MachineRecipe> {
@@ -21,6 +23,8 @@ public interface MachineRecipeType extends RecipeType<MachineRecipe> {
 	int getLimit(IO io, RecipeElementType<?> elementType);
 
 	Map<String, RecipeDataToken<?>> getAdditionalDataTokens();
+
+	boolean testRecipe(boolean perTick, RecipeTestCallback.When when, MachineBlockEntity<?> machine, MachineRecipe recipe);
 
 	ResourceLocation getGuiArrow();
 

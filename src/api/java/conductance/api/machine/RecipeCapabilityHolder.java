@@ -11,7 +11,7 @@ import conductance.api.util.IO;
 
 public interface RecipeCapabilityHolder {
 
-	MachineRecipeType getRecipeType();
+	@Nullable MachineRecipeType getRecipeType();
 
 	@Nullable MachineRecipeModifier getRecipeModifier();
 
