@@ -34,6 +34,7 @@
   "tooltip.material_bucket.temperature": "§eTemperature: §r%sK",
   "tooltip.material_bucket.density": "§eDensity: §r%s",
   "tooltip.material_bucket.viscosity": "§eViscosity: §r%s",
+  "tooltip.wire.transfer": "Max transfer: %sA at %s%s (%s)",
   "tooltip.coil_block.level": "§eCoil level: %s",
   "tooltip.coil_block.temperature": "§eMax temperature: %s",
 

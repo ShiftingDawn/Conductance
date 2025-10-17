@@ -304,7 +304,7 @@ final class MaterialLoader0 {
 			.metalAll().fineWire()
 			.liquid(1358)
 			.ore()
-			.wire(NCTiers.LV, 1) //TODO MV
+			.wire(NCTiers.MV, 1)
 			.style(0xFF6400, SHINY)
 		);
 		ZINC = event.register("zinc", NCPeriodicElements.ZINC, b -> b
