@@ -37,7 +37,7 @@ public class EnergyNetHandler implements IEnergyHandler {
 				continue;
 			}
 			final IEnergyHandler destination = NCCapabilities.getEnergyHandler(this.level, path.getDest().relative(path.getSide()), path.getSide().getOpposite());
-			final Direction destinationSide = path.getSide();
+			final Direction destinationSide = path.getSide().getOpposite();
 			if (destination == null || !destination.canReceiveEnergy(destinationSide) || destination.getEnergySpace() <= 0) {
 				continue;
 			}
