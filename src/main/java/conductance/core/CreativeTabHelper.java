@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import com.mojang.datafixers.util.Either;
@@ -16,6 +15,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import conductance.api.CAPI;
 import conductance.api.NCItems;
+import conductance.api.NCMachines;
 import conductance.api.NCMaterialGenerationHandlers;
 import conductance.api.NCMaterials;
 
@@ -24,7 +24,7 @@ public final class CreativeTabHelper {
 	@RequiredArgsConstructor
 	public enum Tabs {
 		GENERAL(() -> NCItems.WRENCH.value().getDefaultInstance()),
-		MACHINE(Items.FURNACE::getDefaultInstance),
+		MACHINE(() -> NCMachines.ELECTRIC_BLAST_FURNACE.getItem().get().getDefaultInstance()),
 		MATERIAL(() -> CAPI.materials().getItem(NCMaterials.ALUMINIUM, NCMaterialGenerationHandlers.INGOT, 1)),
 		ORE(() -> CAPI.materials().getItem(NCMaterials.ALUMINIUM, NCMaterialGenerationHandlers.ORE_STONE, 1));
 
