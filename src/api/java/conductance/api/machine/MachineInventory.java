@@ -21,7 +21,7 @@ public class MachineInventory extends ItemStackHandler implements IChangeAware {
 	@Nullable
 	private Boolean isEmpty;
 	@Getter
-	private boolean allowOverflow = true;
+	private boolean allowOverflow = false;
 
 	public MachineInventory() {
 	}
