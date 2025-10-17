@@ -1,7 +1,9 @@
 package conductance.api.machine;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -31,6 +33,8 @@ public interface MachineType<T extends MachineBlockEntity<T>> {
 	String getDescriptionId();
 
 	MutableComponent getName();
+
+	@Nullable Supplier<List<Component>> getTooltipFactory();
 
 	default ResourceLocation getId() {
 		return Objects.requireNonNull(CAPI.regs().machines().getKey(this), "Unregistered machine type");

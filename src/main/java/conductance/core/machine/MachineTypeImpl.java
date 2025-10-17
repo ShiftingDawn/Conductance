@@ -1,6 +1,8 @@
 package conductance.core.machine;
 
+import java.util.List;
 import java.util.function.Supplier;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import lombok.AccessLevel;
@@ -43,4 +45,7 @@ class MachineTypeImpl<T extends MachineBlockEntity<T>> implements MachineType<T>
 	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	private BlockRotationType rotationType;
+	@Getter
+	@Setter(AccessLevel.PACKAGE)
+	private @Nullable Supplier<List<Component>> tooltipFactory;
 }

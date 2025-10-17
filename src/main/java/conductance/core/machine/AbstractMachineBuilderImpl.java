@@ -1,7 +1,9 @@
 package conductance.core.machine;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -36,6 +38,7 @@ abstract class AbstractMachineBuilderImpl<T extends MachineBlockEntity<T>, BUILD
 	private ModelType modelType = ModelType.DEFAULT;
 	private @Nullable Object modelTypeData = null;
 	private Function<String, MutableComponent> nameFactory = Component::translatable;
+	private @Nullable Supplier<List<Component>> tooltipFactory = null;
 
 	protected AbstractMachineBuilderImpl(final ResourceLocation registryKey, final MachineBlockEntityFactory<T> blockEntityFactory) {
 		this.registryKey = registryKey;
@@ -106,6 +109,12 @@ abstract class AbstractMachineBuilderImpl<T extends MachineBlockEntity<T>, BUILD
 		return this.self();
 	}
 
+	@Override
+	public BUILDER tooltip(final Supplier<List<Component>> tooltipFactory) {
+		this.tooltipFactory = tooltipFactory;
+		return this.self();
+	}
+
 	protected abstract MachineTypeImpl<T> makeMachineType(ResourceLocation registryKey, String descriptionId, MutableComponent name);
 
 	public MachineTypeImpl<T> build(final ResourceLocation registryKey) {
@@ -118,6 +127,7 @@ abstract class AbstractMachineBuilderImpl<T extends MachineBlockEntity<T>, BUILD
 			type.setRecipeModifier(this.recipeModifier);
 			type.setGuiSetup(this.guiSetup);
 			type.setRotationType(this.rotationType);
+			type.setTooltipFactory(this.tooltipFactory);
 		});
 		switch (this.modelType) {
 			case DEFAULT -> MachineModelHandler.addDefault(result);

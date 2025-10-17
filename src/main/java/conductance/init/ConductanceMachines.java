@@ -1,5 +1,6 @@
 package conductance.init;
 
+import java.util.List;
 import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
@@ -22,6 +23,7 @@ import conductance.api.recipe.MachineRecipeType;
 import conductance.api.resource.event.AddRuntimeModelEvent;
 import conductance.api.tier.Tier;
 import conductance.api.util.IO;
+import conductance.api.util.TextHelper;
 import conductance.Conductance;
 import conductance.core.machine.MachineCore;
 import conductance.init.machine.GenericGeneratorMachine;
@@ -78,13 +80,15 @@ final class ConductanceMachines {
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("machine_hull")), tier.getName())
 			).rotationType(BlockRotationType.ALL).tieredModel("machine_hull", tier).guiSetup(null)
 		));
+		ConductanceMachines.initGenerators(event);
 		TRANSFORMER = CAPI.tiers().newMap(tier -> tier.getNextTier().isMax() ? null : event.<TransformerMachine>register(tier.getId().getPath() + "_transformer",
 			(machineType, blockPos, blockState) -> new TransformerMachine(machineType, blockPos, blockState, tier, 1),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("transformer")), tier.getNextTier().getName())
-			).rotationType(BlockRotationType.ALL).tieredModel("transformer", tier).guiSetup(null)
+			).rotationType(BlockRotationType.ALL).tieredModel("transformer", tier).guiSetup(null).tooltip(() -> List.of(
+				Component.translatable("machine.conductance.transformer.tooltip.1", 4, tier.getName(), TextHelper.ENERGY_FORMAT, 1, tier.getNextTier().getName(), TextHelper.ENERGY_FORMAT)
+			))
 		));
-		ConductanceMachines.initGenerators(event);
 		ConductanceMachines.initRecipeMachines(event);
 		ConductanceMachines.initMultiBlocks(event);
 		ConductanceMachines.initMultiParts(event);

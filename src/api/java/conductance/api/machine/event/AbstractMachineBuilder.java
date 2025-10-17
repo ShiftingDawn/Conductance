@@ -1,6 +1,9 @@
 package conductance.api.machine.event;
 
+import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -31,4 +34,6 @@ public interface AbstractMachineBuilder<T extends MachineBlockEntity<T>, BUILDER
 	BUILDER customModel();
 
 	BUILDER customName(Function<String, MutableComponent> nameFactory);
+
+	BUILDER tooltip(Supplier<List<Component>> tooltipFactory);
 }
