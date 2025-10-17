@@ -3,6 +3,7 @@ package conductance.init.recipe;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import conductance.api.CAPI;
 import conductance.api.NCItems;
 import conductance.api.NCRecipeTypes;
 import conductance.api.recipe.event.RegisterRecipeEvent;
@@ -14,8 +15,10 @@ import static conductance.api.NCMaterialGenerationHandlers.LIQUID;
 import static conductance.api.NCMaterialGenerationHandlers.PLATE;
 import static conductance.api.NCMaterialGenerationHandlers.ROD;
 import static conductance.api.NCMaterials.COPPER;
+import static conductance.api.NCMaterials.GRAPHITE;
 import static conductance.api.NCMaterials.REDSTONE;
 import static conductance.api.NCMaterials.RED_ALLOY;
+import static conductance.api.NCMaterials.SILICON;
 import static conductance.api.NCMaterials.STEEL;
 import static conductance.api.NCMaterials.TIN;
 import static conductance.api.NCTiers.LV;
@@ -52,7 +55,8 @@ final class CircuitRecipes {
 	}
 
 	private static void addWafers(final RegisterRecipeEvent event) {
-		event.create(new ItemStack(NCItems.SILICON_WAFER, 30), NCRecipeTypes.CUTTING_MACHINE, b -> b.in(NCItems.SILICON_BOULE).duration(1200).energyIn(LV));
+		event.create(NCItems.SILICON_BOULE, NCRecipeTypes.CRYSTALLIZING_ARC_FURNACE, b -> b.in(GRAPHITE, DUST, 4).in(SILICON, LIQUID, 8 * CAPI.INGOT).duration(6000).energyIn(LV));
+		event.create(new ItemStack(NCItems.SILICON_WAFER, 32), NCRecipeTypes.CUTTING_MACHINE, b -> b.in(NCItems.SILICON_BOULE).duration(1200).energyIn(LV));
 		event.create(new ItemStack(NCItems.CPU_CHIP, 8), NCRecipeTypes.CUTTING_MACHINE, b -> b.in(NCItems.CPU_WAFER).duration(1200).energyIn(LV));
 		event.create(new ItemStack(NCItems.RAM_CHIP, 16), NCRecipeTypes.CUTTING_MACHINE, b -> b.in(NCItems.RAM_WAFER).duration(1200).energyIn(LV));
 	}

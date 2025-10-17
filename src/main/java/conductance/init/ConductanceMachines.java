@@ -43,6 +43,7 @@ import static conductance.api.NCMachines.BENDING_MACHINE;
 import static conductance.api.NCMachines.CENTRIFUGE;
 import static conductance.api.NCMachines.CIRCUIT_ASSEMBLER;
 import static conductance.api.NCMachines.COMPRESSOR;
+import static conductance.api.NCMachines.CRYSTALLIZING_ARC_FURNACE;
 import static conductance.api.NCMachines.CUTTING_MACHINE;
 import static conductance.api.NCMachines.DYNAMO_HATCHES;
 import static conductance.api.NCMachines.ELECTRIC_BLAST_FURNACE;
@@ -189,6 +190,20 @@ final class ConductanceMachines {
 			.blockFactory(MachineBlockWorkable::new)
 			.rotationType(BlockRotationType.EXTENDED)
 		);
+		CRYSTALLIZING_ARC_FURNACE = event.multi("crystallizing_arc_furnace", GenericRecipeMultiBlockMachine::new, b -> b
+			.structure('x', c -> c
+				.slice("aaa", "aaa", "aaa")
+				.slice("aaa", "a a", "aaa")
+				.slice("axa", "a a", "aaa")
+				.slice("aaa", "a a", "aaa")
+				.key('a', StructurePredicate.isBlock(NCBlocks.CASING_STEEL).or(StructurePredicate.autoCapabilities(NCRecipeTypes.CRYSTALLIZING_ARC_FURNACE, true)))
+			)
+			.recipeType(NCRecipeTypes.CRYSTALLIZING_ARC_FURNACE)
+			.simpleModel(Conductance.id("block/casing/steel"))
+			.casingAppearance(() -> NCBlocks.CASING_STEEL.value().defaultBlockState())
+			.blockFactory(MachineBlockWorkable::new)
+			.rotationType(BlockRotationType.EXTENDED)
+		);
 	}
 
 	private static Map<Tier, MachineType<?>> makeTieredGenericRecipeMachine(final RegisterMachineEvent event, final String name, final MachineRecipeType recipeType) {
@@ -204,7 +219,7 @@ final class ConductanceMachines {
 		return CAPI.tiers().newMap(tier -> event.<GenericRecipeMachine>register(tier.getId().getPath() + "_" + name,
 			(machineType, blockPos, blockState) -> new GenericGeneratorMachine(machineType, tier, blockPos, blockState),
 			b -> b.customName(ignored ->
-				Component.translatable(Util.makeDescriptionId("machine", Conductance.id(name)), tier.getName())
+					Component.translatable(Util.makeDescriptionId("machine", Conductance.id(name)), tier.getName())
 				).recipeType(recipeType).recipeModifier(NCRecipeModifiers.steamTurbine(tier))
 				.rotationType(BlockRotationType.ALL).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
 		));

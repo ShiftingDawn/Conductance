@@ -72,6 +72,7 @@ public final class ConductanceBlocks {
 		modEventBus.addListener(RegisterColorHandlersEvent.Block.class, ConductanceBlocks::handleMaterialBlockColors);
 		modEventBus.addListener(RegisterColorHandlersEvent.Block.class, ConductanceBlocks::handleCoilColors);
 		NCBlocks.CASING_BRONZE = ConductanceBlocks.makeSimpleBlock("bronze_casing", "casing/bronze");
+		NCBlocks.CASING_STEEL = ConductanceBlocks.makeSimpleBlock("steel_casing", "casing/steel");
 		NCBlocks.CASING_INVAR = ConductanceBlocks.makeSimpleBlock("invar_casing", "casing/invar");
 		NCBlocks.CASING_ALUMINIUM = ConductanceBlocks.makeSimpleBlock("aluminium_casing", "casing/aluminium");
 		NCBlocks.CASING_BRONZE_FIREBOX = ConductanceBlocks.makeActiveBlock("bronze_firebox_casing", "casing/bronze_firebox");

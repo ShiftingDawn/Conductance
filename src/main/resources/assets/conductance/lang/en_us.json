@@ -33,6 +33,7 @@
   "item.conductance.ram_chip": "Random Access Memory (RAM)",
 
   "block.conductance.bronze_casing": "Bronze Casing",
+  "block.conductance.steel_casing": "Steel Casing",
   "block.conductance.invar_casing": "Invar Casing",
   "block.conductance.aluminium_casing": "Aluminium Casing",
   "block.conductance.bronze_firebox_casing": "Bronze Firebox Casing",
@@ -109,6 +110,7 @@
   "recipeType.conductance.circuit_assembler": "Circuit Assembler",
 
   "recipeType.conductance.electric_blast_furnace": "Electric Blast Furnace",
+  "recipeType.conductance.crystallizing_arc_furnace": "Crystallizing Arc Furnace",
 
   "machine.conductance.solid_fuel_steam_boiler": "Solid Fuel Steam Boiler",
 
@@ -130,6 +132,7 @@
 
   "machine.conductance.large_bronze_boiler": "Large Bronze Boiler",
   "machine.conductance.electric_blast_furnace": "Electric Blast Furnace",
+  "machine.conductance.crystallizing_arc_furnace": "Crystallizing Arc Furnace",
 
   "machine.conductance.input_bus": "%s Input Bus",
   "machine.conductance.output_bus": "%s Output Bus",

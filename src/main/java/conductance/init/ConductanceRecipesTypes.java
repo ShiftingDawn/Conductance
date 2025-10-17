@@ -17,6 +17,7 @@ import static conductance.api.NCRecipeTypes.BENDING_MACHINE;
 import static conductance.api.NCRecipeTypes.CENTRIFUGE;
 import static conductance.api.NCRecipeTypes.CIRCUIT_ASSEMBLER;
 import static conductance.api.NCRecipeTypes.COMPRESSOR;
+import static conductance.api.NCRecipeTypes.CRYSTALLIZING_ARC_FURNACE;
 import static conductance.api.NCRecipeTypes.CUTTING_MACHINE;
 import static conductance.api.NCRecipeTypes.ELECTRIC_BLAST_FURNACE;
 import static conductance.api.NCRecipeTypes.ELECTROLYZER;
@@ -49,6 +50,7 @@ final class ConductanceRecipesTypes {
 
 		ELECTRIC_BLAST_FURNACE = event.register("electric_blast_furnace", b -> b.setIO(3, 3, 1, 1).setEnergyIO(CapIO.IN)
 			.data(RecipeDataTokens.BLAST_TEMP).recipeTestCallback(RecipeTestCallback.When.BEFORE, ConductanceRecipesTypes.ELECTRIC_BLAST_FURNACE_COIL_TEST));
+		CRYSTALLIZING_ARC_FURNACE = event.register("crystallizing_arc_furnace", b -> b.setIO(4, 1, 4, 0).setEnergyIO(CapIO.IN));
 	}
 
 	private static final RecipeBuilderCallback CUTTING_MACHINE_CALLBACK = (recipeId, builder, recipeBuilderFactory) -> {

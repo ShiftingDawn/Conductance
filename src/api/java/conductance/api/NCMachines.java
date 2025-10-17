@@ -37,6 +37,7 @@ public final class NCMachines {
 
 	public static MultiMachineType<?> LARGE_BRONZE_BOILER;
 	public static MultiMachineType<?> ELECTRIC_BLAST_FURNACE;
+	public static MultiMachineType<?> CRYSTALLIZING_ARC_FURNACE;
 
 	private NCMachines() {
 	}

@@ -12,6 +12,7 @@ public final class NCBlocks {
 	public static Map<Tier, Holder<Block>> MACHINE_CASING;
 
 	public static Holder<Block> CASING_BRONZE;
+	public static Holder<Block> CASING_STEEL;
 	public static Holder<Block> CASING_INVAR;
 	public static Holder<Block> CASING_ALUMINIUM;
 

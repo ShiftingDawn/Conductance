@@ -21,6 +21,7 @@ public final class NCRecipeTypes {
 	public static MachineRecipeType CIRCUIT_ASSEMBLER;
 
 	public static MachineRecipeType ELECTRIC_BLAST_FURNACE;
+	public static MachineRecipeType CRYSTALLIZING_ARC_FURNACE;
 
 	private NCRecipeTypes() {
 	}
