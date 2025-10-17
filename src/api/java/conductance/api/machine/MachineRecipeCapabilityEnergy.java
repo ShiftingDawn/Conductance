@@ -2,10 +2,12 @@ package conductance.api.machine;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCRecipeElementTypes;
 import conductance.api.block.BlockHelper;
@@ -17,6 +19,10 @@ import conductance.api.util.IO;
 public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability<Long> implements IBlockCapabilityHandler, IEnergyHandler {
 
 	private final boolean canOverclock;
+	@Setter
+	private @Nullable Predicate<@Nullable Direction> inputSidePredicate = null;
+	@Setter
+	private @Nullable Predicate<@Nullable Direction> outputSidePredicate = null;
 	private @Getter long capacity;
 	private long energy;
 	private @Getter long inputVoltage;
@@ -136,12 +142,12 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 
 	@Override
 	public boolean canReceiveEnergy(@Nullable final Direction side) {
-		return !this.canExtractEnergy(side) && this.getInputVoltage() > 0;
+		return !this.canExtractEnergy(side) && this.getInputVoltage() > 0 && (this.inputSidePredicate == null || this.inputSidePredicate.test(side));
 	}
 
 	@Override
 	public boolean canExtractEnergy(@Nullable final Direction side) {
-		return this.outputVoltage > 0;
+		return this.getOutputVoltage() > 0 && (this.outputSidePredicate == null || this.outputSidePredicate.test(side));
 	}
 
 	@Override

@@ -10,6 +10,7 @@ public final class NCMachines {
 
 	public static MachineType<?> STEAM_SOLID_FUEL_BOILER;
 
+	public static Map<Tier, MachineType<?>> TRANSFORMER;
 	public static Map<Tier, MachineType<?>> STEAM_TURBINES;
 
 	public static Map<Tier, MachineType<?>> MACHINE_HULL;

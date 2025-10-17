@@ -35,6 +35,7 @@ import conductance.init.machine.MultiBlockFluidHatchPartMachineGuiSetup;
 import conductance.init.machine.MultiBlockItemBusPartMachine;
 import conductance.init.machine.MultiBlockItemBusPartMachineGuiSetup;
 import conductance.init.machine.MultiBlockOverclockedEnergyHatchPartMachine;
+import conductance.init.machine.TransformerMachine;
 import conductance.init.machine.boiler.LargeBoilerMachine;
 import conductance.init.machine.boiler.SteamSolidFuelBoilerMachine;
 import conductance.init.machine.boiler.SteamSolidFuelBoilerMachineGuiSetup;
@@ -63,6 +64,7 @@ import static conductance.api.NCMachines.OVERLOCKED_ENERGY_HATCHES;
 import static conductance.api.NCMachines.PULVERIZER;
 import static conductance.api.NCMachines.STEAM_SOLID_FUEL_BOILER;
 import static conductance.api.NCMachines.STEAM_TURBINES;
+import static conductance.api.NCMachines.TRANSFORMER;
 import static conductance.api.NCMachines.WIREMILL;
 
 @ConductancePluginListener(modid = Conductance.MODID)
@@ -75,6 +77,12 @@ final class ConductanceMachines {
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("machine_hull")), tier.getName())
 			).rotationType(BlockRotationType.ALL).tieredModel("machine_hull", tier).guiSetup(null)
+		));
+		TRANSFORMER = CAPI.tiers().newMap(tier -> tier.getNextTier().isMax() ? null : event.<TransformerMachine>register(tier.getId().getPath() + "_transformer",
+			(machineType, blockPos, blockState) -> new TransformerMachine(machineType, blockPos, blockState, tier, 1),
+			b -> b.customName(ignored ->
+				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("transformer")), tier.getNextTier().getName())
+			).rotationType(BlockRotationType.ALL).tieredModel("transformer", tier).guiSetup(null)
 		));
 		ConductanceMachines.initGenerators(event);
 		ConductanceMachines.initRecipeMachines(event);
