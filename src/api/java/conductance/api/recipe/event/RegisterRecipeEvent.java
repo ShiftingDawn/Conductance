@@ -25,6 +25,36 @@ public interface RegisterRecipeEvent extends IConductancePluginEvent {
 		this.create(this.id(type.getId().getPath(), recipeId), type, builder);
 	}
 
+	default void create(final ItemStack result, final MachineRecipeType type, final Consumer<MachineRecipeBuilder> builder) {
+		this.create(BuiltInRegistries.ITEM.getKey(result.getItem()).getPath(), type, b -> {
+			b.out(result);
+			builder.accept(b);
+		});
+	}
+
+	default void create(final ItemLike result, final MachineRecipeType type, final Consumer<MachineRecipeBuilder> builder) {
+		this.create(BuiltInRegistries.ITEM.getKey(result.asItem()).getPath(), type, b -> {
+			b.out(result);
+			builder.accept(b);
+		});
+	}
+
+	default void create(final Holder<? extends ItemLike> result, final MachineRecipeType type, final Consumer<MachineRecipeBuilder> builder) {
+		this.create(result.value(), type, builder);
+	}
+
+	default void create(final Supplier<? extends ItemLike> result, final MachineRecipeType type, final Consumer<MachineRecipeBuilder> builder) {
+		this.create(result.get(), type, builder);
+	}
+
+	default void create(final MaterialGenerationHandler resultHandler, final Material resultMaterial, final int resultAmount, final MachineRecipeType type, final Consumer<MachineRecipeBuilder> builder) {
+		this.create(CAPI.materials().getItem(resultMaterial, resultHandler, resultAmount), type, builder);
+	}
+
+	default void create(final MaterialGenerationHandler resultHandler, final Material resultMaterial, final MachineRecipeType type, final Consumer<MachineRecipeBuilder> builder) {
+		this.create(resultHandler, resultMaterial, 1, type, builder);
+	}
+
 	void shaped(ResourceLocation recipeId, ItemStack result, Consumer<ShapedCraftingRecipeBuilder> builder);
 
 	void shaped(ResourceLocation recipeId, ItemLike result, Consumer<ShapedCraftingRecipeBuilder> builder);

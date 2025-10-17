@@ -101,6 +101,8 @@
   "recipeType.conductance.electrolyzer": "Electrolyzer",
   "recipeType.conductance.circuit_assembler": "Circuit Assembler",
 
+  "recipeType.conductance.electric_blast_furnace": "Electric Blast Furnace",
+
   "machine.conductance.solid_fuel_steam_boiler": "Solid Fuel Steam Boiler",
 
   "machine.conductance.steam_turbine": "%s Steam Turbine",

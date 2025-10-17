@@ -64,6 +64,11 @@ final class MachineRecipes {
 			event.shaped(NCMachines.ELECTROLYZER.get(tier).getItem(), b -> b
 				.pattern("aba", "aca", "ded").key('a', map.getElectricMotorWireItem()).key('b', Tags.Items.GLASS_BLOCKS_COLORLESS).key('c', hull).key('d', circuit).key('e', map.getMachineWireItem()));
 
+			if (!tier.getNextTier().isMax()) {
+				event.shaped(NCMachines.CIRCUIT_ASSEMBLER.get(tier).getItem(), b -> b
+					.pattern("aba", "cdc", "ebe").key('a', arm).key('b', NCItems.TIERED.get(TieredItemType.CIRCUIT, tier.getNextTier())).key('c', conveyor).key('d', hull).key('e', map.getMachineWireItem()));
+			}
+
 			event.create(tier.getId().getPath() + "_input_bus", NCRecipeTypes.ASSEMBLING_MACHINE, b -> b
 				.in(hull).in(Tags.Items.CHESTS_WOODEN).in(map.getPlasticFluid(), 100).out(NCMachines.INPUT_BUSES.get(tier).getItem()).program(1).energyIn(tier).duration(200));
 			event.create(tier.getId().getPath() + "_output_bus", NCRecipeTypes.ASSEMBLING_MACHINE, b -> b

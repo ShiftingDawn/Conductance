@@ -3,6 +3,7 @@ package conductance.init.recipe;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import conductance.api.NCItems;
+import conductance.api.NCRecipeTypes;
 import conductance.api.NCTiers;
 import conductance.api.recipe.event.RegisterRecipeEvent;
 import conductance.api.tier.TieredItemType;
@@ -20,6 +21,7 @@ final class CircuitRecipes {
 
 	public static void add(final RegisterRecipeEvent event) {
 		CircuitRecipes.addTier1(event);
+		CircuitRecipes.addTier2(event);
 	}
 
 	private static void addTier1(final RegisterRecipeEvent event) {
@@ -35,6 +37,12 @@ final class CircuitRecipes {
 			.key('a', Items.PAPER).key('b', DUST, REDSTONE).key('c', FOIL, TIN).key('d', NCItems.WOOD_CIRCUIT_BOARD).key('e', ROD, TIN));
 		event.shaped(NCItems.tiered(TieredItemType.CIRCUIT, NCTiers.LV, 1), b -> b.pattern("aba", "cdc", "efe")
 			.key('a', NCItems.TRANSISTOR).key('b', PLATE, STEEL).key('c', NCItems.RESISTOR).key('d', NCItems.WOOD_CIRCUIT_SUBSTRATE).key('e', NCItems.DIODE).key('f', FINE_WIRE, COPPER));
+
+		event.create(NCItems.tiered(TieredItemType.CIRCUIT, NCTiers.LV, 2), NCRecipeTypes.CIRCUIT_ASSEMBLER, b -> b
+			.in(NCItems.TRANSISTOR, 2).in(NCItems.RESISTOR, 2).in(NCItems.DIODE, 2).in(STEEL, PLATE).in(NCItems.WOOD_CIRCUIT_SUBSTRATE).in(COPPER, FINE_WIRE).duration(200).energyIn(NCTiers.LV));
+	}
+
+	private static void addTier2(final RegisterRecipeEvent event) {
 	}
 
 	private CircuitRecipes() {
