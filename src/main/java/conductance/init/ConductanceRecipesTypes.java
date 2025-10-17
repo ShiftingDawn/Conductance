@@ -55,12 +55,12 @@ final class ConductanceRecipesTypes {
 		if (builder.getInputs().containsKey(NCRecipeElementTypes.FLUID)) {
 			return;
 		}
-		int time = builder.getDuration();
+		int fluidAmount = Math.min(1, builder.getDuration() / 10);
 		recipeBuilderFactory.register(recipeId.withSuffix("_using_distilled_water"), copy ->
-			copy.in(NCMaterials.DISTILLED_WATER, NCMaterialGenerationHandlers.LIQUID, time * 2).duration(time * 2));
+			copy.in(NCMaterials.DISTILLED_WATER, NCMaterialGenerationHandlers.LIQUID, fluidAmount * 2).duration(builder.getDuration() * 2));
 		recipeBuilderFactory.register(recipeId.withSuffix("_using_water"), copy ->
-			copy.in(NCMaterials.WATER, NCMaterialGenerationHandlers.LIQUID, time * 8).duration(time * 4));
-		builder.in(NCMaterials.LUBRICANT, NCMaterialGenerationHandlers.LIQUID, time);
+			copy.in(NCMaterials.WATER, NCMaterialGenerationHandlers.LIQUID, fluidAmount * 3).duration(builder.getDuration() * 3));
+		builder.in(NCMaterials.LUBRICANT, NCMaterialGenerationHandlers.LIQUID, fluidAmount);
 	};
 
 	private static final RecipeTestCallback ELECTRIC_BLAST_FURNACE_COIL_TEST = (machine, recipe) -> {
