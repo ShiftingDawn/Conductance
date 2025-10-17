@@ -25,6 +25,13 @@
   "item.conductance.resistor": "Resistor",
   "item.conductance.transistor": "Transistor",
 
+  "item.conductance.silicon_boule": "Silicone Boule",
+  "item.conductance.silicon_wafer": "Silicon Wafer",
+  "item.conductance.cpu_wafer": "CPU Wafer",
+  "item.conductance.cpu_chip": "Central Processing Unit (CPU)",
+  "item.conductance.ram_wafer": "RAM Wafer",
+  "item.conductance.ram_chip": "Random Access Memory (RAM)",
+
   "block.conductance.bronze_casing": "Bronze Casing",
   "block.conductance.invar_casing": "Invar Casing",
   "block.conductance.aluminium_casing": "Aluminium Casing",

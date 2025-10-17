@@ -1,10 +1,10 @@
 package conductance.init;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,6 +16,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import com.google.common.collect.Tables;
+import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.NCBlocks;
 import conductance.api.NCDataComponents;
@@ -45,7 +46,7 @@ import conductance.lib.network.RegisterPacketEvent;
 public final class ConductanceItems {
 
 	private static final DeferredRegister.Items REGISTRY = DeferredRegister.createItems(Conductance.MODID);
-	private static final List<Holder<Item>> SIMPLE_ITEMS = new ArrayList<>();
+	private static final Map<Holder<Item>, ResourceLocation> SIMPLE_ITEMS = new HashMap<>();
 
 	public static void initialize(final IEventBus modEventBus) {
 		ConductanceItems.REGISTRY.register(modEventBus);
@@ -76,20 +77,26 @@ public final class ConductanceItems {
 				})));
 			}
 		}));
-		NCItems.RESIN = ConductanceItems.makeSimpleItem("resin");
-		NCItems.RESIN_PULP = ConductanceItems.makeSimpleItem("resin_pulp");
-		NCItems.WOOD_CIRCUIT_BOARD = ConductanceItems.makeSimpleItem("wood_circuit_board");
-		NCItems.WOOD_CIRCUIT_SUBSTRATE = ConductanceItems.makeSimpleItem("wood_circuit_substrate");
-		NCItems.DIODE = ConductanceItems.makeSimpleItem("diode");
-		NCItems.RESISTOR = ConductanceItems.makeSimpleItem("resistor");
-		NCItems.TRANSISTOR = ConductanceItems.makeSimpleItem("transistor");
+		NCItems.RESIN = ConductanceItems.makeSimpleItem("resin", null);
+		NCItems.RESIN_PULP = ConductanceItems.makeSimpleItem("resin_pulp", null);
+		NCItems.WOOD_CIRCUIT_BOARD = ConductanceItems.makeSimpleItem("wood_circuit_board", null);
+		NCItems.WOOD_CIRCUIT_SUBSTRATE = ConductanceItems.makeSimpleItem("wood_circuit_substrate", null);
+		NCItems.DIODE = ConductanceItems.makeSimpleItem("diode", null);
+		NCItems.RESISTOR = ConductanceItems.makeSimpleItem("resistor", null);
+		NCItems.TRANSISTOR = ConductanceItems.makeSimpleItem("transistor", null);
+		NCItems.SILICON_BOULE = ConductanceItems.makeSimpleItem("silicon_boule", "wafer/silicon_boule");
+		NCItems.SILICON_WAFER = ConductanceItems.makeSimpleItem("silicon_wafer", "wafer/silicon_wafer");
+		NCItems.CPU_WAFER = ConductanceItems.makeSimpleItem("cpu_wafer", "wafer/cpu_wafer");
+		NCItems.CPU_CHIP = ConductanceItems.makeSimpleItem("cpu_chip", "wafer/cpu_chip");
+		NCItems.RAM_WAFER = ConductanceItems.makeSimpleItem("ram_wafer", "wafer/ram_wafer");
+		NCItems.RAM_CHIP = ConductanceItems.makeSimpleItem("ram_chip", "wafer/ram_chip");
 	}
 
-	private static Holder<Item> makeSimpleItem(final String itemName) {
+	private static Holder<Item> makeSimpleItem(final String itemName, @Nullable final String texture) {
 		final Holder<Item> result = ConductanceItems.REGISTRY.registerItem(itemName, props -> Util.make(new Item(props), item -> {
 			CreativeTabHelper.addToTab(item, CreativeTabHelper.Tabs.GENERAL);
 		}));
-		ConductanceItems.SIMPLE_ITEMS.add(result);
+		ConductanceItems.SIMPLE_ITEMS.put(result, Conductance.id("item/%s".formatted(Objects.requireNonNullElse(texture, itemName))));
 		return result;
 	}
 
@@ -200,7 +207,10 @@ public final class ConductanceItems {
 			event.addItemsModel(item.value(), b -> b.simple(item.value()));
 			event.addItemModel(item.value(), b -> b.layer0(Conductance.id("item/extruder_shape/" + shape)));
 		});
-		ConductanceItems.SIMPLE_ITEMS.forEach(itemHolder -> event.addSimpleItem(itemHolder.value()));
+		ConductanceItems.SIMPLE_ITEMS.forEach((itemHolder, texture) -> {
+			event.addItemsModel(itemHolder.value(), b -> b.simple(itemHolder.value()));
+			event.addItemModel(itemHolder.value(), b -> b.layer0(texture));
+		});
 	}
 
 	@EventListener(priority = -100)

@@ -15,10 +15,12 @@ public final class NCItems {
 	public static Holder<Item> WRENCH;
 	public static Holder<Item> HAMMER;
 	public static Holder<Item> WIRE_CUTTERS;
+
 	public static Table<TieredItemType, Tier, Holder<Item>> TIERED;
 	public static Holder<Item> PROGRAM_CIRCUIT;
 	public static Holder<Item> EMPTY_EXTRUDER_SHAPE;
 	public static Map<ExtruderShape, Holder<Item>> EXTRUDER_SHAPES;
+
 	public static Holder<Item> RESIN;
 	public static Holder<Item> RESIN_PULP;
 	public static Holder<Item> WOOD_CIRCUIT_BOARD;
@@ -26,6 +28,12 @@ public final class NCItems {
 	public static Holder<Item> DIODE;
 	public static Holder<Item> RESISTOR;
 	public static Holder<Item> TRANSISTOR;
+	public static Holder<Item> SILICON_BOULE;
+	public static Holder<Item> SILICON_WAFER;
+	public static Holder<Item> CPU_WAFER;
+	public static Holder<Item> CPU_CHIP;
+	public static Holder<Item> RAM_WAFER;
+	public static Holder<Item> RAM_CHIP;
 
 	public static ItemStack tiered(final TieredItemType tieredItemType, final Tier tier, final int count) {
 		final Holder<Item> item = NCItems.TIERED.get(tieredItemType, tier);
