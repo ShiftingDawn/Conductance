@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
@@ -36,6 +37,7 @@ import conductance.api.block.BlockHelper;
 import conductance.api.block.BlockRotationHelper;
 import conductance.api.block.BlockRotationType;
 import conductance.api.block.IGeneratedMiningTags;
+import conductance.api.block.InteractType;
 import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.multi.IMultiBlockController;
 
@@ -126,6 +128,16 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 			}
 		}
 		return super.useWithoutItem(state, level, pos, player, hitResult);
+	}
+
+	@Override
+	protected InteractionResult useItemOn(final ItemStack stack, final BlockState state, final Level level, final BlockPos pos, final Player player, final InteractionHand hand, final BlockHitResult hitResult) {
+		if (InteractType.HAMMER.is(stack) && level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
+			machine.setWorkingState(!machine.isCurrentlyWorking());
+			InteractType.HAMMER.playSound(level, player, pos);
+			return InteractionResult.SUCCESS_SERVER;
+		}
+		return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
 	}
 
 	@Override

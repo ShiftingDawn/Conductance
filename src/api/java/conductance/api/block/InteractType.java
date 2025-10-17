@@ -1,11 +1,14 @@
 package conductance.api.block;
 
 import java.util.function.Supplier;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
@@ -34,6 +37,12 @@ public enum InteractType {
 	public void playSound(final UseOnContext ctx) {
 		if (this.sound != null) {
 			BlockHelper.playSound(ctx, this.sound.get());
+		}
+	}
+
+	public void playSound(final Level level, final Entity entity, final BlockPos pos) {
+		if (this.sound != null) {
+			BlockHelper.playSound(level, entity, this.sound.get(), pos);
 		}
 	}
 

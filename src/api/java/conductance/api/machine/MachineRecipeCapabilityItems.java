@@ -25,7 +25,7 @@ import conductance.api.recipe.MachineRecipe;
 import conductance.api.util.GuiUtils;
 import conductance.api.util.IO;
 
-public final class MachineRecipeCapabilityItems extends MachineRecipeCapability<SizedIngredient> implements IBlockCapabilityHandler, IDelegatedItemHandler {
+public class MachineRecipeCapabilityItems extends MachineRecipeCapability<SizedIngredient> implements IBlockCapabilityHandler, IDelegatedItemHandler {
 
 	private final @Getter MachineInventory inventory;
 

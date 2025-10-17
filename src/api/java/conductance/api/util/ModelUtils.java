@@ -12,10 +12,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import conductance.api.CAPI;
 
 public final class ModelUtils {
 
 	public static final ResourceLocation BLOCK_ATLAS = ResourceLocation.withDefaultNamespace("textures/atlas/blocks.png");
+	public static final ResourceLocation MODEL_CUBE_PARTICLE = ResourceLocation.fromNamespaceAndPath(CAPI.MOD_ID, "block/cube_all");
 	public static final Map<Direction, IntPos> MODEL_ROTATION;
 	public static final Map<Direction, String> LOGICAL_SIDES;
 

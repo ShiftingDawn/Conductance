@@ -23,6 +23,7 @@ import conductance.api.tier.Tier;
 import conductance.api.util.ModelUtils;
 import conductance.Conductance;
 import static conductance.api.NCBlockStateProperties.WORKING;
+import static conductance.api.util.ModelUtils.MODEL_CUBE_PARTICLE;
 
 final class MachineModelHandler {
 
@@ -53,11 +54,12 @@ final class MachineModelHandler {
 			final MachineBlock<?> block = machineType.getBlock().get();
 			final boolean canBeLit = block.defaultBlockState().hasProperty(WORKING);
 			MachineModelHandler.createBlockState(event, block, machineType, canBeLit);
-			for (int i = 0; i < 2; ++i) {
-				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, null, MachineModelHandler.BASE_CASING_TEXTURE, casing -> casing.parent(Conductance.id("block/machine_base")));
-				if (!canBeLit) {
-					break;
-				}
+			MachineModelHandler.createStandardModel(event, machineType, block, false, null, MachineModelHandler.BASE_CASING_TEXTURE,
+				casing -> casing.parent(Conductance.id("block/machine_base")));
+			if (canBeLit) {
+				MachineModelHandler.createStandardModel(event, machineType, block, true, null, MachineModelHandler.BASE_CASING_TEXTURE,
+					casing -> casing.parent(Conductance.id("block/machine_base")));
+
 			}
 			MachineModelHandler.createItemModel(event, block, canBeLit);
 		});
@@ -65,11 +67,11 @@ final class MachineModelHandler {
 			final MachineBlock<?> block = machineType.getBlock().get();
 			final boolean canBeLit = block.defaultBlockState().hasProperty(WORKING);
 			MachineModelHandler.createBlockState(event, block, machineType, canBeLit);
-			for (int i = 0; i < 2; ++i) {
-				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, null, casingTexture, casing -> casing.parent(Conductance.id("block/cube_all")).particle(casingTexture));
-				if (!canBeLit) {
-					break;
-				}
+			MachineModelHandler.createStandardModel(event, machineType, block, false, null, casingTexture,
+				casing -> casing.parent(MODEL_CUBE_PARTICLE).particle(casingTexture));
+			if (canBeLit) {
+				MachineModelHandler.createStandardModel(event, machineType, block, true, null, casingTexture,
+					casing -> casing.parent(MODEL_CUBE_PARTICLE).particle(casingTexture));
 			}
 			MachineModelHandler.createItemModel(event, block, canBeLit);
 		});
@@ -78,12 +80,11 @@ final class MachineModelHandler {
 			final boolean canBeLit = block.defaultBlockState().hasProperty(WORKING);
 			final ResourceLocation casingTexture = modelData.getB().getId().withPrefix("block/casing/machine_");
 			MachineModelHandler.createBlockState(event, block, machineType, canBeLit);
-			for (int i = 0; i < 2; ++i) {
-				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, machineType.getId().withPath(modelData.getA()), casingTexture,
+			MachineModelHandler.createStandardModel(event, machineType, block, false, machineType.getId().withPath(modelData.getA()), casingTexture,
+				casing -> casing.parent(Conductance.id("block/cube_all")).particle(casingTexture));
+			if (canBeLit) {
+				MachineModelHandler.createStandardModel(event, machineType, block, true, machineType.getId().withPath(modelData.getA()), casingTexture,
 					casing -> casing.parent(Conductance.id("block/cube_all")).particle(casingTexture));
-				if (!canBeLit) {
-					break;
-				}
 			}
 			MachineModelHandler.createItemModel(event, block, canBeLit);
 		});
@@ -92,16 +93,19 @@ final class MachineModelHandler {
 			final boolean canBeLit = block.defaultBlockState().hasProperty(WORKING);
 			MachineModelHandler.createBlockState(event, block, machineType, canBeLit);
 			final ResourceLocation particleTexture = textureBaseLocation.withSuffix("/front");
-			for (int i = 0; i < 2; ++i) {
-				MachineModelHandler.createStandardModel(event, machineType, block, i == 1, null, particleTexture, casing -> {
+			MachineModelHandler.createStandardModel(event, machineType, block, false, null, particleTexture, casing -> {
+				casing.parent(Conductance.id("block/machine_sided"));
+				for (final String logicalSide : ModelUtils.LOGICAL_SIDES.values()) {
+					casing.texture(logicalSide, textureBaseLocation.withSuffix("/" + logicalSide));
+				}
+			});
+			if (canBeLit) {
+				MachineModelHandler.createStandardModel(event, machineType, block, true, null, particleTexture, casing -> {
 					casing.parent(Conductance.id("block/machine_sided"));
 					for (final String logicalSide : ModelUtils.LOGICAL_SIDES.values()) {
 						casing.texture(logicalSide, textureBaseLocation.withSuffix("/" + logicalSide));
 					}
 				});
-				if (!canBeLit) {
-					break;
-				}
 			}
 			MachineModelHandler.createItemModel(event, block, canBeLit);
 		});
@@ -134,34 +138,35 @@ final class MachineModelHandler {
 		if (working) {
 			id = id.withSuffix("_working");
 		}
-		event.addBlockModel(id, model -> model.particle(particleTexture).renderType("cutout_mipped").composite(composite -> composite
-			.child("casing", casingCallback)
-			.child("overlay", child -> {
-				child.element(element -> {
-					element.from(0, 0, 0).to(16, 16, 16);
-					MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), null, false);
+		event.addBlockModel(id, model -> model.particle(particleTexture).renderType("cutout_mipped").composite(composite -> {
+			composite
+				.child("casing", casingCallback)
+				.child("overlay", child -> {
+					child.element(element -> {
+						element.from(0, 0, 0).to(16, 16, 16);
+						MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), null, false);
+					}, true);
+					child.element(element -> {
+						element.from(0, 0, 0).to(16, 16, 16);
+						MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_emissive", true);
+					}, true);
 				}, true);
-				if (working) {
+			if (!working) {
+				composite.itemRenderOrder("casing", "overlay");
+			} else {
+				composite.child("overlay2", child -> {
 					child.element(element -> {
 						element.from(0, 0, 0).to(16, 16, 16);
 						MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_working", false);
 					}, true);
-				}
-			}, true)
-			.child("overlay2", child -> {
-				child.element(element -> {
-					element.from(0, 0, 0).to(16, 16, 16);
-					MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_emissive", true);
-				}, true);
-				if (working) {
 					child.element(element -> {
 						element.from(0, 0, 0).to(16, 16, 16);
 						MachineModelHandler.addSides(child, element, Objects.requireNonNullElseGet(machineTextureLocation, machineType::getId), "_working_emissive", true);
 					}, true);
-				}
-			}, true)
-			.itemRenderOrder("casing", "overlay", "overlay2")
-		));
+				}, true);
+				composite.itemRenderOrder("casing", "overlay", "overlay2");
+			}
+		}));
 	}
 
 	private static void addSides(final ModelBuilder builder, final ModelElementBuilder element, final ResourceLocation machineKey, @Nullable final String suffix, final boolean emissive) {

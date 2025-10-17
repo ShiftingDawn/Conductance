@@ -81,12 +81,14 @@ final class ConductanceMachines {
 			).rotationType(BlockRotationType.ALL).tieredModel("machine_hull", tier).guiSetup(null)
 		));
 		ConductanceMachines.initGenerators(event);
-		TRANSFORMER = CAPI.tiers().newMap(tier -> tier.getNextTier().isMax() ? null : event.<TransformerMachine>register(tier.getId().getPath() + "_transformer",
+		TRANSFORMER = CAPI.tiers().newMap(tier -> tier.getNextTier().isMax() ? null : event.<TransformerMachine>register(tier.getNextTier().getId().getPath() + "_transformer",
 			(machineType, blockPos, blockState) -> new TransformerMachine(machineType, blockPos, blockState, tier, 1),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("transformer")), tier.getNextTier().getName())
-			).rotationType(BlockRotationType.ALL).tieredModel("transformer", tier).guiSetup(null).tooltip(() -> List.of(
-				Component.translatable("machine.conductance.transformer.tooltip.1", 4, tier.getName(), TextHelper.ENERGY_FORMAT, 1, tier.getNextTier().getName(), TextHelper.ENERGY_FORMAT)
+			).rotationType(BlockRotationType.ALL).tieredModel("transformer", tier).guiSetup(null).blockFactory(MachineBlockWorkable::new).tooltip(() -> List.of(
+				Component.translatable("machine.conductance.transformer.tooltip.0"),
+				Component.translatable("machine.conductance.transformer.tooltip.1", 4, tier.getName(), TextHelper.ENERGY_FORMAT, 1, tier.getNextTier().getName(), TextHelper.ENERGY_FORMAT),
+				Component.translatable("machine.conductance.transformer.tooltip.2", 1, tier.getNextTier().getName(), TextHelper.ENERGY_FORMAT, 4, tier.getName(), TextHelper.ENERGY_FORMAT)
 			))
 		));
 		ConductanceMachines.initRecipeMachines(event);

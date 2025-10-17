@@ -118,7 +118,9 @@
 
   "machine.conductance.machine_hull": "%s Machine Hull",
   "machine.conductance.transformer": "%s Transformer",
-  "machine.conductance.transformer.tooltip.1": "Transforms %sA of %s%s to %sA of %s%s",
+  "machine.conductance.transformer.tooltip.0": "Transforms up by default, use hammer to change",
+  "machine.conductance.transformer.tooltip.1": "Transform up: %sA of %s%s to %sA of %s%s",
+  "machine.conductance.transformer.tooltip.2": "Transform down: %sA of %s%s to %sA of %s%s",
   "machine.conductance.bending_machine": "%s Bending Machine",
   "machine.conductance.pulverizer": "%s Pulverizer",
   "machine.conductance.extruder": "%s Extruder",

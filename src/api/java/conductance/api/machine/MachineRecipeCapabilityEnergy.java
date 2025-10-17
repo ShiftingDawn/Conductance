@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +17,7 @@ import conductance.api.recipe.MachineRecipe;
 import conductance.api.util.IO;
 
 @SuppressWarnings("deprecation")
-public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability<Long> implements IBlockCapabilityHandler, IEnergyHandler {
+public class MachineRecipeCapabilityEnergy extends MachineRecipeCapability<Long> implements IBlockCapabilityHandler, IEnergyHandler {
 
 	private final boolean canOverclock;
 	@Setter
@@ -25,10 +26,18 @@ public final class MachineRecipeCapabilityEnergy extends MachineRecipeCapability
 	private @Nullable Predicate<@Nullable Direction> outputSidePredicate = null;
 	private @Getter long capacity;
 	private long energy;
-	private @Getter long inputVoltage;
-	private @Getter long inputAmperage;
-	private @Getter long outputVoltage;
-	private @Getter long outputAmperage;
+	@Setter(AccessLevel.PROTECTED)
+	@Getter
+	private long inputVoltage;
+	@Setter(AccessLevel.PROTECTED)
+	@Getter
+	private long inputAmperage;
+	@Setter(AccessLevel.PROTECTED)
+	@Getter
+	private long outputVoltage;
+	@Setter(AccessLevel.PROTECTED)
+	@Getter
+	private long outputAmperage;
 	private long lastAcceptedTimestamp;
 	private long acceptedAmpsThisTick;
 

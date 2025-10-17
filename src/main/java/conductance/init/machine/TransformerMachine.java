@@ -3,7 +3,6 @@ package conductance.init.machine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCCapabilities;
@@ -18,17 +17,28 @@ import conductance.api.util.IO;
 public final class TransformerMachine extends MachineBlockEntity<TransformerMachine> {
 
 	private final @Getter Tier inputTier;
-	private final @Getter MachineRecipeCapabilityEnergy energy;
+	private final @Getter TransformerEnergyHandler energy;
 	private @Nullable MachineTick tick = null;
-	private @Nullable BlockCapabilityCache<IEnergyHandler, Direction> outputCache;
 
 	public TransformerMachine(final MachineType<TransformerMachine> type, final BlockPos pos, final BlockState blockState, final Tier inputTier, final long outputAmps) {
 		super(type, pos, blockState);
 		this.inputTier = inputTier;
-		this.energy = new MachineRecipeCapabilityEnergy(this, IO.IN, inputTier.getVoltage() * 4 * outputAmps * 64, inputTier.getVoltage(), outputAmps * 4, inputTier.getNextTier().getVoltage(), outputAmps, false);
-		this.energy.setInputSidePredicate(side -> side != this.getFacing());
-		this.energy.setOutputSidePredicate(side -> side == this.getFacing());
+		this.energy = new TransformerEnergyHandler(this, IO.IN, inputTier.getVoltage() * 4 * outputAmps * 4, inputTier.getVoltage(), outputAmps * 4, inputTier.getNextTier().getVoltage(), outputAmps, false);
+		this.energy.setInputSidePredicate(side -> side != this.getFacing() && this.isTransformUp());
+		this.energy.setOutputSidePredicate(side -> side == this.getFacing() && this.isTransformUp());
 		this.energy.addChangedListener(this::revalidateTick);
+	}
+
+	private boolean isTransformUp() {
+		return !this.isCurrentlyWorking();
+	}
+
+	@Override
+	public void setWorkingState(final boolean working) {
+		super.setWorkingState(working);
+		if (working != this.isCurrentlyWorking()) {
+			this.energy.switchIO();
+		}
 	}
 
 	protected void revalidateTick() {
@@ -36,38 +46,59 @@ public final class TransformerMachine extends MachineBlockEntity<TransformerMach
 			return;
 		}
 		this.tick = this.addTick(this::tick, this.tick);
-		this.outputCache = null;
-	}
-
-	private void invalidateCapCache() {
-		this.outputCache = null;
 	}
 
 	@Override
 	public void onBlockStateChanged(final BlockState oldState, final BlockState newState) {
 		if (oldState != newState) {
-			this.outputCache = null;
+			this.revalidateTick();
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private void tick() {
-		assert this.tick != null;
-		final long outputAmount = this.getEnergy().getOutputVoltage() * this.getEnergy().getOutputAmperage();
-		if (this.getEnergy().getEnergyStored() < outputAmount) {
+		assert this.tick != null && this.level != null;
+		if (this.getEnergy().getEnergyStored() < this.getEnergy().getOutputVoltage()) {
 			this.tick.invalidate();
 			return;
 		}
-		if (this.outputCache == null) {
-			this.onServer(level -> {
-				this.outputCache = BlockCapabilityCache.create(NCCapabilities.ENERGY_HANDLER_BLOCK, level, this.getBlockPos().relative(this.getFacing()), this.getFacing().getOpposite(),
-					() -> !this.isRemoved(), this::invalidateCapCache);
-			});
-		}
-		if (this.outputCache != null) {
-			final long acceptedAmps = this.outputCache.getCapability().receiveEnergy(this.getFacing().getOpposite(), this.getEnergy().getOutputVoltage(), this.getEnergy().getOutputAmperage());
-			if (acceptedAmps > 0) {
-				this.energy.removeEnergy(acceptedAmps * this.energy.getOutputVoltage());
+		long ampsLeft = this.getEnergy().getOutputAmperage();
+		for (final Direction side : Direction.values()) {
+			if (ampsLeft == 0 || this.getEnergy().getEnergyStored() < this.getEnergy().getOutputVoltage()) {
+				return;
 			}
+			if (this.energy.canExtractEnergy(side)) {
+				final IEnergyHandler handler = this.level.getCapability(NCCapabilities.ENERGY_HANDLER_BLOCK, this.getBlockPos().relative(side), side.getOpposite());
+				if (handler != null) {
+					final long acceptedAmps = handler.receiveEnergy(side.getOpposite(), this.getEnergy().getOutputVoltage(), ampsLeft);
+					if (acceptedAmps > 0) {
+						ampsLeft -= acceptedAmps;
+						this.energy.removeEnergy(acceptedAmps * this.energy.getOutputVoltage());
+					}
+				}
+			}
+		}
+	}
+
+	private static class TransformerEnergyHandler extends MachineRecipeCapabilityEnergy {
+
+		TransformerEnergyHandler(
+			final MachineBlockEntity<?> machine, final IO recipeIoMode, final long capacity, final long inputVoltage, final long inputAmperage, final long outputVoltage, final long outputAmperage,
+			final boolean canOverclock
+		) {
+			super(machine, recipeIoMode, capacity, inputVoltage, inputAmperage, outputVoltage, outputAmperage, canOverclock);
+		}
+
+		void switchIO() {
+			final long inVoltage = this.getInputVoltage();
+			final long inAmps = this.getInputAmperage();
+			final long outVoltage = this.getOutputVoltage();
+			final long outAmps = this.getOutputAmperage();
+			this.setInputVoltage(outVoltage);
+			this.setInputAmperage(outAmps);
+			this.setOutputVoltage(inVoltage);
+			this.setOutputAmperage(inAmps);
+			this.setChanged();
 		}
 	}
 }

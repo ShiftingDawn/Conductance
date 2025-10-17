@@ -23,7 +23,7 @@ import conductance.api.recipe.MachineRecipe;
 import conductance.api.util.GuiUtils;
 import conductance.api.util.IO;
 
-public final class MachineRecipeCapabilityFluids extends MachineRecipeCapability<SizedFluidIngredient> implements IBlockCapabilityHandler, IDelegatedFluidHandler {
+public class MachineRecipeCapabilityFluids extends MachineRecipeCapability<SizedFluidIngredient> implements IBlockCapabilityHandler, IDelegatedFluidHandler {
 
 	private final @Getter MachineFluidHandler handler;
 
