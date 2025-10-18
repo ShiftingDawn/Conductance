@@ -46,7 +46,7 @@ import conductance.init.ConductanceItems;
 import conductance.init.ConductanceMenuTypes;
 import conductance.init.ConductanceRecipeBookCategories;
 import conductance.init.ConductanceSoundEvents;
-import conductance.lib.GridInteractionHandler;
+import conductance.lib.GridAndToolInteractionHandler;
 import conductance.lib.RegistryProviderImpl;
 import conductance.lib.ResourceFinderImpl;
 import conductance.lib.network.RegisterPacketEvent;
@@ -77,7 +77,7 @@ public abstract class Conductance {
 
 		modEventBus.addListener(RegisterEvent.class, this::onRegister);
 		modEventBus.addListener(RegisterPayloadHandlersEvent.class, this::onRegisterPayloadHandlers);
-		GridInteractionHandler.init(NeoForge.EVENT_BUS);
+		GridAndToolInteractionHandler.init(NeoForge.EVENT_BUS);
 
 		ConductanceCreativeTabs.initialize(modEventBus);
 		ConductanceRecipeBookCategories.initialize(modEventBus);

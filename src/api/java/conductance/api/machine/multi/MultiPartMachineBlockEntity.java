@@ -2,11 +2,14 @@ package conductance.api.machine.multi;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.model.data.ModelData;
 import lombok.Getter;
 import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.MachineModelProperties;
 import conductance.api.machine.MachineType;
 
 public abstract class MultiPartMachineBlockEntity<T extends MultiPartMachineBlockEntity<T>> extends MachineBlockEntity<T> implements IMultiBlockPart {
@@ -38,5 +41,23 @@ public abstract class MultiPartMachineBlockEntity<T extends MultiPartMachineBloc
 				}
 			}
 		}
+	}
+
+	@Override
+	public ModelData getModelData() {
+		final ModelData.Builder builder = super.getModelData().derive();
+		if (this.level != null) {
+			for (final BlockPos controllerPos : this.controllers) {
+				if (this.level.getBlockEntity(controllerPos) instanceof final IMultiBlockController<?> controller && controller.isStructureFormed()) {
+					final Supplier<BlockState> casingAppearance = controller.getMachineType().getCasingAppearance();
+					if (casingAppearance == null) {
+						continue;
+					}
+					builder.with(MachineModelProperties.APPEARANCE, casingAppearance.get());
+					break;
+				}
+			}
+		}
+		return builder.build();
 	}
 }

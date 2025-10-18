@@ -14,10 +14,10 @@ import conductance.api.machine.MachineRecipeCapabilityFluids;
 import conductance.api.machine.MachineTick;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.multi.MultiBlockPartCapability;
-import conductance.api.machine.multi.MultiPartMachineBlockEntity;
+import conductance.api.machine.multi.WorkableMultiPartMachineBlockEntity;
 import conductance.api.util.IO;
 
-public final class MultiBlockFluidHatchPartMachine extends MultiPartMachineBlockEntity<MultiBlockFluidHatchPartMachine> {
+public final class MultiBlockFluidHatchPartMachine extends WorkableMultiPartMachineBlockEntity<MultiBlockFluidHatchPartMachine> {
 
 	private final @Getter MachineRecipeCapabilityFluids fluids;
 	private final @Getter IO io;

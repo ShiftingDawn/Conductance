@@ -14,10 +14,10 @@ import conductance.api.machine.MachineRecipeCapabilityItems;
 import conductance.api.machine.MachineTick;
 import conductance.api.machine.MachineType;
 import conductance.api.machine.multi.MultiBlockPartCapability;
-import conductance.api.machine.multi.MultiPartMachineBlockEntity;
+import conductance.api.machine.multi.WorkableMultiPartMachineBlockEntity;
 import conductance.api.util.IO;
 
-public final class MultiBlockItemBusPartMachine extends MultiPartMachineBlockEntity<MultiBlockItemBusPartMachine> {
+public final class MultiBlockItemBusPartMachine extends WorkableMultiPartMachineBlockEntity<MultiBlockItemBusPartMachine> {
 
 	private final @Getter MachineRecipeCapabilityItems items;
 	private final @Getter IO io;

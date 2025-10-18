@@ -5,9 +5,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import conductance.api.NCBlockStateProperties;
 
-public class MachineBlockWorkable<T extends MachineBlockEntity<T>> extends MachineBlock<T> {
+public class WorkableMachineBlock<T extends MachineBlockEntity<T>> extends MachineBlock<T> {
 
-	public MachineBlockWorkable(final Properties properties, final MachineType<T> machineType) {
+	public WorkableMachineBlock(final Properties properties, final MachineType<T> machineType) {
 		super(properties, machineType);
 	}
 

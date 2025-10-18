@@ -17,26 +17,35 @@ import conductance.api.block.InteractType;
 import conductance.api.machine.IFluidAutoOutput;
 import conductance.api.machine.IItemAutoOutput;
 import conductance.api.machine.MachineCapability;
+import conductance.api.machine.api.IControllable;
 import conductance.api.machine.api.IMachineCapabilityHolder;
 import static conductance.api.NCBlockStateProperties.FACING_ALL;
 import static conductance.api.NCBlockStateProperties.FACING_EXTENDED;
 import static conductance.api.NCBlockStateProperties.FACING_HORIZONTAL;
 import static conductance.api.NCBlockStateProperties.FACING_VERTICAL;
 
-public final class GridInteractionHandler {
+public final class GridAndToolInteractionHandler {
 
 	public static void init(final IEventBus eventBus) {
-		eventBus.addListener(PlayerInteractEvent.RightClickBlock.class, GridInteractionHandler::onRightClickBlock);
+		eventBus.addListener(PlayerInteractEvent.RightClickBlock.class, GridAndToolInteractionHandler::onRightClickBlock);
 	}
 
 	private static void onRightClickBlock(final PlayerInteractEvent.RightClickBlock event) {
 		final GridInteractionContext ctx = new GridInteractionContext(event.getEntity(), event.getHand(), event.getHitVec());
 		final Direction side = GridInteractionHelper.getLogicalSideFromGrid(event.getHitVec());
 		if (GridInteractionHelper.shouldInteractUsingGrid(ctx)) {
-			final InteractionResult result = GridInteractionHandler.handleGridInteraction(ctx, side);
+			final InteractionResult result = GridAndToolInteractionHandler.handleGridInteraction(ctx, side);
 			if (result.consumesAction()) {
 				event.setCanceled(true);
 				event.setCancellationResult(result);
+			}
+		} else {
+			final InteractType type = InteractType.findTypeForStack(event.getItemStack());
+			if (type == InteractType.HAMMER && event.getLevel().getBlockEntity(event.getPos()) instanceof final IControllable controllable) {
+				controllable.setProcessingAllowed(!controllable.isProcessingAllowed());
+				InteractType.HAMMER.playSound(event.getLevel(), event.getEntity(), event.getPos());
+				event.setCanceled(true);
+				event.setCancellationResult(InteractionResult.SUCCESS_SERVER);
 			}
 		}
 	}
@@ -54,7 +63,7 @@ public final class GridInteractionHandler {
 				return res;
 			}
 		}
-		if (InteractType.WRENCH == ctx.getInteractType() && GridInteractionHandler.tryWrench(ctx, side)) {
+		if (InteractType.WRENCH == ctx.getInteractType() && GridAndToolInteractionHandler.tryWrench(ctx, side)) {
 			InteractType.WRENCH.playSound(ctx);
 			return InteractionResult.SUCCESS_SERVER;
 		}
@@ -118,6 +127,6 @@ public final class GridInteractionHandler {
 		return false;
 	}
 
-	private GridInteractionHandler() {
+	private GridAndToolInteractionHandler() {
 	}
 }

@@ -5,6 +5,9 @@
   "tool_wire_cutters": {
     "sounds": ["conductance:tool_wire_cutters"]
   },
+  "tool_hammer": {
+    "sounds": ["conductance:tool_hammer"]
+  },
   "tool_crowbar": {
     "sounds": ["conductance:tool_crowbar"]
   }

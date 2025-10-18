@@ -1,45 +1,33 @@
 package conductance.core.machine;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
-import net.minecraft.client.Minecraft;
+import java.util.function.BiConsumer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.block.model.SingleVariant;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.TriState;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import com.mojang.serialization.MapCodec;
-import net.neoforged.neoforge.client.model.IQuadTransformer;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
+import net.neoforged.neoforge.model.data.ModelData;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.IFluidAutoOutput;
-import conductance.api.machine.IItemAutoOutput;
-import conductance.api.machine.MachineBlockEntity;
-import conductance.api.machine.MachineCapability;
-import conductance.api.machine.multi.IMultiBlockController;
-import conductance.api.machine.multi.IMultiBlockPart;
+import conductance.api.machine.MachineModelProperties;
 import conductance.api.util.ModelUtils;
 import conductance.Conductance;
 import conductance.client.model.ExtendedRotationVariant;
@@ -58,12 +46,12 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 
 	public static final MapCodec<MachineUnbakedModel> MAP_CODEC = ExtendedRotationVariant.MAP_CODEC.xmap(MachineUnbakedModel::new, MachineUnbakedModel::variant);
 	static final SimplePreparableReloadListener<Void> RELOAD_LISTENER;
-	private static final Map<BlockState, BakedQuad[]> QUAD_CACHE = new IdentityHashMap<>();
-	private static final Table<ResourceLocation, Direction, BakedQuad> TEXTURE_CACHE = HashBasedTable.create();
+	private static final Map<BlockState, BakedQuad[]> BLOCK_STATE_QUAD_CACHE = new IdentityHashMap<>();
+	private static final Table<ResourceLocation, Direction, BakedQuad> FACE_QUAD_CACHE = HashBasedTable.create();
 
 	private static void reset() {
-		MachineUnbakedModel.QUAD_CACHE.clear();
-		MachineUnbakedModel.TEXTURE_CACHE.clear();
+		MachineUnbakedModel.BLOCK_STATE_QUAD_CACHE.clear();
+		MachineUnbakedModel.FACE_QUAD_CACHE.clear();
 	}
 
 	@Override
@@ -81,6 +69,30 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 		return MachineUnbakedModel.MAP_CODEC;
 	}
 
+	private static BakedQuad[] getBlockStateQuads(final BlockState blockState, final BlockAndTintGetter level, final BlockPos pos, final RandomSource random) {
+		return MachineUnbakedModel.BLOCK_STATE_QUAD_CACHE.computeIfAbsent(blockState, state -> ModelUtils.getBaseQuadsFromBlockState(state, level, pos, random));
+	}
+
+	private static @Nullable BakedQuad getFaceQuad(final ResourceLocation texture, final Direction face) {
+		if (MachineUnbakedModel.FACE_QUAD_CACHE.isEmpty()) {
+			final BiConsumer<ResourceLocation, Boolean> filler = (tex, emissive) -> {
+				for (final Direction direction : Direction.values()) {
+					MachineUnbakedModel.FACE_QUAD_CACHE.put(tex, direction, ModelUtils.createFullCubeBakedQuad(emissive, direction, tex));
+				}
+			};
+			filler.accept(MachineUnbakedModel.TEXTURE_IO_PORT, false);
+			filler.accept(MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_OFF, false);
+			filler.accept(MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_ON, true);
+			filler.accept(MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_OFF, false);
+			filler.accept(MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_ON, true);
+			filler.accept(MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_OFF, false);
+			filler.accept(MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_ON, true);
+			filler.accept(MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_OFF, false);
+			filler.accept(MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_ON, true);
+		}
+		return MachineUnbakedModel.FACE_QUAD_CACHE.get(texture, face);
+	}
+
 	private static class WrappedVariant extends SingleVariant {
 
 		WrappedVariant(final BlockModelPart model) {
@@ -93,203 +105,83 @@ public record MachineUnbakedModel(ExtendedRotationVariant variant) implements Cu
 			if (parts.isEmpty()) {
 				return;
 			}
-			if (level.getBlockEntity(pos) instanceof final IMultiBlockPart multiBlockPart) {
-				if (parts.getFirst() instanceof final SimpleModelWrapper modelWrapper) {
-					for (final BlockPos controllerPos : multiBlockPart.getControllers()) {
-						if (level.getBlockEntity(controllerPos) instanceof final IMultiBlockController<?> controller && controller.isStructureFormed()) {
-							final Supplier<BlockState> casingAppearance = controller.getMachineType().getCasingAppearance();
-							if (casingAppearance == null) {
-								continue;
-							}
-							final BakedQuad[] quads = MachineUnbakedModel.QUAD_CACHE.computeIfAbsent(casingAppearance.get(), renderState ->
-								MachineUnbakedModel.getBlockStateQuads(renderState, level, pos, random)
-							);
-							if (quads.length > 0) {
-								parts.set(0, new WrappedModelPart(modelWrapper, quads));
-							}
-							return;
-						}
-					}
-				}
-			}
-			if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
-				if (parts.getFirst() instanceof final SimpleModelWrapper modelWrapper) {
-					if (MachineUnbakedModel.TEXTURE_CACHE.isEmpty()) {
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT, true);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_OFF, true);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_ON, false);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_OFF, true);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_ON, false);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_OFF, true);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_ON, false);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_OFF, true);
-						MachineUnbakedModel.fillCache(modelWrapper.quads(), MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_ON, false);
-					}
-					Direction itemSide = null;
-					boolean itemEnabled = false;
-					Direction fluidSide = null;
-					boolean fluidEnabled = false;
-					for (final MachineCapability capability : machine.getCapabilities().values()) {
-						if (capability instanceof final IItemAutoOutput itemAutoOutput) {
-							itemSide = itemAutoOutput.getItemAutoOutputSide();
-							itemEnabled = itemAutoOutput.isItemAutoOutputEnabled();
-						}
-						if (capability instanceof final IFluidAutoOutput fluidAutoOutput) {
-							fluidSide = fluidAutoOutput.getFluidAutoOutputSide();
-							fluidEnabled = fluidAutoOutput.isFluidAutoOutputEnabled();
-						}
-					}
-					if (itemSide != null || fluidSide != null) {
-						final Map<Direction, List<BakedQuad>> quads = new EnumMap<>(Direction.class);
-						if (itemSide == fluidSide) {
-							final List<BakedQuad> list = new ArrayList<>();
-							final BakedQuad portQuad = MachineUnbakedModel.TEXTURE_CACHE.get(MachineUnbakedModel.TEXTURE_IO_PORT, itemSide);
-							if (portQuad != null) {
-								list.add(portQuad);
-							}
-							final BakedQuad itemQuad = MachineUnbakedModel.TEXTURE_CACHE.get(itemEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_ON : MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_OFF, itemSide);
-							if (itemQuad != null) {
-								list.add(itemQuad);
-							}
-							final BakedQuad fluidQuad =
-								MachineUnbakedModel.TEXTURE_CACHE.get(fluidEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_ON : MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_OFF, itemSide);
-							if (fluidQuad != null) {
-								list.add(fluidQuad);
-							}
-							if (!list.isEmpty()) {
-								quads.put(itemSide, list);
-							}
-						} else {
-							if (itemSide != null) {
-								final List<BakedQuad> list = new ArrayList<>();
-								final BakedQuad portQuad = MachineUnbakedModel.TEXTURE_CACHE.get(MachineUnbakedModel.TEXTURE_IO_PORT, itemSide);
-								if (portQuad != null) {
-									list.add(portQuad);
-								}
-								final BakedQuad itemQuad = MachineUnbakedModel.TEXTURE_CACHE.get(itemEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_ON : MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_OFF, itemSide);
-								if (itemQuad != null) {
-									list.add(itemQuad);
-								}
-								if (!list.isEmpty()) {
-									quads.put(itemSide, list);
-								}
-							}
-							if (fluidSide != null) {
-								final List<BakedQuad> list = new ArrayList<>();
-								final BakedQuad portQuad = MachineUnbakedModel.TEXTURE_CACHE.get(MachineUnbakedModel.TEXTURE_IO_PORT, fluidSide);
-								if (portQuad != null) {
-									list.add(portQuad);
-								}
-								final BakedQuad fluidQuad = MachineUnbakedModel.TEXTURE_CACHE.get(fluidEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_ON : MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_OFF, fluidSide);
-								if (fluidQuad != null) {
-									list.add(fluidQuad);
-								}
-								if (!list.isEmpty()) {
-									quads.put(fluidSide, list);
-								}
-							}
-						}
-						if (!quads.isEmpty()) {
-							parts.add(new SingleQuadModelPart(quads, modelWrapper.particleIcon()));
-						}
-					}
-				}
+			final ModelData modelData = level.getModelData(pos);
+			MachineUnbakedModel.replaceBasePart(parts, modelData, level, pos, state, random);
+			MachineUnbakedModel.addAutoOutputQuads(parts, modelData);
+		}
+	}
+
+	private static void replaceBasePart(final List<BlockModelPart> parts, final ModelData modelData, final BlockAndTintGetter level, final BlockPos pos, final BlockState state, final RandomSource random) {
+		final BlockState appearance = modelData.get(MachineModelProperties.APPEARANCE);
+		if (appearance != null) {
+			final BakedQuad[] replacementQuads = MachineUnbakedModel.getBlockStateQuads(appearance, level, pos, random);
+			if (replacementQuads.length > 0) {
+				parts.set(0, new ModelUtils.ReplacedQuadBlockModelPart(parts.getFirst(), replacementQuads));
 			}
 		}
 	}
 
-	private static void fillCache(final QuadCollection quadCollection, final ResourceLocation texture, final boolean shade) {
-		for (final Direction face : Direction.values()) {
-			quadCollection.getQuads(face).stream().findFirst().ifPresent(
-				quad -> MachineUnbakedModel.TEXTURE_CACHE.put(texture, face, MachineUnbakedModel.retextureQuad(quad, ModelUtils.getBlockSprite(texture), shade))
-			);
+	private static void addAutoOutputQuads(final List<BlockModelPart> parts, final ModelData modelData) {
+		if (!modelData.has(MachineModelProperties.ITEM_AUTO_OUTPUT) && !modelData.has(MachineModelProperties.FLUID_AUTO_OUTPUT)) {
+			return;
 		}
-	}
-
-	private static BakedQuad retextureQuad(final BakedQuad quad, final TextureAtlasSprite sprite, final boolean shade) {
-		final TextureAtlasSprite oldSprite = quad.sprite();
-		final int[] vertices = quad.vertices().clone();
-		for (int i = 0; i < 4; i++) {
-			final int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
-			float u = Float.intBitsToFloat(vertices[offset]);
-			float v = Float.intBitsToFloat(vertices[offset + 1]);
-			u = Mth.map(u, oldSprite.getU0(), oldSprite.getU1(), sprite.getU0(), sprite.getU1());
-			v = Mth.map(v, oldSprite.getV0(), oldSprite.getV1(), sprite.getV0(), sprite.getV1());
-			vertices[offset] = Float.floatToRawIntBits(u);
-			vertices[offset + 1] = Float.floatToRawIntBits(v);
-		}
-		return new BakedQuad(vertices, quad.tintIndex(), quad.direction(), sprite, shade, shade ? quad.lightEmission() : 15, quad.hasAmbientOcclusion());
-	}
-
-	private static BakedQuad[] getBlockStateQuads(final BlockState state, final BlockAndTintGetter level, final BlockPos pos, final RandomSource random) {
-		final List<BlockModelPart> newParts = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state).collectParts(level, pos, state, random);
-		if (newParts.isEmpty()) {
-			return new BakedQuad[0];
-		}
-		final BakedQuad[] result = new BakedQuad[6];
-		for (final Direction face : Direction.values()) {
-			final List<BakedQuad> quads = newParts.getFirst().getQuads(face);
-			result[face.get3DDataValue()] = !quads.isEmpty() ? quads.getFirst() : null;
-		}
-		return result;
-	}
-
-	private record WrappedModelPart(BlockModelPart original, BakedQuad[] quads) implements BlockModelPart {
-
-		@Override
-		public List<BakedQuad> getQuads(@Nullable final Direction direction) {
-			final ArrayList<BakedQuad> result = new ArrayList<>(this.original.getQuads(direction));
-			if (direction != null) {
-				final BakedQuad quad = this.quads[direction.get3DDataValue()];
-				if (quad != null) {
-					if (result.isEmpty()) {
-						result.add(quad);
-					} else {
-						result.set(0, quad);
-					}
+		final @Nullable Tuple<Direction, Boolean> itemData = modelData.get(MachineModelProperties.ITEM_AUTO_OUTPUT);
+		final @Nullable Tuple<Direction, Boolean> fluidData = modelData.get(MachineModelProperties.FLUID_AUTO_OUTPUT);
+		final Direction itemSide = itemData != null ? itemData.getA() : null;
+		final boolean itemEnabled = itemData != null && itemData.getB();
+		final Direction fluidSide = fluidData != null ? fluidData.getA() : null;
+		final boolean fluidEnabled = fluidData != null && fluidData.getB();
+		final Map<Direction, List<BakedQuad>> quads = new EnumMap<>(Direction.class);
+		assert itemSide != null || fluidSide != null;
+		if (itemSide == fluidSide) {
+			final List<BakedQuad> list = new ArrayList<>();
+			final BakedQuad portQuad = MachineUnbakedModel.getFaceQuad(MachineUnbakedModel.TEXTURE_IO_PORT, itemSide);
+			if (portQuad != null) {
+				list.add(portQuad);
+			}
+			final BakedQuad itemQuad = MachineUnbakedModel.getFaceQuad(itemEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_ON : MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_ITEM_OFF, itemSide);
+			if (itemQuad != null) {
+				list.add(itemQuad);
+			}
+			final BakedQuad fluidQuad = MachineUnbakedModel.getFaceQuad(fluidEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_ON : MachineUnbakedModel.TEXTURE_IO_PORT_BOTH_FLUID_OFF, itemSide);
+			if (fluidQuad != null) {
+				list.add(fluidQuad);
+			}
+			if (!list.isEmpty()) {
+				quads.put(itemSide, list);
+			}
+		} else {
+			if (itemSide != null) {
+				final List<BakedQuad> list = new ArrayList<>();
+				final BakedQuad portQuad = MachineUnbakedModel.getFaceQuad(MachineUnbakedModel.TEXTURE_IO_PORT, itemSide);
+				if (portQuad != null) {
+					list.add(portQuad);
+				}
+				final BakedQuad itemQuad = MachineUnbakedModel.getFaceQuad(itemEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_ON : MachineUnbakedModel.TEXTURE_IO_PORT_ITEM_OFF, itemSide);
+				if (itemQuad != null) {
+					list.add(itemQuad);
+				}
+				if (!list.isEmpty()) {
+					quads.put(itemSide, list);
 				}
 			}
-			return result;
+			if (fluidSide != null) {
+				final List<BakedQuad> list = new ArrayList<>();
+				final BakedQuad portQuad = MachineUnbakedModel.getFaceQuad(MachineUnbakedModel.TEXTURE_IO_PORT, fluidSide);
+				if (portQuad != null) {
+					list.add(portQuad);
+				}
+				final BakedQuad fluidQuad = MachineUnbakedModel.getFaceQuad(fluidEnabled ? MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_ON : MachineUnbakedModel.TEXTURE_IO_PORT_FLUID_OFF, fluidSide);
+				if (fluidQuad != null) {
+					list.add(fluidQuad);
+				}
+				if (!list.isEmpty()) {
+					quads.put(fluidSide, list);
+				}
+			}
 		}
-
-		@Override
-		public ChunkSectionLayer getRenderType(final BlockState state) {
-			return this.original.getRenderType(state);
-		}
-
-		@Override
-		public TriState ambientOcclusion() {
-			return this.original.ambientOcclusion();
-		}
-
-		@SuppressWarnings("deprecation")
-		@Override
-		public boolean useAmbientOcclusion() {
-			return this.original.useAmbientOcclusion();
-		}
-
-		@Override
-		public TextureAtlasSprite particleIcon() {
-			return this.original.particleIcon();
-		}
-	}
-
-	private record SingleQuadModelPart(Map<Direction, List<BakedQuad>> quads, TextureAtlasSprite particleIcon) implements BlockModelPart {
-
-		@Override
-		public List<BakedQuad> getQuads(@Nullable final Direction direction) {
-			final List<BakedQuad> result = direction != null ? this.quads.get(direction) : null;
-			return result != null ? result : Collections.emptyList();
-		}
-
-		@Override
-		public boolean useAmbientOcclusion() {
-			return true;
-		}
-
-		@Override
-		public ChunkSectionLayer getRenderType(final BlockState state) {
-			return ChunkSectionLayer.CUTOUT_MIPPED;
+		if (!quads.isEmpty()) {
+			parts.add(new ModelUtils.SimpleOverlayQuadBlockModelPart(quads, parts.getFirst().particleIcon()));
 		}
 	}
 

@@ -21,6 +21,7 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import com.mojang.logging.LogUtils;
+import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import conductance.api.CAPI;
@@ -102,6 +103,13 @@ public class BaseBlockEntity extends BlockEntity implements IFeatureBase {
 	//endregion
 
 	//region Event
+
+	@Override
+	public void setChanged() {
+		super.setChanged();
+		this.requestModelDataUpdate();
+	}
+
 	@Override
 	public void onLoad() {
 		super.onLoad();
@@ -208,5 +216,18 @@ public class BaseBlockEntity extends BlockEntity implements IFeatureBase {
 		}
 		this.loadAdditionalSyncData(valueInput);
 	}
+
+	@Override
+	public ModelData getModelData() {
+		if (this instanceof final IMachineCapabilityHolder capabilityHolder) {
+			final ModelData.Builder builder = ModelData.builder();
+			for (final MachineCapability capability : capabilityHolder.getCapabilities().values()) {
+				capability.addModelData(builder);
+			}
+			return builder.build();
+		}
+		return super.getModelData();
+	}
+
 	//endregion
 }

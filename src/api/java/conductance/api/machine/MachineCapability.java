@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.model.data.ModelData;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -62,6 +63,9 @@ public abstract class MachineCapability implements ValueIOSerializable {
 	}
 
 	public void onUnload() {
+	}
+
+	public void addModelData(final ModelData.Builder builder) {
 	}
 
 	public void addGuiControls(final MachineMenu menu, final BiConsumer<String, IGuiWidget> adder) {

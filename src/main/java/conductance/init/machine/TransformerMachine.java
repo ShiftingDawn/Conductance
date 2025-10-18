@@ -10,11 +10,12 @@ import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineRecipeCapabilityEnergy;
 import conductance.api.machine.MachineTick;
 import conductance.api.machine.MachineType;
+import conductance.api.machine.api.IWorkable;
 import conductance.api.machine.energy.IEnergyHandler;
 import conductance.api.tier.Tier;
 import conductance.api.util.IO;
 
-public final class TransformerMachine extends MachineBlockEntity<TransformerMachine> {
+public final class TransformerMachine extends MachineBlockEntity<TransformerMachine> implements IWorkable {
 
 	private final @Getter Tier inputTier;
 	private final @Getter TransformerEnergyHandler energy;
@@ -30,15 +31,24 @@ public final class TransformerMachine extends MachineBlockEntity<TransformerMach
 	}
 
 	private boolean isTransformUp() {
-		return !this.isWorking();
+		return this.isProcessingAllowed();
+	}
+
+	@Override
+	public void setProcessingAllowed(final boolean allowed) {
+		super.setProcessingAllowed(allowed);
+		if (allowed != this.isProcessingAllowed()) {
+			this.energy.switchIO();
+		}
 	}
 
 	@Override
 	public void setWorking(final boolean working) {
-		super.setWorking(working);
-		if (working != this.isWorking()) {
-			this.energy.switchIO();
-		}
+	}
+
+	@Override
+	public boolean isWorking() {
+		return this.isProcessingAllowed();
 	}
 
 	protected void revalidateTick() {

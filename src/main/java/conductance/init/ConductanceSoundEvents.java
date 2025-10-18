@@ -17,6 +17,7 @@ public final class ConductanceSoundEvents {
 		ConductanceSoundEvents.REGISTRY.register(modEventBus);
 		NCSoundEvents.TOOL_WRENCH = ConductanceSoundEvents.REGISTRY.register("tool_wrench", SoundEvent::createVariableRangeEvent);
 		NCSoundEvents.TOOL_WIRE_CUTTERS = ConductanceSoundEvents.REGISTRY.register("tool_wire_cutters", SoundEvent::createVariableRangeEvent);
+		NCSoundEvents.TOOL_HAMMER = ConductanceSoundEvents.REGISTRY.register("tool_hammer", SoundEvent::createVariableRangeEvent);
 		NCSoundEvents.TOOL_CROWBAR = ConductanceSoundEvents.REGISTRY.register("tool_crowbar", SoundEvent::createVariableRangeEvent);
 	}
 

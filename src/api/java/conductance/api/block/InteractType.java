@@ -19,7 +19,7 @@ public enum InteractType {
 
 	WRENCH(CAPI.TAG_WRENCHES, () -> NCSoundEvents.TOOL_WRENCH.get()),
 	WIRE_CUTTERS(CAPI.TAG_WIRE_CUTTERS, () -> NCSoundEvents.TOOL_WIRE_CUTTERS.get()),
-	HAMMER(CAPI.TAG_HAMMERS, null), //TODO hammer sound
+	HAMMER(CAPI.TAG_HAMMERS, () -> NCSoundEvents.TOOL_HAMMER.get()),
 	CROWBAR(CAPI.TAG_CROWBARS, () -> NCSoundEvents.TOOL_CROWBAR.get());
 
 	private final TagKey<Item> toolTag;

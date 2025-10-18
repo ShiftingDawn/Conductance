@@ -19,9 +19,10 @@ import conductance.api.NCBlockStateProperties;
 import conductance.api.block.BlockRotationHelper;
 import conductance.api.block.FacingAndRotation;
 import conductance.api.coil.CoilBlockType;
+import conductance.api.machine.api.IWorkable;
 import conductance.api.util.Internal;
 
-public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineBlockEntity<T>> extends MultiMachineBlockEntity<T> implements IMultiBlockController<T> {
+public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineBlockEntity<T>> extends MultiMachineBlockEntity<T> implements IWorkable, IMultiBlockController<T> {
 
 	public static final int REQUEST_STRUCTURE_FORMED = 1;
 	public static final int REQUEST_STRUCTURE_INVALID = 2;
@@ -108,7 +109,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 
 	@Override
 	public void setWorking(final boolean working) {
-		super.setWorking(working);
+		IWorkable.super.setWorking(working);
 		this.setActiveBlocks(working);
 	}
 
@@ -116,7 +117,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 		return this.coilType != null ? this.coilType.getTemperature() : 0;
 	}
 
-	private void setActiveBlocks(final boolean active) {
+	protected void setActiveBlocks(final boolean active) {
 		for (final BlockPos activeBlockPos : this.activeBlocks) {
 			final BlockState state = this.level.getBlockState(activeBlockPos);
 			if (state.hasProperty(NCBlockStateProperties.ACTIVE)) {

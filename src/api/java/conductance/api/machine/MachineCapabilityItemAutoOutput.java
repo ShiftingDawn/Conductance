@@ -2,8 +2,10 @@ package conductance.api.machine;
 
 import java.util.function.BiConsumer;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
 import conductance.api.machine.gui.GuiTextures;
@@ -77,6 +79,11 @@ public class MachineCapabilityItemAutoOutput extends MachineCapability implement
 	@Override
 	public Direction getItemAutoOutputSide() {
 		return this.side;
+	}
+
+	@Override
+	public void addModelData(final ModelData.Builder builder) {
+		builder.with(MachineModelProperties.ITEM_AUTO_OUTPUT, new Tuple<>(this.side, this.isItemAutoOutputEnabled()));
 	}
 
 	@Override

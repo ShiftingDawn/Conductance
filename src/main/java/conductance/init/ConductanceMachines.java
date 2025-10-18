@@ -11,8 +11,8 @@ import conductance.api.NCMultiBlockPartCapabilities;
 import conductance.api.NCRecipeModifiers;
 import conductance.api.NCRecipeTypes;
 import conductance.api.block.BlockRotationType;
-import conductance.api.machine.MachineBlockWorkable;
 import conductance.api.machine.MachineType;
+import conductance.api.machine.WorkableMachineBlock;
 import conductance.api.machine.event.RegisterMachineEvent;
 import conductance.api.machine.gui.GuiTheme;
 import conductance.api.machine.multi.MultiBlockControllerGuiSetup;
@@ -85,7 +85,7 @@ final class ConductanceMachines {
 			(machineType, blockPos, blockState) -> new TransformerMachine(machineType, blockPos, blockState, tier, 1),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("transformer")), tier.getNextTier().getName())
-			).rotationType(BlockRotationType.ALL).tieredModel("transformer", tier).guiSetup(null).blockFactory(MachineBlockWorkable::new).tooltip(() -> List.of(
+			).rotationType(BlockRotationType.ALL).tieredModel("transformer", tier).guiSetup(null).blockFactory(WorkableMachineBlock::new).tooltip(() -> List.of(
 				Component.translatable("machine.conductance.transformer.tooltip.0"),
 				Component.translatable("machine.conductance.transformer.tooltip.1", 4, tier.getName(), TextHelper.ENERGY_FORMAT, 1, tier.getNextTier().getName(), TextHelper.ENERGY_FORMAT),
 				Component.translatable("machine.conductance.transformer.tooltip.2", 1, tier.getNextTier().getName(), TextHelper.ENERGY_FORMAT, 4, tier.getName(), TextHelper.ENERGY_FORMAT)
@@ -98,7 +98,7 @@ final class ConductanceMachines {
 
 	private static void initGenerators(final RegisterMachineEvent event) {
 		STEAM_SOLID_FUEL_BOILER = event.register("solid_fuel_steam_boiler", SteamSolidFuelBoilerMachine::new, b -> b
-			.blockFactory(MachineBlockWorkable::new).sidedMachineModel(Conductance.id("block/casing/bronze")).guiSetup(new SteamSolidFuelBoilerMachineGuiSetup())
+			.blockFactory(WorkableMachineBlock::new).sidedMachineModel(Conductance.id("block/casing/bronze")).guiSetup(new SteamSolidFuelBoilerMachineGuiSetup())
 		);
 		STEAM_TURBINES = ConductanceMachines.makeTieredGenericGeneratorMachine(event, "steam_turbine", NCRecipeTypes.STEAM_TURBINE);
 	}
@@ -123,25 +123,25 @@ final class ConductanceMachines {
 			(machineType, blockPos, blockState) -> new MultiBlockItemBusPartMachine(machineType, blockPos, blockState, IO.IN, Math.min(Mth.square(tier.getIndex() + 2), 100)),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("input_bus")), tier.getName())
-			).rotationType(BlockRotationType.ALL).tieredModel("input_bus", tier).guiSetup(new MultiBlockItemBusPartMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
+			).rotationType(BlockRotationType.ALL).tieredModel("input_bus", tier).guiSetup(new MultiBlockItemBusPartMachineGuiSetup()).blockFactory(WorkableMachineBlock::new)
 		));
 		OUTPUT_BUSES = CAPI.tiers().newMap(tier -> event.<MultiBlockItemBusPartMachine>register(tier.getId().getPath() + "_output_bus",
 			(machineType, blockPos, blockState) -> new MultiBlockItemBusPartMachine(machineType, blockPos, blockState, IO.OUT, Math.min(Mth.square(tier.getIndex() + 2), 100)),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("output_bus")), tier.getName())
-			).rotationType(BlockRotationType.ALL).tieredModel("output_bus", tier).guiSetup(new MultiBlockItemBusPartMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
+			).rotationType(BlockRotationType.ALL).tieredModel("output_bus", tier).guiSetup(new MultiBlockItemBusPartMachineGuiSetup()).blockFactory(WorkableMachineBlock::new)
 		));
 		INPUT_HATCHES = CAPI.tiers().newMap(tier -> event.<MultiBlockFluidHatchPartMachine>register(tier.getId().getPath() + "_input_hatch",
 			(machineType, blockPos, blockState) -> new MultiBlockFluidHatchPartMachine(machineType, blockPos, blockState, IO.IN, 1, (int) Math.pow(2, 3 + tier.getIndex()) * CAPI.BUCKET),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("input_hatch")), tier.getName())
-			).rotationType(BlockRotationType.ALL).tieredModel("input_hatch", tier).guiSetup(new MultiBlockFluidHatchPartMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
+			).rotationType(BlockRotationType.ALL).tieredModel("input_hatch", tier).guiSetup(new MultiBlockFluidHatchPartMachineGuiSetup()).blockFactory(WorkableMachineBlock::new)
 		));
 		OUTPUT_HATCHES = CAPI.tiers().newMap(tier -> event.<MultiBlockFluidHatchPartMachine>register(tier.getId().getPath() + "_output_hatch",
 			(machineType, blockPos, blockState) -> new MultiBlockFluidHatchPartMachine(machineType, blockPos, blockState, IO.OUT, 1, (int) Math.pow(2, 3 + tier.getIndex()) * CAPI.BUCKET),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id("output_hatch")), tier.getName())
-			).rotationType(BlockRotationType.ALL).tieredModel("output_hatch", tier).guiSetup(new MultiBlockFluidHatchPartMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
+			).rotationType(BlockRotationType.ALL).tieredModel("output_hatch", tier).guiSetup(new MultiBlockFluidHatchPartMachineGuiSetup()).blockFactory(WorkableMachineBlock::new)
 		));
 		ENERGY_HATCHES = CAPI.tiers().newMap(tier -> event.<MultiBlockEnergyHatchPartMachine>register(tier.getId().getPath() + "_energy_hatch",
 			(machineType, blockPos, blockState) -> new MultiBlockEnergyHatchPartMachine(machineType, blockPos, blockState, IO.IN, tier),
@@ -187,7 +187,7 @@ final class ConductanceMachines {
 			.guiSetup(new MultiBlockControllerGuiSetup(GuiTheme.THEME_BRONZE))
 			.simpleModel(Conductance.id("block/casing/bronze"))
 			.casingAppearance(() -> NCBlocks.CASING_BRONZE.value().defaultBlockState())
-			.blockFactory(MachineBlockWorkable::new)
+			.blockFactory(WorkableMachineBlock::new)
 		);
 		ELECTRIC_BLAST_FURNACE = event.multi("electric_blast_furnace", GenericRecipeMultiBlockMachine::new, b -> b
 			.structure('x', c -> c
@@ -201,7 +201,7 @@ final class ConductanceMachines {
 			.recipeType(NCRecipeTypes.ELECTRIC_BLAST_FURNACE)
 			.simpleModel(Conductance.id("block/casing/invar"))
 			.casingAppearance(() -> NCBlocks.CASING_INVAR.value().defaultBlockState())
-			.blockFactory(MachineBlockWorkable::new)
+			.blockFactory(WorkableMachineBlock::new)
 			.rotationType(BlockRotationType.EXTENDED)
 		);
 		CRYSTALLIZING_ARC_FURNACE = event.multi("crystallizing_arc_furnace", GenericRecipeMultiBlockMachine::new, b -> b
@@ -215,7 +215,7 @@ final class ConductanceMachines {
 			.recipeType(NCRecipeTypes.CRYSTALLIZING_ARC_FURNACE)
 			.simpleModel(Conductance.id("block/casing/steel"))
 			.casingAppearance(() -> NCBlocks.CASING_STEEL.value().defaultBlockState())
-			.blockFactory(MachineBlockWorkable::new)
+			.blockFactory(WorkableMachineBlock::new)
 			.rotationType(BlockRotationType.EXTENDED)
 		);
 	}
@@ -225,7 +225,7 @@ final class ConductanceMachines {
 			(machineType, blockPos, blockState) -> new GenericRecipeMachine(machineType, tier, blockPos, blockState),
 			b -> b.customName(ignored ->
 				Component.translatable(Util.makeDescriptionId("machine", Conductance.id(name)), tier.getName())
-			).recipeType(recipeType).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
+			).recipeType(recipeType).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(WorkableMachineBlock::new)
 		));
 	}
 
@@ -235,7 +235,7 @@ final class ConductanceMachines {
 			b -> b.customName(ignored ->
 					Component.translatable(Util.makeDescriptionId("machine", Conductance.id(name)), tier.getName())
 				).recipeType(recipeType).recipeModifier(NCRecipeModifiers.steamTurbine(tier))
-				.rotationType(BlockRotationType.ALL).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(MachineBlockWorkable::new)
+				.rotationType(BlockRotationType.ALL).tieredModel(name, tier).guiSetup(new GenericRecipeMachineGuiSetup()).blockFactory(WorkableMachineBlock::new)
 		));
 	}
 
