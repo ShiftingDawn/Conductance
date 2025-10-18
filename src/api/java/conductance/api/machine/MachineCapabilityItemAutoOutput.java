@@ -26,6 +26,7 @@ public class MachineCapabilityItemAutoOutput extends MachineCapability implement
 		super(key, machine);
 		this.handler = inventory;
 		this.handler.addChangeListener(this::revalidateTick);
+		this.addChangedListener(machine::syncToClient);
 		this.addChangedListener(this::revalidateTick);
 	}
 
@@ -63,6 +64,7 @@ public class MachineCapabilityItemAutoOutput extends MachineCapability implement
 	public void setItemAutoOutputEnabled(final boolean enable) {
 		this.enabled = enable;
 		this.setChanged();
+		this.requestModelDataUpdate();
 	}
 
 	@Override
@@ -74,11 +76,17 @@ public class MachineCapabilityItemAutoOutput extends MachineCapability implement
 	public void setItemAutoOutputSide(final Direction face) {
 		this.side = face;
 		this.setChanged();
+		this.requestModelDataUpdate();
 	}
 
 	@Override
 	public Direction getItemAutoOutputSide() {
 		return this.side;
+	}
+
+	@Override
+	public void onClientSyncReceived() {
+		this.requestModelDataUpdate();
 	}
 
 	@Override

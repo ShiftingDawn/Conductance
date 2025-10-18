@@ -103,13 +103,6 @@ public class BaseBlockEntity extends BlockEntity implements IFeatureBase {
 	//endregion
 
 	//region Event
-
-	@Override
-	public void setChanged() {
-		super.setChanged();
-		this.requestModelDataUpdate();
-	}
-
 	@Override
 	public void onLoad() {
 		super.onLoad();
@@ -178,6 +171,9 @@ public class BaseBlockEntity extends BlockEntity implements IFeatureBase {
 			capabilityHolder.getCapabilities().forEach((key, capability) -> {
 				final ValueInput capInput = input.childOrEmpty(key);
 				capability.deserialize(capInput);
+				if (this.isClientSide()) {
+					capability.onClientSyncReceived();
+				}
 			});
 		}
 	}
@@ -210,9 +206,10 @@ public class BaseBlockEntity extends BlockEntity implements IFeatureBase {
 	@Override
 	public void onDataPacket(final Connection net, final ValueInput valueInput) {
 		if (this instanceof final IMachineCapabilityHolder capabilityHolder) {
-			capabilityHolder.getCapabilities().forEach((key, capability) -> {
-				valueInput.child(key).ifPresent(capability::deserialize);
-			});
+			capabilityHolder.getCapabilities().forEach((key, capability) -> valueInput.child(key).ifPresent(capInput -> {
+				capability.deserialize(capInput);
+				capability.onClientSyncReceived();
+			}));
 		}
 		this.loadAdditionalSyncData(valueInput);
 	}

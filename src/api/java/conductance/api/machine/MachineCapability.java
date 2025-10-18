@@ -51,6 +51,10 @@ public abstract class MachineCapability implements ValueIOSerializable {
 		this.notifyListeners();
 	}
 
+	public final void requestModelDataUpdate() {
+		this.owner.requestModelDataUpdate();
+	}
+
 	public final boolean hasChanged() {
 		return this.hasChanged;
 	}
@@ -63,6 +67,9 @@ public abstract class MachineCapability implements ValueIOSerializable {
 	}
 
 	public void onUnload() {
+	}
+
+	public void onClientSyncReceived() {
 	}
 
 	public void addModelData(final ModelData.Builder builder) {

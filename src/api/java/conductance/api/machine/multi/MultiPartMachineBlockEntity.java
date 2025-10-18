@@ -28,6 +28,7 @@ public abstract class MultiPartMachineBlockEntity<T extends MultiPartMachineBloc
 			this.controllers.remove(controllerPos);
 		}
 		this.setChanged();
+		this.requestModelDataUpdate();
 		this.syncToClient();
 	}
 

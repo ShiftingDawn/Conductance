@@ -26,6 +26,7 @@ public class MachineCapabilityFluidAutoOutput extends MachineCapability implemen
 		super(key, machine);
 		this.handler = handler;
 		this.handler.addChangeListener(this::revalidateTick);
+		this.addChangedListener(machine::syncToClient);
 		this.addChangedListener(this::revalidateTick);
 	}
 
@@ -63,6 +64,7 @@ public class MachineCapabilityFluidAutoOutput extends MachineCapability implemen
 	public void setFluidAutoOutputEnabled(final boolean enable) {
 		this.enabled = enable;
 		this.setChanged();
+		this.requestModelDataUpdate();
 	}
 
 	@Override
@@ -74,11 +76,17 @@ public class MachineCapabilityFluidAutoOutput extends MachineCapability implemen
 	public void setFluidAutoOutputSide(final Direction face) {
 		this.side = face;
 		this.setChanged();
+		this.requestModelDataUpdate();
 	}
 
 	@Override
 	public Direction getFluidAutoOutputSide() {
 		return this.side;
+	}
+
+	@Override
+	public void onClientSyncReceived() {
+		this.requestModelDataUpdate();
 	}
 
 	@Override
