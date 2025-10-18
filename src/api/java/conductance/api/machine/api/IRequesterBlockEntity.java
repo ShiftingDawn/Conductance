@@ -9,7 +9,7 @@ import conductance.api.util.Internal;
 public interface IRequesterBlockEntity extends IFeatureBase {
 
 	default void sendToClient(final int requestId, @Nullable final Consumer<ValueOutput> payloadProvider) {
-		this.onClient(level -> Internal.MACHINE_RPC_PACKET_SENDER.send(level, this, payload -> {
+		this.onServer(level -> Internal.MACHINE_RPC_PACKET_SENDER.send(level, this, payload -> {
 			payload.putInt("r", requestId);
 			if (payloadProvider != null) {
 				payloadProvider.accept(payload.child("d"));
@@ -18,7 +18,7 @@ public interface IRequesterBlockEntity extends IFeatureBase {
 	}
 
 	default void sendToServer(final int requestId, @Nullable final Consumer<ValueOutput> payloadProvider) {
-		this.onServer(level -> Internal.MACHINE_RPC_PACKET_SENDER.send(level, this, payload -> {
+		this.onClient(level -> Internal.MACHINE_RPC_PACKET_SENDER.send(level, this, payload -> {
 			payload.putInt("r", requestId);
 			if (payloadProvider != null) {
 				payloadProvider.accept(payload.child("d"));
