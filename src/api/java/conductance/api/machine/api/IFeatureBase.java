@@ -13,11 +13,14 @@ import conductance.api.block.BlockRotationHelper;
 public interface IFeatureBase {
 
 	default boolean isValid() {
-		return this instanceof final BlockEntity blockEntity ? !blockEntity.isRemoved() : !this.isInvalid();
+		if (this instanceof final BlockEntity blockEntity) {
+			return !blockEntity.isRemoved();
+		}
+		return !this.isInvalid();
 	}
 
 	default boolean isInvalid() {
-		return this instanceof final BlockEntity blockEntity && !blockEntity.isRemoved();
+		return this instanceof final BlockEntity blockEntity && blockEntity.isRemoved();
 	}
 
 	void setChanged();

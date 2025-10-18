@@ -51,7 +51,7 @@ public class BaseBlockEntity extends BlockEntity implements IFeatureBase {
 	}
 
 	public final MachineTick addTick(final Runnable action) {
-		if (this.getLevel() instanceof final ServerLevel serverLevel) {
+		if (this.level instanceof final ServerLevel serverLevel) {
 			return CAPI.make(new MachineTick(action), tick -> {
 				this.pendingTicks.add(tick);
 				if (!this.getBlockState().getValue(MachineBlock.TICKING)) {
@@ -64,10 +64,10 @@ public class BaseBlockEntity extends BlockEntity implements IFeatureBase {
 	}
 
 	public final MachineTick addTick(final Runnable action, @Nullable final MachineTick previousTickInstance) {
-		if (previousTickInstance != null && previousTickInstance.isValid()) {
-			return previousTickInstance;
+		if (previousTickInstance == null || !previousTickInstance.isValid()) {
+			return this.addTick(action);
 		}
-		return this.addTick(action);
+		return previousTickInstance;
 	}
 
 	final void handleServerTick() {
@@ -87,7 +87,8 @@ public class BaseBlockEntity extends BlockEntity implements IFeatureBase {
 			}
 		}
 		if (this.isValid() && this.activeTicks.isEmpty() && this.pendingTicks.isEmpty()) {
-			this.onServer(level -> level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(MachineBlock.TICKING, false)));
+			assert this.level != null;
+			this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(MachineBlock.TICKING, false));
 		}
 	}
 	//endregion

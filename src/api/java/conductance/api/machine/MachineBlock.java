@@ -56,7 +56,7 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	}
 
 	protected BlockState createDefaultState() {
-		return BlockRotationHelper.addToDefaultState(this.machineType.getRotationType(), this.getStateDefinition().any()).setValue(MachineBlock.TICKING, false);
+		return BlockRotationHelper.addToDefaultState(this.machineType.getRotationType(), this.getStateDefinition().any()).setValue(MachineBlock.TICKING, true);
 	}
 
 	@Override
@@ -179,16 +179,16 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	@Override
 	public @Nullable <BE extends BlockEntity> BlockEntityTicker<BE> getTicker(final Level level, final BlockState state, final BlockEntityType<BE> blockEntityType) {
 		if (blockEntityType == this.machineType.getBlockEntityType().get() && state.getValueOrElse(MachineBlock.TICKING, false)) {
-			if (!level.isClientSide) {
-				return (lvl, blockPos, blockState, be) -> {
-					if (be instanceof final BaseBlockEntity baseBlockEntity) {
-						baseBlockEntity.handleServerTick();
+			if (level.isClientSide) {
+				return (level1, blockPos, blockState, be) -> {
+					if (be instanceof final IEventListener eventListener) {
+						eventListener.onClientTick();
 					}
 				};
 			} else {
-				return (lvl, blockPos, blockState, be) -> {
-					if (be instanceof final IEventListener eventListener) {
-						eventListener.onClientTick();
+				return (level1, blockPos, blockState, be) -> {
+					if (be instanceof final BaseBlockEntity machine) {
+						machine.handleServerTick();
 					}
 				};
 			}

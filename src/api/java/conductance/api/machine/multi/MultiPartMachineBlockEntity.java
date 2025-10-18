@@ -34,7 +34,6 @@ public abstract class MultiPartMachineBlockEntity<T extends MultiPartMachineBloc
 
 	@Override
 	public void onUnload() {
-		super.onUnload();
 		if (this.level instanceof final ServerLevel serverLevel) {
 			for (final BlockPos controllerPos : this.controllers) {
 				if (serverLevel.getBlockEntity(controllerPos) instanceof final IMultiBlockController<?> controller) {
