@@ -5,7 +5,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import conductance.api.NCBlockStateProperties;
 
-public final class ActiveBlock extends Block {
+public final class ActiveBlock extends SimpleBlock {
 
 	public ActiveBlock(final Properties props) {
 		super(props);

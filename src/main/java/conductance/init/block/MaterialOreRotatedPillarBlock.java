@@ -26,9 +26,10 @@ import conductance.api.block.IGeneratedMiningTags;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.MaterialOreBearer;
+import conductance.core.block.IGeneratedMaterialOreBlockLootTable;
 import conductance.core.block.IMaterialBlock;
 
-public final class MaterialOreRotatedPillarBlock extends RotatedPillarBlock implements IMaterialBlock, IGeneratedMiningTags {
+public final class MaterialOreRotatedPillarBlock extends RotatedPillarBlock implements IMaterialBlock, IGeneratedMiningTags, IGeneratedMaterialOreBlockLootTable {
 
 	private final @Getter Material material;
 	private final @Getter MaterialGenerationHandler handler;

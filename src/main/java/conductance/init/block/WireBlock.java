@@ -15,7 +15,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import lombok.Getter;
 import conductance.api.NCMaterialProps;
 import conductance.api.NCMaterialTraits;
-import conductance.api.block.IGeneratedMiningTags;
 import conductance.api.material.Material;
 import conductance.api.material.MaterialGenerationHandler;
 import conductance.api.material.MaterialTraitWire;
@@ -27,7 +26,7 @@ import conductance.lib.pipenet.LevelEnergyNet;
 import conductance.lib.pipenet.WireData;
 import conductance.lib.pipenet.WireType;
 
-public final class WireBlock extends PipeBlock<IWireNode, WireData, LevelEnergyNet> implements IMaterialBlock, IGeneratedMiningTags {
+public final class WireBlock extends PipeBlock<IWireNode, WireData, LevelEnergyNet> implements IMaterialBlock {
 
 	private final @Getter Material material;
 	private final @Getter WireType wireType;

@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import conductance.api.NCBlockStateProperties;
 import conductance.api.block.BlockRotationHelper;
 import conductance.api.block.BlockRotationType;
+import conductance.api.block.IGeneratedLootTable;
 import conductance.api.block.IGeneratedMiningTags;
 import conductance.api.machine.api.IEventListener;
 import conductance.api.machine.api.IMachineCapabilityHolder;
@@ -43,7 +44,7 @@ import conductance.api.machine.api.IWorkable;
 import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.multi.IMultiBlockController;
 
-public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements EntityBlock, IGeneratedMiningTags {
+public class MachineBlock<T extends MachineBlockEntity<T>> extends Block implements EntityBlock, IGeneratedMiningTags, IGeneratedLootTable {
 
 	private static final ThreadLocal<BlockRotationType> CURRENT_ROTATION_TYPE = new ThreadLocal<>();
 	public static final BooleanProperty TICKING = BooleanProperty.create("ticking");

@@ -7,10 +7,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import lombok.Getter;
-import conductance.api.block.IGeneratedMiningTags;
 import conductance.api.coil.CoilBlockType;
 
-public final class CoilBlock extends Block implements IGeneratedMiningTags {
+public final class CoilBlock extends SimpleBlock {
 
 	private final @Getter CoilBlockType type;
 	private final MutableComponent name;
@@ -19,11 +18,6 @@ public final class CoilBlock extends Block implements IGeneratedMiningTags {
 		super(props);
 		this.type = type;
 		this.name = Component.translatable("block.conductance.coil_block", type.getName());
-	}
-
-	@Override
-	public List<TagKey<Block>> getRequiredToolTypeTag() {
-		return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
 	}
 
 	@Override

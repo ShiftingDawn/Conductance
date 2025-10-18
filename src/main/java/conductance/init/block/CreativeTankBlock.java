@@ -21,9 +21,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import conductance.api.CAPI;
-import conductance.api.block.IGeneratedMiningTags;
 
-public final class CreativeTankBlock extends Block implements IGeneratedMiningTags, EntityBlock {
+public final class CreativeTankBlock extends SimpleBlock implements EntityBlock {
 
 	public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
 
@@ -86,11 +85,6 @@ public final class CreativeTankBlock extends Block implements IGeneratedMiningTa
 	@Override
 	public BlockEntity newBlockEntity(final BlockPos pos, final BlockState state) {
 		return new CreativeTankBlockEntity(pos, state);
-	}
-
-	@Override
-	public List<TagKey<Block>> getRequiredToolTypeTag() {
-		return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
 	}
 
 	@Override

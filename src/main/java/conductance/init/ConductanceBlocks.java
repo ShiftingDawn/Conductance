@@ -48,6 +48,7 @@ import conductance.init.block.MaterialBlockItem;
 import conductance.init.block.MaterialOreBlock;
 import conductance.init.block.MaterialOreBlockItem;
 import conductance.init.block.MaterialOreRotatedPillarBlock;
+import conductance.init.block.SimpleBlock;
 import conductance.init.block.TieredBlock;
 import conductance.init.block.WireBlock;
 import conductance.init.block.WireBlockEntity;
@@ -92,7 +93,7 @@ public final class ConductanceBlocks {
 	}
 
 	private static Holder<Block> makeSimpleBlock(final String blockName, @Nullable final String texture) {
-		return CAPI.make(ConductanceBlocks.makeBlock(blockName, Block::new), result -> {
+		return CAPI.make(ConductanceBlocks.makeBlock(blockName, SimpleBlock::new), result -> {
 			ConductanceBlocks.SIMPLE_BLOCKS.put(result, Conductance.id("block/" + Objects.requireNonNullElseGet(texture, () -> result.getKey().location().getPath())));
 		});
 	}

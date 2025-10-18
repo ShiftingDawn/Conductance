@@ -37,7 +37,7 @@ import conductance.api.CAPI;
 import conductance.lib.pipenet.INetworkNode;
 import conductance.lib.pipenet.LevelPipeNetwork;
 
-public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEVELNET extends LevelPipeNetwork<NODE, DATA>> extends Block implements EntityBlock {
+public abstract class PipeBlock<NODE extends INetworkNode<NODE, DATA>, DATA, LEVELNET extends LevelPipeNetwork<NODE, DATA>> extends SimpleBlock implements EntityBlock {
 
 	public static final Map<Direction, BooleanProperty> CONNECTION_PROPS;
 	@Getter
