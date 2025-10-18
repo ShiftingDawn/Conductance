@@ -1,5 +1,6 @@
 package conductance.api.machine;
 
+import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.storage.ValueInput;
@@ -7,6 +8,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
+import conductance.api.machine.api.IWorkable;
 import conductance.api.recipe.DummyMachineRecipe;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
@@ -22,14 +24,14 @@ public class RecipeHandler extends MachineCapability {
 	private @Getter int progressCurrent = 0;
 	private @Getter RecipeHandlerStatus status = RecipeHandlerStatus.IDLE;
 
-	protected RecipeHandler(final String key, final MachineBlockEntity<?> machine, final RecipeCapabilityHolder holder) {
-		super(key, machine);
+	protected RecipeHandler(final String key, final BaseBlockEntity owner, final RecipeCapabilityHolder holder) {
+		super(key, owner);
 		this.holder = holder;
-		this.addChangedListener(machine::syncToClient);
+		this.addChangedListener(owner::syncToClient);
 	}
 
-	public RecipeHandler(final MachineBlockEntity<?> machine, final RecipeCapabilityHolder holder) {
-		this("recipe", machine, holder);
+	public RecipeHandler(final BaseBlockEntity owner, final RecipeCapabilityHolder holder) {
+		this("recipe", owner, holder);
 	}
 
 	@Override
@@ -95,8 +97,14 @@ public class RecipeHandler extends MachineCapability {
 	protected void setStatus(final RecipeHandlerStatus status) {
 		if (status != this.status) {
 			this.status = status;
-			this.getMachine().setWorkingState(this.status == RecipeHandlerStatus.PROCESSING);
+			this.updateWorkingState(null);
 			this.setChanged();
+		}
+	}
+
+	private void updateWorkingState(@Nullable final Boolean forcedState) {
+		if (this.getOwner() instanceof final IWorkable workable) {
+			workable.setWorking(Objects.requireNonNullElse(forcedState, this.status == RecipeHandlerStatus.PROCESSING));
 		}
 	}
 
@@ -112,9 +120,9 @@ public class RecipeHandler extends MachineCapability {
 	}
 
 	public void revalidateTick() {
-		if (this.getMachine().isServerSide()) {
-			this.tick = this.getMachine().addTick(this::tick, this.tick);
-			this.getMachine().setWorkingState(this.status == RecipeHandlerStatus.PROCESSING);
+		if (this.getOwner().isServerSide()) {
+			this.tick = this.getOwner().addTick(this::tick, this.tick);
+			this.updateWorkingState(null);
 		}
 	}
 
@@ -122,7 +130,7 @@ public class RecipeHandler extends MachineCapability {
 	public void onLoad() {
 		super.onLoad();
 		this.revalidateTick();
-		this.getMachine().setWorkingState(this.status == RecipeHandlerStatus.PROCESSING);
+		this.updateWorkingState(null);
 	}
 
 	protected @Nullable RecipePair findRecipe() {
@@ -140,7 +148,7 @@ public class RecipeHandler extends MachineCapability {
 	}
 
 	protected boolean testRecipe(final MachineRecipe recipe) {
-		return CAPI.recipeHelper().test(recipe, this.getMachine(), this.holder) && CAPI.recipeHelper().testPerTick(recipe, this.getMachine(), this.holder);
+		return CAPI.recipeHelper().test(recipe, this.getOwner(), this.holder) && CAPI.recipeHelper().testPerTick(recipe, this.getOwner(), this.holder);
 	}
 
 	protected void setupRecipe(final RecipePair recipe) {
@@ -154,7 +162,7 @@ public class RecipeHandler extends MachineCapability {
 	}
 
 	protected void progressRecipe(final MachineRecipe recipe) {
-		if (!CAPI.recipeHelper().testPerTick(recipe, this.getMachine(), this.holder)) {
+		if (!CAPI.recipeHelper().testPerTick(recipe, this.getOwner(), this.holder)) {
 			switch (this.holder.getPerTickFailureAction()) {
 				case NOTHING -> {
 					if (this.tick != null) {
@@ -165,7 +173,7 @@ public class RecipeHandler extends MachineCapability {
 					this.progressCurrent = Math.max(0, this.progressCurrent - 2);
 					if (this.progressCurrent == 0 && this.tick != null) {
 						this.tick.invalidate();
-						this.getMachine().setWorkingState(false);
+						this.updateWorkingState(false);
 					}
 					this.setChanged();
 				}

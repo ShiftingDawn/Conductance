@@ -1,5 +1,8 @@
 package conductance.api.machine;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -8,12 +11,65 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCCapabilities;
+import conductance.api.machine.api.IMachineCapabilityHolder;
 import conductance.api.machine.energy.IEnergyHandler;
 
 public final class CapabilityHelper {
+
+	public static Optional<IItemHandler> getItemHandlerCapability(final IMachineCapabilityHolder holder, @Nullable final Direction side) {
+		final List<IItemHandlerModifiable> itemHandlers = new ArrayList<>();
+		for (final MachineCapability capability : holder.getCapabilities().values()) {
+			if (capability instanceof final IItemHandlerModifiable itemHandler && capability.isValid(side)) {
+				itemHandlers.add(itemHandler);
+			}
+		}
+		if (itemHandlers.isEmpty()) {
+			return Optional.empty();
+		} else if (itemHandlers.size() == 1) {
+			return Optional.of(itemHandlers.getFirst());
+		}
+		final CapIO io = CapIO.BOTH;
+		final IOItemHandlerList handlerList = new IOItemHandlerList(itemHandlers, io);
+		return Optional.of(handlerList);
+	}
+
+	public static Optional<IFluidHandler> getFluidHandlerCapability(final IMachineCapabilityHolder holder, @Nullable final Direction side) {
+		final List<IFluidHandler> fluidHandlers = new ArrayList<>();
+		for (final MachineCapability capability : holder.getCapabilities().values()) {
+			if (capability instanceof final IFluidHandler fluidHandler && capability.isValid(side)) {
+				fluidHandlers.add(fluidHandler);
+			}
+		}
+		if (fluidHandlers.isEmpty()) {
+			return Optional.empty();
+		} else if (fluidHandlers.size() == 1) {
+			return Optional.of(fluidHandlers.getFirst());
+		}
+		final CapIO io = CapIO.BOTH;
+		final IOFluidHandlerList handlerList = new IOFluidHandlerList(fluidHandlers, io);
+		return Optional.of(handlerList);
+	}
+
+	public static Optional<IEnergyHandler> getEnergyHandlerCapability(final IMachineCapabilityHolder holder, @Nullable final Direction side) {
+		final List<IEnergyHandler> energyHandlers = new ArrayList<>();
+		for (final MachineCapability capability : holder.getCapabilities().values()) {
+			if (capability instanceof final IEnergyHandler energyHandler && capability.isValid(side)) {
+				energyHandlers.add(energyHandler);
+			}
+		}
+		if (energyHandlers.isEmpty()) {
+			return Optional.empty();
+		} else if (energyHandlers.size() == 1) {
+			return Optional.of(energyHandlers.getFirst());
+		}
+		final CapIO io = CapIO.BOTH;
+		final IOEnergyHandlerList handlerList = new IOEnergyHandlerList(energyHandlers, io);
+		return Optional.of(handlerList);
+	}
 
 	public static void tryImportItems(final IItemHandler destination, final Level level, final BlockPos sourcePos, final @Nullable Direction sourceSide) {
 		final IItemHandler source = level.getCapability(Capabilities.ItemHandler.BLOCK, sourcePos, sourceSide);

@@ -11,7 +11,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import com.mojang.serialization.Codec;
 import conductance.api.CAPI;
-import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.BaseBlockEntity;
 import conductance.api.machine.gui.ProgressProvider;
 import conductance.api.recipe.event.RecipeTestCallback;
 import conductance.api.util.IO;
@@ -24,7 +24,7 @@ public interface MachineRecipeType extends RecipeType<MachineRecipe> {
 
 	Map<String, RecipeDataToken<?>> getAdditionalDataTokens();
 
-	boolean testRecipe(boolean perTick, RecipeTestCallback.When when, MachineBlockEntity<?> machine, MachineRecipe recipe);
+	boolean testRecipe(boolean perTick, RecipeTestCallback.When when, BaseBlockEntity blockEntity, MachineRecipe recipe);
 
 	ResourceLocation getGuiArrow();
 

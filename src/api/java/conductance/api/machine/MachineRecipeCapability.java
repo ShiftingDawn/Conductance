@@ -14,8 +14,8 @@ public abstract class MachineRecipeCapability<T> extends MachineCapability imple
 	private final @Getter IO recipeIoMode;
 	private final @Getter CapIO capabilityIoMode;
 
-	protected MachineRecipeCapability(final MachineBlockEntity<?> machine, final RecipeElementType<T> elementType, final IO recipeIoMode, final CapIO capabilityIoMode) {
-		super(elementType.getId().getPath() + "_" + recipeIoMode, machine);
+	protected MachineRecipeCapability(final BaseBlockEntity owner, final RecipeElementType<T> elementType, final IO recipeIoMode, final CapIO capabilityIoMode) {
+		super(elementType.getId().getPath() + "_" + recipeIoMode, owner);
 		this.elementType = elementType;
 		this.recipeIoMode = recipeIoMode;
 		this.capabilityIoMode = capabilityIoMode;
@@ -30,7 +30,7 @@ public abstract class MachineRecipeCapability<T> extends MachineCapability imple
 
 	@Nullable
 	public final List<T> handle(final IO io, final MachineRecipe recipe, final List<T> inputs, final boolean simulate) {
-		if (this.getMachine().getLevel() == null) {
+		if (this.getOwner().getLevel() == null) {
 			return inputs;
 		}
 		return this.handleInternal(io, recipe, new ArrayList<>(inputs.stream().map(obj -> this.elementType.getCloner().copy(obj)).toList()), simulate);

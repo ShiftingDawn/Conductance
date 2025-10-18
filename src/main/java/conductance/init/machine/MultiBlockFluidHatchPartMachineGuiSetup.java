@@ -38,7 +38,7 @@ public class MultiBlockFluidHatchPartMachineGuiSetup extends GuiSetup {
 		final MultiBlockFluidHatchPartMachine machine = (MultiBlockFluidHatchPartMachine) menu.getMachine();
 		adder.accept("auto", CAPI.make(new ToggleButtonWidget(
 			0, 0, 0, 0,
-			new ManagedBoolean(machine::setAutoEnabled, machine::isCurrentlyWorking),
+			new ManagedBoolean(machine::setAutoEnabled, machine::isWorking),
 			toggled -> {
 				if (machine.getIo() == IO.IN) {
 					return toggled ? GuiTextures.TEXTURE_AUTO_FLUID_INPUT_ON.get() : GuiTextures.TEXTURE_AUTO_FLUID_INPUT_OFF.get();

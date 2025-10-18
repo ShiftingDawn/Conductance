@@ -58,8 +58,8 @@ final class BoilerFakeRecipeHandler extends RecipeHandler {
 			0,
 			new RecipeDataMap(List.of())
 		);
-		if (this.getHolder().getRecipeModifier() != null) {
-			return new RecipePair(recipe, this.getHolder().getRecipeModifier().modifyRecipe(recipe));
+		if (this.holder.getRecipeModifier() != null) {
+			return new RecipePair(recipe, this.holder.getRecipeModifier().modifyRecipe(recipe));
 		}
 		return new RecipePair(recipe, null);
 	}

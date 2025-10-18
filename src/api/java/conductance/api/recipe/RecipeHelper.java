@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import conductance.api.CAPI;
 import conductance.api.NCDataComponents;
-import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.BaseBlockEntity;
 import conductance.api.machine.MachineRecipeCapability;
 import conductance.api.machine.RecipeCapabilityHolder;
 import conductance.api.material.Material;
@@ -20,11 +20,11 @@ import conductance.api.util.IO;
 
 public final class RecipeHelper {
 
-	public boolean test(final MachineRecipe recipe, final MachineBlockEntity<?> machine, final RecipeCapabilityHolder holder) {
+	public boolean test(final MachineRecipe recipe, final BaseBlockEntity blockEntity, final RecipeCapabilityHolder holder) {
 		if (recipe.getProgram() != -1 && !holder.getRecipePrograms().contains(recipe.getProgram())) {
 			return false;
 		}
-		if (!this.callbackTest(false, RecipeTestCallback.When.BEFORE, machine, holder, recipe)) {
+		if (!this.callbackTest(false, RecipeTestCallback.When.BEFORE, blockEntity, holder, recipe)) {
 			return false;
 		}
 		final boolean ins = this.testInternal(recipe, holder, IO.IN, recipe.getInputs());
@@ -32,11 +32,11 @@ public final class RecipeHelper {
 		if (!ins || !outs) {
 			return false;
 		}
-		return this.callbackTest(false, RecipeTestCallback.When.AFTER, machine, holder, recipe);
+		return this.callbackTest(false, RecipeTestCallback.When.AFTER, blockEntity, holder, recipe);
 	}
 
-	public boolean testPerTick(final MachineRecipe recipe, final MachineBlockEntity<?> machine, final RecipeCapabilityHolder holder) {
-		if (!this.callbackTest(true, RecipeTestCallback.When.BEFORE, machine, holder, recipe)) {
+	public boolean testPerTick(final MachineRecipe recipe, final BaseBlockEntity blockEntity, final RecipeCapabilityHolder holder) {
+		if (!this.callbackTest(true, RecipeTestCallback.When.BEFORE, blockEntity, holder, recipe)) {
 			return false;
 		}
 		final boolean ins = this.testInternal(recipe, holder, IO.IN, recipe.getPerTickInputs());
@@ -44,7 +44,7 @@ public final class RecipeHelper {
 		if (!ins || !outs) {
 			return false;
 		}
-		return this.callbackTest(true, RecipeTestCallback.When.AFTER, machine, holder, recipe);
+		return this.callbackTest(true, RecipeTestCallback.When.AFTER, blockEntity, holder, recipe);
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
@@ -70,11 +70,11 @@ public final class RecipeHelper {
 		return true;
 	}
 
-	private boolean callbackTest(final boolean perTick, final RecipeTestCallback.When when, final MachineBlockEntity<?> machine, final RecipeCapabilityHolder holder, final MachineRecipe recipe) {
+	private boolean callbackTest(final boolean perTick, final RecipeTestCallback.When when, final BaseBlockEntity blockEntity, final RecipeCapabilityHolder holder, final MachineRecipe recipe) {
 		if (holder.getRecipeType() == null) {
 			return true;
 		}
-		return holder.getRecipeType().testRecipe(perTick, when, machine, recipe);
+		return holder.getRecipeType().testRecipe(perTick, when, blockEntity, recipe);
 	}
 
 	public void handle(final MachineRecipe recipe, final IO io, final RecipeCapabilityHolder holder) {

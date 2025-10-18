@@ -63,7 +63,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 		this.parts.clear();
 		ctx.get(StructureCheckContext.PARTS).forEach(this::addPart);
 		this.activeBlocks.addAll(ctx.get(StructureCheckContext.ACTIVE_BLOCKS));
-		this.setWorkingState(this.isCurrentlyWorking());
+		this.setWorking(this.isWorking());
 		this.sendToClient(MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_FORMED, output -> {
 			final ValueOutput.TypedOutputList<BlockPos> list = output.list("parts", BlockPos.CODEC);
 			for (final IMultiBlockPart part : this.parts) {
@@ -97,7 +97,7 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 		if (isRemoved) {
 			this.setActiveBlocks(false);
 		} else {
-			this.setWorkingState(false);
+			this.setWorking(false);
 		}
 		this.activeBlocks.clear();
 	}
@@ -107,8 +107,8 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 	}
 
 	@Override
-	public void setWorkingState(final boolean working) {
-		super.setWorkingState(working);
+	public void setWorking(final boolean working) {
+		super.setWorking(working);
 		this.setActiveBlocks(working);
 	}
 
@@ -126,18 +126,19 @@ public class MultiControllerMachineBlockEntity<T extends MultiControllerMachineB
 	}
 
 	@Override
-	protected void handleServerRequest(final int requestId, final ValueInput input) {
+	public void handleRequestFromServer(final int requestId, final ValueInput payload) {
+		super.handleRequestFromServer(requestId, payload);
 		switch (requestId) {
 			case MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_FORMED -> {
 				this.structureFormed = true;
-				this.onClient(level -> input.list("parts", BlockPos.CODEC).ifPresent(list -> {
+				this.onClient(level -> payload.list("parts", BlockPos.CODEC).ifPresent(list -> {
 					for (final BlockPos partPos : list) {
 						if (level.getBlockEntity(partPos) instanceof final IMultiBlockPart part) {
 							this.addPart(part);
 						}
 					}
 				}));
-				this.coilType = input.read("coils", ResourceLocation.CODEC).map(CAPI.regs().coilBlockTypes()::getValue).orElse(null);
+				this.coilType = payload.read("coils", ResourceLocation.CODEC).map(CAPI.regs().coilBlockTypes()::getValue).orElse(null);
 			}
 			case MultiControllerMachineBlockEntity.REQUEST_STRUCTURE_INVALID -> {
 				this.structureFormed = false;

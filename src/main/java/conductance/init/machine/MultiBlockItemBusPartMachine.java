@@ -44,7 +44,7 @@ public final class MultiBlockItemBusPartMachine extends MultiPartMachineBlockEnt
 
 	private void tick() {
 		assert this.tick != null;
-		if ((this.io == IO.OUT && this.items.getInventory().isEmpty()) || !this.isCurrentlyWorking()) {
+		if ((this.io == IO.OUT && this.items.getInventory().isEmpty()) || !this.isWorking()) {
 			this.tick.invalidate();
 			return;
 		}
@@ -57,8 +57,8 @@ public final class MultiBlockItemBusPartMachine extends MultiPartMachineBlockEnt
 	}
 
 	public void setAutoEnabled(final boolean enabled) {
-		if (enabled != this.isCurrentlyWorking()) {
-			this.setWorkingState(enabled);
+		if (enabled != this.isWorking()) {
+			this.setWorking(enabled);
 			this.setChanged();
 		}
 	}

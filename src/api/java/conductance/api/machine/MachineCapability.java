@@ -9,21 +9,27 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import conductance.api.machine.api.IMachineCapabilityHolder;
 import conductance.api.machine.gui.IGuiWidget;
 import conductance.api.machine.gui.MachineMenu;
 
 public abstract class MachineCapability implements ValueIOSerializable {
 
 	private final List<Runnable> changeListeners = new ArrayList<>();
-	private final @Getter MachineBlockEntity<?> machine;
+	private final @Getter BaseBlockEntity owner;
+	private final @Getter IMachineCapabilityHolder capabilityHolder;
 	private @Setter Predicate<@Nullable Direction> capabilityValidator;
 	private boolean hasChanged = false;
 
-	protected MachineCapability(final String key, final MachineBlockEntity<?> machine) {
-		this.machine = machine;
+	protected MachineCapability(final String key, final BaseBlockEntity owner) {
+		if (!(owner instanceof final IMachineCapabilityHolder capHolder)) {
+			throw new IllegalArgumentException("Owner must implement " + IMachineCapabilityHolder.class.getName());
+		}
+		this.owner = owner;
+		this.capabilityHolder = capHolder;
 		this.capabilityValidator = side -> true;
-		machine.registerCapability(key, this);
-		this.changeListeners.add(machine::setChanged);
+		capHolder.registerCapability(key, this);
+		this.changeListeners.add(owner::setChanged);
 	}
 
 	public final boolean isValid(@Nullable final Direction side) {

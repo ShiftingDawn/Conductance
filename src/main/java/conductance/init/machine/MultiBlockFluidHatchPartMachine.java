@@ -44,7 +44,7 @@ public final class MultiBlockFluidHatchPartMachine extends MultiPartMachineBlock
 
 	private void tick() {
 		assert this.tick != null;
-		if ((this.io == IO.OUT && this.fluids.getHandler().isEmpty()) || !this.isCurrentlyWorking()) {
+		if ((this.io == IO.OUT && this.fluids.getHandler().isEmpty()) || !this.isWorking()) {
 			this.tick.invalidate();
 			return;
 		}
@@ -57,8 +57,8 @@ public final class MultiBlockFluidHatchPartMachine extends MultiPartMachineBlock
 	}
 
 	public void setAutoEnabled(final boolean enabled) {
-		if (enabled != this.isCurrentlyWorking()) {
-			this.setWorkingState(enabled);
+		if (enabled != this.isWorking()) {
+			this.setWorking(enabled);
 			this.setChanged();
 		}
 	}

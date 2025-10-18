@@ -23,10 +23,12 @@ import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import conductance.api.CAPI;
 import conductance.api.NCCapabilities;
+import conductance.api.machine.CapabilityHelper;
 import conductance.api.machine.MachineBlock;
 import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineBlockItem;
 import conductance.api.machine.MachineType;
+import conductance.api.machine.api.IMachineCapabilityHolder;
 import conductance.api.machine.energy.IEnergyHandler;
 import conductance.api.machine.event.MachineBlockEntityFactory;
 import conductance.api.machine.event.MachineBlockFactory;
@@ -148,14 +150,14 @@ public final class MachineCore {
 		BuiltInRegistries.BLOCK.forEach(block -> {
 			if (block instanceof final MachineBlock<?> machineBlock) {
 				event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
-					if (blockEntity instanceof final MachineBlockEntity<?> machine) {
-						return machine.getItemHandlerCapability(direction).orElse(null);
+					if (blockEntity instanceof final IMachineCapabilityHolder capabilityHolder) {
+						return CapabilityHelper.getItemHandlerCapability(capabilityHolder, direction).orElse(null);
 					}
 					return null;
 				}, machineBlock);
 				event.registerBlock(Capabilities.FluidHandler.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
-					if (blockEntity instanceof final MachineBlockEntity<?> machine) {
-						return machine.getFluidHandlerCapability(direction).orElse(null);
+					if (blockEntity instanceof final IMachineCapabilityHolder capabilityHolder) {
+						return CapabilityHelper.getFluidHandlerCapability(capabilityHolder, direction).orElse(null);
 					}
 					return null;
 				}, machineBlock);
@@ -163,8 +165,8 @@ public final class MachineCore {
 					if (blockEntity instanceof final IEnergyHandler handler) {
 						return handler;
 					}
-					if (blockEntity instanceof final MachineBlockEntity<?> machine) {
-						return machine.getEnergyHandlerCapability(direction).orElse(null);
+					if (blockEntity instanceof final IMachineCapabilityHolder capabilityHolder) {
+						return CapabilityHelper.getEnergyHandlerCapability(capabilityHolder, direction).orElse(null);
 					}
 					return null;
 				}, machineBlock);

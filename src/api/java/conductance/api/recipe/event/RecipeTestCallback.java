@@ -1,6 +1,6 @@
 package conductance.api.recipe.event;
 
-import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.BaseBlockEntity;
 import conductance.api.recipe.MachineRecipe;
 
 public interface RecipeTestCallback {
@@ -10,5 +10,5 @@ public interface RecipeTestCallback {
 		AFTER
 	}
 
-	boolean test(MachineBlockEntity<?> machine, MachineRecipe recipe);
+	boolean test(BaseBlockEntity machine, MachineRecipe recipe);
 }

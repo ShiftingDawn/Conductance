@@ -28,10 +28,10 @@ public class MachineCapabilityFluidAutoOutput extends MachineCapability implemen
 	}
 
 	protected void revalidateTick() {
-		if (!this.getMachine().isServerSide()) {
+		if (!this.getOwner().isServerSide()) {
 			return;
 		}
-		this.tick = this.getMachine().addTick(this::tick, this.tick);
+		this.tick = this.getOwner().addTick(this::tick, this.tick);
 	}
 
 	private void tick() {
@@ -40,8 +40,8 @@ public class MachineCapabilityFluidAutoOutput extends MachineCapability implemen
 			this.tick.invalidate();
 			return;
 		}
-		if (this.getMachine().haveTicksPassed(10)) {
-			CapabilityHelper.tryExportFluids(this.handler, this.getMachine().getLevel(), this.getMachine().getBlockPos().relative(this.side), this.side.getOpposite());
+		if (this.getOwner().haveTicksPassed(10)) {
+			CapabilityHelper.tryExportFluids(this.handler, this.getOwner().getLevel(), this.getOwner().getBlockPos().relative(this.side), this.side.getOpposite());
 		}
 	}
 

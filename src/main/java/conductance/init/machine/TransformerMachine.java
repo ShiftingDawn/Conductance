@@ -30,13 +30,13 @@ public final class TransformerMachine extends MachineBlockEntity<TransformerMach
 	}
 
 	private boolean isTransformUp() {
-		return !this.isCurrentlyWorking();
+		return !this.isWorking();
 	}
 
 	@Override
-	public void setWorkingState(final boolean working) {
-		super.setWorkingState(working);
-		if (working != this.isCurrentlyWorking()) {
+	public void setWorking(final boolean working) {
+		super.setWorking(working);
+		if (working != this.isWorking()) {
 			this.energy.switchIO();
 		}
 	}

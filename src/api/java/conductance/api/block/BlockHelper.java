@@ -9,30 +9,30 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.machine.MachineBlockEntity;
 import conductance.api.tier.Tier;
 import conductance.api.util.Internal;
 
 public final class BlockHelper {
 
-	public static void explodeOrReplaceWithFire(final MachineBlockEntity<?> machine, final long voltage) {
-		if (machine.getLevel() == null) {
+	public static void explodeOrReplaceWithFire(final BlockEntity blockEntity, final long voltage) {
+		if (blockEntity.getLevel() == null) {
 			return;
 		}
 		if (Internal.IS_EXPLOSION_ENABLED.getAsBoolean()) {
-			BlockHelper.explode(machine, voltage);
+			BlockHelper.explode(blockEntity, voltage);
 		} else {
-			machine.getLevel().setBlockAndUpdate(machine.getBlockPos(), Blocks.FIRE.defaultBlockState());
+			blockEntity.getLevel().setBlockAndUpdate(blockEntity.getBlockPos(), Blocks.FIRE.defaultBlockState());
 		}
 	}
 
-	public static void explode(final MachineBlockEntity<?> machine, final long voltage) {
-		if (machine.getLevel() == null) {
+	public static void explode(final BlockEntity blockEntity, final long voltage) {
+		if (blockEntity.getLevel() == null) {
 			return;
 		}
-		BlockHelper.explode(machine.getLevel(), machine.getBlockPos(), CAPI.tiers().getByVoltage(voltage));
+		BlockHelper.explode(blockEntity.getLevel(), blockEntity.getBlockPos(), CAPI.tiers().getByVoltage(voltage));
 	}
 
 	public static void explode(final Level level, final BlockPos pos, final Tier energyTier) {

@@ -29,15 +29,19 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.NCBlockStateProperties;
-import conductance.api.block.BlockHelper;
 import conductance.api.block.BlockRotationHelper;
 import conductance.api.block.BlockRotationType;
 import conductance.api.block.IGeneratedMiningTags;
 import conductance.api.block.InteractType;
+import conductance.api.machine.api.IEventListener;
+import conductance.api.machine.api.IMachineCapabilityHolder;
+import conductance.api.machine.api.IPlacerAware;
+import conductance.api.machine.api.IWorkable;
 import conductance.api.machine.gui.MachineMenu;
 import conductance.api.machine.multi.IMultiBlockController;
 
@@ -133,7 +137,8 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	@Override
 	protected InteractionResult useItemOn(final ItemStack stack, final BlockState state, final Level level, final BlockPos pos, final Player player, final InteractionHand hand, final BlockHitResult hitResult) {
 		if (InteractType.HAMMER.is(stack) && level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
-			machine.setWorkingState(!machine.isCurrentlyWorking());
+			//TODO replace this with controller mechanism
+			machine.setWorking(!machine.isWorking());
 			InteractType.HAMMER.playSound(level, player, pos);
 			return InteractionResult.SUCCESS_SERVER;
 		}
@@ -142,27 +147,38 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 
 	@Override
 	public void onBlockStateChange(final LevelReader level, final BlockPos pos, final BlockState oldState, final BlockState newState) {
-		if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
-			machine.onBlockStateChanged(oldState, newState);
+		if (level.getBlockEntity(pos) instanceof final IEventListener eventListener) {
+			eventListener.onBlockStateChanged(oldState, newState);
 		}
 	}
 
 	@Override
-	public void onNeighborChange(final BlockState state, final LevelReader level, final BlockPos pos, final BlockPos neighbor) {
-		if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
-			machine.onNeighborChanged(level.getBlockState(neighbor), neighbor, BlockHelper.findNeighborSide(pos, neighbor));
+	protected void neighborChanged(final BlockState state, final Level level, final BlockPos pos, final Block neighborBlock, @Nullable final Orientation orientation, final boolean movedByPiston) {
+		if (level.getBlockEntity(pos) instanceof final IEventListener eventListener) {
+			eventListener.onNeighborChanged();
 		}
 	}
 
 	@Override
 	public void setPlacedBy(final Level level, final BlockPos pos, final BlockState state, @Nullable final LivingEntity placer, final ItemStack stack) {
-		if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
-			if (state.hasProperty(NCBlockStateProperties.WORKING) && state.getValue(NCBlockStateProperties.WORKING) != machine.getDefaultWorkingState()) {
-				level.setBlockAndUpdate(pos, state.setValue(NCBlockStateProperties.WORKING, machine.getDefaultWorkingState()));
+		final BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (blockEntity == null) {
+			return;
+		}
+		if (blockEntity instanceof final IPlacerAware placerAware && placer != null) {
+			placerAware.setPlacer(placer.getUUID());
+		}
+		if (blockEntity instanceof final IWorkable workable) {
+			if (state.hasProperty(NCBlockStateProperties.WORKING) && state.getValue(NCBlockStateProperties.WORKING) != workable.getDefaultWorkingState()) {
+				level.setBlockAndUpdate(pos, state.setValue(NCBlockStateProperties.WORKING, workable.getDefaultWorkingState()));
 			}
-			machine.onPlaced();
+		}
+		if (blockEntity instanceof final IEventListener eventListener) {
+			eventListener.onPlaced();
+		}
+		if (blockEntity instanceof final IMachineCapabilityHolder capabilityHolder) {
 			final Direction facing = BlockRotationHelper.getFacing(state);
-			for (final MachineCapability capability : machine.getCapabilities().values()) {
+			for (final MachineCapability capability : capabilityHolder.getCapabilities().values()) {
 				if (capability instanceof final IItemAutoOutput itemAutoOutput) {
 					itemAutoOutput.setItemAutoOutputSide(facing.getOpposite());
 				}
@@ -176,16 +192,16 @@ public class MachineBlock<T extends MachineBlockEntity<T>> extends Block impleme
 	@Override
 	public @Nullable <BE extends BlockEntity> BlockEntityTicker<BE> getTicker(final Level level, final BlockState state, final BlockEntityType<BE> blockEntityType) {
 		if (blockEntityType == this.machineType.getBlockEntityType().get() && state.getValueOrElse(MachineBlock.TICKING, false)) {
-			if (level.isClientSide) {
-				return (level1, blockPos, blockState, be) -> {
-					if (be instanceof final MachineBlockEntity<?> machine) {
-						machine.onClientTick();
+			if (!level.isClientSide) {
+				return (lvl, blockPos, blockState, be) -> {
+					if (be instanceof final BaseBlockEntity baseBlockEntity) {
+						baseBlockEntity.handleServerTick();
 					}
 				};
 			} else {
-				return (level1, blockPos, blockState, be) -> {
-					if (be instanceof final MachineBlockEntity<?> machine) {
-						machine.handleServerTick();
+				return (lvl, blockPos, blockState, be) -> {
+					if (be instanceof final IEventListener eventListener) {
+						eventListener.onClientTick();
 					}
 				};
 			}

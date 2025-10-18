@@ -42,16 +42,16 @@ public class MachineRecipeCapabilityEnergy extends MachineRecipeCapability<Long>
 	private long acceptedAmpsThisTick;
 
 	public MachineRecipeCapabilityEnergy(
-		final MachineBlockEntity<?> machine, final IO recipeIoMode, final long capacity, final long inputVoltage, final long inputAmperage, final long outputVoltage, final long outputAmperage, final boolean canOverclock
+		final BaseBlockEntity owner, final IO recipeIoMode, final long capacity, final long inputVoltage, final long inputAmperage, final long outputVoltage, final long outputAmperage, final boolean canOverclock
 	) {
-		super(machine, NCRecipeElementTypes.ENERGY, recipeIoMode, MachineRecipeCapabilityEnergy.getIO(inputVoltage, inputAmperage, outputVoltage, outputAmperage));
+		super(owner, NCRecipeElementTypes.ENERGY, recipeIoMode, MachineRecipeCapabilityEnergy.getIO(inputVoltage, inputAmperage, outputVoltage, outputAmperage));
 		this.canOverclock = canOverclock;
 		this.capacity = capacity;
 		this.inputVoltage = inputVoltage;
 		this.inputAmperage = inputAmperage;
 		this.outputVoltage = outputVoltage;
 		this.outputAmperage = outputAmperage;
-		this.addChangedListener(machine::syncToClient);
+		this.addChangedListener(owner::syncToClient);
 	}
 
 	public static MachineRecipeCapabilityEnergy createInput(
@@ -124,7 +124,7 @@ public class MachineRecipeCapabilityEnergy extends MachineRecipeCapability<Long>
 
 	@Override
 	public long receiveEnergy(@Nullable final Direction receivingSide, final long volts, final long amps) {
-		final long currentTime = this.getMachine().getTimerOffset();
+		final long currentTime = this.getOwner().getTimer();
 		if (this.lastAcceptedTimestamp < currentTime) {
 			this.acceptedAmpsThisTick = 0;
 			this.lastAcceptedTimestamp = currentTime;
@@ -134,7 +134,7 @@ public class MachineRecipeCapabilityEnergy extends MachineRecipeCapability<Long>
 		}
 		if (volts > 0L && (receivingSide == null || this.canReceiveEnergy(receivingSide))) {
 			if (volts > this.getInputVoltage()) {
-				BlockHelper.explodeOrReplaceWithFire(this.getMachine(), volts);
+				BlockHelper.explodeOrReplaceWithFire(this.getOwner(), volts);
 				return Math.min(amps, this.getInputAmperage() - this.acceptedAmpsThisTick);
 			}
 			if (this.getEnergySpace() >= volts) {

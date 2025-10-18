@@ -17,7 +17,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import conductance.api.CAPI;
-import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.BaseBlockEntity;
 import conductance.api.machine.gui.ProgressProvider;
 import conductance.api.recipe.MachineRecipe;
 import conductance.api.recipe.MachineRecipeType;
@@ -87,7 +87,7 @@ final class MachineRecipeTypeImpl implements MachineRecipeType {
 	}
 
 	@Override
-	public boolean testRecipe(final boolean perTick, final RecipeTestCallback.When when, final MachineBlockEntity<?> machine, final MachineRecipe recipe) {
+	public boolean testRecipe(final boolean perTick, final RecipeTestCallback.When when, final BaseBlockEntity machine, final MachineRecipe recipe) {
 		final List<RecipeTestCallback> callbacks = (perTick ? this.perTickTestCallbacks : this.testCallbacks).get(when);
 		for (final RecipeTestCallback callback : callbacks) {
 			if (!callback.test(machine, recipe)) {

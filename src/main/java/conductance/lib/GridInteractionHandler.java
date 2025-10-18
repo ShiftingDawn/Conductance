@@ -16,8 +16,8 @@ import conductance.api.block.IGridInteractable;
 import conductance.api.block.InteractType;
 import conductance.api.machine.IFluidAutoOutput;
 import conductance.api.machine.IItemAutoOutput;
-import conductance.api.machine.MachineBlockEntity;
 import conductance.api.machine.MachineCapability;
+import conductance.api.machine.api.IMachineCapabilityHolder;
 import static conductance.api.NCBlockStateProperties.FACING_ALL;
 import static conductance.api.NCBlockStateProperties.FACING_EXTENDED;
 import static conductance.api.NCBlockStateProperties.FACING_HORIZONTAL;
@@ -98,14 +98,14 @@ public final class GridInteractionHandler {
 					return true;
 				}
 			}
-			if (level.getBlockEntity(pos) instanceof final MachineBlockEntity<?> machine) {
+			if (level.getBlockEntity(pos) instanceof final IMachineCapabilityHolder capabilityHolder) {
 				boolean hasChanged = false;
-				for (final MachineCapability capability : machine.getCapabilities().values()) {
-					if (capability instanceof final IItemAutoOutput itemAutoOutput && side != machine.getFacing()) {
+				for (final MachineCapability capability : capabilityHolder.getCapabilities().values()) {
+					if (capability instanceof final IItemAutoOutput itemAutoOutput && side != capabilityHolder.getFacing()) {
 						itemAutoOutput.setItemAutoOutputSide(side);
 						hasChanged = true;
 					}
-					if (capability instanceof final IFluidAutoOutput fluidAutoOutput && side != machine.getFacing()) {
+					if (capability instanceof final IFluidAutoOutput fluidAutoOutput && side != capabilityHolder.getFacing()) {
 						fluidAutoOutput.setFluidAutoOutputSide(side);
 						hasChanged = true;
 					}

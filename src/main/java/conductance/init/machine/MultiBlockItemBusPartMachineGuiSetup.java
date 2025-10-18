@@ -64,7 +64,7 @@ public class MultiBlockItemBusPartMachineGuiSetup extends GuiSetup {
 		final MultiBlockItemBusPartMachine machine = (MultiBlockItemBusPartMachine) menu.getMachine();
 		adder.accept("auto", CAPI.make(new ToggleButtonWidget(
 			0, 0, 0, 0,
-			new ManagedBoolean(machine::setAutoEnabled, machine::isCurrentlyWorking),
+			new ManagedBoolean(machine::setAutoEnabled, machine::isWorking),
 			toggled -> {
 				if (machine.getIo() == IO.IN) {
 					return toggled ? GuiTextures.TEXTURE_AUTO_ITEM_INPUT_ON.get() : GuiTextures.TEXTURE_AUTO_ITEM_INPUT_OFF.get();

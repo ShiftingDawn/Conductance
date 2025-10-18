@@ -1,5 +1,6 @@
 package conductance.core.machine;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -22,8 +23,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import io.netty.buffer.ByteBuf;
-import org.jetbrains.annotations.Nullable;
-import conductance.api.machine.MachineBlockEntity;
+import conductance.api.machine.api.IRequesterBlockEntity;
 import conductance.api.util.Internal;
 import conductance.Conductance;
 
@@ -47,37 +47,52 @@ public record MachineRpcRequestPacket(ResourceKey<Level> level, BlockPos pos, Co
 		Internal.MACHINE_RPC_PACKET_SENDER = MachineRpcRequestPacket::send;
 	}
 
-	private static void send(final MachineBlockEntity<?> machine, @Nullable final ServerLevel level, final Consumer<ValueOutput> payloadFactory) {
+	private static void send(final Level level, final IRequesterBlockEntity requester, final Consumer<ValueOutput> payloadFactory) {
+		//noinspection CheckStyle
 		try (final ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Conductance.LOGGER)) {
-			final TagValueOutput output = TagValueOutput.createWithContext(reporter, machine.getLevel().registryAccess());
+			final TagValueOutput output = TagValueOutput.createWithContext(reporter, level.registryAccess());
 			payloadFactory.accept(output);
-			final MachineRpcRequestPacket packet = new MachineRpcRequestPacket(machine.getLevel().dimension(), machine.getBlockPos(), output.buildResult());
-			if (level == null) {
-				ClientPacketDistributor.sendToServer(packet);
+			final MachineRpcRequestPacket packet = new MachineRpcRequestPacket(level.dimension(), requester.getBlockPos(), output.buildResult());
+			if (level instanceof final ServerLevel serverLevel) {
+				PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(requester.getBlockPos()), packet);
 			} else {
-				PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(machine.getBlockPos()), packet);
+				ClientPacketDistributor.sendToServer(packet);
 			}
 		}
 	}
 
 	private static void handleOnServer(final MachineRpcRequestPacket packet, final IPayloadContext ctx) {
-		final ServerLevel level = ctx.player().getServer() != null ? ctx.player().getServer().getLevel(packet.level) : null;
-		if (level != null && level.getBlockEntity(packet.pos) instanceof final MachineBlockEntity<?> machine) {
-			try (final ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Conductance.LOGGER)) {
-				final ValueInput input = TagValueInput.create(reporter, ctx.player().registryAccess(), packet.nbt);
-				Internal.MACHINE_RPC_PACKET_RECEIVER_SERVER.apply(machine).accept(input);
+		Optional.ofNullable(ctx.player().getServer()).ifPresent(server -> {
+			final ServerLevel level = server.getLevel(packet.level);
+			if (level != null && level.getBlockEntity(packet.pos) instanceof final IRequesterBlockEntity requester) {
+				//noinspection CheckStyle
+				try (final ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Conductance.LOGGER)) {
+					final ValueInput input = TagValueInput.create(reporter, ctx.player().registryAccess(), packet.nbt);
+					MachineRpcRequestPacket.handlePacket(requester, input, true);
+				}
 			}
-		}
+		});
 	}
 
 	private static void handleOnClient(final MachineRpcRequestPacket packet, final IPayloadContext ctx) {
 		if (Minecraft.getInstance().level != null && Minecraft.getInstance().level.dimension() == packet.level) {
-			if (Minecraft.getInstance().level.getBlockEntity(packet.pos) instanceof final MachineBlockEntity<?> machine) {
+			if (Minecraft.getInstance().level.getBlockEntity(packet.pos) instanceof final IRequesterBlockEntity requester) {
+				//noinspection CheckStyle
 				try (final ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Conductance.LOGGER)) {
 					final ValueInput input = TagValueInput.create(reporter, ctx.player().registryAccess(), packet.nbt);
-					Internal.MACHINE_RPC_PACKET_RECEIVER_CLIENT.apply(machine).accept(input);
+					MachineRpcRequestPacket.handlePacket(requester, input, false);
 				}
 			}
+		}
+	}
+
+	private static void handlePacket(final IRequesterBlockEntity requester, final ValueInput input, final boolean receivedOnServer) {
+		final int requestId = input.getInt("r").orElseThrow(() -> new IllegalStateException("Missing request id"));
+		final ValueInput payload = input.childOrEmpty("d");
+		if (receivedOnServer) {
+			requester.handleRequestFromClient(requestId, payload);
+		} else {
+			requester.handleRequestFromServer(requestId, payload);
 		}
 	}
 }

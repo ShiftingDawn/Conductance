@@ -56,7 +56,8 @@ public class GenericGeneratorMachine extends GenericRecipeMachine {
 	}
 
 	@Override
-	public void onNeighborChanged(final BlockState neighborState, final BlockPos neighborPos, final Direction neighborSide) {
+	public void onNeighborChanged() {
+		//TODO generalize this somehow
 		this.revalidateTick();
 	}
 
